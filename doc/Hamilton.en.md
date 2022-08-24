@@ -130,11 +130,80 @@ Path tables: wip.
 Initialisation
 ==============
 
+For copyright  reasons, I  will not provide  initialisation programmes
+for  the  maps of  Risk,  War  on Terror  and  other  games. The  only
+initialisation  programme will  be the  programme dealing  with French
+regions and departments.
+
+This  initialisation  programme  is  more complicated  than  a  normal
+initialisation  programme, because  it deals  with three  hierarchical
+levels  instead  of  just  two:   Y1970  regions,  Y2015  regions  and
+departments.  It  initialises  three  maps  simultaneously:  `fr1970`,
+`fr2015` and `frreg`.
+
+In a  first phase,  the programme  reads a  sequential text  file with
+different line types:
+
+* `A` for Y2015 regions,
+* `B` for Y1970 regions,
+* `AB` for Y1970 regions which were not altered in 2015,
+* `C` for departments.
+
+Beyond the area code and the area name, lines `A` and `AB` contain the
+color scheme for maps `fr2015` and `frreg`, lines `AB` and `B` contain
+the color scheme for map `fr1970`.  Lines `C` contain the latitude and
+longitude   for  the   individual  departments,   plus  the   list  of
+neighbouring departments.
+
+During this first phase, the departments records, that is records with
+keys `fr1970`+`2` and `fr2015`+`2` are  created with all their fields.
+On  the  other  hand,  in  the regions  records,  that  is  with  keys
+`fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`,  the latitude
+and the longitude will not be filled, and no `Borders` records will be
+created.
+
+You  will have  to wait  for the  second phase  to finish  the regions
+records.  For  each  region,  the   programme  will  extract  all  the
+departments within this  region, compute the average  of the latitudes
+and longitudes of these departments  and update the region record with
+these computed values.
+
+Likewise, the  programme will create  the `Borders` records  with keys
+`fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`  by extracting
+all departments  borders `fr1970`+`2`  and `fr2015`+`2`  lying between
+two different regions, discarding all duplicates region-wise and store
+the result in the `Borders` table.
+
+I have written the text file in the following fashion. I have displayed the
+[Géo Portail](https://www.geoportail.gouv.fr/)
+website   and  selected   only  the   _limites  administratives_   map
+(administrative borders). For  each department, I have  clicked at the
+approximate  center  of  the department,  right-clicked  and  selected
+_adresse /  coordonnées du  lieu_ (location address  and coordinates).
+Then I  have copied-pasted  the latitude and  longitude into  the text
+file. Also, I have listed all neighbouring departments. In some cases,
+I have  zoomed to know if  two departments are really  neighbours. See
+for example  the 4-way  point between Vaucluse,  Bouches-du-Rhône, Var
+and Alpes  de Haute-Provence. Back  to long/lat: I  have copied-pasted
+the values with all 5 digits after the decimal point. If you bother to
+check,  one  latitude degree  is  111  km  and,  at latitude  45,  one
+longitude degree is  78 km. So the fifth decimal  digit means that the
+values have a precision of one meter, more or less. This is excessive.
+I could have truncated to 2 decimal digits.
+
 Extracting Hamiltonian Paths
 ============================
 
 Displaying the Results
 ======================
+
+I have already explained in a
+[previous project](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-en.md#user-content-templateanti)
+that I do not like templating modules. The only templating module I like is
+[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
+because its templating language is vanilla HTML, without any extension
+and without  any specific syntax.  So I used `Template::Anti`  in this
+project.
 
 License
 =======

@@ -136,11 +136,82 @@ Tables pour les chemins : RAF
 Initialisation
 ==============
 
+Pour  des  raisons  de  copyright,   je  ne  livre  pas  de  programme
+d'initialisation pour  les jeux comme Risk  ou War on Terror.  Le seul
+programme  d'initialisation concerne  les  régions  françaises et  les
+départements français.
+
+Ce  programme  est  plus compliqué  qu'un  programme  d'initialisation
+standard, car il est prévu pour traiter trois niveaux hiérarchiques au
+lieu de deux : les régions de 2015, puis les régions de 1970, puis les
+départements. Il charge à la  fois les trois cartes `fr1970`, `fr2015`
+et `frreg`.
+
+Dans un premier temps, le programme lit un fichier séquentiel avec des
+lignes de différents types :
+
+* lignes `A` pour les régions de 2015,
+* lignes `B` pour les régions de 1970,
+* lignes `AB` pour les régions de 1970 qui ont été reprises telles quelles dans le découpage de 2015,
+* lignes `C` pour les départements.
+
+Outre le code et le nom en clair  de la région, les lignes `A` et `AB`
+contiennent  le  schéma  de  coloriage pour  les  cartes  `fr2015`  et
+`frreg`. Les  lignes `AB`  et `B` contiennent  le schéma  de coloriage
+pour la carte  `fr1970`. Les lignes `C` contiennent la  latitude et la
+longitude  des  départements,  pour  les positionner  sur  les  cartes
+générées, ainsi que la liste des départements limitrophes.
+
+Lors de  cette première  étape, les enregistrements  des départements,
+c'est-à-dire  avec des  clés `fr1970`+`2`  et `fr2015`+`2`  sont créés
+avec toutes les valeurs renseignées, mais pour les enregistrements des
+régions,  avec  des  clés `fr1970`+`1`,  `fr2015`+`1`  `frreg`+`1`  et
+`frreg`+`2`, la latitude et la  longitude seront laissées vides et les
+enregistrements   de  la   table   `Borders`  ne   seront  pas   créés
+immédiatement.
+
+C'est seulement lors  d'une seconde étape que  les enregistrements des
+régions seront complétés. Le programme  fera la moyenne des longitudes
+et des  latitudes des départements  appartenant à chaque  région, puis
+stockera  ces  deux  moyennes   dans  l'enregistrement  de  la  région
+correspondante.
+
+De  même, le  programme alimentera  les enregistrements  `fr1970`+`1`,
+`fr2015`+`1`  `frreg`+`1`  et `frreg`+`2`  de  la  table `Borders`  en
+faisant  une  synthèse de  tous  les  enregistrements `fr1970`+`2`  et
+`fr2015`+`2` de `Borders` qui se trouvent à cheval sur deux régions.
+
+J'ai constitué le fichier texte de la façon suivante. J'ai consulté
+[Géo Portail](https://www.geoportail.gouv.fr/)
+en n'affichant que le fond  de carte « limites administratives ». Pour
+chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
+droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
+copié-collé la latitude  et la longitude dans le  fichier. Par moment,
+j'ai  zoomé au  voisinage des  points quadruples  pour vérifier  quels
+départements sont  contigus avec  quels autres départements.  Voir par
+exemple la limite  entre le Vaucluse, les Bouches-du-Rhône,  le Var et
+les Alpes  de Haute-Provence. Pour  la longitude et la  latitude, j'ai
+pris les valeurs telles quelles, avec  cinq décimales. Or, un degré de
+latitude fait 111 km  et, à la latitude de 45°,  un degré de longitude
+fait  78 km. La  cinquième décimale  sur la  longitude et  la latitude
+représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
+contenter de deux décimales. Tant pis.
+
 Extraction des chemins hamiltoniens
 ===================================
 
 Affichage du résultat
 =====================
+
+Pour des raisons exposées dans un
+[projet précédent](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-fr.md#user-content-templateanti),
+le seul module de _templating_ qui trouve grâce à mes yeux est
+[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
+car le  langage de _templating_  est tout simplement HTML  sans aucune
+extension  et  sans  syntaxe  bizarre. Je  dirais  même  « sans  sucre
+syntaxique  rajouté ».  J'ai  donc utilisé  `Template::Anti`  dans  ce
+projet.
+
 
 LICENCE
 =======
