@@ -46,6 +46,11 @@ insert into Areas (map, level, code, name, long, lat, color, upper)
        values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    )
 SQL
 
+my $sto-border = $dbh.prepare(q:to/SQL/);
+insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    )
+SQL
+
 my Str $reg1970;
 my Str $reg2015;
 my Str $col1970;
@@ -105,6 +110,21 @@ for %borders.kv -> $from, $hashto {
   for %$hashto.kv -> $to, $border {
     if $border<counter> != 2 {
       say "problem with $from → $to";
+    }
+    elsif $from le $to {
+      my $color = 'Black';
+      if $border<from1970> eq $border<to1970> {
+        $color = $border<col1970>;
+      } 
+      $sto-border.execute('fr1970', 2, $from, $to  , $border<from1970>, $border<to1970  >, 0, 0, $color);
+      $sto-border.execute('fr1970', 2, $to  , $from, $border<to1970  >, $border<from1970>, 0, 0, $color);
+
+      $color = 'Black';
+      if $border<from2015> eq $border<to2015> {
+        $color = $border<col2015>;
+      } 
+      $sto-border.execute('fr2015', 2, $from, $to  , $border<from2015>, $border<to2015  >, 0, 0, $color);
+      $sto-border.execute('fr2015', 2, $to  , $from, $border<to2015  >, $border<from2015>, 0, 0, $color);
     }
   }
 }
