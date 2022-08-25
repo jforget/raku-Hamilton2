@@ -1,48 +1,48 @@
 A  ; HDF ;  Hauts-de-France              ; Yellow
-B  ; NPC ;  Nord-Pas-de-Calais		 ; Red
+B  ; NPC ;  Nord-Pas-de-Calais           ; Red
 C  ; 62  ;  Pas-de-Calais                ; 50.450849 ,  2.313847 ; 59, 80
 C  ; 59  ;  Nord                         ; 50.24052  ,  3.610233 ; 62, 80, 02
-B  ; PIC ;  Picardie			 ; Blue
+B  ; PIC ;  Picardie                     ; Blue
 C  ; 80  ;  Somme                        ; 49.89144  ,  2.434696 ; 62, 59, 02, 60, 76
 C  ; 02  ;  Aisne                        ; 49.635966 ,  3.582767 ; 08, 51, 77, 60, 80, 59
 C  ; 60  ;  Oise                         ; 49.418682 ,  2.412768 ; 80, 02, 77, 95, 27, 76
-A  ; NOR ;  Normandie			 ; Blue
-B  ; HNO ;  Haute-Normandie		 ; Yellow
+A  ; NOR ;  Normandie                    ; Blue
+B  ; HNO ;  Haute-Normandie              ; Yellow
 C  ; 76  ;  Seine-Maritime               ; 49.641388 ,  1.011665 ; 80, 60, 27
 C  ; 27  ;  Eure                         ; 49.059303 ,  0.968775 ; 76, 60, 95, 78, 28, 61, 14
-B  ; BNO ;  Basse-Normandie		 ; Blue
+B  ; BNO ;  Basse-Normandie              ; Blue
 C  ; 14  ;  Calvados                     ; 49.087401 , -0.317953 ; 27, 61, 50
 C  ; 61  ;  Orne                         ; 48.678431 ,  0.203887 ; 50, 14, 27, 28, 72, 53
 C  ; 50  ;  Manche                       ; 49.1529   , -1.333037 ; 14, 61, 53, 35
-AB ; BRE ;  Bretagne			 ; Green
+AB ; BRE ;  Bretagne                     ; Green
 C  ; 35  ;  Ille-et-Vilaine              ; 48.175621 , -1.683313 ; 50, 53, 49, 44, 56, 22
 C  ; 22  ;  Côtes d'Armor                ; 48.402882 , -2.878946 ; 35, 56, 29
 C  ; 29  ;  Finistère                    ; 48.297013 , -4.010538 ; 22, 56
 C  ; 56  ;  Morbihan                     ; 47.83079  , -2.785563 ; 29, 22, 35, 44
-AB ; PDL ;  Pays de la Loire		 ; Red
+AB ; PDL ;  Pays de la Loire             ; Red
 C  ; 53  ;  Mayenne                      ; 48.143296 , -0.648722 ; 50, 61, 72, 49, 35
 C  ; 72  ;  Sarthe                       ; 48.007497 ,  0.268637 ; 61, 28, 41, 37, 49, 53
 C  ; 49  ;  Maine-et-Loire               ; 47.404972 , -0.549845 ; 53, 72, 37, 86, 79, 85, 44, 35
 C  ; 44  ;  Loire-Atlantique             ; 47.36406  , -1.752848 ; 56, 35, 49, 85
 C  ; 85  ;  Vendée                       ; 46.667463 , -1.25297  ; 44, 49, 79, 17
-A  ; NAQ ;  Nouvelle-Aquitaine		 ; Blue
-B  ; PCH ;  Poitou-Charentes		 ; Blue
+A  ; NAQ ;  Nouvelle-Aquitaine           ; Blue
+B  ; PCH ;  Poitou-Charentes             ; Blue
 C  ; 79  ;  Deux-Sèvres                  ; 46.565588 , -0.335611 ; 85, 49, 86, 16, 17
 C  ; 17  ;  Charente-Maritime            ; 45.896819 , -0.687174 ; 85, 79, 16, 24, 33
 C  ; 16  ;  Charente                     ; 45.728353 ,  0.16976  ; 17, 79, 86, 87, 24
 C  ; 86  ;  Vienne                       ; 46.550479 ,  0.510336 ; 49, 37, 36, 87, 16, 79
-B  ; LIM ;  Limousin			 ; Yellow
+B  ; LIM ;  Limousin                     ; Yellow
 C  ; 87  ;  Haute-Vienne                 ; 45.931215 ,  1.22994  ; 36, 23, 19, 24, 16, 86
 C  ; 23  ;  Creuse                       ; 46.072397 ,  2.048422 ; 36, 18, 03, 63, 19, 87
 C  ; 19  ;  Corrèze                      ; 45.355161 ,  1.817709 ; 87, 23, 63, 15, 46, 24
-B  ; AQU ;  Aquitaine			 ; Red
+B  ; AQU ;  Aquitaine                    ; Red
 C  ; 24  ;  Dordogne                     ; 45.107576 ,  0.784994 ; 17, 16, 87, 19, 46, 47, 33
 C  ; 33  ;  Gironde                      ; 44.890053 , -0.599283 ; 17, 24, 47, 40
 C  ; 47  ;  Lot-et-Garonne               ; 44.334777 ,  0.455404 ; 33, 24, 46, 82, 32, 40
 C  ; 40  ;  Landes                       ; 43.99195  , -0.742106 ; 33, 47, 32, 64
 C  ; 64  ;  Pyrénées-Atlantiques         ; 43.272331 , -0.758585 ; 40, 32, 65
-A  ; OCC ;  Occitanie			 ; Yellow
-B  ; MPY ;  Midi-Pyrénées		 ; Green
+A  ; OCC ;  Occitanie                    ; Yellow
+B  ; MPY ;  Midi-Pyrénées                ; Green
 C  ; 65  ;  Hautes-Pyrénées              ; 43.019835 ,  0.16976  ; 64, 32, 31
 C  ; 32  ;  Gers                         ; 43.698783 ,  0.488363 ; 40, 47, 82, 31, 65, 64
 C  ; 82  ;  Tarn-et-Garonne              ; 44.043304 ,  1.202474 ; 47, 46, 12, 81, 31, 32
@@ -51,21 +51,21 @@ C  ; 46  ;  Lot                          ; 44.659985 ,  1.592489 ; 24, 19, 15, 1
 C  ; 12  ;  Aveyron                      ; 44.295473 ,  2.663656 ; 46, 15, 48, 30, 34, 81, 82
 C  ; 81  ;  Tarn                         ; 43.758325 ,  2.141806 ; 82, 12, 34, 11, 31
 C  ; 09  ;  Ariège                       ; 42.935438 ,  1.493612 ; 31, 11, 66
-B  ; LRO ;  Languedoc-Roussillon	 ; Blue
+B  ; LRO ;  Languedoc-Roussillon         ; Blue
 C  ; 66  ;  Pyrénées-Orientales          ; 42.612865 ,  2.526327 ; 09, 11
 C  ; 11  ;  Aude                         ; 43.120157 ,  2.476889 ; 66, 09, 31, 81, 34
 C  ; 34  ;  Hérault                      ; 43.587479 ,  3.344808 ; 11, 81, 12, 30
 C  ; 30  ;  Gard                         ; 43.980093 ,  4.218222 ; 34, 12, 48, 07, 84, 13
 C  ; 48  ;  Lozère                       ; 44.52307  ,  3.548056 ; 15, 43, 07, 30, 12
-AB ; PAC ;  Provence-Alpes-Côte d'Azur	 ; Green
+AB ; PAC ;  Provence-Alpes-Côte d'Azur   ; Green
 C  ; 13  ;  Bouches-du-Rhône             ; 43.563601 ,  5.075155 ; 30, 84, 83
 C  ; 84  ;  Vaucluse                     ; 43.974164 ,  5.179525 ; 30, 07, 26, 04, 83, 13
 C  ; 83  ;  Var                          ; 43.438088 ,  6.234213 ; 13, 84, 04, 06
 C  ; 06  ;  Alpes-Maritimes              ; 43.958349 ,  7.168051 ; 83, 04
 C  ; 04  ;  Alpes-de-Haute-Provence      ; 44.124194 ,  6.278158 ; 06, 83, 84, 26, 05
 C  ; 05  ;  Hautes-Alpes                 ; 44.716612 ,  6.31661  ; 04, 26, 38, 73
-A  ; ARA ;  Auvergne-Rhône-Alpes	 ; Red
-B  ; RAL ;  Rhône-Alpes			 ; Yellow
+A  ; ARA ;  Auvergne-Rhône-Alpes         ; Red
+B  ; RAL ;  Rhône-Alpes                  ; Yellow
 C  ; 26  ;  Drôme                        ; 44.696244 ,  5.209597 ; 38, 05, 04, 84, 07
 C  ; 38  ;  Isère                        ; 45.290595 ,  5.561159 ; 01, 73, 05, 26, 07, 42, 69
 C  ; 73  ;  Savoie                       ; 45.483491 ,  6.478518 ; 05, 38, 01, 74
@@ -74,20 +74,20 @@ C  ; 01  ;  Ain                          ; 46.05592  ,  5.324413 ; 74, 73, 38, 6
 C  ; 69  ;  Rhône                        ; 45.887936 ,  4.582835 ; 01, 38, 42, 71
 C  ; 42  ;  Loire                        ; 45.765447 ,  4.165355 ; 69, 38, 07, 43, 63, 03, 71
 C  ; 07  ;  Ardèche                      ; 44.780816 ,  4.504672 ; 38, 26, 84, 30, 48, 43, 42
-B  ; AUV ;  Auvergne			 ; Red
+B  ; AUV ;  Auvergne                     ; Red
 C  ; 43  ;  Haute-Loire                  ; 45.112109 ,  3.78127  ; 63, 42, 07, 48, 15
 C  ; 15  ;  Cantal                       ; 45.142132 ,  2.632336 ; 63, 43, 48, 12, 46, 19
 C  ; 63  ;  Puy-de-Dôme                  ; 45.729368 ,  3.121697 ; 03, 42, 43, 15, 19, 23
 C  ; 03  ;  Allier                       ; 46.388822 ,  3.171342 ; 18, 58, 71, 42, 63, 23
-A  ; CVL ;  Centre-Val de Loire		 ; Green
-B  ; CEN ;  Centre     	  		 ; Green
+A  ; CVL ;  Centre-Val de Loire          ; Green
+B  ; CEN ;  Centre                       ; Green
 C  ; 18  ;  Cher                         ; 47.074225 ,  2.447939 ; 45, 58, 03, 23, 36, 41
 C  ; 36  ;  Indre                        ; 46.79334  ,  1.596877 ; 41, 18, 23, 87, 86, 37
 C  ; 37  ;  Indre-et-Loire               ; 47.300757 ,  0.660709 ; 41, 36, 86, 49, 72
 C  ; 41  ;  Loir-et-Cher                 ; 47.578976 ,  1.469218 ; 28, 45, 18, 36, 37, 72
 C  ; 45  ;  Loiret                       ; 47.917553 ,  2.306096 ; 91, 77, 89, 58, 18, 41, 28
 C  ; 28  ;  Eure-et-Loir                 ; 48.461991 ,  1.329223 ; 27, 78, 91, 45, 41, 72, 61
-AB ; IDF ;  Île-de-France		 ; Red
+AB ; IDF ;  Île-de-France                ; Red
 C  ; 91  ;  Essone                       ; 48.528425 ,  2.250702 ; 92, 94, 77, 45, 28, 78
 C  ; 78  ;  Yvelines                     ; 48.835794 ,  1.86206  ; 95, 92, 91, 28, 27
 C  ; 95  ;  Val-d'Oise                   ; 49.073862 ,  2.175171 ; 60, 77, 93, 92, 78, 27
@@ -96,29 +96,29 @@ C  ; 75  ;  Paris                        ; 48.85658  ,  2.335846 ; 93, 94, 92
 C  ; 93  ;  Seine-Saint-Denis            ; 48.910763 ,  2.500641 ; 95, 77, 94, 75, 92
 C  ; 94  ;  Val-de-Marne                 ; 48.777004 ,  2.462188 ; 93, 77, 91, 92, 75
 C  ; 77  ;  Seine-et-Marne               ; 48.613842 ,  3.030731 ; 60, 02, 51, 10, 89, 45, 91, 94, 93, 95
-A  ; BFC ;  Bourgogne-France-Comté	 ; Blue
-B  ; BOU ;  Bourgogne			 ; Blue
+A  ; BFC ;  Bourgogne-France-Comté       ; Blue
+B  ; BOU ;  Bourgogne                    ; Blue
 C  ; 89  ;  Yonne                        ; 47.857399 ,  3.564941 ; 77, 10, 21, 58, 45
 C  ; 58  ;  Nièvre                       ; 47.122472 ,  3.510009 ; 89, 21, 71, 03, 18, 45
 C  ; 21  ;  Côte-d'Or                    ; 47.435515 ,  4.756958 ; 10, 52, 70, 39, 71, 58, 89
 C  ; 71  ;  Saône-et-Loire               ; 46.638118 ,  4.482299 ; 21, 39, 01, 69, 42, 03, 58
-B  ; FCO ;  Franche-Comté		 ; Red
+B  ; FCO ;  Franche-Comté                ; Red
 C  ; 39  ;  Jura                         ; 46.743621 ,  5.707275 ; 25, 70, 21, 71, 01
 C  ; 25  ;  Doubs                        ; 47.197174 ,  6.377441 ; 90, 70, 39
 C  ; 90  ;  Territoire de Belfort        ; 47.63578  ,  6.915771 ; 68, 88, 70, 25
 C  ; 70  ;  Haute-Saône                  ; 47.639481 ,  6.09729  ; 88, 90, 25, 39, 21, 52
-A  ; GES ;  Grand Est			 ; Green
-B  ; CHA ;  Champagne-Ardenne		 ; Green
+A  ; GES ;  Grand Est                    ; Green
+B  ; CHA ;  Champagne-Ardenne            ; Green
 C  ; 52  ;  Haute-Marne                  ; 48.11843  ,  5.278808 ; 55, 88, 70, 21, 10, 51
 C  ; 10  ;  Aube                         ; 48.323383 ,  4.169189 ; 51, 52, 21, 89, 77
 C  ; 51  ;  Marne                        ; 48.96579  ,  4.224121 ; 08, 55, 52, 10, 77, 02
 C  ; 08  ;  Ardennes                     ; 49.580169 ,  4.658081 ; 55, 51, 02
-B  ; LOR ;  Lorraine			 ; Blue
+B  ; LOR ;  Lorraine                     ; Blue
 C  ; 55  ;  Meuse                        ; 49.021381 ,  5.377685 ; 54, 88, 52, 51, 08
 C  ; 88  ;  Vosges                       ; 48.196934 ,  6.333496 ; 54, 67, 68, 90, 70, 52, 55
 C  ; 54  ;  Meurthe-et-Moselle           ; 48.714243 ,  6.141235 ; 57, 67, 88, 55
 C  ; 57  ;  Moselle                      ; 49.057391 ,  6.564209 ; 67, 54
-B  ; ALS ;  Alsace			 ; Green
+B  ; ALS ;  Alsace                       ; Green
 C  ; 67  ;  Bas-Rhin                     ; 48.645331 ,  7.536499 ; 57, 54, 88, 68
 C  ; 68  ;  Haut-Rhin                    ; 47.851588 ,  7.289306 ; 67, 88, 90
 
