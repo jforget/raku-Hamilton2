@@ -155,7 +155,30 @@ the color scheme for map `fr1970`.  Lines `C` contain the latitude and
 longitude   for  the   individual  departments,   plus  the   list  of
 neighbouring departments.
 
-During this first phase, the departments records, that is records with
+I have written the text file in the following fashion. I have displayed the
+[Géo Portail](https://www.geoportail.gouv.fr/)
+website   and  selected   only  the   _limites  administratives_   map
+(administrative borders). For  each department, I have  clicked at the
+approximate  center  of  the department,  right-clicked  and  selected
+_adresse /  coordonnées du  lieu_ (location address  and coordinates).
+Then I  have copied-pasted  the latitude and  longitude into  the text
+file. Also, I have listed all neighbouring departments. In some cases,
+I have  zoomed to know if  two departments are really  neighbours. See
+for example  the 4-way  point between Vaucluse,  Bouches-du-Rhône, Var
+and Alpes  de Haute-Provence. Back  to long/lat: I  have copied-pasted
+the values with all 5 digits after the decimal point. If you bother to
+check,  one  latitude degree  is  111  km  and,  at latitude  45,  one
+longitude degree is  78 km. So the fifth decimal  digit means that the
+values have a precision of one meter, more or less. This is excessive.
+I could have truncated to 2 decimal digits.
+
+Theorically, each  border between departments is  specified twice. For
+example, the Var department (83) and the Vaucluse department (84) have
+a  common   border.  Therefore,  the  `C ; 83`   line  should  mention
+department 84 and the `C ; 84`  line should mention department 83. The
+initialisation programme will check the symmetry.
+
+During the first phase, the  departments records, that is records with
 keys `fr1970`+`2` and `fr2015`+`2` are  created with all their fields.
 On  the  other  hand,  in  the regions  records,  that  is  with  keys
 `fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`,  the latitude
@@ -173,23 +196,6 @@ Likewise, the  programme will create  the `Borders` records  with keys
 all departments  borders `fr1970`+`2`  and `fr2015`+`2`  lying between
 two different regions, discarding all duplicates region-wise and store
 the result in the `Borders` table.
-
-I have written the text file in the following fashion. I have displayed the
-[Géo Portail](https://www.geoportail.gouv.fr/)
-website   and  selected   only  the   _limites  administratives_   map
-(administrative borders). For  each department, I have  clicked at the
-approximate  center  of  the department,  right-clicked  and  selected
-_adresse /  coordonnées du  lieu_ (location address  and coordinates).
-Then I  have copied-pasted  the latitude and  longitude into  the text
-file. Also, I have listed all neighbouring departments. In some cases,
-I have  zoomed to know if  two departments are really  neighbours. See
-for example  the 4-way  point between Vaucluse,  Bouches-du-Rhône, Var
-and Alpes  de Haute-Provence. Back  to long/lat: I  have copied-pasted
-the values with all 5 digits after the decimal point. If you bother to
-check,  one  latitude degree  is  111  km  and,  at latitude  45,  one
-longitude degree is  78 km. So the fifth decimal  digit means that the
-values have a precision of one meter, more or less. This is excessive.
-I could have truncated to 2 decimal digits.
 
 Extracting Hamiltonian Paths
 ============================

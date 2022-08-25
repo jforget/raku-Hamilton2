@@ -162,7 +162,30 @@ pour la carte  `fr1970`. Les lignes `C` contiennent la  latitude et la
 longitude  des  départements,  pour  les positionner  sur  les  cartes
 générées, ainsi que la liste des départements limitrophes.
 
-Lors de  cette première  étape, les enregistrements  des départements,
+J'ai constitué le fichier texte de la façon suivante. J'ai consulté
+[Géo Portail](https://www.geoportail.gouv.fr/)
+en n'affichant que le fond  de carte « limites administratives ». Pour
+chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
+droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
+copié-collé la latitude  et la longitude dans le  fichier. Par moment,
+j'ai  zoomé au  voisinage des  points quadruples  pour vérifier  quels
+départements sont  contigus avec  quels autres départements.  Voir par
+exemple la limite  entre le Vaucluse, les Bouches-du-Rhône,  le Var et
+les Alpes  de Haute-Provence. Pour  la longitude et la  latitude, j'ai
+pris les valeurs telles quelles, avec  cinq décimales. Or, un degré de
+latitude fait 111 km  et, à la latitude de 45°,  un degré de longitude
+fait  78 km. La  cinquième décimale  sur la  longitude et  la latitude
+représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
+contenter de deux décimales. Tant pis.
+
+Normalement, chaque  frontière entre  deux départements  est spécifiée
+deux fois. Par exemple, il y a une frontière commune entre le Var (83)
+et le Vaucluse (84). La  ligne `C ; 83` doit mentionner le département
+84  et  la  ligne  `C ; 84`  doit mentionner  le  département  83.  Le
+programme  d'initialisation testera  que  les  déclarations sont  bien
+symétriques.
+
+Lors  de  la première  étape,  les  enregistrements des  départements,
 c'est-à-dire  avec des  clés `fr1970`+`2`  et `fr2015`+`2`  sont créés
 avec toutes les valeurs renseignées, mais pour les enregistrements des
 régions,  avec  des  clés `fr1970`+`1`,  `fr2015`+`1`  `frreg`+`1`  et
@@ -180,22 +203,6 @@ De  même, le  programme alimentera  les enregistrements  `fr1970`+`1`,
 `fr2015`+`1`  `frreg`+`1`  et `frreg`+`2`  de  la  table `Borders`  en
 faisant  une  synthèse de  tous  les  enregistrements `fr1970`+`2`  et
 `fr2015`+`2` de `Borders` qui se trouvent à cheval sur deux régions.
-
-J'ai constitué le fichier texte de la façon suivante. J'ai consulté
-[Géo Portail](https://www.geoportail.gouv.fr/)
-en n'affichant que le fond  de carte « limites administratives ». Pour
-chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
-droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
-copié-collé la latitude  et la longitude dans le  fichier. Par moment,
-j'ai  zoomé au  voisinage des  points quadruples  pour vérifier  quels
-départements sont  contigus avec  quels autres départements.  Voir par
-exemple la limite  entre le Vaucluse, les Bouches-du-Rhône,  le Var et
-les Alpes  de Haute-Provence. Pour  la longitude et la  latitude, j'ai
-pris les valeurs telles quelles, avec  cinq décimales. Or, un degré de
-latitude fait 111 km  et, à la latitude de 45°,  un degré de longitude
-fait  78 km. La  cinquième décimale  sur la  longitude et  la latitude
-représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
-contenter de deux décimales. Tant pis.
 
 Extraction des chemins hamiltoniens
 ===================================
