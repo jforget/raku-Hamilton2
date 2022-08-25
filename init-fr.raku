@@ -88,8 +88,8 @@ for $fh.lines -> Str $line {
       my ($longx, $latx) = $color-or-coord.split(/ \s* ',' \s* /);
       my Num $long = $longx.Num;
       my Num $lat  = $latx.Num;
-      $sto-area.execute('fr2015', 1, $code, $name, $long, $lat, $col2015, $reg2015);
-      $sto-area.execute('fr1970', 1, $code, $name, $long, $lat, $col1970, $reg1970);
+      $sto-area.execute('fr2015', 2, $code, $name, $long, $lat, $col2015, $reg2015);
+      $sto-area.execute('fr1970', 2, $code, $name, $long, $lat, $col1970, $reg1970);
       for $borders.split(/ \s* ',' \s*/) -> $neighbour {
         %borders{$code}{$neighbour}<counter>++;
         %borders{$code}{$neighbour}<from1970> = $reg1970;
@@ -105,6 +105,36 @@ for $fh.lines -> Str $line {
   }
 }
 $fh.close;
+
+$dbh.execute(q:to/SQL/);
+update Areas
+set (long, lat) = (select avg(Small_Areas.long), avg(Small_Areas.lat)
+                   from   Small_Areas
+                   where  Small_Areas.map   = Areas.map
+                     and  Small_Areas.upper = Areas.code)
+where map in ('fr1970', 'fr2015')
+  and level = 1
+SQL
+
+$dbh.execute(q:to/SQL/);
+update Areas
+set (long, lat) = (select Big_Areas.long, Big_Areas.lat
+                   from   Big_Areas
+                   where  Big_Areas.map  = 'fr2015'
+                     and  Big_Areas.code = Areas.code)
+where map   = 'frreg'
+  and level = 1
+SQL
+
+$dbh.execute(q:to/SQL/);
+update Areas
+set (long, lat) = (select Big_Areas.long, Big_Areas.lat
+                   from   Big_Areas
+                   where  Big_Areas.map  = 'fr1970'
+                     and  Big_Areas.code = Areas.code)
+where map   = 'frreg'
+  and level = 2
+SQL
 
 for %borders.kv -> $from, $hashto {
   for %$hashto.kv -> $to, $border {
