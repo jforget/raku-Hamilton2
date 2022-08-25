@@ -110,7 +110,8 @@ Other fields:
 * `upper_from` the code of the region for departments' edges, empty for regions' edges,
 * `upper_to` similar,
 * `long`
-* `lat`.
+* `lat`,
+* `color`.
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -118,6 +119,11 @@ segment. In some  cases, the picture will be a  bit overcrowed in some
 spots. A way  to unclutter the picture  is to draw a few  edges as two
 straight segments,  bypassing the overcrowed  spot. In this  case, the
 longitude and latitude define where the edge parts will join.
+
+For a  border between two departments  in the same region,  the border
+will  have the  same color  as the  region. For  a border  between two
+departments belonging to separate regions,  the color will be `Black`.
+And of course, the borders with `level` 1 will be black.
 
 For a  given edge or border,  there will be two  `Borders` records, by
 switching `from_code` with `to_code`.

@@ -114,8 +114,9 @@ Autres champs :
 
 * `upper_from` le code du supérieur hiérarchique de `from`,
 * `upper_to`  le code du supérieur hiérarchique de `to`,
-* `longitude`,
-* `latitude`.
+* `long`,
+* `lat`,
+* `color`.
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
 dans  la représentation  graphique,  l'arête sera  représentée par  un
@@ -124,6 +125,12 @@ encombré par endroits.  Un moyen pour l'éclaircir peut  être de tracer
 les arêtes avec deux segments de droite  au lieu d'un. Dans ce cas, la
 longitude et  la latitude repèrent  l'endroit où les deux  segments se
 joignent.
+
+Pour  une frontière  entre  deux départements  d'une  même région,  la
+couleur  sera  celle de  la  région.  Pour  une frontière  entre  deux
+départements  de   régions  différentes,  la  couleur   sera  le  noir
+(`Black`).  Et pour  les frontières  de  niveau 1,  entre régions,  la
+couleur sera forcément le noir.
 
 Pour  une  frontière  donnée,  il  y  aura  deux  enregistrements,  en
 intervertissant `from_code` et `to_code`.

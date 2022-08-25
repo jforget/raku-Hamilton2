@@ -18,6 +18,7 @@ create table Borders (map       TEXT
                    , upper_to   TEXT
                    , long       NUMERIC
                    , lat        NUMERIC
+                   , color      TEXT
                    );
 
 create view Big_Areas (map, code, name, long, lat, color)
@@ -35,7 +36,7 @@ create view Big_Borders (map, from_code, to_code, long, lat)
             from         Borders
             where        level = 1;
 
-create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat)
-         as select         map, from_code, to_code, upper_from, upper_to, long, lat
+create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color)
+         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color
             from           Borders
             where          level = 2;
