@@ -115,19 +115,60 @@ for %borders.kv -> $from, $hashto {
       my $color = 'Black';
       if $border<from1970> eq $border<to1970> {
         $color = $border<col1970>;
-      } 
+      }
       $sto-border.execute('fr1970', 2, $from, $to  , $border<from1970>, $border<to1970  >, 0, 0, $color);
       $sto-border.execute('fr1970', 2, $to  , $from, $border<to1970  >, $border<from1970>, 0, 0, $color);
 
       $color = 'Black';
       if $border<from2015> eq $border<to2015> {
         $color = $border<col2015>;
-      } 
+      }
       $sto-border.execute('fr2015', 2, $from, $to  , $border<from2015>, $border<to2015  >, 0, 0, $color);
       $sto-border.execute('fr2015', 2, $to  , $from, $border<to2015  >, $border<from2015>, 0, 0, $color);
     }
   }
 }
+
+# Level 1 borders, all in one go
+$dbh.execute(q:to/SQL/);
+insert into Borders (map, level, from_code,  to_code,  upper_from, upper_to, long, lat, color)
+     select distinct map, 1,     upper_from, upper_to, '',         '',       0,    0,   'Black'
+     from   Small_Borders
+     where  map in ('fr1970', 'fr2015')
+       and  upper_from != upper_to
+SQL
+
+# Filling map 'frreg' level 1
+$dbh.execute(q:to/SQL/);
+insert into Borders (map,     level, from_code, to_code, upper_from, upper_to, long, lat, color)
+     select         'frreg',  1,     from_code, to_code, '',         '',       0,    0,   'Black'
+     from  Big_Borders
+     where map = 'fr2015'
+SQL
+
+# Filling map 'frreg' level 2, with a problem on the color
+$dbh.execute(q:to/SQL/);
+insert into Borders (map,     level, from_code,   to_code,   upper_from, upper_to, long, lat, color)
+     select         'frreg',  2,     B.from_code, B.to_code, F.upper,    T.upper,  0,    0,   F.color
+     from  Big_Borders B
+        ,  Small_Areas F
+        ,  Small_Areas T
+     where B.map  = 'fr1970'
+       and F.map  = 'frreg'
+       and F.code = B.from_code
+       and T.map  = 'frreg'
+       and T.code = B.to_code
+SQL
+
+# Fixing the color problem on map 'frreg' level 2
+$dbh.execute(q:to/SQL/);
+update Borders
+set    color = 'Black'
+where  map  = 'frreg'
+  and  level = 2
+  and  upper_from != upper_to
+SQL
+
 
 =begin POD
 
