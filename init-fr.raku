@@ -85,7 +85,7 @@ for $fh.lines -> Str $line {
       $sto-area.execute('frreg' , 2, $reg1970, $name, 0, 0, $col2015, $reg2015);
     }
     when 'C' {
-      my ($longx, $latx) = $color-or-coord.split(/ \s* ',' \s* /);
+      my ($latx, $longx) = $color-or-coord.split(/ \s* ',' \s* /);
       my Num $long = $longx.Num;
       my Num $lat  = $latx.Num;
       $sto-area.execute('fr2015', 2, $code, $name, $long, $lat, $col2015, $reg2015);
