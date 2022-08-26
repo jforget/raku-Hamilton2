@@ -30,6 +30,11 @@ our sub read-map(Str $map) {
   return %val;
 }
 
+our sub list-small-areas(Str $map) {
+  my $sth = $dbh.prepare("select * from Small_Areas where map = ?");
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
 
 =begin POD
 

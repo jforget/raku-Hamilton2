@@ -40,8 +40,9 @@ get '/:ln/map/:map' => sub ($lng, $map) {
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
-  my %map = access-sql::read-map(~ $map);
-  return map-page::render(~ $lng, %map);
+  my %map   = access-sql::read-map(~ $map);
+  my @areas = access-sql::list-small-areas(~ $map);
+  return map-page::render(~ $lng, %map, @areas);
 }
 
 baile();

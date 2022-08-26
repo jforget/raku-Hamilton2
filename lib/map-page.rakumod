@@ -11,15 +11,20 @@
 unit package map-page;
 
 use Template::Anti :one-off;
+use map-gd;
+use MIME::Base64;
 
-sub fill($at, :$lang, :%map) {
+sub fill($at, :$lang, :%map, :@areas) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
+
+  my $png = map-gd::draw(@areas);
+  $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
 }
 
-our sub render(Str $lang, %map) {
+our sub render(Str $lang, %map, @areas) {
   my &filling = anti-template :source("html/map.$lang.html".IO.slurp), &fill;
-  return filling(lang => $lang, map => %map);
+  return filling(lang => $lang, map => %map, areas => @areas);
 }
 
 
