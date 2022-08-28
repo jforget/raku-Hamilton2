@@ -42,7 +42,8 @@ get '/:ln/map/:map' => sub ($lng, $map) {
   }
   my %map   = access-sql::read-map(~ $map);
   my @areas = access-sql::list-small-areas(~ $map);
-  return map-page::render(~ $lng, %map, @areas);
+  my @borders = access-sql::list-small-borders(~ $map);
+  return map-page::render(~ $lng, %map, @areas, @borders);
 }
 
 baile();

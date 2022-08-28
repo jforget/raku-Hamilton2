@@ -36,6 +36,25 @@ our sub list-small-areas(Str $map) {
   return @val;
 }
 
+our sub list-small-borders(Str $map) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select B.from_code code_f, B.to_code code_t, B.color color
+       , F.long long_f, F.lat lat_f
+       , T.long long_t, T.lat lat_t
+       , B.long long_m, B.lat lat_m
+  from Small_Borders B
+  join Small_Areas F
+    on  F.map  = B.map
+    and F.code = B.from_code
+  join Small_Areas T
+    on  T.map  = B.map
+    and T.code = B.to_code
+  where B.map = ?
+  SQL
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
 =begin POD
 
 =encoding utf8
