@@ -199,6 +199,16 @@ where  map  = 'frreg'
   and  upper_from != upper_to
 SQL
 
+# Fixing the border between Seine-et-Marne and Val-d'Oise
+$dbh.execute(q:to/SQL/);
+update Borders
+   set  long =  2.5
+     ,  lat  = 49.1
+where map in ('fr1970', 'fr2015')
+and   level = 2
+and  (   (from_code = '77' and to_code = '95')
+      or (from_code = '95' and to_code = '77'))
+SQL
 
 =begin POD
 
