@@ -226,6 +226,38 @@ extension  et  sans  syntaxe  bizarre. Je  dirais  même  « sans  sucre
 syntaxique  rajouté ».  J'ai  donc utilisé  `Template::Anti`  dans  ce
 projet.
 
+Le projet  comporte également  un aspect  graphique. Pour  générer des
+graphiques par programme, j'utilise de préférence l'interpréteur
+[Metapost](https://www.gutenberg-asso.fr/MetaPost)
+inclus dans le programme
+[LuaL<sup>A</sup>T<sub>E</sub>X](https://lataix-sebastien.developpez.com/tutoriels/latex/un-guide-pour-lualatex/).
+Dans le cas présent, je vois mal comment intégrer 
+LuaL<sup>A</sup>T<sub>E</sub>X  avec le  fonctionnement d'un  serveur
+web.
+
+Le plan B, c'est d'utiliser
+[GD](https://linux.die.net/man/3/gd).
+Ça tombe bien, il existe un
+[module GD pour Raku](https://github.com/raku-community-modules/GD).
+Hélas,   ce  module   est   embryonnaire  et   il   lui  manque   deux
+fonctionnalités  essentielles, l'affichage  de  chaînes de  caractères
+dans le  graphique et le  choix de  l'épaisseur des traits,  alors que
+c'est disponible avec la
+[version Perl 5 du module GD](https://metacpan.org/pod/GD).
+
+La solution adoptée est de passer par
+[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE),
+qui permet d'appeler des modules Perl 5 dans des programmes Raku.
+
+Compte  tenu de  la  combinatoire  du problème,  il  est illusoire  de
+conserver  les graphiques  dans des  fichiers permanents.  Les chemins
+sont stockés en  format caractères dans la base de  données, cela fait
+déjà beaucoup.  Les graphiques sont  générés à  la demande lors  de la
+consultation du  site web. Ils ne  sont pas stockés dans  des fichiers
+temporaires, ils sont  insérés directement dans le  source HTML, après
+encodage en
+[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
+
 
 LICENCE
 =======

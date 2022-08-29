@@ -217,6 +217,37 @@ because its templating language is vanilla HTML, without any extension
 and without  any specific syntax.  So I used `Template::Anti`  in this
 project.
 
+The  project  includes also  a  graphic  component. My  preference  to
+programmatically generate graphics is the
+[Metapost](https://www.tug.org/metapost.html)
+interpreter embedded inside the
+[LuaL<sup>A</sup>T<sub>E</sub>X](http://luatex.org/)
+programme. In this case, I do not see how 
+LuaL<sup>A</sup>T<sub>E</sub>X can integrate with a web server.
+
+Plan B is using the
+[GD](https://linux.die.net/man/3/gd)
+library. Fortunately, there is a
+[GD module for Raku](https://github.com/raku-community-modules/GD).
+Unfortunately, this  module misses  many features, including  two that
+are essential to my project: displaying some text within the graphics,
+and  changing the  thickness  when drawing  lines,  features that  are
+available in the
+[Perl 5 version of the GD module](https://metacpan.org/pod/GD).
+
+The final solution is to use
+[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE),
+which allows using Perl 5 modules in Raku programmes.
+
+Because of  the expected number  of Hamiltonian paths,  generating all
+graphic representations for all Hamiltonian  paths and storing them in
+permanent files  is a big no-no.  The Hamiltonian paths are  stored as
+character strings  inside the database,  that is enough.  Graphics are
+generated on the fly when browsing the website. They are not stored in
+temporary files, they are directly inserted in HTML source after being
+encoded with
+[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
+
 License
 =======
 
