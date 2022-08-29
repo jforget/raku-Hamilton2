@@ -30,8 +30,33 @@ our sub read-map(Str $map) {
   return %val;
 }
 
+our sub list-big-areas(Str $map) {
+  my $sth = $dbh.prepare("select * from Big_Areas where map = ?");
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
 our sub list-small-areas(Str $map) {
   my $sth = $dbh.prepare("select * from Small_Areas where map = ?");
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
+our sub list-big-borders(Str $map) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select B.from_code code_f, B.to_code code_t, 'Black' color
+       , F.long long_f, F.lat lat_f
+       , T.long long_t, T.lat lat_t
+       , B.long long_m, B.lat lat_m
+  from Big_Borders B
+  join Big_Areas F
+    on  F.map  = B.map
+    and F.code = B.from_code
+  join Big_Areas T
+    on  T.map  = B.map
+    and T.code = B.to_code
+  where B.map = ?
+  SQL
   my @val = $sth.execute($map).allrows(:array-of-hash);
   return @val;
 }

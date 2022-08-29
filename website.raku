@@ -17,6 +17,7 @@ use Bailador;
 use access-sql;
 use map-list-page;
 use map-page;
+use macro-map;
 
 my @languages = ( 'en', 'fr' );
 
@@ -44,6 +45,17 @@ get '/:ln/map/:map' => sub ($lng, $map) {
   my @areas = access-sql::list-small-areas(~ $map);
   my @borders = access-sql::list-small-borders(~ $map);
   return map-page::render(~ $lng, %map, @areas, @borders);
+}
+
+get '/:ln/macro-map/:map' => sub ($lng, $map) {
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my $mapcode = ~ $map;
+  my %map   = access-sql::read-map($mapcode);
+  my @areas = access-sql::list-big-areas($mapcode);
+  my @borders = access-sql::list-big-borders($mapcode);
+  return macro-map::render(~ $lng, $mapcode, %map, @areas, @borders);
 }
 
 baile();
