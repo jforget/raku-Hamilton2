@@ -14,17 +14,18 @@ use Template::Anti :one-off;
 use map-gd;
 use MIME::Base64;
 
-sub fill($at, :$lang, :%map, :@areas, :@borders) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
   my $png = map-gd::draw(@areas, @borders);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
+  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode");
 }
 
-our sub render(Str $lang, %map, @areas, @borders) {
+our sub render(Str $lang, Str $map, %map, @areas, @borders) {
   my &filling = anti-template :source("html/full-map.$lang.html".IO.slurp), &fill;
-  return filling(lang => $lang, map => %map, areas => @areas, borders => @borders);
+  return filling(lang => $lang, mapcode => $map, map => %map, areas => @areas, borders => @borders);
 }
 
 
