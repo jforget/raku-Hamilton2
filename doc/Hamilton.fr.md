@@ -230,9 +230,8 @@ projet.
 LICENCE
 =======
 
-Texte  diffusé sous  la licence  CC-BY-NC-ND :  Creative Commons  avec
-clause de paternité, excluant l'utilisation commerciale et excluant la
-modification.
+Texte diffusé sous la licence CC-BY-SA : Creative Commons, Attribution
+- Partage dans les Mêmes Conditions (CC BY-SA).
 
 Certaines illustrations  sont diffusées  avec une  licence différente.
 Celle-ci est mentionnée à la suite de l'illustration.

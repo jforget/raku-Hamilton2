@@ -29,6 +29,7 @@ Vous aurez besoin de Raku, SQLite et GD, ainsi que des modules suivants :
 * Bailador
 * Template::Anti
 * Inline::Perl5
+* List::Util
 
 et le module GD pour Perl 5 (pas celui pour Raku).
 

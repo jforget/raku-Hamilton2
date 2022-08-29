@@ -220,6 +220,7 @@ project.
 License
 =======
 
-This text is published under the CC-BY-NC-ND license: Attribution-NonCommercial-NoDerivs 2.0 Generic.
+This  text is  licensed  under  the terms  of  Creative Commons,  with
+attribution and share-alike (CC-BY-SA).
 
 Some pictures might have a different license. In this case, it is shown after the picture.
