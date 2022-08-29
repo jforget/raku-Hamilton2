@@ -21,7 +21,7 @@ sub fill($at, :$lang, :@list) {
     my ($code, $name) = @$elem;
     #say $code;
     #say $name;
-    $line.at('a'        ).attr(href => "/$lang/map/$code");
+    $line.at('a'        ).attr(href => "/$lang/full-map/$code");
     $line.at('a'        ).content($code);
     $line.at('span.name').content($name);
     $list ~= "$line\n";

@@ -8,7 +8,7 @@
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
 #
-unit package map-page;
+unit package full-map;
 
 use Template::Anti :one-off;
 use map-gd;
@@ -23,7 +23,7 @@ sub fill($at, :$lang, :%map, :@areas, :@borders) {
 }
 
 our sub render(Str $lang, %map, @areas, @borders) {
-  my &filling = anti-template :source("html/map.$lang.html".IO.slurp), &fill;
+  my &filling = anti-template :source("html/full-map.$lang.html".IO.slurp), &fill;
   return filling(lang => $lang, map => %map, areas => @areas, borders => @borders);
 }
 
