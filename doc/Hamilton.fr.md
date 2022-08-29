@@ -25,14 +25,14 @@ déterminer les macro-chemins  hamiltoniens entre les 12  régions de la
 France  continentale,  puis  pour  chaque  région  de  déterminer  les
 micro-chemins  entre  les  départements  de   cette  région  (5  à  13
 départements  par région,  ce  n'est  pas la  mer  à  boire), puis  de
-concaténer  les  micro-chemins  en  se  basant  sur  le  canevas  d'un
-macro-chemin.
+construire un chemin complet par  la concaténation de micro-chemins en
+se basant sur le canevas d'un macro-chemin.
 
 Je ne me limite  pas à la carte de la France  avec les départements de
 1965 et  les régions de  2015. J'envisage de  faire le même  calcul en
 adoptant  le découpage  des régions  de  1970. Et  même le  cas où  je
 remplace le découpage en départements  par le découpage des régions de
-1970. Ce cas  de figure, avec des régions groupes  ne contenant qu'une
+1970 au sein des régions de 2015. Ce cas  de figure, avec des régions groupes  ne contenant qu'une
 seule région  élémentaire, pourrait  mettre en  évidence des  bugs qui
 seraient restés invisibles avec des cartes plus peuplées.
 
@@ -257,6 +257,42 @@ consultation du  site web. Ils ne  sont pas stockés dans  des fichiers
 temporaires, ils sont  insérés directement dans le  source HTML, après
 encodage en
 [MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
+
+Organisation du site web
+------------------------
+
+Le  site est  prévu  pour  être multilingue.  Pour  l'instant, il  est
+bilingue, disponibre en anglais et  en français. Le code langue figure
+en première position de l'URL.
+
+La  page  d'accueil  est  juste   une  liste  en  anglais  des  cartes
+disponibles  (liste  disponible  en  français, à  condition  de  taper
+l'URL complet).
+
+Pour chaque carte, nous avons :
+
+* L'affichage détaillé de la carte complète, avec tous
+les départements. URL :
+http://localhost:3000/fr/full-map/fr2015
+
+* L'affichage détaillé avec un chemin complet. URL :
+http://localhost:3000/fr/full-path/fr2015/2
+
+* L'affichage réduit, qui affiche seulement les régions. URL :
+http://localhost:3000/fr/macro-map/fr2015
+
+* L'affichage réduit avec un macro-chemin. URL :
+http://localhost:3000/fr/macro-path/fr2015/2
+
+* L'affichage d'une région, avec les départements limitrophes. URL :
+http://localhost:3000/fr/region-map/fr2015/HDF
+
+* L'affichage d'une région, avec un micro-chemin. URL :
+http://localhost:3000/fr/region-path/fr2015/HDF/3
+
+* L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
+http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
+
 
 
 LICENCE

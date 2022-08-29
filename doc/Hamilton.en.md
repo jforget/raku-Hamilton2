@@ -248,6 +248,41 @@ temporary files, they are directly inserted in HTML source after being
 encoded with
 [MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
 
+Website Organisation
+--------------------
+
+The  website is  bilingual  and  can scale  easily  to a  multilingual
+status. For  the moment,  only English and  French are  available. The
+language code is the first element of the URLs.
+
+The front page  is nothing more than the liste  of all available maps.
+By default, it is displayed in  English, but by typing the proper URL,
+you can have the list in French.
+
+For each map, we have:
+
+* The full map with all its departments. URL
+http://localhost:3000/en/full-map/fr2015
+
+* The full map, showing a full path. URL
+http://localhost:3000/en/full-path/fr2015/2
+
+* The reduced map, or macro-map, with only the regions. URL
+http://localhost:3000/en/macro-map/fr2015
+
+* The reduced map, showing a macro-path. URL
+http://localhost:3000/en/macro-path/fr2015/2
+
+* A regional map, showing all departments inside a region, plus all
+neighbouring departments. URL
+http://localhost:3000/en/region-map/fr2015/HDF
+
+* A regional map with a regional path. URL
+http://localhost:3000/en/region-map/fr2015/HDF
+
+* A regional map with a (truncated) full path. URL
+http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
+
 License
 =======
 
