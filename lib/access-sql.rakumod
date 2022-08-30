@@ -42,6 +42,25 @@ our sub list-small-areas(Str $map) {
   return @val;
 }
 
+our sub list-areas-in-region(Str $map, Str $region) {
+  my $sth = $dbh.prepare("select * from Small_Areas where map = ? and upper = ?");
+  my @val = $sth.execute($map, $region).allrows(:array-of-hash);
+  return @val;
+}
+
+our sub list-neighbour-areas(Str $map, Str $region) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select A.map map, A.code code, A.name name, A.long long, A.lat lat, A.color color, A.upper upper
+  from Small_Borders B
+  join Small_Areas   A
+    on   A.map  = B.map
+    and  A.code = B.to_code
+  where B.map = ? and B.upper_from = ?
+  SQL
+  my @val = $sth.execute($map, $region).allrows(:array-of-hash);
+  return @val;
+}
+
 our sub list-big-borders(Str $map) {
   my $sth = $dbh.prepare(q:to/SQL/);
   select B.from_code code_f, B.to_code code_t, 'Black' color
@@ -77,6 +96,28 @@ our sub list-small-borders(Str $map) {
   where B.map = ?
   SQL
   my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
+# This routine extracts all department borders inside a region
+# PLUS all department borders across a region border
+our sub list-borders-for-region(Str $map, Str $region) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select B.from_code code_f, B.to_code code_t, B.color color
+       , F.long long_f, F.lat lat_f
+       , T.long long_t, T.lat lat_t
+       , B.long long_m, B.lat lat_m
+  from Small_Borders B
+  join Small_Areas F
+    on  F.map  = B.map
+    and F.code = B.from_code
+  join Small_Areas T
+    on  T.map  = B.map
+    and T.code = B.to_code
+  where B.map = ?
+  and   B.upper_from = ?
+  SQL
+  my @val = $sth.execute($map, $region).allrows(:array-of-hash);
   return @val;
 }
 

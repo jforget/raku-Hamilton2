@@ -18,6 +18,7 @@ use access-sql;
 use map-list-page;
 use full-map;
 use macro-map;
+use region-map;
 
 my @languages = ( 'en', 'fr' );
 
@@ -57,6 +58,20 @@ get '/:ln/macro-map/:map' => sub ($lng, $map) {
   my @areas   = access-sql::list-big-areas($mapcode);
   my @borders = access-sql::list-big-borders($mapcode);
   return macro-map::render(~ $lng, $mapcode, %map, @areas, @borders);
+}
+
+get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Str $region = ~ $reg_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-areas-in-region(   $map, $region);
+  @areas.append(access-sql::list-neighbour-areas(   $map, $region));
+  my @borders = access-sql::list-borders-for-region($map, $region);
+  return region-map::render($lng, $map, $region, %map, @areas, @borders);
 }
 
 baile();
