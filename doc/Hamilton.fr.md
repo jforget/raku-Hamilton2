@@ -293,7 +293,73 @@ http://localhost:3000/fr/region-path/fr2015/HDF/3
 * L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
 http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
 
+Quelques remarques
+------------------
 
+### Quelle est la projection utilisée pour les cartes ?
+
+D'après [xkcd](https://xkcd.com/977/), il  s'agit de la transformation
+« plate-carrée » (ou  _equirectangular_ en  anglais). Dans  un premier
+temps, je prends la longitude et  la latitude et je les utilise telles
+quelles  en tant  que coordonnées  rectangulaires. Cela  conduit à  un
+rétrécissement au niveau  des basses latitudes et à  une dilatation du
+côté des hautes latitudes. Un degré de longitude représente 81 km dans
+le sud de la  France, mais seulement 70 km dans le  nord de la France,
+mais  les degrés  de latitude  ne  sont pas  affectés. À  mon avis  la
+distorsion est moindre qu'avec la projection de Mercator.
+
+Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
+du  graphique  de  1000 × 1000  pixels.  Dans  le  cas  de  la  France
+continentale, qui  fait 950 km d'ouest  en est  et 1000 km du  nord au
+sud, cet ajustement  ne provoque pas de distorsion. Dans  le cas de la
+Bretagne, les quatre points  représentant les quatre départements sont
+séparés  de 63 km  dans la  direction nord-sud  et de  172 km dans  la
+direction est-ouest (si j'avais pris  la carte réelle et déterminé les
+points extrêmes, cela aurait donné 273 km  d'ouest en est et 152 km du
+nord au sud). La distorsion est plus sensible, car cela fait presque 6
+pixels par km  dans la direction horizontale et presque  16 pixels par
+km dans la direction verticale.
+
+### Pourquoi les cartes régionales montrent les départements voisins ?
+
+La  première  raison  est  l'affichage d'une  région  avec  un  chemin
+complet.  En affichant  les départements  voisins, on  voit par  où le
+chemin arrive dans la région et par  où il en sort. S'il n'y avait pas
+les  départements  voisins,  l'affichage   du  chemin  complet  serait
+identique à l'affichage du chemin régional (ou micro-chemin). De plus,
+la  présence des  départements voisins  permet d'avoir  une `imagemap`
+avec des liens hypertextes vers les régions voisines.
+
+La seconde raison est la distorsion due à l'ajustement des coordonnées
+telle  que  je l'ai  décrite  ci-dessus.  J'ai  pris l'exemple  de  la
+Bretagne.    J'aurais   pu    prendre   l'exemple    de   la    région
+Nord-Pas-de-Calais  ou  de la  région  Haute-Normandie  dans la  carte
+`fr1970`. Le Nord-Pas-de-Calais  comporte seulement deux départements,
+quasiment alignés sur une ligne  horizontale E-O. L'écart vertical est
+de 0,21°, soit 23 km, tandis que  l'écart horizontal est de 1,3°, soit
+92 km. Mais de  la façon dont les coordonnées sont  ajustées, les deux
+points se seraient retrouvés dans  des coins diamétralement opposés du
+graphique, avec  une échelle  de 43  pixels par  km dans  la direction
+verticale et  de 11 pixels  par km  dans la direction  horizontale. En
+ajoutant  les  voisins,  c'est-à-dire  la Somme  et  l'Aisne,  l'écart
+vertical passe à 0,82°, soit 91 km, ce qui donne une échelle verticale
+de  11  pixels par  km.  Dans  ce  cas,  la distorsion  est  quasiment
+éliminée. Dans d'autres cas elle est simplement réduite.
+
+Dans le cas de la  Haute-Normandie, les deux départements sont alignés
+sur  une  ligne verticale  N-S.  L'écart  horizontal est  0,05°,  soit
+3,62 km  et l'écart  vertical est  0,59° soit  65,5 km, ce  qui aurait
+donné une échelle de 216 pixels par  km horizontal et 15 pixels par km
+vertical.
+
+Il y a pire. Il y a  la carte `frreg`, avec les régions-2015 Bretagne,
+Île-de-France,      Centre-Val-de-Loire,      Pays-de-la-Loire      et
+Provence-Alpes-Côte-d'Azur,   qui   contiennent  chacune   une   seule
+région-1970.  Dans  ce cas,  la  longitude  maximale  est égale  à  la
+longitude minimale,  ce qui  est le  cas aussi  pour les  latitudes et
+l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
+zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
+sont évitées.
 
 LICENCE
 =======

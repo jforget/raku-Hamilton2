@@ -283,6 +283,72 @@ http://localhost:3000/en/region-map/fr2015/HDF
 * A regional map with a (truncated) full path. URL
 http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
 
+A Few Remarks
+-------------
+
+### What is the projection used when building the maps?
+
+According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"
+(or "equirectangular")  transformation. In  a first  step, I  take the
+longitude and latitude  values and I use them  directly as rectangular
+coordinates.  This gives  some  shrinking at  low  latitudes and  some
+stretching at  high latitudes.  One longitude degree  is 81 km  in the
+South of  France and only 70 km  in the North of  France, but latitude
+degrees are  not altered. This distorsion  is much less than  what you
+get with the Mercator projection at high latitudes.
+
+In  a second  step, the  geographical dimensions  are adjusted  to the
+canvas  dimensions,  that  is,  1000 × 1000  pixels.  For  continental
+France, which  is 950 km in the  E-W direction and 1000 km  in the N-S
+direction, there is no distorsion, because  the scale is about 1 pixel
+per km in both directions. This  is different with, say, Britanny. The
+four  points  showing Britanny  are  separated  by  63 km in  the  N-S
+direction and by 172 km  in the E-W direction (if I  had used the real
+geographical maps,  showing the  full extent of  the 4  departments, I
+would have found 152 km N-S and  273 km E-W). The distorsion is higher
+than  previously,  because  the  scale  is 6  pixels  per  km  in  the
+horizontal  direction and  about  16  pixels per  km  in the  vertical
+direction.
+
+### Why do the region maps show the neighbouring departments?
+
+The first  reason is  displaying a  full path in  a region.  Since the
+neighbouring departments are displayed, we  can show how the full path
+enters  the  region   and  how  it  exits  the   region.  Without  the
+neighbouring  departments, the  graphics would  have been  exactly the
+same  as displaying  a region  path  strictly within  said region.  In
+addition,  with visible  neighbouring departments,  it is  possible to
+specify an `imagemap` with hyperlinks to neighbouring regions.
+
+The second reason is the coordinates  distorsion I have shown above. I
+have taken the example of Britanny.  I could have taken the example of
+Nord-Pas-de-Calais   or   Haute-Normandie   in   the   `fr1970`   map.
+Nord-Pas-de-Calais contains only two  departments, nearly aligned on a
+E-W horizontal  line. The vertical  gap is  0.21° or 23 km,  while the
+horizontal gap  is 1.3°, that is,  92 km. Yet, because of  the way the
+coordinates adjustment is  computed, both points would  be on opposite
+corners of the canvas  and the scale would be 43 pixels  per km on the
+vertical direction and  11 pixels per km on  the horizontal direction.
+By adding the  neighbouring Somme and Aisne, the  vertical gap extends
+to  0.82° or  91 km, which  gives  11 pixels  per km  on the  vertical
+direction. In this case, the distorsion is nearly eliminated. In other
+cases, it is just reduced.
+
+For Haute-Normandie, the two departments are aligned on a N-S vertical
+line. The horizontal gap is only  0.05° or 3.62 km, while the vertical
+gap  is  0.59° or  65.5 km.  So  the scale  would  be  216 pixels  per
+horizontal km and 15 pixels per vertical km.
+
+There  is worse.  There is  the  `frreg` map,  with the  Y2015-regions
+Britanny,  Île-de-France,  Centre-Val-de-Loire,  Pays-de-la-Loire  and
+Provence-Alpes-Côte-d'Azur.   Each   of   them   contains   only   one
+Y1970-region. The max  longitude and the min longitude  are equal, and
+the same thing  happens with latitudes. In this  case, the coordinates
+adjustment triggers two divisions zero-on-zero. By adding neighbouring
+Y1970-regions, the divisions by zero are avoided.
+
+
+
 License
 =======
 
