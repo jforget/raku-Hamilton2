@@ -347,7 +347,52 @@ the same thing  happens with latitudes. In this  case, the coordinates
 adjustment triggers two divisions zero-on-zero. By adding neighbouring
 Y1970-regions, the divisions by zero are avoided.
 
+### About the average longitude and the average latitude
 
+Giving to a big  area a longitude and a latitude  equal to the average
+longitude and latitude  of the small areas inside seems  to be a smart
+thing to do. But could this produce some glitches?
+
+In theory, yes. With the actual maps, no. At least for the French maps.
+
+With a rigid  mathematical point of view, no area  is a convex domain.
+The border  is always  zigzagging at  one point  or at  another, which
+prevents the  area from being convex.  The only exceptions I  know are
+Colorado and Wyoming in the USA.  Yet, we can consider that some areas
+are nearly convex  and others are definitely concave.  See for example
+Cantal  and Moselle.  Each  one  has an  inward  "dent"  that is  more
+important than  in any other  department. If  this dent was  even more
+important, it could happen that the geometric centre of the department
+would be in this dent, that is, outside the department's borders.
+
+With the method I used to  initialise the longitudes and latitudes for
+the departements, it  could not happen. Even with a  very long dent, I
+would have chosen a point within the department. But if a region had a
+dent similar in proportions to Cantal's or Moselle's dent, the average
+longitude and the average latitude could have placed the centre of the
+region inside the  dent and outside the region's borders.  This is not
+the case  with the French regions  (both the Y1970 ones  and the Y2015
+ones).
+
+On the other hand, it happens with
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
+if we includes the three sea areas  and the six foreign areas as a sea
+region and  a foreign region.  The average latitude and  longitude for
+the sea  areas could place the  sea region within South  India and the
+average latitude and the average  longitude of the foreign areas could
+place the foreign region within North India.
+
+This is even worse with
+[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
+if we decide  to keep the sea  areas and group them into  a single sea
+region. Since the sea areas are all around Great Britain, the computed
+centre of  the region will  most certainly be  near the centre  of the
+map, well within the borders of England.
+
+In the  programmes which  load the Maharadjah  data and  the Britannia
+data into the database, I could have  coded a special case for the sea
+regions. I did not do it. I  am fine with a macro-map showing a glitch
+when displaying the sea region in a wrong place.
 
 License
 =======

@@ -352,7 +352,7 @@ sur  une  ligne verticale  N-S.  L'écart  horizontal est  0,05°,  soit
 donné une échelle de 216 pixels par  km horizontal et 15 pixels par km
 vertical.
 
-Il y a pire. Il y a  la carte `frreg`, avec les régions-2015 Bretagne,
+Il y a pis.  Il y a la carte `frreg`,  avec les régions-2015 Bretagne,
 Île-de-France,      Centre-Val-de-Loire,      Pays-de-la-Loire      et
 Provence-Alpes-Côte-d'Azur,   qui   contiennent  chacune   une   seule
 région-1970.  Dans  ce cas,  la  longitude  maximale  est égale  à  la
@@ -360,6 +360,57 @@ longitude minimale,  ce qui  est le  cas aussi  pour les  latitudes et
 l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
 zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
 sont évitées.
+
+### Faire la moyenne des longitudes et latitudes pour situer une région
+
+Attribuer  à une  région une  latitude et  une longitude  égales à  la
+moyenne  des  coordonnées  des  départements de  cette  région,  c'est
+séduisant. Mais ne risque-t-il pas d'y avoir des effets curieux ?
+
+Dans  l'absolu, oui.  En  pratique,  non, au  moins  pour les  régions
+françaises.
+
+En  toute  rigueur  mathématique, aucun  département,  aucune  région,
+aucune  zone  n'est  mathématiquement  convexe (à  part  peut-être  le
+Colorado  et le  Wyoming aux  États-Unis). Il  y a  toujours un  léger
+zig-zag sur les frontières, ce qui rend la zone concave. Néanmoins, il
+y  a des  zones presques  convexes  et il  y a  des zones  franchement
+concaves. Ainsi,  la Moselle et le  Cantal ont un creux  beaucoup plus
+prononcé que  les autres départements.  Si le creux était  encore plus
+prononcé, il se pourrait que le centre géométrique du département soit
+à  l'extérieur du  département.
+
+Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
+les coordonnées  des départements,  cela ne  pouvait pas  se produire.
+Même  si  un département  avait  eu  un  creux encore  plus  prononcé,
+j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
+avait eu une  région avec un creux  proportionnellement aussi prononcé
+que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
+des latitudes  aurait pu  aboutir à  un centre dans  le creux,  dont à
+l'extérieur de la frontière de la  région. Ce n'est pas le cas, aucune
+région française n'a un creux bien prononcé.
+
+En revanche, c'est le cas pour
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
+si  l'on inclut  les trois  zones maritimes  dans le  graphe pour  une
+« région maritime » et les six  zones extérieures pour une « région de
+l'étranger ». Le  calcul de  moyenne pour ces  deux régions  risque de
+placer la  région maritime au  sein de l'Inde du  Sud et la  région de
+l'étranger à l'intérieur de l'Inde du Nord.
+
+C'est pis avec
+[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
+si l'on tient compte des six  zones maritimes. Les six zones maritimes
+forment un  cercle autour  des zones  terrestres, donc il  y a  fort à
+parier que la latitude et la longitude attribuées à la région maritime
+placeront cette région au centre  de la carte, nettement à l'intérieur
+des frontières de l'Angleterre.
+
+Dans  le  programme  d'initialisation  de  la  base  de  données  pour
+Maharadjah et  dans celui pour  Britannia, j'aurais pu prévoir  un cas
+particulier pour la  région maritime. Je ne l'ai pas  fait. Cela ne me
+dérange  pas de  voir  une  macro-carte (ou  carte  réduite) avec  une
+bizarrerie d'affichage.
 
 LICENCE
 =======
