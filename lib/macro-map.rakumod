@@ -18,9 +18,10 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  my $png = map-gd::draw(@areas, @borders);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map').attr(href => "/$lang/full-map/$mapcode");
+  $at('map')».content($imagemap);
 }
 
 our sub render(Str $lang, Str $map, %map, @areas, @borders) {

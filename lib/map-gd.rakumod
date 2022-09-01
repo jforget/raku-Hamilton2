@@ -44,14 +44,15 @@ our sub draw(@areas, @borders) {
     draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>});
   }
 
+  my Str $imagemap = '';
   for @areas -> $area {
     my Int $x = conv-x($area<long>.Num);
     my Int $y = conv-y($area<lat >.Num);
     #say join ' ', $area<code>, $area<long>, $area<lat>, $x, $y;
-    draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>});
+    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url> // '');
   }
 
-  return $image.png();
+  return $image.png(), $imagemap;
 }
 
 sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color) {
@@ -65,12 +66,19 @@ sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-t
   }
 }
 
-sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color) {
+sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url) {
   my ($dx, $dy) = ( 2.5 × $txt.chars,  5);
-  my $r = 10 × $txt.chars;
+  my Int $radius   =  5 × $txt.chars;
+  my Int $diameter = 10 × $txt.chars;
   $img.setThickness(3);
-  $img.filledEllipse($x, $y, $r, $r, $backg);
-  $img.ellipse($x, $y, $r, $r, $color);
+  $img.filledEllipse($x, $y, $diameter, $diameter, $backg);
+  $img.ellipse(      $x, $y, $diameter, $diameter, $color);
   $img.setThickness(1);
   $img.string(gdSmallFont, $x - $dx, $y - $dy, $txt, $ink);
+  if $url eq '' {
+    return '';
+  }
+  else {
+    return "<area shape='circle' coords='$x,$y,$radius' href='$url' />\n";
+  }
 }

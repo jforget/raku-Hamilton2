@@ -49,15 +49,19 @@ get '/:ln/full-map/:map' => sub ($lng, $map) {
   return full-map::render(~ $lng, $mapcode, %map, @areas, @borders);
 }
 
-get '/:ln/macro-map/:map' => sub ($lng, $map) {
+get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
-  my $mapcode = ~ $map;
-  my %map     = access-sql::read-map($mapcode);
-  my @areas   = access-sql::list-big-areas($mapcode);
-  my @borders = access-sql::list-big-borders($mapcode);
-  return macro-map::render(~ $lng, $mapcode, %map, @areas, @borders);
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-big-areas($map);
+  my @borders = access-sql::list-big-borders($map);
+  for @areas -> $area {
+    $area<url> = "/$lng/region-map/$map/$area<code>";
+  }
+  return macro-map::render($lng, $map, %map, @areas, @borders);
 }
 
 get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
