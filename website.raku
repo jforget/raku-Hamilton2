@@ -30,26 +30,28 @@ get '/:ln/list' => sub ($lng) {
   redirect "/$lng/list/";
 }
 
-get '/:ln/list/' => sub ($lng) {
+get '/:ln/list/' => sub ($lng_parm) {
+  my Str $lng    = ~ $lng_parm;
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
   my @maps = access-sql::list-maps;
-  return map-list-page::render(~ $lng, @maps);
+  return map-list-page::render($lng, @maps);
 }
 
-get '/:ln/full-map/:map' => sub ($lng, $map) {
+get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
-  my $mapcode = ~ $map;
-  my %map     = access-sql::read-map($mapcode);
-  my @areas   = access-sql::list-small-areas($mapcode);
-  my @borders = access-sql::list-small-borders($mapcode);
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-small-areas(  $map);
+  my @borders = access-sql::list-small-borders($map);
   for @areas -> $area {
     $area<url> = "/$lng/region-map/$map/$area<upper>";
   }
-  return full-map::render(~ $lng, $mapcode, %map, @areas, @borders);
+  return full-map::render($lng, $map, %map, @areas, @borders);
 }
 
 get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {

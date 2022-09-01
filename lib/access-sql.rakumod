@@ -56,6 +56,7 @@ our sub list-neighbour-areas(Str $map, Str $region) {
     on   A.map  = B.map
     and  A.code = B.to_code
   where B.map = ? and B.upper_from = ?
+    and B.upper_to != B.upper_from
   SQL
   my @val = $sth.execute($map, $region).allrows(:array-of-hash);
   return @val;
