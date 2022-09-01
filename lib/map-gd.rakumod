@@ -49,7 +49,7 @@ our sub draw(@areas, @borders) {
     my Int $x = conv-x($area<long>.Num);
     my Int $y = conv-y($area<lat >.Num);
     #say join ' ', $area<code>, $area<long>, $area<lat>, $x, $y;
-    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url> // '');
+    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>);
   }
 
   return $image.png(), $imagemap;

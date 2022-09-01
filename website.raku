@@ -46,6 +46,9 @@ get '/:ln/full-map/:map' => sub ($lng, $map) {
   my %map     = access-sql::read-map($mapcode);
   my @areas   = access-sql::list-small-areas($mapcode);
   my @borders = access-sql::list-small-borders($mapcode);
+  for @areas -> $area {
+    $area<url> = "/$lng/region-map/$map/$area<upper>";
+  }
   return full-map::render(~ $lng, $mapcode, %map, @areas, @borders);
 }
 
@@ -71,10 +74,19 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
-  my %map     = access-sql::read-map($map);
-  my @areas   = access-sql::list-areas-in-region(   $map, $region);
-  @areas.append(access-sql::list-neighbour-areas(   $map, $region));
-  my @borders = access-sql::list-borders-for-region($map, $region);
+  my %map        = access-sql::read-map($map);
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+  @areas.append(@neighbours);
+  for @areas -> $area {
+    if $area<upper> eq $region {
+      $area<url> = '';
+    }
+    else {
+      $area<url> = "/$lng/region-map/$map/$area<upper>";
+    }
+  }
   return region-map::render($lng, $map, $region, %map, @areas, @borders);
 }
 
