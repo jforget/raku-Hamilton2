@@ -138,7 +138,62 @@ intervertissant `from_code` et `to_code`.
 Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
 
-Tables pour les chemins : RAF
+Paths
+-----
+
+La table  `Paths` (Chemins)  liste tous les  chemins pour  une carte :
+macro-chemins entre régions, micro-chemins (ou chemins régionaux) pour
+les départements  au sein  d'une région et  chemins complets  pour les
+départements dans la carte complète. La clé est constituée de :
+
+* `map` le code de la carte (table `Maps`),
+* `level` valant `1` pour les macro-chemins, `2` pour les chemins régionaux et `3` pour les chemins complets,
+* `area`, champ vide pour les macro-chemins et les chemins complets, le code de la région concernée pour les chemins régionaux.
+* `num`, un numéro séquentiel.
+
+Les autres champs sont :
+
+* `path`, une chaîne de caractères listant les zones traversées par le chemin
+* `from_code`, code de la zone de départ du chemin,
+* `to_code`, code de la zone d'arrivée du chemin,
+* `macro_num`, numéro éventuel du macro-chemin associé.
+
+Le champ  `path` contient les  codes des départements (ou  des régions
+pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
+1970, la  région Languedoc-Roussillon possède deux  chemins régionaux.
+Voici l'un d'eux comme exemple :
+
+```
+   map         "fr1970"
+   level       2
+   area        "LRO"
+   num         1
+   path        "48 → 30 → 34 → 11 → 66"
+   from_code   48
+   to_code     66
+   macro_num   0
+```
+
+La relation  entre les macro-chemins  et les chemins complets  est une
+relation 0..n ↔  1..1. Un macro-chemin permet de générer  un nombre _a
+priori_ indéterminé de chemins complets, mais un chemin complet dérive
+d'un seul macro-chemin. Le champ `macro_num` matérialise ce lien.
+
+En revanche, il  n'y a aucune relation entre les  macro-chemins et les
+chemins  régionaux.  D'autre  part,  la  relation  entre  les  chemins
+complets et les chemins régionaux est une relation 0..n ↔ 0..n. D'où :
+
+Path\_Relations
+---------------
+
+Cette table matérialise la relation  entre les chemins complets et les
+chemins régionaux. Elle contient les champs suivants :
+
+* `map` le code de la carte (table `Maps`),
+* `full_num` le numéro `num` du chemin complet,
+* `area` le code de la région,
+* `region_num` le numéro `num` du chemin régional.
+
 
 Initialisation
 ==============

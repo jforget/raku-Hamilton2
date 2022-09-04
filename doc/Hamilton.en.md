@@ -131,7 +131,61 @@ switching `from_code` with `to_code`.
 As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 `Small_Borders`.
 
-Path tables: wip.
+Paths
+-----
+
+The `Paths` table  stores all paths for the  various maps: macro-paths
+linking  regions (big  areas), micro-paths  or regional  paths linking
+departments (small  areas) belonging to  the same big area  and lastly
+full paths linking all small areas. The key is:
+
+* `map` the key from table `Maps`,
+* `level` with `1` for macro-paths, `2` for regional paths and `3` for full paths,
+* `area` empty for macro-paths and full paths, the code of the big area for regional paths,
+* `num` a sequential number.
+
+Other fields are:
+
+* `path` a char string listing all areas along the path,
+* `from_code` the code of the area where the path begins,
+* `to_code` the code of the area where the path ends,
+* `macro_num` the number of the associated macro path, if there is one.
+
+The `path`  field contains the  department codes (or region  codes for
+macro-paths)  separated   by  arrows  `→`.   In  the  1970   map,  the
+_Languedoc-Roussillon_ region has  two regional paths. Here  is one of
+them:
+
+```
+   map         "fr1970"
+   level       2
+   area        "LRO"
+   num         1
+   path        "48 → 30 → 34 → 11 → 66"
+   from_code   48
+   to_code     66
+   macro_num   0
+```
+
+The  relation between  macro-paths and  full paths  is a  0..n ↔  1..1
+relation. A macro-path  can generate an unknown number  of full paths,
+but  a full  path derives  from a  single macro-path.  The `macro_num`
+field implements this relation.
+
+On  the other  hand,  there  is no  relation  between macro-paths  and
+regional paths.  On the  third hand, between  full paths  and regional
+paths, the relation is 0..n ↔ 0..n. Hence:
+
+Path\_Relations
+---------------
+
+This table  implements the  relation between  full paths  and regional
+paths. It contains the following fields:
+
+* `map` the key from table `Maps`,
+* `full_num`, the `num` field of the full path,
+* `area`, the `code` field of the region or the `area` field of the regional path,
+* `region_num` the `num` field of the regional path.
 
 Initialisation
 ==============
