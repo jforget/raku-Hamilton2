@@ -30,15 +30,19 @@ and the  regions from  2015. I  will do the  same experiment  with the
 regions from  1970 and the  departments, ot  even with the  regions of
 2015 as the big  areas and the regions of 1970 as  the small areas. In
 this case,  there are several big  areas which contain only  one small
-area, so this  set of data might  trigger a few bugs  which would stay
+area, so this  set of data, in  which some big areas  contain only one
+small  area  each,   might  trigger  a  few  bugs   which  would  stay
 undiscovered with the other sets of data.
 
 I can even think of other maps, such as the world map for
 [Risk](https://boardgamegeek.com/boardgame/181/risk)
 or
 [War on Terror](https://boardgamegeek.com/boardgame/24396/war-terror),
-in which the small areas are countries (more or less)
-and the big areas are continents.
+in which  the small  areas are  countries (more or  less) and  the big
+areas are continents. On a more local scale, we can use the map for
+[Britannia](https://boardgamegeek.com/boardgame/240/britannia),
+or from 
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja).
 
 The project uses
 [SQLite](https://sqlite.org/index.html)
@@ -454,4 +458,3 @@ License
 This  text is  licensed  under  the terms  of  Creative Commons,  with
 attribution and share-alike (CC-BY-SA).
 
-Some pictures might have a different license. In this case, it is shown after the picture.

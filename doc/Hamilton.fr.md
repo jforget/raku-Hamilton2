@@ -41,7 +41,12 @@ On peut envisager d'autres cartes, comme la carte mondiale de
 ou celle de
 [War on Terror](https://boardgamegeek.com/boardgame/24396/war-terror),
 où  les régions  élémentaires  correspondent  à des  États  et où  les
-régions groupes correspondent à des continents.
+régions  groupes correspondent  à des  continents. Ou  alors, sur  une
+échelle plus régionale, on peut envisager la carte de
+[Britannia](https://boardgamegeek.com/boardgame/240/britannia),
+ou celle de
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja).
+
 
 Le projet se base sur une base de données
 [SQLite](https://sqlite.org/index.html),
@@ -317,7 +322,7 @@ Organisation du site web
 ------------------------
 
 Le  site est  prévu  pour  être multilingue.  Pour  l'instant, il  est
-bilingue, disponibre en anglais et  en français. Le code langue figure
+bilingue, disponible en anglais et  en français. Le code langue figure
 en première position de l'URL.
 
 La  page  d'accueil  est  juste   une  liste  en  anglais  des  cartes
@@ -360,14 +365,14 @@ quelles  en tant  que coordonnées  rectangulaires. Cela  conduit à  un
 rétrécissement au niveau  des basses latitudes et à  une dilatation du
 côté des hautes latitudes. Un degré de longitude représente 81 km dans
 le sud de la  France, mais seulement 70 km dans le  nord de la France,
-mais  les degrés  de latitude  ne  sont pas  affectés. À  mon avis  la
-distorsion est moindre qu'avec la projection de Mercator.
+mais les  degrés de latitude ne  sont pas affectés. La  distorsion est
+donc moindre qu'avec la projection de Mercator.
 
 Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
 du  graphique  de  1000 × 1000  pixels.  Dans  le  cas  de  la  France
 continentale, qui  fait 950 km d'ouest  en est  et 1000 km du  nord au
 sud, cet ajustement  ne provoque pas de distorsion. Dans  le cas de la
-Bretagne, les quatre points  représentant les quatre départements sont
+Bretagne, par exemple, les quatre points  représentant les quatre départements sont
 séparés  de 63 km  dans la  direction nord-sud  et de  172 km dans  la
 direction est-ouest (si j'avais pris  la carte réelle et déterminé les
 points extrêmes, cela aurait donné 273 km  d'ouest en est et 152 km du
@@ -429,15 +434,15 @@ En  toute  rigueur  mathématique, aucun  département,  aucune  région,
 aucune  zone  n'est  mathématiquement  convexe (à  part  peut-être  le
 Colorado  et le  Wyoming aux  États-Unis). Il  y a  toujours un  léger
 zig-zag sur les frontières, ce qui rend la zone concave. Néanmoins, il
-y  a des  zones presques  convexes  et il  y a  des zones  franchement
+y  a des  zones concaves presque  convexes  et il  y a  des zones concaves franchement
 concaves. Ainsi,  la Moselle et le  Cantal ont un creux  beaucoup plus
 prononcé que  les autres départements.  Si le creux était  encore plus
 prononcé, il se pourrait que le centre géométrique du département soit
-à  l'extérieur du  département.
+à  l'extérieur des limites du  département.
 
 Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
 les coordonnées  des départements,  cela ne  pouvait pas  se produire.
-Même  si  un département  avait  eu  un  creux encore  plus  prononcé,
+Même  si  un département  avait  eu  un  creux encore  plus  prononcé que le Cantal ou la Moselle,
 j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
 avait eu une  région avec un creux  proportionnellement aussi prononcé
 que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
@@ -473,5 +478,3 @@ LICENCE
 Texte diffusé sous la licence CC-BY-SA : Creative Commons, Attribution
 - Partage dans les Mêmes Conditions (CC BY-SA).
 
-Certaines illustrations  sont diffusées  avec une  licence différente.
-Celle-ci est mentionnée à la suite de l'illustration.
