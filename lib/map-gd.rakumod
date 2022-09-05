@@ -6,8 +6,10 @@ use GD:from<Perl5>;
 use List::Util;
 
 our sub draw(@areas, @borders) {
-  my Int $dim    = 1000;
-  my $image = GD::Image.new($dim, $dim);
+  my Int $dim       = 1000;
+  my Int $dim-scale =   20;
+  my $image = GD::Image.new($dim + $dim-scale, $dim + $dim-scale);
+  my Int $lg-max = 500;
 
   my $white  = $image.colorAllocate(255, 255, 255);
   my $black  = $image.colorAllocate(  0,   0,   0);
@@ -27,6 +29,17 @@ our sub draw(@areas, @borders) {
 
   sub conv-x(Num $long) { return ($margin + ($long - $long-min) / ($long-max - $long-min) × ($dim - 2 × $margin)).Int };
   sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / ($lat-max  -  $lat-min) × ($dim - 2 × $margin)).Int };
+
+  my $scale-distance;
+  my $top-scale;
+  loop ($scale-distance = 10_000; $scale-distance > 1; $scale-distance /= 10) {
+    $top-scale =  conv-y($lat-min + $scale-distance / 111);
+    last if conv-y($lat-min) - $top-scale < $lg-max;
+  }
+  my $scale-label = "$scale-distance km";
+  my $x-scale     = $dim + $dim-scale - 6 × $scale-label.chars;
+  $image.line($dim, conv-y($lat-min), $dim, $top-scale, $black);
+  $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
 
   for @borders -> $border {
     my Int $xf = conv-x($border<long_f>.Num);
