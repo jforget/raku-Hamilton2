@@ -60,7 +60,7 @@ Maps
 
 The first table is the `Maps` table. The record key is:
 
-* `map` the key of the wole map (URL-friendly, no special characters),
+* `map` the key of the whole map (URL-friendly, no special characters).
 
 Other fields are:
 
@@ -84,7 +84,7 @@ number will be used for `code`. For regions (the 2015 variant), I have
 used the last 3 characters of ISO 3166-2, as seen
 [on this page](https://en.wikipedia.org/wiki/ISO_3166-2:FR#First-level_metropolitan_subdivisions).
 For regions (the  1970 variant), I have used  unofficial 3-letter code
-similar to the code for the 2015-variant regions.
+similar to the codes for the 2015-variant regions.
 
 Other fields are:
 
@@ -94,7 +94,7 @@ Other fields are:
 * `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
 * `nb_paths` for regions, the number of regional paths (zero for departments).
 
-Two view are defined on  this table, `Big_Areas` which filters `level`
+Two views are defined on this table, `Big_Areas` which filters `level`
 equal  to `1`  for regions  and  `Small_Areas` which  filters `2`  for
 departments.
 
@@ -114,13 +114,13 @@ pairs of neighbour regions. For a math graph, the proper word would be
 * `map` the key from table `Maps`,
 * `level` with `1` for neighbouring regions and `2` for neighbouring departments,
 * `from_code` for the first area,
-* `to_code` for the second ares.
+* `to_code` for the second area.
 
 Other fields:
 
 * `upper_from` the code of the region for departments' edges, empty for regions' edges,
 * `upper_to` similar,
-* `long`
+* `long`,
 * `lat`,
 * `color`.
 
@@ -133,7 +133,7 @@ longitude and latitude define where the edge parts will join.
 
 For a  border between two departments  in the same region,  the border
 will  have the  same color  as the  region. For  a border  between two
-departments belonging to separate regions,  the color will be `Black`.
+departments belonging to different regions, the color will be `Black`.
 And of course, the borders with `level` 1 will be black.
 
 For a  given edge or border,  there will be two  `Borders` records, by
@@ -168,13 +168,13 @@ _Languedoc-Roussillon_ region has  two regional paths. Here  is one of
 them:
 
 ```
-   map         "fr1970"
+   map         'fr1970'
    level       2
-   area        "LRO"
+   area        'LRO'
    num         1
-   path        "48 → 30 → 34 → 11 → 66"
-   from_code   48
-   to_code     66
+   path        '48 → 30 → 34 → 11 → 66'
+   from_code   '48'
+   to_code     '66'
    macro_num   0
 ```
 
@@ -202,7 +202,7 @@ Messages
 --------
 
 This  table  stores  some   informations  about  the  path  generation
-processes. It will  remain the users why this or  that path generation
+processes. It will  remind the users why this or  that path generation
 produced no paths. The record key is:
 
 * `map` the key from table `Maps`,
@@ -217,9 +217,9 @@ Other data are:
 Initialisation
 ==============
 
-For copyright  reasons, I  will not provide  initialisation programmes
+For copyright  reasons, I  do not provide  initialisation programmes
 for  the  maps of  Risk,  War  on Terror  and  other  games. The  only
-initialisation  programme will  be the  programme dealing  with French
+initialisation  programme is the  programme dealing  with French
 regions and departments.
 
 This  initialisation  programme  is  more complicated  than  a  normal
@@ -249,15 +249,17 @@ website   and  selected   only  the   _limites  administratives_   map
 approximate  center  of  the department,  right-clicked  and  selected
 _adresse /  coordonnées du  lieu_ (location address  and coordinates).
 Then I  have copied-pasted  the latitude and  longitude into  the text
-file. Also, I have listed all neighbouring departments. In some cases,
-I have  zoomed to know if  two departments are really  neighbours. See
-for example  the 4-way  point between Vaucluse,  Bouches-du-Rhône, Var
-and Alpes  de Haute-Provence. Back  to long/lat: I  have copied-pasted
-the values with all 5 digits after the decimal point. If you bother to
-check,  one  latitude degree  is  111  km  and,  at latitude  45,  one
-longitude degree is  78 km. So the fifth decimal  digit means that the
-values have a precision of one meter, more or less. This is excessive.
-I could have truncated to 2 decimal digits.
+file. When copying-pasting the values, I  have kept all 5 digits after
+the decimal point. If you bother  to check, one latitude degree is 111
+km and, at  latitude 45, one longitude  degree is 78 km.  So the fifth
+decimal digit  means that the  values have  a precision of  one meter,
+more or less.  This is excessive. I could have  truncated to 2 decimal
+digits.
+
+Also, I  have listed  all neighbouring departments.  In some  cases, I
+have zoomed to know if two  departments are really neighbours. See for
+example the  4-way point  between Vaucluse, Bouches-du-Rhône,  Var and
+Alpes de Haute-Provence, at 43.72°N and 5.75°E.
 
 Theorically, each  border between departments is  specified twice. For
 example, the Var department (83) and the Vaucluse department (84) have
@@ -273,12 +275,12 @@ and the longitude will not be filled, and no `Borders` records will be
 created.
 
 You  will have  to wait  for the  second phase  to finish  the regions
-records.  For  each  region,  the   programme  will  extract  all  the
-departments within this  region, compute the average  of the latitudes
-and longitudes of these departments  and update the region record with
+records. For each  region, the programme extracts  all the departments
+within  this  region,  computes  the  average  of  the  latitudes  and
+longitudes of  these departments  and updates  the region  record with
 these computed values.
 
-Likewise, the  programme will create  the `Borders` records  with keys
+Likewise,  the  programme  creates  the `Borders`  records  with  keys
 `fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`  by extracting
 all departments  borders `fr1970`+`2`  and `fr2015`+`2`  lying between
 two different regions, discarding all duplicates region-wise and store

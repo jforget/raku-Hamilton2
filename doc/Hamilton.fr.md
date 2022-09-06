@@ -65,7 +65,7 @@ Maps
 La  première  table  est  la   table  `Maps`  (Cartes).  La  clé  d'un
 enregistrement est :
 
-* `map` le code de la carte (sans caractère spécial, pour faciliter la constitution et l'analyse des URL),
+* `map` le code de la carte (sans caractère spécial, pour faciliter la constitution et l'analyse des URL).
 
 Les autres informations sont :
 
@@ -175,13 +175,13 @@ pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
 Voici l'un d'eux comme exemple :
 
 ```
-   map         "fr1970"
+   map         'fr1970'
    level       2
-   area        "LRO"
+   area        'LRO'
    num         1
-   path        "48 → 30 → 34 → 11 → 66"
-   from_code   48
-   to_code     66
+   path        '48 → 30 → 34 → 11 → 66'
+   from_code   '48'
+   to_code     '66'
    macro_num   0
 ```
 
@@ -250,21 +250,23 @@ pour la carte  `fr1970`. Les lignes `C` contiennent la  latitude et la
 longitude  des  départements,  pour  les positionner  sur  les  cartes
 générées, ainsi que la liste des départements limitrophes.
 
-J'ai constitué le fichier texte de la façon suivante. J'ai consulté
+J'ai constitué  le fichier texte  de la façon suivante.  J'ai consulté
 [Géo Portail](https://www.geoportail.gouv.fr/)
 en n'affichant que le fond  de carte « limites administratives ». Pour
 chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
 droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
-copié-collé la latitude  et la longitude dans le  fichier. Par moment,
-j'ai  zoomé au  voisinage des  points quadruples  pour vérifier  quels
-départements sont  contigus avec  quels autres départements.  Voir par
-exemple la limite  entre le Vaucluse, les Bouches-du-Rhône,  le Var et
-les Alpes  de Haute-Provence. Pour  la longitude et la  latitude, j'ai
-pris les valeurs telles quelles, avec  cinq décimales. Or, un degré de
-latitude fait 111 km  et, à la latitude de 45°,  un degré de longitude
-fait  78 km. La  cinquième décimale  sur la  longitude et  la latitude
+copié-collé la latitude et la longitude dans le fichier. J'ai pris les
+valeurs telles quelles, avec cinq  décimales. Or, un degré de latitude
+fait  111 km et,  à la  latitude de  45°, un  degré de  longitude fait
+78 km.  La  cinquième  décimale  sur   la  longitude  et  la  latitude
 représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
 contenter de deux décimales. Tant pis.
+
+Par  moment,  j'ai  zoomé  au voisinage  des  points  quadruples  pour
+vérifier   quels  départements   sont  contigus   avec  quels   autres
+départements.  Voir  par exemple  la  limite  entre le  Vaucluse,  les
+Bouches-du-Rhône, le  Var et  les Alpes  de Haute-Provence,  par 43,72
+degrés de latitude nord et 5,75 degrés de longitude est.
 
 Normalement, chaque  frontière entre  deux départements  est spécifiée
 deux fois. Par exemple, il y a une frontière commune entre le Var (83)
@@ -282,12 +284,12 @@ enregistrements   de  la   table   `Borders`  ne   seront  pas   créés
 immédiatement.
 
 C'est seulement lors  d'une seconde étape que  les enregistrements des
-régions seront complétés. Le programme  fera la moyenne des longitudes
+régions sont complétés. Le programme calcule la moyenne des longitudes
 et des  latitudes des départements  appartenant à chaque  région, puis
-stockera  ces  deux  moyennes   dans  l'enregistrement  de  la  région
+stocke  ces   deux  moyennes   dans  l'enregistrement  de   la  région
 correspondante.
 
-De  même, le  programme alimentera  les enregistrements  `fr1970`+`1`,
+De  même,  le  programme alimente  les  enregistrements  `fr1970`+`1`,
 `fr2015`+`1`  `frreg`+`1`  et `frreg`+`2`  de  la  table `Borders`  en
 faisant  une  synthèse de  tous  les  enregistrements `fr1970`+`2`  et
 `fr2015`+`2` de `Borders` qui se trouvent à cheval sur deux régions.
@@ -385,9 +387,9 @@ temps, je prends la longitude et  la latitude et je les utilise telles
 quelles  en tant  que coordonnées  rectangulaires. Cela  conduit à  un
 rétrécissement au niveau  des basses latitudes et à  une dilatation du
 côté des hautes latitudes. Un degré de longitude représente 81 km dans
-le sud de la  France, mais seulement 70 km dans le  nord de la France,
-mais les  degrés de latitude ne  sont pas affectés. La  distorsion est
-donc moindre qu'avec la projection de Mercator.
+le sud de la  France, mais seulement 70 km dans le  nord de la France.
+En  revanche,  les  degrés  de  latitude  ne  sont  pas  affectés.  La
+distorsion est donc moindre qu'avec la projection de Mercator.
 
 Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
 du  graphique  de  1000 × 1000  pixels.  Dans  le  cas  de  la  France
