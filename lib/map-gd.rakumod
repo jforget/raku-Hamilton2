@@ -27,6 +27,18 @@ our sub draw(@areas, @borders) {
   my Int $char-max = max map { $_<code>.chars }, @areas;
   my Int $margin   = 6 × $char-max;
 
+  for @borders -> $border {
+    # Is there a middle point with an extreme longitude or latitude?
+    if $border<long_m> != 0 or $border<lat_m> != 0 {
+      my $long-m = $border<long_m>.Num;
+      my $lat-m  = $border<lat_m >.Num;
+      $long-min = $long-m if $long-m < $long-min;
+      $long-max = $long-m if $long-m > $long-max;
+      $lat-min  = $lat-m  if $lat-m  < $lat-min;
+      $lat-max  = $lat-m  if $lat-m  > $lat-max;
+    }
+  }
+
   sub conv-x(Num $long) { return ($margin + ($long - $long-min) / ($long-max - $long-min) × ($dim - 2 × $margin)).Int };
   sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / ($lat-max  -  $lat-min) × ($dim - 2 × $margin)).Int };
 
