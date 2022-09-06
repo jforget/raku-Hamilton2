@@ -17,38 +17,37 @@ use db-conf-sql;
 my Str $fname = 'fr-depts.txt';
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
+# No this is not a Bobby Tables problem. All table names are controlled by the programme,
+# they do not come from an external source.
+for <Maps Areas Borders Paths Path_Relations Messages> -> $table {
+  $dbh.execute("delete from $table where map in ('fr1970', 'fr2015', 'frreg');");
+}
+
 $dbh.execute(q:to/SQL/);
-delete from Maps where map in ('fr1970', 'fr2015', 'frreg');
+insert into Maps values ('fr1970', 'Départements dans les régions de 1970', 0, 0);
 SQL
 
 $dbh.execute(q:to/SQL/);
-delete from Areas where map in ('fr1970', 'fr2015', 'frreg');
+insert into Maps values ('fr2015', 'Départements dans les régions de 2015', 0, 0);
 SQL
 
 $dbh.execute(q:to/SQL/);
-delete from Borders where map in ('fr1970', 'fr2015', 'frreg');
-SQL
-
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('fr1970', 'Départements dans les régions de 1970');
-SQL
-
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('fr2015', 'Départements dans les régions de 2015');
-SQL
-
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015');
+insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015', 0, 0);
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
-insert into Areas (map, level, code, name, long, lat, color, upper)
-       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    )
+insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths)
+       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0)
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
 insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color)
        values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    )
+SQL
+
+my $sto-mesg = $dbh.prepare(q:to/SQL/);
+insert into Messages (map, dh, errcode, area, nb)
+       values        (?,   ?,  ?,       '',   0)
 SQL
 
 my Str $reg1970;
@@ -209,6 +208,10 @@ and   level = 2
 and  (   (from_code = '77' and to_code = '95')
       or (from_code = '95' and to_code = '77'))
 SQL
+
+for <fr1970 fr2015 frreg> -> $map {
+  $sto-mesg.execute($map, DateTime.now.Str, 'INIT');
+}
 
 =begin POD
 
