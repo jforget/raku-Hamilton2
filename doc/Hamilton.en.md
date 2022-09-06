@@ -368,6 +368,10 @@ than  previously,  because  the  scale  is 6  pixels  per  km  in  the
 horizontal  direction and  about  16  pixels per  km  in the  vertical
 direction.
 
+Actually, I  have decided to  add a  vertical scale and  an horizontal
+scale in the  map drawings. They were not part  of the initial design,
+but I think it has some usefulness.
+
 ### Why do the region maps show the neighbouring departments?
 
 The first  reason is  displaying a  full path in  a region.  Since the

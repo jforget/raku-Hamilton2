@@ -32,7 +32,7 @@ our sub draw(@areas, @borders) {
 
   my $scale-distance;
   my $top-scale;
-  loop ($scale-distance = 10_000; $scale-distance > 1; $scale-distance /= 10) {
+  loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
     $top-scale =  conv-y($lat-min + $scale-distance / 111);
     last if conv-y($lat-min) - $top-scale < $lg-max;
   }
@@ -40,6 +40,18 @@ our sub draw(@areas, @borders) {
   my $x-scale     = $dim + $dim-scale - 6 × $scale-label.chars;
   $image.line($dim, conv-y($lat-min), $dim, $top-scale, $black);
   $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
+
+  my $left-scale;
+  my $length-of-one-degree = 111 × cos(pi / 180 × ($lat-max + $lat-min) / 2);
+  loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
+    $left-scale =  conv-x($long-max - $scale-distance / $length-of-one-degree);
+    last if conv-x($long-max) - $left-scale < $lg-max;
+  }
+  $scale-label = "$scale-distance km";
+  $x-scale     = $left-scale - 6 × $scale-label.chars;
+  $image.line($left-scale, $dim + $dim-scale / 2, conv-x($long-max), $dim + $dim-scale / 2, $black);
+  $image.string(gdSmallFont, $x-scale, $dim, $scale-label, $black);
+
 
   for @borders -> $border {
     my Int $xf = conv-x($border<long_f>.Num);

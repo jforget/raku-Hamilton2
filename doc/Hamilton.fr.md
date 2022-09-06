@@ -380,6 +380,11 @@ nord au sud). La distorsion est plus sensible, car cela fait presque 6
 pixels par km  dans la direction horizontale et presque  16 pixels par
 km dans la direction verticale.
 
+Finalement, j'ai décidé d'ajouter une échelle verticale et une échelle
+horizontale  sur le  dessin  des cartes.  Ces  échelles n'étaient  pas
+prévues dans ma vision initiale du projet. Je pense néanmoins qu'elles
+ont une certaine utilité.
+
 ### Pourquoi les cartes régionales montrent les départements voisins ?
 
 La  première  raison  est  l'affichage d'une  région  avec  un  chemin
