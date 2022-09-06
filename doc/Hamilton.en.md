@@ -58,9 +58,15 @@ Database
 Maps
 ----
 
-The  first  table  is  the  `Maps` table.  It  just  contains  a  code
-(URL-friendly, no special characters) and a description. It is used in
-the website's main page, so the user can choose which map to display.
+The first table is the `Maps` table. The record key is:
+
+* `map` the key of the wole map (URL-friendly, no special characters),
+
+Other fields are:
+
+* `name` a user-intelligible designation,
+* `nb_macro` the number of macro-paths for this map,
+* `nb_full` the number of full paths for this map.
 
 Areas
 -----
@@ -85,7 +91,8 @@ Other fields are:
 * `name` the standard designation of the region / department,
 * `long` and `lat`, approximate longitude and latitude of the area,
 * `color` the color used when drawing the map,
-* `upper` for departments, it is the code of the region it belongs to, for regions this field is unused.
+* `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
+* `nb_paths` for regions, the number of regional paths (zero for departments).
 
 Two view are defined on  this table, `Big_Areas` which filters `level`
 equal  to `1`  for regions  and  `Small_Areas` which  filters `2`  for
@@ -190,6 +197,22 @@ paths. It contains the following fields:
 * `full_num`, the `num` field of the full path,
 * `area`, the `code` field of the region or the `area` field of the regional path,
 * `region_num` the `num` field of the regional path.
+
+Messages
+--------
+
+This  table  stores  some   informations  about  the  path  generation
+processes. It will  remain the users why this or  that path generation
+produced no paths. The record key is:
+
+* `map` the key from table `Maps`,
+* `dh` the datetime stamp of the message.
+
+Other data are:
+
+* `errcode` the code of the error,
+* `area` the code of the area to which the error applies,
+* `nb` the number associated with the error or the message, for example the number of generated paths.
 
 Initialisation
 ==============

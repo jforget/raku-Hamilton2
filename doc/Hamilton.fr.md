@@ -62,11 +62,16 @@ Base de données
 Maps
 ----
 
-La  première table  est la  table `Maps`  (Cartes). Un  enregistrement
-contient  juste le  code de  la  table (sans  caractère spécial,  pour
-faciliter la  constitution et l'analyse  des URL) et  une description.
-Elle est utilisée pour la  page d'accueil et permettre à l'utilisateur
-de choisir quelle carte il veut consulter.
+La  première  table  est  la   table  `Maps`  (Cartes).  La  clé  d'un
+enregistrement est :
+
+* `map` le code de la carte (sans caractère spécial, pour faciliter la constitution et l'analyse des URL),
+
+Les autres informations sont :
+
+* `name` une désignation compréhensible pour cette carte,
+* `nb_macro` le nombre de macro-chemins pour cette carte,
+* `nb_full` le nombre de chemins complets pour cette carte.
 
 Areas
 -----
@@ -88,10 +93,11 @@ de ceux des régions de 2015. Ces codes de 1970 n'ont rien d'officiel.
 
 Les autres informations sont :
 
-* la désignation standard de la région ou du département,
-* une longitude et une latitude approximatives,
-* la couleur qui sera utilisée pour l'affichage des cartes,
-* pour les départements, le code de la région d'appartenance.
+* `name`, la désignation standard de la région ou du département,
+* `long` et `lat`, une longitude et une latitude approximatives,
+* `color`, la couleur qui sera utilisée pour l'affichage des cartes,
+* `upper`, pour les départements, le code de la région d'appartenance,
+* `nb_paths` pour les régions, le nombre de chemins régionaux (micro-chemins).
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
 sélectionne  le niveau  1  des  régions et  la  vue `Small_Areas`  qui
@@ -199,6 +205,21 @@ chemins régionaux. Elle contient les champs suivants :
 * `area` le code de la région,
 * `region_num` le numéro `num` du chemin régional.
 
+Messages
+--------
+
+Cette table permet de conserver la trace de la génération des chemins.
+Elle  permettra   notamment  de  rappeler  pourquoi   telle  ou  telle
+génération de chemin a échoué. La clé d'un enregistrements est :
+
+* `map` le code de la carte (table `Maps`),
+* `dh` la date et l'heure de génération du message.
+
+Les autres informations sont :
+
+* `errcode` code du message ou de l'erreur,
+* `area` code de la zone concernée par l'erreur,
+* `nb` nombre associé à l'erreur ou au message, par exemple le nombre de chemins générés.
 
 Initialisation
 ==============
