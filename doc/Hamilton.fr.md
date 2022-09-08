@@ -368,7 +368,7 @@ Seine Maritime  est bien voisine  de l'Eure  (27), donc le  `'76'` est
 enlevé  de l'ensemble  et  ajouté  à la  chaîne  de caractères.  Comme
 l'ensemble  des départements  restant à  visiter est  vide, le  chemin
 partiel `'50  → 61 → 14  → 27 →  76'` n'est plus un  chemin _partiel_,
-c'est un chemin  régional _complet_. Il est donc stocké  dans la table
+c'est un  chemin régional _entier_. Il  est donc stocké dans  la table
 `Paths` et il n'est pas réinjecté dans la liste des chemins partiels.
 
 Cas particulier des impasses
@@ -425,9 +425,9 @@ dire que le  graphe de la région  n'est pas connexe. Ce  serait le cas
 dans  une  carte  de  Britannia  en  ne  prenant  que  les  frontières
 terrestres et en  ignorant les liaisons côtières.  Ainsi, les Hébrides
 ne  seraient plus  reliées  à Skye  et les  Orcades  ne seraient  plus
-reliées à  Caithness, le  graphe de l'Écosse  ne serait  plus connexe.
-Dans ce  cas, le programme  arrête la  génération des chemins  avec un
-message d'erreur.
+reliées à Caithness, le graphe de  l'Écosse, qui comporte 10 zones, ne
+serait plus  connexe. Dans ce  cas, le programme arrête  la génération
+des chemins avec un message d'erreur.
 
 Cela dit, il y a un cas de figure où cela ne constitue pas une erreur.
 Ce  cas de  figure  est présent  à plusieurs  reprises  dans la  carte

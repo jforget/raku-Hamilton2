@@ -289,6 +289,145 @@ the result in the `Borders` table.
 Extracting Hamiltonian Paths
 ============================
 
+General Case
+------------
+
+The programme  is based on "partial  paths". A partial path  is a data
+structure holding a string describing  the beginning of the path, plus
+a set  holding the list  of departments not  yet visited by  the path.
+This data structure is not stored in the database, it exists only when
+the programme is running. In  the descriptions below, the curly braces
+represent sets,  like I have  been taught  in mathematics a  long time
+ago. In  this case, curly  braces have  nothing to do  with statements
+blocks or with references to hashes.
+
+Let us take the example of the Normandy region in the `fr2015` map. At
+the beginning, the programme fills the list of partial paths with:
+
+```
+'14'   { 27 50 61 76 }
+'27'   { 14 50 61 76 }
+'50'   { 14 27 61 76 }
+'61'   { 14 27 50 76 }
+'76'   { 14 27 50 61 }
+```
+
+Then the programme extracts a partial  path from the list, selects all
+the departments  contiguous with  the last  department of  the partial
+path and still  present in the set of unvisited  departments. For each
+selected department, the programme adds  this department to the string
+and removes the department from the  set. Let us suppose the programme
+has selected the Eure (27) partial path. The unvisited departments are
+14,  50, 61  and 76.  But department  50 (Manche)  is not  adjacent to
+department 27 (Eure). So the programme  uses the three others to build
+new partial paths, which are stored into the list:
+
+```
+'14'        { 27 50 61 76 }
+'27 → 14'   { 50 61 76 }
+'27 → 61'   { 14 50 76 }
+'27 → 76'   { 14 50 61 }
+'50'        { 14 27 61 76 }
+'61'        { 14 27 50 76 }
+'76'        { 14 27 50 61 }
+```
+
+Then the programme extracts the `'27  → 76'` partial path. It tries to
+find a  neighbour for  `76` within the  set of  unvisited departments:
+`{ 14 50  61 }`. There are  none. So the  `'27 → 76'` partial  path is
+removed from the list without being replaced.
+
+Some time later,  after processing the `'50'`, `'50 →  61'` and `'50 →
+61 → 14'` partial paths, the situation is:
+
+```
+'14'                  { 27 50 61 76 }
+'27 → 14'             { 50 61 76 }
+'27 → 61'             { 14 50 76 }
+'50 → 14'             { 27 61 76 }
+'50 → 61 → 14 → 27'   { 76 }
+'50 → 61 → 27'        { 14 76 }
+'61'                  { 14 27 50 76 }
+'76'                  { 14 27 50 61 }
+```
+
+The programme  extracts the  `'50 → 61  → 14 →  27'` partial  path. It
+checks  the list  of unvisited  departments  and finds  only one,  the
+Seine-Maritime (76).  Fortunately, this  department is a  neighbour of
+Eure (27). So `'76'` is added to  the string and removed from the set.
+Since the  set of unvisited  departments is  an empty set,  that means
+that the path `'50 → 61 → 14 →  27 → 76'` is no longer a partial path,
+but a complete regional path. It is stored in the `Paths` table and it
+is not inserted in the list of partial paths.
+
+Special Case: Dead Ends
+-----------------------
+
+As we saw above, when a department is a dead-end within its region, as
+Seine-Maritime (76)  is in Normandy,  you cannot find  any Hamiltonian
+path  in which  this department  is  in the  middle of  the path.  The
+dead-end department is always the first  or the last department in the
+path.
+
+So, to improve the speed of the path generation, instead of feeding
+the list with:
+
+```
+'14'   { 27 50 61 76 }
+'27'   { 14 50 61 76 }
+'50'   { 14 27 61 76 }
+'61'   { 14 27 50 76 }
+'76'   { 14 27 50 61 }
+```
+
+the programme feeds it with only:
+
+```
+'76'   { 14 27 50 61 }
+```
+
+At the same time, the programme sets a flag to remember that each time
+a regional path beginning with `'76'`  is stored into the database, it
+must also store the backward path, which ends with `'76'`.
+
+If  there are  two  dead-end  departments (in  the  `fr1970` map,  see
+Languedoc-Rousillon,    but    also   Alsace,    Upper-Normandy    and
+Nord-Pas-de-Calais),  the  programme takes  either  one,  it does  not
+matter.
+
+And  if  the programme  finds  three  dead-end departments,  it  stops
+immediately  with  an  error  message, because  you  cannot  build  an
+Hamiltonian path with three dead-ends.
+
+So, when processing  a region, the programme  examines all departments
+one after the other and counts how many neighbours this department has
+in the region being processed.
+
+Remark: the same thing applies at the upper level, when extracting the
+macro-paths linking all regions.
+
+Special Case: Isolated Departments
+----------------------------------
+
+Since the programme seeks the  departments with a single neighbour, it
+can also take in account the departments with no neighbours.
+
+If we  find a department  with no neighbours,  this can mean  that the
+graph is  not connected.  It would  be the case,  for example,  with a
+Britannia map where we would keep  only the ground borders and discard
+the coastal links. In these  conditions, the Hebrides would not longer
+be connected  with Skye and the  Orkneys would no longer  be connected
+with  Caithness.  The  Scotland  10-area  graph  would  no  longer  be
+connected. The programme would stop with an error message.
+
+At the  same time, being isolated  is not automatically an  error. The
+situation  arises  in   multiple  cases  in  the   `frreg`  map.  Some
+Y2015-regions contain only one Y1970-region each: Britanny, Pays de la
+Loire,         Centre-Val-de-Loire,          Île-de-France         and
+Provence-Alpes-Côte-d'Azur. In this case, the lone Y1970-region has no
+neighbours  within its  Y2015-region. Yet,  we find  a regional  path,
+composed of one single node and no edge.
+
 Displaying the Results
 ======================
 
