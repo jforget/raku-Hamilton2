@@ -297,6 +297,145 @@ faisant  une  synthèse de  tous  les  enregistrements `fr1970`+`2`  et
 Extraction des chemins hamiltoniens
 ===================================
 
+Cas général
+-----------
+
+Le programme  se base  sur une  liste de  chemins partiels.  Un chemin
+partiel  est  une structure  de  données  constituée d'une  chaîne  de
+caractères,  le  début  du  chemin,  plus  un  ensemble  groupant  les
+départements qui  n'ont pas  encore été visités  par le  chemin. Cette
+structure n'a pas vocation à être stockée en base de données. Dans les
+descriptions  ci-dessous,   je  représente  les  ensembles   avec  des
+accolades ainsi que je l'ai appris  il y a longtemps en mathématiques.
+Les  accolades   n'ont  pas  de   rapport  avec  la  notion   de  bloc
+d'instructions ni avec la notion de référence à une table de hachage.
+
+Prenons comme exemple l'extraction des  chemins régionaux de la région
+Normandie dans la  carte `fr2015`. Au début, le  programme alimente la
+liste avec les chemins partiels suivants :
+
+```
+'14'   { 27 50 61 76 }
+'27'   { 14 50 61 76 }
+'50'   { 14 27 61 76 }
+'61'   { 14 27 50 76 }
+'76'   { 14 27 50 61 }
+```
+
+Le programme extrait  un chemin partiel de la  liste, sélectionne tous
+les départements  voisins du premier  et figurant dans  l'ensemble des
+départements inutilisés. Pour chaque département ainsi sélectionné, le
+programme complète la chaine de  caractères et supprime le département
+de  l'ensemble. Ainsi,  en supposant  que  le programme  a extrait  le
+chemin partiel commençant par l'Eure (27), les départements inutilisés
+sont  14, 50,  61 et  76, mais  le département  50 (Manche)  n'est pas
+voisin de 27. Donc le  programme construit trois chemins partiels avec
+les trois autres  départements. la liste des  chemins partiels devient
+donc :
+
+```
+'14'        { 27 50 61 76 }
+'27 → 14'   { 50 61 76 }
+'27 → 61'   { 14 50 76 }
+'27 → 76'   { 14 50 61 }
+'50'        { 14 27 61 76 }
+'61'        { 14 27 50 76 }
+'76'        { 14 27 50 61 }
+```
+
+Ensuite,  le  programme  extrait  le  chemin `'27  →  76'`.  Il  tente
+d'extraire  les  voisins de  `76`  qui  figurent dans  l'ensemble  des
+départements inutilisés,  `{ 14  50 61 }`.  Il n'y en  a pas.  Donc le
+chemin `'27 → 76'` disparaît de la liste sans compensation.
+
+Un  peu  plus tard,  après  avoir  traité successivement  les  chemins
+`'50'`, `'50 → 61'` et `'50 → 61 → 14'`, la situation est :
+
+```
+'14'                  { 27 50 61 76 }
+'27 → 14'             { 50 61 76 }
+'27 → 61'             { 14 50 76 }
+'50 → 14'             { 27 61 76 }
+'50 → 61 → 14 → 27'   { 76 }
+'50 → 61 → 27'        { 14 76 }
+'61'                  { 14 27 50 76 }
+'76'                  { 14 27 50 61 }
+```
+
+Le programme extrait  le chemin `'50 →  61 → 14 → 27'`.  Il déroule la
+liste des départements à visiter, réduite à la Seine Maritime (76). La
+Seine Maritime  est bien voisine  de l'Eure  (27), donc le  `'76'` est
+enlevé  de l'ensemble  et  ajouté  à la  chaîne  de caractères.  Comme
+l'ensemble  des départements  restant à  visiter est  vide, le  chemin
+partiel `'50  → 61 → 14  → 27 →  76'` n'est plus un  chemin _partiel_,
+c'est un chemin  régional _complet_. Il est donc stocké  dans la table
+`Paths` et il n'est pas réinjecté dans la liste des chemins partiels.
+
+Cas particulier des impasses
+----------------------------
+
+Ainsi  qu'on l'a  vu  ci-dessus, lorsqu'un  département constitue  une
+impasse dans sa région d'appartenance, il est impossible de trouver un
+chemin hamiltonien où ce département  figure au milieu. Le département
+en impasse est toujours au début ou à la fin du chemin régional.
+
+Pour accélérer la génération des chemins régionaux, au lieu d'alimenter
+la liste avec tous les départements :
+
+```
+'14'   { 27 50 61 76 }
+'27'   { 14 50 61 76 }
+'50'   { 14 27 61 76 }
+'61'   { 14 27 50 76 }
+'76'   { 14 27 50 61 }
+```
+
+on alimente  cette liste avec  uniquement le chemin commençant  par le
+département en impasse, c'est-à-dire avec
+
+```
+'76'   { 14 27 50 61 }
+```
+
+Et on positionne un indicateur pour  rappeler que chaque fois que l'on
+stocke dans la base de données un chemin régional commençant par `76`,
+il faut aussi stocker le chemin inverse, se terminant par `76`.
+
+S'il y  a deux départements en  impasse (cf dans la  carte `fr1970` le
+Languedoc-Roussillon, mais  aussi l'Alsace,  la Haute-Normandie  et le
+Nord-Pas-de-Calais), on prend l'un des deux, peu importe.
+
+Et s'il y en a trois, on  arrête tout, on sait qu'il est impossible de
+construire un chemin hamiltonien dans cette région.
+
+Le  programme commence  donc par  compter pour  chaque département  le
+nombre de  frontières qu'il partage  avec des départements de  la même
+région.
+
+Remarque : le même raisonnement peut se faire au niveau des régions.
+
+Cas des départements isolés
+---------------------------
+
+Puisque le programme cherche les  départements avec un seul voisin, il
+fait attention également aux départements avec aucun voisin.
+
+Si l'on  trouve un  département sans aucun  voisin, cela  peut vouloir
+dire que le  graphe de la région  n'est pas connexe. Ce  serait le cas
+dans  une  carte  de  Britannia  en  ne  prenant  que  les  frontières
+terrestres et en  ignorant les liaisons côtières.  Ainsi, les Hébrides
+ne  seraient plus  reliées  à Skye  et les  Orcades  ne seraient  plus
+reliées à  Caithness, le  graphe de l'Écosse  ne serait  plus connexe.
+Dans ce  cas, le programme  arrête la  génération des chemins  avec un
+message d'erreur.
+
+Cela dit, il y a un cas de figure où cela ne constitue pas une erreur.
+Ce  cas de  figure  est présent  à plusieurs  reprises  dans la  carte
+`frreg`. Certaines régions de 2015  ne contiennent qu'une seule région
+de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
+Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
+que l'unique région-1970 de la région-2015 n'ait aucun voisin.
+
 Affichage du résultat
 =====================
 
