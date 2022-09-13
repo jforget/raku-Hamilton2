@@ -16,6 +16,11 @@ use access-sql;
 
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
+my $sto-mesg = $dbh.prepare(q:to/SQL/);
+insert into Messages (map, dh, errcode, area, nb)
+       values        (?,   ?,  ?,       ?,    ?)
+SQL
+
 sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
@@ -41,17 +46,37 @@ sub MAIN (
     die "Unknown regions: ", @unknown-regions.join(', ');
   }
 
+  $dbh.execute("begin transaction");
+  $dbh.execute("delete from Paths          where map = ? and level = 3", $map);
+  $dbh.execute("delete from Path_Relations where map = ?"              , $map);
+  $dbh.execute("commit");
+
   if $macro or $regions eq '' {
     say "generating macro-paths for $map";
+    generate($map, 1, '', 'MAC');
   }
   if ! $macro && $regions eq '' {
     say "generating regional paths for all regions of $map";
+    for access-sql::list-big-areas($map) -> $region {
+      say "generating regional paths for region $region<code> of $map";
+      generate($map, 2, $region<code>, 'REG');
+    }
   }
   if $regions ne '' {
     for @regions -> Str $region {
       say "generating regional paths for region $region of $map";
+      generate($map, 2, $region, 'REG');
     }
   }
+}
+
+sub generate(Str $map, Int $level, Str $region, Str $prefix) {
+  $dbh.execute("begin transaction");
+  $dbh.execute("delete from Paths    where map = ? and level = ? and area = ?", $map, $level, $region);
+  $dbh.execute("delete from Messages where map = ? and area = ? and errcode like ?", $map, $region, $prefix ~ '%');
+  $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '1', $region, 0);
+  $dbh.execute("commit");
+
 }
 
 
