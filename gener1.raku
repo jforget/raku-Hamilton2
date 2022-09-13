@@ -21,6 +21,11 @@ insert into Messages (map, dh, errcode, area, nb)
        values        (?,   ?,  ?,       ?,    ?)
 SQL
 
+my $sto-path = $dbh.prepare(q:to/SQL/);
+insert into Paths (map, level, area, num, path, from_code, to_code, macro_num)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       0)
+SQL
+
 sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
@@ -71,11 +76,82 @@ sub MAIN (
 }
 
 sub generate(Str $map, Int $level, Str $region, Str $prefix) {
+
+  # Initial clean-up for the region
   $dbh.execute("begin transaction");
   $dbh.execute("delete from Paths    where map = ? and level = ? and area = ?", $map, $level, $region);
   $dbh.execute("delete from Messages where map = ? and area = ? and errcode like ?", $map, $region, $prefix ~ '%');
   $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '1', $region, 0);
   $dbh.execute("commit");
+
+  # For each small area, counting how many borders this area shares with other small areas from the same big area.
+  # For each big area, just count how many borders.
+  my @all-areas;
+  my @dead-end-areas;
+  my @isolated-areas;
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select A.code, count(B.from_code) cnt
+  from      Areas   A
+  left join Borders B
+    on   B.map        = A.map
+    and  B.level      = A.level
+    and  B.from_code  = A.code
+    and  B.upper_to   = A.upper
+  where  A.map   = ?
+  and    A.level = ?
+  and    A.upper = ?
+  group by A.map, A.level, A.code
+  order by A.map, A.level, A.code
+  SQL
+  for $sth.execute($map, $level, $region).allrows(:array-of-hash) -> $row {
+    #say $row;
+    push @all-areas     , $row<code>;
+    push @dead-end-areas, $row<code> if $row<cnt> == 1;
+    push @isolated-areas, $row<code> if $row<cnt> == 0;
+  }
+
+  if @isolated-areas.elems == 1 && @all-areas.elems == 1 {
+    # easy generation: just one path of length zero!
+    my Str $single-area = @isolated-areas[0];
+    #say "region $region has only one area, only one path and its length is zero";
+    $dbh.execute("begin transaction");
+    $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1);
+    $dbh.execute("commit");
+    return;
+  }
+
+  if @isolated-areas.elems ≥ 1 && @all-areas.elems > 1 {
+    say "region $region is not connected: {@isolated-areas}";
+    $dbh.execute("begin transaction");
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '3', $region, 0);
+    $dbh.execute("commit");
+    return;
+  }
+
+  if @dead-end-areas.elems ≥ 3 {
+    say "region $region has too many dead ends: {@dead-end-areas}";
+    $dbh.execute("begin transaction");
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '4', $region, 0);
+    $dbh.execute("commit");
+    return;
+  }
+
+  my @to-do-list;
+  my Bool $there-and-back-again = False;
+  if @dead-end-areas.elems ≥ 1 {
+    my Str $dead-end = @dead-end-areas[0];
+    say "region $region uses dead-end $dead-end";
+    $there-and-back-again = True;
+    push @to-do-list, { path => $dead-end, from => $dead-end, to => $dead-end, free => set(|@all-areas) (-) set($dead-end) }; 
+  }
+  else {
+    say "region $region: complete generation";
+    for @all-areas -> $r {
+      push @to-do-list, { path => $r, from => $r, to => $r, free => set(|@all-areas) (-) set($r) }; 
+    }
+  }
+say @to-do-list;
 
 }
 
