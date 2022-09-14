@@ -122,7 +122,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   }
 
   if @isolated-areas.elems ≥ 1 && @all-areas.elems > 1 {
-    say "region $region is not connected: {@isolated-areas}";
+    #say "region $region is not connected: {@isolated-areas}";
     $dbh.execute("begin transaction");
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '3', $region, 0);
     $dbh.execute("commit");
@@ -130,7 +130,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   }
 
   if @dead-end-areas.elems ≥ 3 {
-    say "region $region has too many dead ends: {@dead-end-areas}";
+    #say "region $region has too many dead ends: {@dead-end-areas}";
     $dbh.execute("begin transaction");
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '4', $region, 0);
     $dbh.execute("commit");
@@ -141,18 +141,72 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   my Bool $there-and-back-again = False;
   if @dead-end-areas.elems ≥ 1 {
     my Str $dead-end = @dead-end-areas[0];
-    say "region $region uses dead-end $dead-end";
+    #say "region $region uses dead-end $dead-end";
     $there-and-back-again = True;
-    push @to-do-list, { path => $dead-end, from => $dead-end, to => $dead-end, free => set(|@all-areas) (-) set($dead-end) }; 
+    push @to-do-list, {  path => $dead-end
+                       , from => $dead-end
+                       , to   => $dead-end
+                       , free => set(|@all-areas) (-) set($dead-end) }; 
   }
   else {
-    say "region $region: complete generation";
+    #say "region $region: complete generation";
     for @all-areas -> $r {
-      push @to-do-list, { path => $r, from => $r, to => $r, free => set(|@all-areas) (-) set($r) }; 
+      push @to-do-list, {  path => $r
+                         , from => $r
+                         , to   => $r
+                         , free => set(|@all-areas) (-) set($r) }; 
     }
   }
-say @to-do-list;
 
+  my Int $path-number = 0;
+  $dbh.execute("begin transaction");
+
+  while @to-do-list.elems ≥ 1 {
+    my $partial-path = @to-do-list.pop;
+    my $sth = $dbh.prepare(q:to/SQL/);
+    select to_code
+    from   Borders
+    where  map       = ?
+    and    level     = ?
+    and    upper_to  = ?
+    and    from_code = ?
+    SQL
+    for $sth.execute($map, $level, $region, $partial-path<to>).allrows -> $arr-next {
+      my Str $next = $arr-next[0];
+      #say $partial-path<to>, " → ", $next, ' ', $partial-path<free>, ' ', $partial-path<free>{$next};
+      if $partial-path<free>{$next} {
+        my Str $new-path = "{$partial-path<path>} → $next";
+        my     $new-free = $partial-path<free> (-) set($next); 
+        #say             {  path => $new-path
+        #                 , from => $partial-path<from>
+        #                 , to   => $next
+        #                 , free => $new-free };
+        if $new-free.elems == 0 {
+          ++ $path-number;
+          $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
+          if $there-and-back-again {
+            my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
+            ++ $path-number;
+            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
+          }
+        }
+        else {
+          push @to-do-list, {  path => $new-path
+                             , from => $partial-path<from>
+                             , to   => $next
+                             , free => $new-free };
+        }
+      }
+    }
+  }
+
+  if $path-number != 0 {
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '5', $region, $path-number);
+  }
+  else {
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '6', $region, $path-number);
+  }
+  $dbh.execute("commit");
 }
 
 
