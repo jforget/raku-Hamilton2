@@ -51,7 +51,8 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-map/$map/$area<upper>";
   }
-  return full-map::render($lng, $map, %map, @areas, @borders);
+  my @messages = access-sql::list-messages($map);
+  return full-map::render($lng, $map, %map, @areas, @borders, messages => @messages);
 }
 
 get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {

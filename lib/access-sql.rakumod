@@ -122,6 +122,12 @@ our sub list-borders-for-region(Str $map, Str $region) {
   return @val;
 }
 
+our sub list-messages(Str $map) {
+  my $sth = $dbh.prepare("select * from Messages where map = ? order by dh");
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
 =begin POD
 
 =encoding utf8
