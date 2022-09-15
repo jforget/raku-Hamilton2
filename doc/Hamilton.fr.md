@@ -220,6 +220,7 @@ Les autres informations sont :
 * `errcode` code du message ou de l'erreur,
 * `area` code de la zone concernée par l'erreur,
 * `nb` nombre associé à l'erreur ou au message, par exemple le nombre de chemins générés.
+* `data` des données fournissant un complément d'information au message, par exemple la liste des zones en impasse.
 
 Initialisation
 ==============

@@ -47,6 +47,7 @@ create table Messages (map        TEXT
                     ,  errcode    TEXT
                     ,  area       TEXT
                     ,  nb         INTEGER
+                    ,  data       TEXT
                     );
 
 

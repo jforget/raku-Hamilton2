@@ -213,6 +213,7 @@ Other data are:
 * `errcode` the code of the error,
 * `area` the code of the area to which the error applies,
 * `nb` the number associated with the error or the message, for example the number of generated paths.
+* `data` some data giving further explanation on the error, for example the list of dead-end areas
 
 Initialisation
 ==============

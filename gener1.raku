@@ -17,8 +17,8 @@ use access-sql;
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);
-insert into Messages (map, dh, errcode, area, nb)
-       values        (?,   ?,  ?,       ?,    ?)
+insert into Messages (map, dh, errcode, area, nb, data)
+       values        (?,   ?,  ?,       ?,    ?,  ?)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
@@ -90,7 +90,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   $dbh.execute("begin transaction");
   $dbh.execute("delete from Paths    where map = ? and level = ? and area = ?", $map, $level, $region);
   $dbh.execute("delete from Messages where map = ? and area = ? and errcode like ?", $map, $region, $prefix ~ '%');
-  $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '1', $region, 0);
+  $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '1', $region, 0, '');
   $dbh.execute("commit");
 
   # For each small area, counting how many borders this area shares with other small areas from the same big area.
@@ -125,7 +125,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     #say "region $region has only one area, only one path and its length is zero";
     $dbh.execute("begin transaction");
     $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area);
-    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1, '');
     $dbh.execute("commit");
     return;
   }
@@ -133,7 +133,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   if @isolated-areas.elems ≥ 1 && @all-areas.elems > 1 {
     #say "region $region is not connected: {@isolated-areas}";
     $dbh.execute("begin transaction");
-    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '3', $region, 0);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '3', $region, 0, @isolated-areas.join(' '));
     $dbh.execute("commit");
     return;
   }
@@ -141,7 +141,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   if @dead-end-areas.elems ≥ 3 {
     #say "region $region has too many dead ends: {@dead-end-areas}";
     $dbh.execute("begin transaction");
-    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '4', $region, 0);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '4', $region, 0, @dead-end-areas.join(' '));
     $dbh.execute("commit");
     return;
   }
@@ -156,6 +156,9 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
                        , from => $dead-end
                        , to   => $dead-end
                        , free => set(|@all-areas) (-) set($dead-end) }; 
+    $dbh.execute("begin transaction");
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '5', $region, 0, $dead-end);
+    $dbh.execute("commit");
   }
   else {
     #say "region $region: complete generation";
@@ -210,10 +213,10 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
   }
 
   if $path-number != 0 {
-    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '5', $region, $path-number);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '7', $region, $path-number, '');
   }
   else {
-    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '6', $region, $path-number);
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '6', $region, $path-number, '');
   }
   $dbh.execute("commit");
   return $path-number;

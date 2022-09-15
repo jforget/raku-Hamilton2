@@ -46,8 +46,8 @@ insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long,
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);
-insert into Messages (map, dh, errcode, area, nb)
-       values        (?,   ?,  ?,       '',   0)
+insert into Messages (map, dh, errcode, area, nb, data)
+       values        (?,   ?,  ?,       '',   0,  '')
 SQL
 
 my Str $reg1970;
