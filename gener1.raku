@@ -58,19 +58,28 @@ sub MAIN (
 
   if $macro or $regions eq '' {
     say "generating macro-paths for $map";
-    generate($map, 1, '', 'MAC');
+    my $nb = generate($map, 1, '', 'MAC');
+    $dbh.execute("begin transaction");
+    $dbh.execute("update Maps set nb_macro = ? where map = ?", $nb, $map);
+    $dbh.execute("commit");
   }
   if ! $macro && $regions eq '' {
     say "generating regional paths for all regions of $map";
     for access-sql::list-big-areas($map) -> $region {
       say "generating regional paths for region $region<code> of $map";
-      generate($map, 2, $region<code>, 'REG');
+      my $nb = generate($map, 2, $region<code>, 'REG');
+      $dbh.execute("begin transaction");
+      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
+      $dbh.execute("commit");
     }
   }
   if $regions ne '' {
     for @regions -> Str $region {
       say "generating regional paths for region $region of $map";
-      generate($map, 2, $region, 'REG');
+      my $nb = generate($map, 2, $region, 'REG');
+      $dbh.execute("begin transaction");
+      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
+      $dbh.execute("commit");
     }
   }
 }
@@ -207,6 +216,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '6', $region, $path-number);
   }
   $dbh.execute("commit");
+  return $path-number;
 }
 
 
