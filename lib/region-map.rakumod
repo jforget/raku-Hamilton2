@@ -13,8 +13,9 @@ unit package region-map;
 use Template::Anti :one-off;
 use map-gd;
 use MIME::Base64;
+use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -23,11 +24,18 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders) {
   $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode");
   $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode");
   $at('map')».content($imagemap);
+  $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
-our sub render(Str $lang, Str $map, Str $region, %map, @areas, @borders) {
+our sub render(Str $lang, Str $map, Str $region, %map, @areas, @borders, :@messages) {
   my &filling = anti-template :source("html/region-map.$lang.html".IO.slurp), &fill;
-  return filling(lang => $lang, mapcode => $map, map => %map, areas => @areas, borders => @borders);
+  return filling( lang     => $lang
+                , mapcode  => $map
+                , map      => %map
+                , areas    => @areas
+                , borders  => @borders
+                , messages => @messages
+                );
 }
 
 

@@ -128,6 +128,19 @@ our sub list-messages(Str $map) {
   return @val;
 }
 
+our sub list-regional-messages(Str $map, Str $region) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select *
+  from Messages
+  where map = ?
+  and  (errcode = 'INIT'
+     or area    = ?)
+  order by dh
+  SQL
+  my @val = $sth.execute($map, $region).allrows(:array-of-hash);
+  return @val;
+}
+
 =begin POD
 
 =encoding utf8

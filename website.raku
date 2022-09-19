@@ -67,7 +67,9 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-map/$map/$area<code>";
   }
-  return macro-map::render($lng, $map, %map, @areas, @borders);
+  my @messages = access-sql::list-messages($map);
+  return macro-map::render($lng, $map, %map, @areas, @borders
+                          , messages => @messages);
 }
 
 get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
@@ -90,7 +92,9 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
       $area<url> = "/$lng/region-map/$map/$area<upper>";
     }
   }
-  return region-map::render($lng, $map, $region, %map, @areas, @borders);
+  my @messages = access-sql::list-regional-messages($map, $region);
+  return region-map::render($lng, $map, $region, %map, @areas, @borders
+                          , messages => @messages);
 }
 
 baile();
