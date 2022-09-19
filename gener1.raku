@@ -69,7 +69,7 @@ sub MAIN (
       say "generating regional paths for region $region<code> of $map";
       my $nb = generate($map, 2, $region<code>, 'REG');
       $dbh.execute("begin transaction");
-      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
+      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, ~ $region);
       $dbh.execute("commit");
     }
   }
@@ -84,7 +84,7 @@ sub MAIN (
   }
 }
 
-sub generate(Str $map, Int $level, Str $region, Str $prefix) {
+sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
 
   # Initial clean-up for the region
   $dbh.execute("begin transaction");
@@ -127,7 +127,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area);
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1, '');
     $dbh.execute("commit");
-    return;
+    return 1;
   }
 
   if @isolated-areas.elems ≥ 1 && @all-areas.elems > 1 {
@@ -135,7 +135,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     $dbh.execute("begin transaction");
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '3', $region, 0, @isolated-areas.join(' '));
     $dbh.execute("commit");
-    return;
+    return 0;
   }
 
   if @dead-end-areas.elems ≥ 3 {
@@ -143,7 +143,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     $dbh.execute("begin transaction");
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '4', $region, 0, @dead-end-areas.join(' '));
     $dbh.execute("commit");
-    return;
+    return 0;
   }
 
   my @to-do-list;
@@ -170,10 +170,14 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
     }
   }
 
+  my Int $max-to-do   = 0;
   my Int $path-number = 0;
   $dbh.execute("begin transaction");
 
   while @to-do-list.elems ≥ 1 {
+    if $max-to-do < @to-do-list.elems {
+      $max-to-do = @to-do-list.elems
+    }
     my $partial-path = @to-do-list.pop;
     my $sth = $dbh.prepare(q:to/SQL/);
     select to_code
@@ -196,10 +200,20 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix) {
         if $new-free.elems == 0 {
           ++ $path-number;
           $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
+          if $path-number %% 100 {
+            $dbh.execute("commit");
+            $dbh.execute("begin transaction");
+            say "path $path-number max-to-do $max-to-do";
+          }
           if $there-and-back-again {
             my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
             ++ $path-number;
             $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
+            if $path-number %% 100 {
+              $dbh.execute("commit");
+              $dbh.execute("begin transaction");
+              say "path $path-number max to-do $max-to-do";
+            }
           }
         }
         else {
