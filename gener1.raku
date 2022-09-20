@@ -201,30 +201,20 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       #say $partial-path<to>, " → ", $next, ' ', $partial-path<free>, ' ', $partial-path<free>{$next};
       if $partial-path<free>{$next} {
         my Str $new-path = "{$partial-path<path>} → $next";
-        my     $new-free = $partial-path<free> (-) set($next); 
-        #say             {  path => $new-path
-        #                 , from => $partial-path<from>
-        #                 , to   => $next
-        #                 , free => $new-free };
+        my Set $new-free = $partial-path<free> (-) set($next); 
         if $new-free.elems == 0 {
           ++ $path-number;
           $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
+          if $there-and-back-again {
+            my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
+            ++ $path-number;
+            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
+          }
           if $path-number ≥ $complete-threshold {
             $dbh.execute("commit");
             $dbh.execute("begin transaction");
             aff-stat();
             $complete-threshold += $complete-increment;
-          }
-          if $there-and-back-again {
-            my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
-            ++ $path-number;
-            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
-            if $path-number ≥ $complete-threshold {
-              $dbh.execute("commit");
-              $dbh.execute("begin transaction");
-              aff-stat();
-              $complete-threshold += $complete-increment;
-            }
           }
         }
         else {
@@ -241,6 +231,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       }
     }
   }
+  aff-stat();
 
   if $path-number != 0 {
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '7', $region, $path-number, '');
