@@ -170,8 +170,17 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     }
   }
 
-  my Int $max-to-do   = 0;
   my Int $path-number = 0;
+  my Int $partial-paths-nb   = @to-do-list.elems;
+  my Int $max-to-do          = @to-do-list.elems;
+  my Int $complete-threshold =     0;
+  my Int $complete-increment =   100; 
+  my Int $partial-threshold  =     0;
+  my Int $partial-increment  = 10000; 
+
+  sub aff-stat {
+    say "{DateTime.now.hh-mm-ss} complete paths $path-number, partial paths $partial-paths-nb (to-do list {@to-do-list.elems} / $max-to-do)";
+  }
   $dbh.execute("begin transaction");
 
   while @to-do-list.elems ≥ 1 {
@@ -200,19 +209,21 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         if $new-free.elems == 0 {
           ++ $path-number;
           $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
-          if $path-number %% 100 {
+          if $path-number ≥ $complete-threshold {
             $dbh.execute("commit");
             $dbh.execute("begin transaction");
-            say "path $path-number max-to-do $max-to-do";
+            aff-stat();
+            $complete-threshold += $complete-increment;
           }
           if $there-and-back-again {
             my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
             ++ $path-number;
             $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
-            if $path-number %% 100 {
+            if $path-number ≥ $complete-threshold {
               $dbh.execute("commit");
               $dbh.execute("begin transaction");
-              say "path $path-number max to-do $max-to-do";
+              aff-stat();
+              $complete-threshold += $complete-increment;
             }
           }
         }
@@ -221,6 +232,11 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
                              , from => $partial-path<from>
                              , to   => $next
                              , free => $new-free };
+          ++$partial-paths-nb;
+          if $partial-paths-nb ≥ $partial-threshold {
+            aff-stat();
+            $partial-threshold += $partial-increment;
+          }
         }
       }
     }
