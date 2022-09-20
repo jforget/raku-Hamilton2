@@ -1,7 +1,7 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
 Le but de ce projet est de trouver des chemins doublement hamiltoniens
-dans une carte administrative. Dans un graphe connexe, un
+dans une carte administrative. Dans un graphe connexe non orienté, un
 [chemin hamiltonien](https://mathworld.wolfram.com/HamiltonianPath.html)
 est un chemin qui passe une fois  et une seule par chacun des sommets.
 Mais  qu'est-ce  un  chemin  _doublement_ hamiltonien  ?  Prenons  par
@@ -14,7 +14,7 @@ fois  que   le  chemin  traverse   une  région,  le  bout   de  chemin
 correspondant est lui aussi hamiltonien.
 
 La question  de déterminer  s'il existe des  chemins eulériens  sur un
-graphe connexe  est simple et  bien connue. La question  de déterminer
+graphe connexe non orienté est simple et  bien connue. La question  de déterminer
 s'il existe des chemins hamiltoniens est plus délicate, il s'agit même
 d'un problème  NP-complet. Avec  94 départements, la  combinatoire est
 bien  au-delà des  ressources que  j'accepte d'allouer  à un  problème
@@ -436,6 +436,52 @@ Ce  cas de  figure  est présent  à plusieurs  reprises  dans la  carte
 de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
 que l'unique région-1970 de la région-2015 n'ait aucun voisin.
+
+File ou pile ?
+--------------
+
+Comment  choisit-on le  chemin partiel  à  traiter dans  la liste  des
+chemins partiels ? Nous avons plusieurs possibilités :
+
+* L'accès pédagogique, utilisé ci-dessus. Chaque fois que l'on extrait
+un chemin partiel de la liste,  comme par hasard c'est celui qui donne
+le  résultat le  plus intéressant  et,  autant que  possible, le  plus
+rapidement. Impossible à  mettre en œuvre dans  un véritable programme
+fonctionnant sur du silicium.
+
+* L'accès aléatoire.  Cela existe en Raku,  avec l'instruction `pick`.
+Pas commode pour la reproductibilité, donc pour le débugage.
+
+* L'accès en file, avec le sigle anglais _FIFO_.
+
+* L'accès en pile, avec le sigle anglais _LIFO_.
+
+Il va de soi que le choix se réduit aux deux derniers. Dans _Mastering
+Algorithms with Perl_, à une page que je ne retrouve plus, les auteurs
+écrivent que l'intérêt  de l'accès en file est  qu'il permet d'obtenir
+les  chemins les  plus courts.  Dans  un graphe  non-orienté avec  _S_
+sommets et _A_ arêtes, tous  les chemins hamiltoniens ont une longueur
+de _S-1_ et  tous les chemins eulériens ont une  longueur de _A_. Dans
+un cas comme dans l'autre, il n'y  a aucun intérêt à utiliser un accès
+en file.
+
+Reprenons la question plus précisément. Utiliser un accès en file fait
+que l'on génère d'abord tous les  chemins de longueur 1, puis tous les
+chemins de longueur  2 en purgeant les chemins de  longueur 1, puis on
+génère  tous les  chemins de  longueur 3  en purgeant  les chemins  de
+longueur  2. Et  ainsi de  suite.  Arrive un  moment où  la liste  des
+chemins partiels contient tous les  chemins de longueur _S-2_. C'est à
+ce moment-là  seulement que  l'on génère les  chemins complets  et que
+l'on alimente la base de données  tout en purgeant la liste en mémoire
+vive. Dans le cas de la carte _fr1970_ (21 sommets, 46 arêtes), il y a
+3982 chemins complets. Donc il a  eu au moins 3982 chemins partiels de
+longueur _S-2_, tous stockés en mémoire vive.
+
+À l'inverse,  avec un  accès en pile,  certains chemins  complets sont
+générés  et stockés  en  base  de données  très  tôt.  En ajoutant  un
+mouchard dans la génération des chemins, on peut constater que pour la
+carte `fr1970`,  le nombre de chemins  partiels simultanément présents
+dans la liste ne dépasse jamais 25.
 
 Affichage du résultat
 =====================

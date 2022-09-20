@@ -1,7 +1,7 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
 This  project  aims  at   extracting  doubly  hamiltonian  paths  from
-administrative maps. In a connected graph, an
+administrative maps. In a connected unoriented graph, an
 [Hamiltonian path](https://mathworld.wolfram.com/HamiltonianPath.html)
 is a  path crossing each vertex  exactly once. But what  is a _doubly_
 Hamiltonian path?  Let us consider  the administrative map  of France.
@@ -12,7 +12,7 @@ Hamiltonian path  is an hamiltonian path  crossing each one of  the 94
 departments, with  the additional  constraint that when  narrowing the
 view on any single region, the partial path is still Hamiltonian.
 
-Checking whether  an Eulerian path  exists in  a connected graph  is a
+Checking whether  an Eulerian path  exists in  a connected unoriented graph  is a
 well-known  problem. Checking  whether an  Hamiltonian path  exists is
 more  difficult,   it  is  even   an  NP-complete  problem.   With  94
 departments, a brute-force  approach would exceed the  resources I may
@@ -428,6 +428,53 @@ Loire,         Centre-Val-de-Loire,          Île-de-France         and
 Provence-Alpes-Côte-d'Azur. In this case, the lone Y1970-region has no
 neighbours  within its  Y2015-region. Yet,  we find  a regional  path,
 composed of one single node and no edge.
+
+FIFO or LIFO?
+-------------
+
+Which method do we use to extract from the to-do list the next partial
+path to process? There are several possibilities:
+
+* The pedagogical method. Each time a partial path is extracted, it is
+the  path  which  leads  to   the  most  interesting  discussion,  and
+preferably  in  the  shortest  time.  How  nice!  Except  that  it  is
+impossible to do on a silicon-based computer.
+
+* Randomised access. It is easy  to implement, with Raku's `pick`. The
+problem  is  that processes  are  no  longer reproductible,  therefore
+debugging is difficult.
+
+* FIFO access.
+
+* LIFO access.
+
+The  real  choice  is  limited  to  the  last  two  possibilities.  In
+_Mastering Algorithms with Perl_, (I do not remember the page number),
+the authors write that the good point of FIFO access (or breadth-first
+searching) is that  it finds the shortest path. In  a unoriented graph
+with _N_ nodes  and _E_ edges, all Hamiltonian paths  are always _N-1_
+edges-long and all  Eulerian paths are always _E_  edges-long. In both
+cases, finding the shortest path is pointless, so we have no reason to
+use FIFO access.
+
+Let us consider  the question more closely. If using  FIFO access, the
+generation programme will generate all  1-edge partial paths and store
+them into the to-do list. Then the programme will generate all 2-edges
+partial paths and  store them into the to-do list,  while deleting the
+1-edge partial  paths. Then  all 3-edges  partial paths  are generated
+while  the 2-edges  partial paths  are deleted.  Near the  end of  the
+generation, the to-do  list will contain all  _N-2_-edges long partial
+paths.  And only  then, the  programme will  store the  complete paths
+(_N-1_ long) into  the database and delete the partial  paths from the
+in-memory to-do list.  In the case of the `fr1970`  map, with 21 nodes
+and 46  edges, there are 3982  complete macro-paths. So there  were at
+least 3982  partial macro-paths of  length _N-2_, all together  in the
+in-memory to-do list.
+
+On the other  hand, when using a LIFO access,  some complete paths are
+built very  early during the  process and immediately stored  into the
+database. By  adding a  telltale, we  can notice  that the  to-do list
+never contains more than 25 partial paths.
 
 Displaying the Results
 ======================
