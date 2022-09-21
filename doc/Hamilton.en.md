@@ -466,15 +466,31 @@ while  the 2-edges  partial paths  are deleted.  Near the  end of  the
 generation, the to-do  list will contain all  _N-2_-edges long partial
 paths.  And only  then, the  programme will  store the  complete paths
 (_N-1_ long) into  the database and delete the partial  paths from the
-in-memory to-do list.  In the case of the `fr1970`  map, with 21 nodes
-and 46  edges, there are 3982  complete macro-paths. So there  were at
-least 3982  partial macro-paths of  length _N-2_, all together  in the
-in-memory to-do list.
+in-memory to-do list.  In the case of the `fr2015`  map, with 12 nodes
+and 23  edges, there are  894 complete  macro-paths. So there  were at
+least 894  partial macro-paths  of length _N-2_,  all together  in the
+in-memory to-do list. In fact, there were even more than that, because
+the programme has generated _N-2_ paths which fail to produce complete
+_N-1_ paths.  For example, you  will find many _N-2_  paths containing
+the subpath `HDF  → NOR → PDL  → NAQ` but none of  these partial paths
+will be able  to generate a _N-1_ path reaching  `BRE` (Britanny). All
+these "unsuccessful" _N-2_  paths will be stored in the  to-do list in
+addition to the 894 "successful" partial paths.
 
 On the other  hand, when using a LIFO access,  some complete paths are
 built very  early during the  process and immediately stored  into the
-database. By  adding a  telltale, we  can notice  that the  to-do list
-never contains more than 25 partial paths.
+database. By  adding a telltale, we  can notice that for  `fr2015` the
+to-do list never contains more than 25 partial paths.
+
+The theoretical max size of the  to-do list when using LIFO access can
+be computed thus: first, the  programme stores _N_ zero-length partial
+paths. Then it removes one of them and replaces it with _N-1_ 1-length
+partial paths. Then it removes one  of the 1-length paths and replaces
+it with _N-2_  2-length partial paths. And so on.  The maximum size of
+the to-do list  is the sum of  all numbers from _N-1_ to  _1_. With 12
+nodes, that means that the theoretical maximum number is 66, way below
+the number  894 which is itself  less than the actual  number of _N-2_
+paths that would be stored in the to-do list if using FIFO.
 
 Displaying the Results
 ======================

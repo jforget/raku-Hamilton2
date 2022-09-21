@@ -473,15 +473,34 @@ longueur  2. Et  ainsi de  suite.  Arrive un  moment où  la liste  des
 chemins partiels contient tous les  chemins de longueur _S-2_. C'est à
 ce moment-là  seulement que  l'on génère les  chemins complets  et que
 l'on alimente la base de données  tout en purgeant la liste en mémoire
-vive. Dans le cas de la carte _fr1970_ (21 sommets, 46 arêtes), il y a
-3982 chemins complets. Donc il a  eu au moins 3982 chemins partiels de
-longueur _S-2_, tous stockés en mémoire vive.
+vive. Dans le cas de la carte `fr2015` (12 sommets, 23 arêtes), il y a
+894 chemins  complets. Donc il a  eu au moins 894  chemins partiels de
+longueur _S-2_,  tous stockés en mémoire  vive. En fait, la  liste des
+chemins partiels contient un nombre supérieur de chemins partiels, car
+il y  a également des  chemins _S-2_ qui ne  donneront pas lieu  à des
+chemins  complets  _S-1_.  Par  exemple, vous  trouverez  des  chemins
+partiels contenant le sous-chemin `HDF →  NOR → PDL → NAQ`, mais aucun
+de  ces chemins  ne pourra  engendrer  un chemin  _S-1_ atteignant  la
+Bretagne (`BRE`).  Tous ces chemins partiels  infructueux sont stockés
+dans la liste avec les 894 chemins partiels fructueux.
 
 À l'inverse,  avec un  accès en pile,  certains chemins  complets sont
 générés  et stockés  en  base  de données  très  tôt.  En ajoutant  un
 mouchard dans la génération des chemins, on peut constater que pour la
-carte `fr1970`,  le nombre de chemins  partiels simultanément présents
+carte `fr2015`,  le nombre de chemins  partiels simultanément présents
 dans la liste ne dépasse jamais 25.
+
+La taille  théorique de  la liste  utilisée en  LIFO peut  se calculer
+ainsi. Au début, le programme stocke _S_ chemins partiels avec un seul
+sommet et  aucune arête.  Puis il  extrait l'un de  ces chemins  et le
+remplace par _S-1_ chemins partiels de  longueur 1. Puis il extrait un
+chemin  partiel de  longueur 1  et le  remplace par  _S-2_ chemins  de
+longueur 2. Et ainsi de suite. La  taille maximale est donc égale à la
+somme des  nombres de  _S-1_ à _1_.  Pour les 12  sommets de  la carte
+`fr2015`, cela donne  une taille maximale de 66, ce  qui est largement
+en-deçà de  la taille 894, qui  est elle-même inférieure au  nombre de
+chemins _S-2_ qui  auraient été stockés dans la  liste fonctionnant en
+FIFO.
 
 Affichage du résultat
 =====================
