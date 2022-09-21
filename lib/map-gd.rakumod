@@ -18,7 +18,7 @@ our sub draw(@areas, @borders) {
   %color<Red   > = $image.colorAllocate(255,   0,   0);
   %color<Green > = $image.colorAllocate(  0, 191,   0);
   %color<Blue  > = $image.colorAllocate(  0,   0, 255);
-  %color<Yellow> = $image.colorAllocate(127, 127,   0);
+  %color<Yellow> = $image.colorAllocate(223, 150,  23);
 
   my Num $long-min = min map { $_<long> }, @areas;
   my Num $long-max = max map { $_<long> }, @areas;
@@ -78,7 +78,7 @@ our sub draw(@areas, @borders) {
       $xm = conv-x($border<long_m>.Num);
       $ym = conv-y($border<lat_m >.Num);
     }
-    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>});
+    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>);
   }
 
   my Str $imagemap = '';
@@ -92,14 +92,22 @@ our sub draw(@areas, @borders) {
   return $image.png(), $imagemap;
 }
 
-sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color) {
-  $img.setThickness(1);
+sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name) {
+  my Int $thickness = 1;
+  $img.setThickness($thickness);
   if $x-mid == 0 && $y-mid == 0 {
     $img.line($x-from, $y-from, $x-to , $y-to , $color);
+    if $color-name eq 'Black' {
+      $img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
+    }
   }
   else {
     $img.line($x-from, $y-from, $x-mid, $y-mid, $color);
     $img.line($x-mid , $y-mid , $x-to , $y-to , $color);
+    if $color-name eq 'Black' {
+      # do not bother to compute the middle of the line, just use the turning point
+      $img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
+    }
   }
 }
 

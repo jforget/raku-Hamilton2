@@ -705,6 +705,15 @@ particulier pour la  région maritime. Je ne l'ai pas  fait. Cela ne me
 dérange  pas de  voir  une  macro-carte (ou  carte  réduite) avec  une
 bizarrerie d'affichage.
 
+### Pourquoi y a-t-il des points sur les frontières entre régions ?
+
+Pour  la plupart  des  gens, les  frontières  entre deux  départements
+appartenant  à deux  régions différentes  sont noires,  alors que  les
+frontières entre deux départements de  la même région sont en couleur.
+Les daltoniens ne peuvent pas  toujours percevoir cette différence. La
+présence d'un point sur les frontières inter-régionales leur permet de
+faire la différence entre les deux types de frontières.
+
 LICENCE
 =======
 

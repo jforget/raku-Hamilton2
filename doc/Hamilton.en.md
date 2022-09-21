@@ -684,6 +684,14 @@ data into the database, I could have  coded a special case for the sea
 regions. I did not do it. I  am fine with a macro-map showing a glitch
 when displaying the sea region in a wrong place.
 
+### Why the dots on the region borders?
+
+For  most  people,  the   borders  between  departments  belonging  to
+different  regions are  black, while  the borders  between departments
+belonging to the same region  are coloured. Colour-blind people cannot
+rely  on this  difference. So  the  dots allow  them to  differentiate
+between both kinds of borders.
+
 License
 =======
 
