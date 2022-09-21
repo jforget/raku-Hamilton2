@@ -155,7 +155,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     push @to-do-list, {  path => $dead-end
                        , from => $dead-end
                        , to   => $dead-end
-                       , free => set(|@all-areas) (-) set($dead-end) }; 
+                       , free => set(|@all-areas) (-) set($dead-end) };
     $dbh.execute("begin transaction");
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '5', $region, 0, $dead-end);
     $dbh.execute("commit");
@@ -166,7 +166,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       push @to-do-list, {  path => $r
                          , from => $r
                          , to   => $r
-                         , free => set(|@all-areas) (-) set($r) }; 
+                         , free => set(|@all-areas) (-) set($r) };
     }
   }
 
@@ -174,9 +174,9 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
   my Int $partial-paths-nb   = @to-do-list.elems;
   my Int $max-to-do          = @to-do-list.elems;
   my Int $complete-threshold =     0;
-  my Int $complete-increment =   100; 
+  my Int $complete-increment = commit-interval();
   my Int $partial-threshold  =     0;
-  my Int $partial-increment  = 10000; 
+  my Int $partial-increment  = 10000;
 
   sub aff-stat {
     say "{DateTime.now.hh-mm-ss} complete paths $path-number, partial paths $partial-paths-nb (to-do list {@to-do-list.elems} / $max-to-do)";
@@ -201,7 +201,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       #say $partial-path<to>, " → ", $next, ' ', $partial-path<free>, ' ', $partial-path<free>{$next};
       if $partial-path<free>{$next} {
         my Str $new-path = "{$partial-path<path>} → $next";
-        my Set $new-free = $partial-path<free> (-) set($next); 
+        my Set $new-free = $partial-path<free> (-) set($next);
         if $new-free.elems == 0 {
           ++ $path-number;
           $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
@@ -242,7 +242,6 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
   $dbh.execute("commit");
   return $path-number;
 }
-
 
 =begin POD
 

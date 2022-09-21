@@ -1,4 +1,12 @@
-# Ébauche de carte 
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+#
+#     Génération graphique d'une carte (macro, complète ou régionale)
+#     Graphical generation of a map (macro, full or regional)
+#     Copyright (C) 2022 Jean Forget
+#
+#     Voir la licence dans la documentation incluse ci-dessous.
+#     See the license in the embedded documentation below.
+#
 
 unit package map-gd;
 
@@ -127,3 +135,33 @@ sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url) {
     return "<area shape='circle' coords='$x,$y,$radius' href='$url' />\n";
   }
 }
+
+=begin POD
+
+=encoding utf8
+
+=head1 NAME
+
+map-gd.rakumod -- utility module to generate a PNG objet for a map
+
+=head1 DESCRIPTION
+
+This module deals with graphical  stuff when displaying a macro-map, a
+full map  or a regional  map from  the Hamilton database.  This module
+returns two values. The  first one is the PNG objet.  The other is the
+C<imagemap> HTML source to link  to webpages displaying regional maps.
+This module is used by most modules called by C<website.raku>.
+
+=head1 COPYRIGHT and LICENSE
+
+Copyright 2022, Jean Forget, all rights reserved
+
+This program  is published under  the same conditions as  Raku: the
+Artistic License version 2.0.
+
+The text of  the licenses is available  in the F<LICENSE-ARTISTIC-2.0>
+file in this repository, or you can read them at:
+
+  L<https://raw.githubusercontent.com/Raku/doc/master/LICENSE>
+
+=end POD
