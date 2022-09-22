@@ -483,7 +483,12 @@ database. By  adding a telltale, we  can notice that for  `fr2015` the
 to-do list never contains more than 25 partial paths.
 
 The theoretical max size of the  to-do list when using LIFO access can
-be computed thus: first, the  programme stores _N_ zero-length partial
+be computed by  studying the case of a complete  graph with _N_ nodes,
+that is,  a graph in which  each one of  the _N_ nodes is  adjacent to
+each one  of the  _N-1_ other  nodes. Do not  confuse this  meaning of
+"complete" with the meaning of "complete path".
+
+First, the  programme stores _N_ zero-length partial
 paths. Then it removes one of them and replaces it with _N-1_ 1-length
 partial paths. Then it removes one  of the 1-length paths and replaces
 it with _N-2_  2-length partial paths. And so on.  The maximum size of

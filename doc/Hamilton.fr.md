@@ -490,8 +490,13 @@ mouchard dans la génération des chemins, on peut constater que pour la
 carte `fr2015`,  le nombre de chemins  partiels simultanément présents
 dans la liste ne dépasse jamais 25.
 
-La taille  théorique de  la liste  utilisée en  LIFO peut  se calculer
-ainsi. Au début, le programme stocke _S_ chemins partiels avec un seul
+La taille  maximale théorique  de la  liste utilisée  en LIFO  peut se
+calculer  en  se   basant  sur  un  graphe  complet   à  _S_  sommets,
+c'est-à-dire un graphe dans lequel chacun des _S_ sommets est adjacent
+aux _S-1_ autres sommets (ne pas confondre ce sens de « complet » avec
+celui de « chemin complet »).
+
+Au début, le programme stocke _S_ chemins partiels avec un seul
 sommet et  aucune arête.  Puis il  extrait l'un de  ces chemins  et le
 remplace par _S-1_ chemins partiels de  longueur 1. Puis il extrait un
 chemin  partiel de  longueur 1  et le  remplace par  _S-2_ chemins  de
