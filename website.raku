@@ -53,6 +53,9 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
     $area<url> = "/$lng/region-map/$map/$area<upper>";
   }
   my @messages = access-sql::list-messages($map);
+  my $max-path = access-sql::max-path-number($map, 1, '');
+  my @list-paths = list-numbers($max-path, 0);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
   return full-map::render($lng, $map, %map, @areas, @borders, messages => @messages);
 }
 
@@ -69,6 +72,9 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
     $area<url> = "/$lng/region-map/$map/$area<code>";
   }
   my @messages = access-sql::list-messages($map);
+  my Int $max-path = access-sql::max-path-number($map, 1, '');
+  my @list-paths = list-numbers($max-path, 0);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
   return macro-map::render($lng, $map, %map, @areas, @borders
                           , messages => @messages);
 }
@@ -111,17 +117,29 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-map/$map/$area<code>";
   }
-  my %path     = access-sql::read-path($map, 1, $num);
+  my %path     = access-sql::read-path($map, 1, '', $num);
   my @messages = access-sql::list-messages($map);
+  my $max-path = access-sql::max-path-number($map, 1, '');
+  my @list-paths = list-numbers($max-path, $num);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
   return macro-path::render($lng, $map, %map
                            , areas    => @areas
                            , borders  => @borders
                            , path     => %path
-                           , messages => @messages);
+                           , messages => @messages
+                           , links    => @links
+                           );
 }
 
 baile();
 
+sub list-numbers(Int $max, Int $center) {
+  if $max ≤ 200 {
+    return 1..$max;
+  }
+  my @possible = (-1, 1 X× 1..9 X× 1, 10, 100, 1000, 10000) «+» $center;
+  return @possible.sort.grep( { 1 ≤ $_ ≤ $max } );
+}
 
 =begin POD
 

@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@links) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -26,9 +26,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path) 
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
+  my $links = join ' ', @links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+  $at.at('p.list-of-paths').content($links);
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@links) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $map
@@ -37,6 +39,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , borders  => @borders
                 , messages => @messages
                 , path     => %path
+                , links    => @links
                 );
 }
 
