@@ -13,7 +13,7 @@ unit package map-gd;
 use GD:from<Perl5>;
 use List::Util;
 
-our sub draw(@areas, @borders) {
+our sub draw(@areas, @borders, :$path = '') {
   my Int $dim       = 1000;
   my Int $dim-scale =   20;
   my $image = GD::Image.new($dim + $dim-scale, $dim + $dim-scale);
@@ -86,7 +86,15 @@ our sub draw(@areas, @borders) {
       $xm = conv-x($border<long_m>.Num);
       $ym = conv-y($border<lat_m >.Num);
     }
-    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>);
+    # does the border belong to the path (if any)?
+    my Int $thickness = 1;
+    my Str $sub-path1 = "{$border<code_f>} → {$border<code_t>}";
+    my Str $sub-path2 = "{$border<code_t>} → {$border<code_f>}";
+    if $path.contains($sub-path1) or $path.contains($sub-path2) {
+      $thickness = 3;
+    }
+
+    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness);
   }
 
   my Str $imagemap = '';
@@ -100,8 +108,7 @@ our sub draw(@areas, @borders) {
   return $image.png(), $imagemap;
 }
 
-sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name) {
-  my Int $thickness = 1;
+sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name, Int $thickness) {
   $img.setThickness($thickness);
   if $x-mid == 0 && $y-mid == 0 {
     $img.line($x-from, $y-from, $x-to , $y-to , $color);

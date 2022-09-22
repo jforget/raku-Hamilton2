@@ -18,6 +18,7 @@ use access-sql;
 use map-list-page;
 use full-map;
 use macro-map;
+use macro-path;
 use region-map;
 
 my @languages = ( 'en', 'fr' );
@@ -95,6 +96,28 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
   my @messages = access-sql::list-regional-messages($map, $region);
   return region-map::render($lng, $map, $region, %map, @areas, @borders
                           , messages => @messages);
+}
+
+get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Int $num    = + $num_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-big-areas($map);
+  my @borders = access-sql::list-big-borders($map);
+  for @areas -> $area {
+    $area<url> = "/$lng/region-map/$map/$area<code>";
+  }
+  my %path     = access-sql::read-path($map, 1, $num);
+  my @messages = access-sql::list-messages($map);
+  return macro-path::render($lng, $map, %map
+                           , areas    => @areas
+                           , borders  => @borders
+                           , path     => %path
+                           , messages => @messages);
 }
 
 baile();

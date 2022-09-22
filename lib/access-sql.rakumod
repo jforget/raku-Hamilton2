@@ -141,6 +141,12 @@ our sub list-regional-messages(Str $map, Str $region) {
   return @val;
 }
 
+our sub read-path(Str $map, Int $level, Int $num) {
+  my $sth = $dbh.prepare("select * from Paths where map = ? and level = ? and num = ?");
+  my %val = $sth.execute($map, $level, $num).row(:hash);
+  return %val;
+}
+
 =begin POD
 
 =encoding utf8
