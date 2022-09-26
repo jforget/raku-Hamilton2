@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-links, :@full-links) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -24,9 +24,28 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages) {
   $at.at('a.full-map').attr(href => "/$lang/full-map/$mapcode");
   $at('map')».content($imagemap);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
+
+  if @macro-links.elems eq 0 {
+    $at.at('p.list-of-macro-paths')».remove;
+  }
+  else {
+    my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('p.list-of-macro-paths').content($links);
+    $at.at('p.empty-list-of-macro-paths')».remove;
+  }
+
+  if @full-links.elems eq 0 {
+    $at.at('p.list-of-full-paths')».remove;
+  }
+  else {
+    my $links = join ' ', @full-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('p.list-of-full-paths').content($links);
+    $at.at('p.empty-list-of-full-paths')».remove;
+  }
+
 }
 
-our sub render(Str $lang, Str $map, %map, @areas, @borders, :@messages) {
+our sub render(Str $lang, Str $map, %map, @areas, @borders, :@messages, :@macro-links, :@full-links) {
   my &filling = anti-template :source("html/macro-map.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $map
@@ -34,6 +53,8 @@ our sub render(Str $lang, Str $map, %map, @areas, @borders, :@messages) {
                 , areas    => @areas
                 , borders  => @borders
                 , messages => @messages
+                , macro-links => @macro-links
+                , full-links  => @full-links
                 );
 }
 

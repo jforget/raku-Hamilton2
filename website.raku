@@ -53,9 +53,13 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
     $area<url> = "/$lng/region-map/$map/$area<upper>";
   }
   my @messages = access-sql::list-messages($map);
-  my $max-path = access-sql::max-path-number($map, 1, '');
-  my @list-paths = list-numbers($max-path, 0);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+
+  @list-paths    = list-numbers(%map<nb_full>, 0);
+  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+
   return full-map::render($lng, $map, %map, @areas, @borders, messages => @messages);
 }
 
@@ -72,11 +76,18 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
     $area<url> = "/$lng/region-map/$map/$area<code>";
   }
   my @messages = access-sql::list-messages($map);
-  my Int $max-path = access-sql::max-path-number($map, 1, '');
-  my @list-paths = list-numbers($max-path, 0);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+
+  @list-paths    = list-numbers(%map<nb_full>, 0);
+  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+
   return macro-map::render($lng, $map, %map, @areas, @borders
-                          , messages => @messages);
+                          , messages    => @messages
+                          , macro-links => @macro-links
+                          , full-links  => @full-links
+                          );
 }
 
 get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
