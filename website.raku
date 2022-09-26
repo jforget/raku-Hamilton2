@@ -60,7 +60,11 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
 
-  return full-map::render($lng, $map, %map, @areas, @borders, messages => @messages);
+  return full-map::render($lng, $map, %map, @areas, @borders
+                        , messages    => @messages
+                        , macro-links => @macro-links
+                        , full-links  => @full-links
+                        );
 }
 
 get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
@@ -148,7 +152,13 @@ sub list-numbers(Int $max, Int $center) {
   if $max ≤ 200 {
     return 1..$max;
   }
-  my @possible = (-1, 1 X× 1..9 X× 1, 10, 100, 1000, 10000) «+» $center;
+  my @pow10 = 1, 10, 100;
+  my $pow10 = 1000;
+  while $pow10 ≤ $max {
+    push @pow10, $pow10;
+    $pow10 ×= 10;
+  }
+  my @possible = (-1, 1 X× 1..9 X× @pow10) «+» $center;
   return @possible.sort.grep( { 1 ≤ $_ ≤ $max } );
 }
 
