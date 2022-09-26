@@ -20,6 +20,7 @@ use full-map;
 use macro-map;
 use macro-path;
 use region-map;
+use region-path;
 
 my @languages = ( 'en', 'fr' );
 
@@ -138,6 +139,49 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @list-paths = list-numbers($max-path, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
   return macro-path::render($lng, $map, %map
+                           , areas    => @areas
+                           , borders  => @borders
+                           , path     => %path
+                           , messages => @messages
+                           , links    => @links
+                           );
+}
+
+get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_parm, $num_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Str $region = ~ $region_parm;
+  my Int $num    = + $num_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my %region  = access-sql::read-region($map, $region);
+
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+  @areas.append(@neighbours);
+  for @areas -> $area {
+    if $area<upper> eq $region {
+      $area<url> = '';
+    }
+    else {
+      $area<url> = "/$lng/region-map/$map/$area<upper>";
+    }
+  }
+  my %path     = access-sql::read-path($map, 2, $region, $num);
+  my @messages = access-sql::list-regional-messages($map, $region);
+
+  #my @list-paths = list-numbers(%region<nb_path>, $num);
+  my $max-path = access-sql::max-path-number($map, 2, $region);
+  my @list-paths = list-numbers($max-path, $num);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-map/$map/$region/$_" ) } );
+
+  return region-path::render(lang     => $lng
+                           , mapcode  => $map
+                           , map      => %map
+                           , region   => %region
                            , areas    => @areas
                            , borders  => @borders
                            , path     => %path

@@ -30,6 +30,12 @@ our sub read-map(Str $map) {
   return %val;
 }
 
+our sub read-region(Str $map, Str $region) {
+  my $sth = $dbh.prepare("select * from Big_Areas where map = ? and code = ?");
+  my @val = $sth.execute($map, $region).row(:hash);
+  return @val;
+}
+
 our sub list-big-areas(Str $map) {
   my $sth = $dbh.prepare("select * from Big_Areas where map = ?");
   my @val = $sth.execute($map).allrows(:array-of-hash);
