@@ -42,7 +42,7 @@ in which  the small  areas are  countries (more or  less) and  the big
 areas are continents. On a more local scale, we can use the map for
 [Britannia](https://boardgamegeek.com/boardgame/240/britannia),
 or from 
-[Maharadjah](https://boardgamegeek.com/image/82336/maharaja).
+[Maharaja](https://boardgamegeek.com/image/82336/maharaja).
 
 The project uses
 [SQLite](https://sqlite.org/index.html)
@@ -160,7 +160,18 @@ Other fields are:
 * `path` a char string listing all areas along the path,
 * `from_code` the code of the area where the path begins,
 * `to_code` the code of the area where the path ends,
+* `cyclic` to show if the path is cyclic,
 * `macro_num` the number of the associated macro path, if there is one.
+
+The `cyclic`  column contains `1`  for cyclic  paths and `0`  for open
+paths. A cyclic path is a path in which the first area shares a border
+with the  last area. For  example, in the  `fr1970` map and  the `PIC`
+region, the `02 →  60 → 80` is cyclic, because  it could be lengthened
+to `02  → 60 → 80  → 02`. But  we keep this  path with a `80`  end. By
+convention, paths  with 1 region  and 0  borders are cyclic  (e.g. the
+single path in  region `IDF` in map `frreg`) and  paths with 2 regions
+and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
+`frreg`).
 
 The `path`  field contains the  department codes (or region  codes for
 macro-paths)  separated   by  arrows  `→`.   In  the  1970   map,  the

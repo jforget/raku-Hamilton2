@@ -167,7 +167,18 @@ Les autres champs sont :
 * `path`, une chaîne de caractères listant les zones traversées par le chemin
 * `from_code`, code de la zone de départ du chemin,
 * `to_code`, code de la zone d'arrivée du chemin,
+* `cyclic`, indiquant si le chemin est cyclique,
 * `macro_num`, numéro éventuel du macro-chemin associé.
+
+Le champ `cyclic` contient `1` pour  les chemins cycliques et `0` pour
+les chemins ouverts.  Un chemin cyclique est un chemin  dans lequel la
+zone de  départ et la  zone d'arrivée  ont une frontière  commune. Par
+exemple, dans la région `PIC` de la carte `fr1970`, le chemin `02 → 60
+→ 80` est cyclique.  On pourrait le compléter en `02 → 60  → 80 → 02`,
+mais on ne le  fait pas. Par convention, les chemins  à une seule zone
+et zéro  frontière sont cycliques (chemin  pour la région `IDF`  de la
+carte `frreg`), tout  comme les chemins à deux zones  et une frontière
+(chemins pour la région `NOR` de la carte `frreg`).
 
 Le champ  `path` contient les  codes des départements (ou  des régions
 pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
@@ -437,8 +448,8 @@ de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
 que l'unique région-1970 de la région-2015 n'ait aucun voisin.
 
-File ou pile ?
---------------
+File FIFO ou pile LIFO ?
+------------------------
 
 Comment  choisit-on le  chemin partiel  à  traiter dans  la liste  des
 chemins partiels ? Nous avons plusieurs possibilités :
@@ -462,8 +473,8 @@ Algorithms with Perl_, à une page que je ne retrouve plus, les auteurs
 les  chemins les  plus courts.  Dans  un graphe  non-orienté avec  _S_
 sommets et _A_ arêtes, tous  les chemins hamiltoniens ont une longueur
 de _S-1_ et  tous les chemins eulériens ont une  longueur de _A_. Dans
-un cas comme dans l'autre, il n'y  a aucun intérêt à utiliser un accès
-en file.
+un cas  comme dans l'autre, la  recherche du chemin le  plus court n'a
+pas de sens et il n'y a aucun intérêt à utiliser un accès en file.
 
 Reprenons la question plus précisément. Utiliser un accès en file fait
 que l'on génère d'abord tous les  chemins de longueur 1, puis tous les
@@ -471,20 +482,20 @@ chemins de longueur  2 en purgeant les chemins de  longueur 1, puis on
 génère  tous les  chemins de  longueur 3  en purgeant  les chemins  de
 longueur  2. Et  ainsi de  suite.  Arrive un  moment où  la liste  des
 chemins partiels contient tous les  chemins de longueur _S-2_. C'est à
-ce moment-là  seulement que  l'on génère les  chemins complets  et que
+ce moment-là  seulement que  l'on génère les  chemins entiers   et que
 l'on alimente la base de données  tout en purgeant la liste en mémoire
 vive. Dans le cas de la carte `fr2015` (12 sommets, 23 arêtes), il y a
-894 chemins  complets. Donc il a  eu au moins 894  chemins partiels de
+894 chemins  entiers. Donc il a  eu au moins 894  chemins partiels de
 longueur _S-2_,  tous stockés en mémoire  vive. En fait, la  liste des
 chemins partiels contient un nombre supérieur de chemins partiels, car
 il y  a également des  chemins _S-2_ qui ne  donneront pas lieu  à des
-chemins  complets  _S-1_.  Par  exemple, vous  trouverez  des  chemins
+chemins  entiers  _S-1_.  Par  exemple, vous  trouverez  des  chemins
 partiels contenant le sous-chemin `HDF →  NOR → PDL → NAQ`, mais aucun
 de  ces chemins  ne pourra  engendrer  un chemin  _S-1_ atteignant  la
 Bretagne (`BRE`).  Tous ces chemins partiels  infructueux sont stockés
 dans la liste avec les 894 chemins partiels fructueux.
 
-À l'inverse,  avec un  accès en pile,  certains chemins  complets sont
+À  l'inverse, avec  un accès  en pile,  certains chemins  entiers sont
 générés  et stockés  en  base  de données  très  tôt.  En ajoutant  un
 mouchard dans la génération des chemins, on peut constater que pour la
 carte `fr2015`,  le nombre de chemins  partiels simultanément présents
