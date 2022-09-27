@@ -118,10 +118,7 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
     }
   }
 
-  # should be replaced by reading %region<nb_paths>, when 'nb_paths' is filled
-  my $max-path = access-sql::max-path-number($map, 2, $region);
-  my @list-paths  = list-numbers($max-path, 0);
-  #my @list-paths  = list-numbers(%region<nb_paths>, 0);
+  my @list-paths  = list-numbers(%region<nb_paths>, 0);
   my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
 
   my @messages = access-sql::list-regional-messages($map, $region);
@@ -149,8 +146,7 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   }
   my %path     = access-sql::read-path($map, 1, '', $num);
   my @messages = access-sql::list-messages($map);
-  my $max-path = access-sql::max-path-number($map, 1, '');
-  my @list-paths = list-numbers($max-path, $num);
+  my @list-paths = list-numbers(%map<nb_macro>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
   return macro-path::render($lng, $map, %map
                            , areas    => @areas
@@ -187,9 +183,7 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   my %path     = access-sql::read-path($map, 2, $region, $num);
   my @messages = access-sql::list-regional-messages($map, $region);
 
-  #my @list-paths = list-numbers(%region<nb_path>, $num);
-  my $max-path = access-sql::max-path-number($map, 2, $region);
-  my @list-paths = list-numbers($max-path, $num);
+  my @list-paths = list-numbers(%region<nb_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
 
   my @full-links = (); # for the moment
