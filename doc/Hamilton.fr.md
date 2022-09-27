@@ -170,16 +170,6 @@ Les autres champs sont :
 * `cyclic`, indiquant si le chemin est cyclique,
 * `macro_num`, numéro éventuel du macro-chemin associé.
 
-Le champ `cyclic` contient `1` pour  les chemins cycliques et `0` pour
-les chemins ouverts.  Un chemin cyclique est un chemin  dans lequel la
-zone de  départ et la  zone d'arrivée  ont une frontière  commune. Par
-exemple, dans la région `PIC` de la carte `fr1970`, le chemin `02 → 60
-→ 80` est cyclique.  On pourrait le compléter en `02 → 60  → 80 → 02`,
-mais on ne le  fait pas. Par convention, les chemins  à une seule zone
-et zéro  frontière sont cycliques (chemin  pour la région `IDF`  de la
-carte `frreg`), tout  comme les chemins à deux zones  et une frontière
-(chemins pour la région `NOR` de la carte `frreg`).
-
 Le champ  `path` contient les  codes des départements (ou  des régions
 pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
 1970, la  région Languedoc-Roussillon possède deux  chemins régionaux.
@@ -193,8 +183,19 @@ Voici l'un d'eux comme exemple :
    path        '48 → 30 → 34 → 11 → 66'
    from_code   '48'
    to_code     '66'
+   cyclic      0
    macro_num   0
 ```
+
+Le champ `cyclic` contient `1` pour  les chemins cycliques et `0` pour
+les chemins ouverts.  Un chemin cyclique est un chemin  dans lequel la
+zone de  départ et la  zone d'arrivée  ont une frontière  commune. Par
+exemple, dans la région `PIC` de la carte `fr1970`, le chemin `02 → 60
+→ 80` est cyclique.  On pourrait le compléter en `02 → 60  → 80 → 02`,
+mais on ne le  fait pas. Par convention, les chemins  à une seule zone
+et zéro  frontière sont cycliques (chemin  pour la région `IDF`  de la
+carte `frreg`), tout  comme les chemins à deux zones  et une frontière
+(chemins pour la région `NOR` de la carte `frreg`).
 
 La relation  entre les macro-chemins  et les chemins complets  est une
 relation 0..n ↔  1..1. Un macro-chemin permet de générer  un nombre _a

@@ -163,16 +163,6 @@ Other fields are:
 * `cyclic` to show if the path is cyclic,
 * `macro_num` the number of the associated macro path, if there is one.
 
-The `cyclic`  column contains `1`  for cyclic  paths and `0`  for open
-paths. A cyclic path is a path in which the first area shares a border
-with the  last area. For  example, in the  `fr1970` map and  the `PIC`
-region, the `02 →  60 → 80` is cyclic, because  it could be lengthened
-to `02  → 60 → 80  → 02`. But  we keep this  path with a `80`  end. By
-convention, paths  with 1 region  and 0  borders are cyclic  (e.g. the
-single path in  region `IDF` in map `frreg`) and  paths with 2 regions
-and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
-`frreg`).
-
 The `path`  field contains the  department codes (or region  codes for
 macro-paths)  separated   by  arrows  `→`.   In  the  1970   map,  the
 _Languedoc-Roussillon_ region has  two regional paths. Here  is one of
@@ -186,8 +176,19 @@ them:
    path        '48 → 30 → 34 → 11 → 66'
    from_code   '48'
    to_code     '66'
+   cyclic      0
    macro_num   0
 ```
+
+The `cyclic`  column contains `1`  for cyclic  paths and `0`  for open
+paths. A cyclic path is a path in which the first area shares a border
+with the  last area. For  example, in the  `fr1970` map and  the `PIC`
+region, the `02 →  60 → 80` is cyclic, because  it could be lengthened
+to `02  → 60 → 80  → 02`. But  we keep this  path with a `80`  end. By
+convention, paths  with 1 region  and 0  borders are cyclic  (e.g. the
+single path in  region `IDF` in map `frreg`) and  paths with 2 regions
+and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
+`frreg`).
 
 The  relation between  macro-paths and  full paths  is a  0..n ↔  1..1
 relation. A macro-path  can generate an unknown number  of full paths,
