@@ -103,9 +103,11 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
     return slurp('html/unknown-language.html');
   }
   my %map        = access-sql::read-map($map);
+  my %region     = access-sql::read-region(            $map, $region);
   my @areas      = access-sql::list-areas-in-region(   $map, $region);
   my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
   my @borders    = access-sql::list-borders-for-region($map, $region);
+
   @areas.append(@neighbours);
   for @areas -> $area {
     if $area<upper> eq $region {
@@ -115,9 +117,21 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
       $area<url> = "/$lng/region-map/$map/$area<upper>";
     }
   }
+
+  # should be replaced by reading %region<nb_paths>, when 'nb_paths' is filled
+  my $max-path = access-sql::max-path-number($map, 2, $region);
+  my @list-paths  = list-numbers($max-path, 0);
+  #my @list-paths  = list-numbers(%region<nb_paths>, 0);
+  my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+
   my @messages = access-sql::list-regional-messages($map, $region);
-  return region-map::render($lng, $map, $region, %map, @areas, @borders
-                          , messages => @messages);
+  return region-map::render($lng, $map, %map
+                          , region     => %region
+                          , areas      => @areas
+                          , borders    => @borders
+                          , messages   => @messages
+                          , path-links => @path-links
+                          );
 }
 
 get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
