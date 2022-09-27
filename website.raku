@@ -190,7 +190,9 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   #my @list-paths = list-numbers(%region<nb_path>, $num);
   my $max-path = access-sql::max-path-number($map, 2, $region);
   my @list-paths = list-numbers($max-path, $num);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-map/$map/$region/$_" ) } );
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+
+  my @full-links = (); # for the moment
 
   return region-path::render(lang     => $lng
                            , mapcode  => $map
@@ -200,7 +202,8 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , borders  => @borders
                            , path     => %path
                            , messages => @messages
-                           , links    => @links
+                           , rpath-links    => @links
+                           , fpath-links    => @full-links
                            );
 }
 

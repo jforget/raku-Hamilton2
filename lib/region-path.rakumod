@@ -15,22 +15,38 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@links) {
+sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
-  $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode");
   $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode");
-  $at('map')».content($imagemap);
+  $at.at('a.region-map').attr(href => "/$lang/region-map/$mapcode/%region<code>");
+
+  $at.at('span.region-name')».content(%region<name>);
   $at.at('span.path-number').content(%path<num>.Str);
+  $at.at('p.extended-path').content(%path<path>.Str);
+
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
+  $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
+  $at('map')».content($imagemap);
+
+  my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+  $at.at('p.list-of-region-paths').content($links);
+
+  if @fpath-links.elems eq 0 {
+    $at.at('p.list-of-full-paths')».remove;
+  }
+  else {
+    $links = join ' ', @fpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('p.list-of-full-paths').content($links);
+    $at.at('p.empty-list-of-full-paths')».remove;
+  }
+
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
-  my $links = join ' ', @links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-  $at.at('p.list-of-paths').content($links);
 }
 
-our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@links) {
+our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links) {
   my &filling = anti-template :source("html/region-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $mapcode
@@ -40,7 +56,8 @@ our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :
                 , borders  => @borders
                 , messages => @messages
                 , path     => %path
-                , links    => @links
+                , rpath-links    => @rpath-links
+                , fpath-links    => @fpath-links
                 );
 }
 
