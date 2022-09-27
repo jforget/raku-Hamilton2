@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, macro_num)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       0)
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0)
 SQL
 
 sub MAIN (
@@ -124,7 +124,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     my Str $single-area = @isolated-areas[0];
     #say "region $region has only one area, only one path and its length is zero";
     $dbh.execute("begin transaction");
-    $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area);
+    $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area, 1);
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1, '');
     $dbh.execute("commit");
     return 1;
@@ -204,11 +204,28 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         my Set $new-free = $partial-path<free> (-) set($next);
         if $new-free.elems == 0 {
           ++ $path-number;
-          $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next);
+
+          my $result = $dbh.execute(q:to/SQL/, $map, $level, $partial-path<from>, $next).row;
+          select 'X'
+          from   Borders
+          where  map       = ?
+          and    level     = ?
+          and    from_code = ?
+          and    to_code   = ?
+          SQL
+          my Int $cyclic;
+          if $result eq 'X' {
+            $cyclic = 1;
+          }
+          else {
+            $cyclic = 0;
+          }
+
+          $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next, $cyclic);
           if $there-and-back-again {
             my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
             ++ $path-number;
-            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>);
+            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>, $cyclic);
           }
           if $path-number ≥ $complete-threshold {
             $dbh.execute("commit");

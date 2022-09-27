@@ -25,7 +25,13 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
 
   $at.at('span.region-name')».content(%region<name>);
   $at.at('span.path-number').content(%path<num>.Str);
-  $at.at('p.extended-path').content(%path<path>.Str);
+  $at.at('span.extended-path').content(%path<path>.Str);
+  if %path<cyclic> == 1 {
+    $at.at('span.open')».remove;
+  }
+  else {
+    $at.at('span.cyclic')».remove;
+  }
 
   my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));

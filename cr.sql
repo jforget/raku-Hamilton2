@@ -33,6 +33,7 @@ create table Paths   (map       TEXT
                    , path       TEXT
                    , from_code  TEXT
                    , to_code    TEXT
+                   , cyclic     INTEGER
                    , macro_num  INTEGER
                    );
 

@@ -19,6 +19,14 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
+  $at.at('span.extended-path').content(%path<path>.Str);
+  if %path<cyclic> == 1 {
+    $at.at('span.open')».remove;
+  }
+  else {
+    $at.at('span.cyclic')».remove;
+  }
+
   my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode");
