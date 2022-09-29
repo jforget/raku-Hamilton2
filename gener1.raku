@@ -196,6 +196,12 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
   my Int $partial-threshold  =     0;
   my Int $partial-increment  = 10000;
 
+  my %neighbours;
+  for @all-areas -> $area {
+    my @nei = $sth-neighbours.execute($map, $level, $region, $area).allrows.map( { $_[0] } );
+    %neighbours{$area} = @nei;
+  }
+
   sub aff-stat {
     say "{DateTime.now.hh-mm-ss} complete paths $path-number, partial paths $partial-paths-nb (to-do list {@to-do-list.elems} / $max-to-do)";
   }
@@ -206,8 +212,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       $max-to-do = @to-do-list.elems
     }
     my $partial-path = @to-do-list.pop;
-    for $sth-neighbours.execute($map, $level, $region, $partial-path<to>).allrows -> $arr-next {
-      my Str $next = $arr-next[0];
+    for %neighbours{$partial-path<to>}.List -> $next {
       #say $partial-path<to>, " → ", $next, ' ', $partial-path<free>, ' ', $partial-path<free>{$next};
       if $partial-path<free>{$next} {
         my Str $new-path = "{$partial-path<path>} → $next";
