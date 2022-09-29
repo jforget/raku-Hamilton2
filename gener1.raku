@@ -26,6 +26,24 @@ insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macr
        values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0)
 SQL
 
+my $sth-neighbours = $dbh.prepare(q:to/SQL/);
+select to_code
+from   Borders
+where  map       = ?
+  and  level     = ?
+  and  upper_to  = ?
+  and  from_code = ?
+SQL
+
+my $sth-check-cyclic = $dbh.prepare(q:to/SQL/);
+select 'X'
+from   Borders
+where  map       = ?
+  and  level     = ?
+  and  from_code = ?
+  and  to_code   = ?
+SQL
+
 sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
@@ -188,15 +206,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       $max-to-do = @to-do-list.elems
     }
     my $partial-path = @to-do-list.pop;
-    my $sth = $dbh.prepare(q:to/SQL/);
-    select to_code
-    from   Borders
-    where  map       = ?
-    and    level     = ?
-    and    upper_to  = ?
-    and    from_code = ?
-    SQL
-    for $sth.execute($map, $level, $region, $partial-path<to>).allrows -> $arr-next {
+    for $sth-neighbours.execute($map, $level, $region, $partial-path<to>).allrows -> $arr-next {
       my Str $next = $arr-next[0];
       #say $partial-path<to>, " → ", $next, ' ', $partial-path<free>, ' ', $partial-path<free>{$next};
       if $partial-path<free>{$next} {
@@ -205,14 +215,8 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         if $new-free.elems == 0 {
           ++ $path-number;
 
-          my $result = $dbh.execute(q:to/SQL/, $map, $level, $partial-path<from>, $next).row;
-          select 'X'
-          from   Borders
-          where  map       = ?
-          and    level     = ?
-          and    from_code = ?
-          and    to_code   = ?
-          SQL
+          #my $result = $sth-check-cyclic.execute($map, $level, $partial-path<from>, $next).row;
+          my $result = '';
           my Int $cyclic;
           if $result eq 'X' {
             $cyclic = 1;
@@ -247,9 +251,13 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         }
       }
     }
+    $dbh.execute("commit");
+    $dbh.execute("begin transaction");
   }
+  $dbh.execute("commit");
   aff-stat();
 
+  $dbh.execute("begin transaction");
   if $path-number != 0 {
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '7', $region, $path-number, '');
   }
