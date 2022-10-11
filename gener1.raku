@@ -220,8 +220,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         if $new-free.elems == 0 {
           ++ $path-number;
 
-          #my $result = $sth-check-cyclic.execute($map, $level, $partial-path<from>, $next).row;
-          my $result = '';
+          my $result = $sth-check-cyclic.execute($map, $level, $partial-path<from>, $next).row;
           my Int $cyclic;
           if $result eq 'X' {
             $cyclic = 1;
