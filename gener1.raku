@@ -268,6 +268,41 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '6', $region, $path-number, '');
   }
   $dbh.execute("commit");
+
+  # reordering the paths
+  if $path-number != 0 {
+    $dbh.execute("begin transaction");
+
+    my $sth-sel = $dbh.prepare(q:to/SQL/);
+    select path
+    from Paths
+    where map   = ?
+    and   level = ?
+    and   area  = ?
+    order by from_code, to_code, path
+    SQL
+
+    my $sth-upd = $dbh.prepare(q:to/SQL/);
+    update Paths
+    set   num = ?
+    where map   = ?
+    and   level = ?
+    and   area  = ?
+    and   path  = ?
+    SQL
+
+    my Int $n = 0;
+    for $sth-sel.execute($map, $level, $region).allrows(:array-of-hash) -> $row {
+      $n++;
+      $sth-upd.execute($n, $map, $level, $region, $row<path>);
+      if $n %% $complete-increment {
+        $dbh.execute("commit");
+        $dbh.execute("begin transaction");
+      }
+    }
+    $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '8', $region, $path-number, '');
+    $dbh.execute("commit");
+  }
   return $path-number;
 }
 

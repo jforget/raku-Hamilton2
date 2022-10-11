@@ -13,8 +13,8 @@ unit package messages-list;
 use Template::Anti :one-off;
 use MIME::Base64;
 
-my @errcode = <INIT MAC1 MAC2 MAC3 MAC4 MAC5 MAC6 MAC7
-                    REG1 REG2 REG3 REG4 REG5 REG6 REG7
+my @errcode = <INIT MAC1 MAC2 MAC3 MAC4 MAC5 MAC6 MAC7 MAC8
+                    REG1 REG2 REG3 REG4 REG5 REG6 REG7 REG8
               >;
 
 sub fill($at, Str :$lang, :@messages) {

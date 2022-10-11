@@ -187,6 +187,13 @@ Voici l'un d'eux comme exemple :
    macro_num   0
 ```
 
+Il n'y a pas de contrainte de  clé unique sur le quadruplet `map level
+area num`.  Cela nous permet  de trier  et de renuméroter  les chemins
+générés. L'ordre le  plus intéressant consiste à  grouper ensemble les
+chemins partant de la même zone  (`from_code`), puis au sein de chaque
+groupe de  les grouper  par zone d'arrivée  (`to_code`) et  enfin dans
+l'ordre alphabétique des chemins `path`.
+
 Le champ `cyclic` contient `1` pour  les chemins cycliques et `0` pour
 les chemins ouverts.  Un chemin cyclique est un chemin  dans lequel la
 zone de  départ et la  zone d'arrivée  ont une frontière  commune. Par
@@ -520,6 +527,18 @@ en-deçà de  la taille 894, qui  est elle-même inférieure au  nombre de
 chemins _S-2_ qui  auraient été stockés dans la  liste fonctionnant en
 FIFO.
 
+Tri final
+---------
+
+Une  fois tous  les chemins  créés pour  une carte  et une  région, le
+programme  relit   les  chemins,  triés  par   département  de  départ
+(`from_code`),  par département  d'arrivée (`to_code`)  et par  chemin
+(`path`). Un numéro séquentiel est attribué à chaque enregistrement de
+la  table  `Paths`  ainsi  lu.  Certes,  pendant  cette  opération  de
+renumérotation, il pourra  y avoir des doublons  dans la numérotation,
+mais c'est  purement temporaire. Une fois  la renumérotation terminée,
+il n'y a plus de doublons ni de trous.
+
 Affichage du résultat
 =====================
 
@@ -537,7 +556,7 @@ graphiques par programme, j'utilise de préférence l'interpréteur
 [Metapost](https://www.gutenberg-asso.fr/MetaPost)
 inclus dans le programme
 [LuaL<sup>A</sup>T<sub>E</sub>X](https://lataix-sebastien.developpez.com/tutoriels/latex/un-guide-pour-lualatex/).
-Dans le cas présent, je vois mal comment intégrer 
+Dans le cas présent, je vois mal comment intégrer
 LuaL<sup>A</sup>T<sub>E</sub>X  avec le  fonctionnement d'un  serveur
 web.
 

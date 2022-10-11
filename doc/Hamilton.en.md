@@ -41,7 +41,7 @@ or
 in which  the small  areas are  countries (more or  less) and  the big
 areas are continents. On a more local scale, we can use the map for
 [Britannia](https://boardgamegeek.com/boardgame/240/britannia),
-or from 
+or from
 [Maharaja](https://boardgamegeek.com/image/82336/maharaja).
 
 The project uses
@@ -179,6 +179,12 @@ them:
    cyclic      0
    macro_num   0
 ```
+
+There  is  no unique  key  constraint  on  the  `map level  area  num`
+quadruplet.  This allows  us  to reorder  and  renumber the  generated
+paths. The  most interesting  order is to  order them  by `from_code`,
+then `to_code` and lastly by `path`,  so similar paths will be grouped
+together.
 
 The `cyclic`  column contains `1`  for cyclic  paths and `0`  for open
 paths. A cyclic path is a path in which the first area shares a border
@@ -510,6 +516,17 @@ nodes, that means that the theoretical maximum number is 66, way below
 the number  894 which is itself  less than the actual  number of _N-2_
 paths that would be stored in the to-do list if using FIFO.
 
+Final Sort
+----------
+
+Once all  paths are created  for a given map  and a given  region, the
+programmes rereads the paths, ordered  by begin area (`from_code`), by
+end  area (`to_code`)  and by  path (`path`).  A sequential  number is
+assigned  to  each record.  While  this  step  is  run, there  may  be
+duplicate  numbers,  but  this  is  completely  temporary.  After  the
+renumbering process ends, there is neither holes nor duplicates in the
+number sequence.
+
 Displaying the Results
 ======================
 
@@ -526,7 +543,7 @@ programmatically generate graphics is the
 [Metapost](https://www.tug.org/metapost.html)
 interpreter embedded inside the
 [LuaL<sup>A</sup>T<sub>E</sub>X](http://luatex.org/)
-programme. In this case, I do not see how 
+programme. In this case, I do not see how
 LuaL<sup>A</sup>T<sub>E</sub>X can integrate with a web server.
 
 Plan B is using the
