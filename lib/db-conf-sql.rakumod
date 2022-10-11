@@ -23,6 +23,14 @@ sub commit-interval is export {
   return $commit-interval;
 }
 
+sub picture-width is export {
+  return 800;
+}
+
+sub picture-height is export {
+  return 800;
+}
+
 =begin POD
 
 =encoding utf8

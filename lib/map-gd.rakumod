@@ -12,12 +12,14 @@ unit package map-gd;
 
 use GD:from<Perl5>;
 use List::Util;
+use db-conf-sql;
 
 our sub draw(@areas, @borders, :$path = '') {
-  my Int $dim       = 1000;
-  my Int $dim-scale =   20;
-  my $image = GD::Image.new($dim + $dim-scale, $dim + $dim-scale);
-  my Int $lg-max = 500;
+  my Int $height    =  picture-height;
+  my Int $width     =  picture-width;
+  my Int $dim-scale =  20;
+  my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
+  my Int $lg-max = ($width / 2).Int;
 
   my $white  = $image.colorAllocate(255, 255, 255);
   my $black  = $image.colorAllocate(  0,   0,   0);
@@ -47,8 +49,8 @@ our sub draw(@areas, @borders, :$path = '') {
     }
   }
 
-  sub conv-x(Num $long) { return ($margin + ($long - $long-min) / ($long-max - $long-min) × ($dim - 2 × $margin)).Int };
-  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / ($lat-max  -  $lat-min) × ($dim - 2 × $margin)).Int };
+  sub conv-x(Num $long) { return ($margin + ($long - $long-min) / ($long-max - $long-min) × ($width  - 2 × $margin)).Int };
+  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / ($lat-max  -  $lat-min) × ($height - 2 × $margin)).Int };
 
   my $scale-distance;
   my $top-scale;
@@ -57,8 +59,8 @@ our sub draw(@areas, @borders, :$path = '') {
     last if conv-y($lat-min) - $top-scale < $lg-max;
   }
   my $scale-label = "$scale-distance km";
-  my $x-scale     = $dim + $dim-scale - 6 × $scale-label.chars;
-  $image.line($dim, conv-y($lat-min), $dim, $top-scale, $black);
+  my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
+  $image.line($width, conv-y($lat-min), $width, $top-scale, $black);
   $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
 
   my $left-scale;
@@ -69,8 +71,8 @@ our sub draw(@areas, @borders, :$path = '') {
   }
   $scale-label = "$scale-distance km";
   $x-scale     = $left-scale - 6 × $scale-label.chars;
-  $image.line($left-scale, $dim + $dim-scale / 2, conv-x($long-max), $dim + $dim-scale / 2, $black);
-  $image.string(gdSmallFont, $x-scale, $dim, $scale-label, $black);
+  $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
+  $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
 
 
   for @borders -> $border {
