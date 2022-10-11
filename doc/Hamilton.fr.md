@@ -459,7 +459,8 @@ chemins partiels ? Nous avons plusieurs possibilités :
 un chemin partiel de la liste,  comme par hasard c'est celui qui donne
 le  résultat le  plus intéressant  et,  autant que  possible, le  plus
 rapidement. Impossible à  mettre en œuvre dans  un véritable programme
-fonctionnant sur du silicium.
+fonctionnant sur du silicium, le  programme de génération n'est pas un
+programme d'intelligence artificielle.
 
 * L'accès aléatoire.  Cela existe en Raku,  avec l'instruction `pick`.
 Pas commode pour la reproductibilité, donc pour le débugage.
@@ -730,6 +731,35 @@ frontières entre deux départements de  la même région sont en couleur.
 Les daltoniens ne peuvent pas  toujours percevoir cette différence. La
 présence d'un point sur les frontières inter-régionales leur permet de
 faire la différence entre les deux types de frontières.
+
+### Performances
+
+En essayant le programme `gener1.raku` sur la carte de Britannia, j'ai
+recontré un gros problème avec  la génération des chemins hamiltoniens
+régionaux  de  l'Angleterre  (20  « départements »  et  40  frontières
+intérieures,  c'est-à-dire  80  enregistrements `Borders`).  En  règle
+générale,  le programme  `gener1.raku` émet  un message  tous les  100
+chemins entiers et un autre tous les 10000 chemins incomplets. Dans le
+cas de  l'Angleterre, j'ai  observé que le  délai entre  deux messages
+avait tendance  à s'allonger  au fil de  l'exécution du  programme. De
+plus,  le gestionnaire  de  tâches  montrait que  sur  ma machine,  le
+pourcentage   de   mémoire   utilisée   croissait   régulièrement   et
+inexorablement. Il y a une fuite de mémoire quelque part !
+
+Finalement,  j'ai compris.  J'avais  prévu un  `begin transaction`  au
+début  du  traitement  et  un  `commit`  à  la  fin.  Pour  éviter  un
+engorgement   du  journal,   j'avais  prévu   également  un   `commit`
+immédiatement  suivi d'un  `begin  transaction` tous  les 100  chemins
+entiers. Suite  à une erreur,  il y avait  aussi un `commit`  + `begin
+transaction`  pour chaque  chemin partiel  individuellement. Comme  la
+génération des  chemins hamiltoniens  pour l'Angleterre  génère 16 182
+chemins entiers et 3 562 796 chemins partiels, cela faisait 3 millions
+et demi de `commit` au lieu de simplement 162.
+
+J'ai donc  enlevé le couple  `commit` + `begin  transaction` superflu.
+Certes, la fuite mémoire existe  toujours, mais c'est plus supportable
+lorsqu'elle se produit 162 fois  que lorsqu'elle se produit 3 millions
+de fois.
 
 LICENCE
 =======

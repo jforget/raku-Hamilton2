@@ -450,7 +450,8 @@ path to process? There are several possibilities:
 * The pedagogical method. Each time a partial path is extracted, it is
 the  path  which  leads  to   the  most  interesting  discussion,  and
 preferably  in  the  shortest  time.  How  nice!  Except  that  it  is
-impossible to do on a silicon-based computer.
+impossible to do on a silicon-based computer. The generation programme
+does not deal with AI.
 
 * Randomised access. It is easy  to implement, with Raku's `pick`. The
 problem  is  that processes  are  no  longer reproductible,  therefore
@@ -708,6 +709,32 @@ different  regions are  black, while  the borders  between departments
 belonging to the same region  are coloured. Colour-blind people cannot
 rely  on this  difference. So  the  dots allow  them to  differentiate
 between both kinds of borders.
+
+### Performances
+
+While  running the  `gener1.raku` programme  on the  Britannia map,  I
+faced a big problem when generating the Hamiltonian regional paths for
+England (20  areas and 40  inner borders, that  is, 80 records  in the
+`Borders`  table).  Usually,  the  `gener1.raku`  programme  writes  a
+progress message with  a timestamp every 100 complete  paths and every
+10000 partial paths. When generating paths for England, I noticed that
+the delay between  two messages was increasing. At the  same time, the
+task manager on my computer was  showing that the percentage of active
+memory was steadily increasing. A memory leak!
+
+After  some  checking,   I  found  the  reason.  There   is  a  `begin
+transaction`  when the  programme  begins processing  a  region and  a
+`commit` when this  processing ends. To keep the size  of the database
+journal low, there  is also a `commit` immediately  followed by `begin
+transaction` every 100 complete paths.  Because of an error, there was
+also  a  `commit`  +  `begin  transaction`  each  time  the  programme
+processed  a partial  path.  The English  Hamiltonian path  generation
+would produce 16_182 complete paths after processing 3_562_769 partial
+paths. So there were more than 3 millions commits instead of just 162.
+
+I removed the superfluous `commit`  + `begin transaction`. The leak is
+not plugged, but it happens 162 times instead of 3 millions, so it has
+no visible effects.
 
 License
 =======

@@ -256,8 +256,6 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
         }
       }
     }
-    $dbh.execute("commit");
-    $dbh.execute("begin transaction");
   }
   $dbh.execute("commit");
   aff-stat();
