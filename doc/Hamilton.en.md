@@ -527,6 +527,61 @@ duplicate  numbers,  but  this  is  completely  temporary.  After  the
 renumbering process ends, there is neither holes nor duplicates in the
 number sequence.
 
+Generating the Full Paths
+=========================
+
+The general process  is as follows. The programme  takes a macro-path,
+for example `NOR → HDF → GES → etc` in the `fr2015` map. The programme
+substitutes the  first region with  a regional Hamiltonian  path. This
+gives `14 →  50 → 61 → 27 →  76 →→ HDF → GES →  ...`. The double arrow
+shows  the last  small  area and  the first  big  area. Actually,  the
+programme does not use a single Hamiltonian path from region `NOR`. It
+takes all `NOR` paths, store them in its `to-do` list and extracts one
+of them.
+
+Next step. The programme selects  all small areas which are neighbours
+of the last small area in the partial path (`76` aka Seine-Maritime in
+the example) and that belong to the first big area in the partial path
+(`HDF` or  Hauts-de-France in the  example). The programme  finds `60`
+and `80` (Oise  and Somme). Then it extracts  all regional Hamiltonian
+paths starting  from `60` or  `80`. The programme replaces  the region
+code `HDF` by  the path, while shifting the double  arrow. The example
+gives:
+
+```
+Before:
+14 → 50 → 61 → 27 → 76 →→ HDF → GES → ...
+After :
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
+```
+
+Each partial path is stored into  the `to-do` list. Then the programme
+takes one of them and processes the next big area.
+
+This process may encounter dead ends.  This is the case if we continue
+the example above with a `... → 62  →→ GES → ...` path. We can find no
+departments which are simultaneously  neighbour of the `62` department
+and belong to the  `GES` region. In this case, no  new partial path is
+stored into the `to-do` list after  the previous partial path has been
+removed.
+
+The dead end  can appear a bit  later. The programme may  find a small
+area neighbouring the currently final  small area, but this small area
+is the starting point of no  regional Hamiltonian path. Let us suppose
+we have a  path such as `... →  78 →→ NOR → ...`.  The programme finds
+just one neighbouring department `27`  (Eure), but in the `NOR` region
+(Normandy), no regional Hamiltonian path ever starts from `27`. So the
+programme will not store any partial  path into the `to-do` list after
+removing the `... → 78 →→ NOR → ...` path.
+
+In the explanation above, I have presented the extraction of neighbour
+small areas and  the extraction of regional paths as  two distinct and
+successive  steps. Actually,  with the  proper SQL  join, these  steps
+merge into a single step.
+
 Displaying the Results
 ======================
 

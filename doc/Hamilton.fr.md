@@ -539,6 +539,61 @@ renumérotation, il pourra  y avoir des doublons  dans la numérotation,
 mais c'est  purement temporaire. Une fois  la renumérotation terminée,
 il n'y a plus de doublons ni de trous.
 
+Construction des chemins complets
+=================================
+
+Le  principe général  est le  suivant. On  prend un  macro-chemin, par
+exemple `NOR → HDF  → GES → etc` dans la  carte `fr2015`. Le programme
+remplace la  première région par  un chemin hamitonien  régional. Cela
+donne `14 →  50 → 61 → 27 →  76 →→ HDF → GES →  ...`. La double flèche
+sert à  identifier le point  où les  départements cèdent la  place aux
+régions. En fait,  on ne choisit pas un seul  chemin hamiltonien de la
+région `NOR`. On les  prend tous, on les met dans  la liste `to-do` et
+on en extrait un.
+
+Étape suivante. Le programme cherche  tous les départements voisins du
+dernier département  `76` (Seine-Maritime)  et qui appartiennent  à la
+région `HDF`.  Il s'agit  dans ce  cas des  départements `60`  et `80`
+(Oise et Somme).  Puis il cherche tous les chemins  hamiltoniens de la
+région `HDF` qui commencent en `60`  ou en `80`. Le programme remplace
+le code de la région par chaque chemin, ce qui donne cet exemple :
+
+```
+Avant :
+14 → 50 → 61 → 27 → 76 →→ HDF → GES → ...
+Après :
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
+etc.
+```
+
+Chaque  chemin partiel  est  stocké  dans la  liste  `to-do`. Puis  on
+continue en prenant l'un de ces chemins partiels et en s'intéressant à
+la région suivante.
+
+Il  est  possible  que  l'on  soit   coincé.  C'est  le  cas  dans  la
+continuation de l'exemple ci-dessus avec l'un des chemins `... → 62 →→
+GES → ...`. En effet, il n'existe aucun département qui soit à la fois
+voisin du  dernier département `62`  et qui appartienne à  la nouvelle
+région `GES`. Dans ce cas, la  liste `to-do` ne reçoit aucun chemin en
+remplacement du chemin partiel infructueux.
+
+Le  blocage peut  se  faire  en listant  les  départements voisins  du
+dernier département du chemin et appartenant à la prochaine région. Il
+peut aussi  se produire  après avoir trouvé  ces départements  mais en
+cherchant  les chemins  hamiltoniens régionaux.  Ainsi, supposons  que
+l'on ait  un chemin `... →  78 →→ NOR  → ...`. Le programme  trouve un
+département qui convient, `27`  mais aucun chemin hamiltonien régional
+ne  commence en  `27`.  Le  programme ne  stockera  donc aucun  chemin
+partiel en remplacement du chemin `... → 78 →→ NOR → ...`.
+
+Ci-dessus, la recherche  des départements voisins et  la recherche des
+chemins  régionaux  sont présentées  comme  des  processus séparés  et
+successifs. En fait,  avec la jointure SQL qui va  bien, ces processus
+sont rassemblés en un seul.
+
 Affichage du résultat
 =====================
 
