@@ -92,7 +92,8 @@ Other fields are:
 * `long` and `lat`, approximate longitude and latitude of the area,
 * `color` the color used when drawing the map,
 * `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
-* `nb_paths` for regions, the number of regional paths (zero for departments).
+* `nb_paths` for regions, the number of regional paths (zero for departments),
+* `exterior` showing whether the department is linked with another region.
 
 Two views are defined on this table, `Big_Areas` which filters `level`
 equal  to `1`  for regions  and  `Small_Areas` which  filters `2`  for
@@ -103,6 +104,11 @@ current problem of Hamiltonian paths is strictly a math graph problem,
 with no geometry  involved, the math graphs will be  displayed in such
 fashion that  the geographical  map associated can  be guessed  at and
 recognised.
+
+The  `exterior`  field  is  significant only  for  departments  (small
+areas). If `1`, that means that  the department shares a border with a
+department  from another  region. If  `0`,  that means  that for  this
+department, all neighbour departments belong to the same region.
 
 Borders
 -------
@@ -554,8 +560,10 @@ Before:
 After :
 14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
+etc.
 ```
 
 Each partial path is stored into  the `to-do` list. Then the programme
@@ -581,6 +589,57 @@ In the explanation above, I have presented the extraction of neighbour
 small areas and  the extraction of regional paths as  two distinct and
 successive  steps. Actually,  with the  proper SQL  join, these  steps
 merge into a single step.
+
+Optimisation
+------------
+
+Among  the partial  paths generated  in  the example  above, some  are
+obviously wrong,  the paths  ending in department  `62` or  `59`. Why?
+Because  the full  path must  exit the  `HDF` region  and enter  a new
+region, and these two departments are not linked to any other region.
+
+There is  an exception.  If the region  currently processed  (`HDF` in
+this example) is  the last region before completion of  the full path,
+then any arrival  point is valid, even an interior  department such as
+`59` and `62`.
+
+So, the  programme has two  `Select` statements. One joining  only the
+`Small_Borders` view with the `Region_Paths`  view, which is used upon
+arrival  at the  last region  of the  macro-path. The  second `select`
+statement joins the `Small_Borders`  view with the `Region_Paths` view
+as above,  plus the `Small_Areas`  view to select only  regional paths
+that lead to another region.
+
+With the  example above,  the list  of potential  paths that  would be
+stored into the `to-do` list without the optimisation would be:
+
+```
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 59 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 02 → 59 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 62 → 80 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
+```
+
+The list of potential paths that  are actually stored into the `to-do`
+list is:
+
+```
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 62 → 80 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+```
+
+You may  have noticed that among  these three paths, two  will fail to
+progress further: the path containing `... →  80 →→ GES → ...` and the
+path containing `... → 60 →→ GES → ...`, because neither `80` nor `60`
+is adjacent  to the  `GES` region.  Trying to  remove these  two paths
+before storing them into the `to-do`  list would need a convoluted SQL
+statement, a big effort for a small result.
+
 
 Displaying the Results
 ======================

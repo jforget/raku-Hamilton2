@@ -36,8 +36,8 @@ insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015',
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
-insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths)
-       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0)
+insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths, exterior)
+       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,        0)
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
@@ -209,9 +209,23 @@ and  (   (from_code = '77' and to_code = '95')
       or (from_code = '95' and to_code = '77'))
 SQL
 
+# Filling the "exterior" field
+$dbh.execute(q:to/SQL/);
+update Areas
+  set  exterior = 1
+where map in ('fr1970', 'fr2015', 'frreg')
+and   level = 2
+and   exists (select 'X'
+              from  Small_Borders B
+              where B.map        = Areas.map
+              and   B.from_code  = Areas.code
+              and   B.upper_to  != Areas.upper)
+SQL
+
 for <fr1970 fr2015 frreg> -> $map {
   $sto-mesg.execute($map, DateTime.now.Str, 'INIT');
 }
+
 
 =begin POD
 

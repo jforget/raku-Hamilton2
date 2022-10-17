@@ -98,6 +98,7 @@ Les autres informations sont :
 * `color`, la couleur qui sera utilisée pour l'affichage des cartes,
 * `upper`, pour les départements, le code de la région d'appartenance,
 * `nb_paths` pour les régions, le nombre de chemins régionaux (micro-chemins).
+* `exterior` montrant si le département est relié à une autre région
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
 sélectionne  le niveau  1  des  régions et  la  vue `Small_Areas`  qui
@@ -108,6 +109,11 @@ le  problème  des chemins  doublement  hamiltoniens  soit purement  un
 problème de graphe  sans aucun rapport avec la  géométrie, les graphes
 seront  visualisés de  telle  façon que  l'on  puisse reconnaître  les
 cartes géographiques.
+
+Le champ `exterior` n'a de signification que pour les départements. Il
+vaut `1`  si le département a  au moins une frontière  commune avec un
+département d'une autre  région et il vaut `0` si  tous les voisins du
+département appartiennent à la même région.
 
 Borders
 -------
@@ -564,6 +570,7 @@ Avant :
 Après :
 14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
 14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
 etc.
@@ -593,6 +600,61 @@ Ci-dessus, la recherche  des départements voisins et  la recherche des
 chemins  régionaux  sont présentées  comme  des  processus séparés  et
 successifs. En fait,  avec la jointure SQL qui va  bien, ces processus
 sont rassemblés en un seul.
+
+Optimisation
+------------
+
+Parmi les chemins incomplets générés ci-dessus, certains sont de toute
+évidence stériles, les chemins dont le dernier département est `59` ou
+`62`. Pourquoi ? Parce que le  chemin doit poursuivre à l'extérieur de
+la  région  `HDF` et  ces  deux  départements n'ont  aucune  frontière
+commune avec une autre région.
+
+Il y a une  exception à cette considération. Si la  région en cours de
+traitement  (`HDF` dans  l'exemple) est  la dernière  du macro-chemin,
+alors n'importe quelle arrivée est  valide, y compris les départements
+« intérieurs » comme `59` et `62`.
+
+En conséquence, le programme dispose de deux instructions `select`. La
+première contient une  seule jointure entre la  vue `Small_Borders` et
+la vue `Region_Paths` et est  utilisée lorsque la génération du chemin
+complet  est sur  le point  d'aboutir.  Le deuxième  `select` est  une
+jointure  entre `Small_Borders`  et  `Region_Paths`,  mais aussi  avec
+`Small_Areas`, pour s'assurer que le  département final permet bien de
+quitter la région.
+
+En  reprenant l'exemple  ci-dessus,  la  génération sans  optimisation
+aurait alimenté la liste `to-do` avec les chemins suivants :
+
+```
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 62 → 59 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 80 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 80 → 59 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 02 → 59 → 62 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 62 → 80 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 60 → 02 → 59 → 62 →→ GES → ...
+```
+
+Avec  l'optimisation  la liste  de  chemins  mémorisés dans  la  liste
+`to-do` se limitera à :
+
+```
+14 → 50 → 61 → 27 → 76 → 60 → 80 → 62 → 59 → 02 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 60 → 02 → 59 → 62 → 80 →→ GES → ...
+14 → 50 → 61 → 27 → 76 → 80 → 62 → 59 → 02 → 60 →→ GES → ...
+```
+
+Comme vous  l'avez sans  doute remarqué, sur  ces trois  chemins, deux
+échoueront malgré tout, le chemin contenant `... → 80 →→ GES → ...` et
+le chemin contenant `... → 60 →→ GES → ...`, parce que ni `80` ni `60`
+ne  sont voisins  de la  région `GES`.  Vouloir ajuster  l'instruction
+`select`  pour s'assurer  que ces  chemins sont  invalides et  pour ne
+stocker  que des  chemins  pour lesquels  le  dernier département  est
+réellement voisin de la région suivante conduirait à un ordre `select`
+alambiqué, un effort démesuré par rapport au gain obtenu.
+
 
 Affichage du résultat
 =====================

@@ -13,6 +13,7 @@ create table Areas (map      TEXT
                   , color    TEXT
                   , upper    TEXT
                   , nb_paths INTEGER
+                  , exterior INTEGER
                   );
 
 create table Borders (map       TEXT
@@ -58,8 +59,8 @@ create view Big_Areas (map, code, name, long, lat, color, nb_paths)
             from       Areas
             where      level = 1;
 
-create view Small_Areas (map, code, name, long, lat, color, upper)
-         as select       map, code, name, long, lat, color, upper
+create view Small_Areas (map, code, name, long, lat, color, upper, exterior)
+         as select       map, code, name, long, lat, color, upper, exterior
             from         Areas
             where        level = 2;
 
