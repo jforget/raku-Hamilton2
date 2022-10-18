@@ -655,6 +655,34 @@ stocker  que des  chemins  pour lesquels  le  dernier département  est
 réellement voisin de la région suivante conduirait à un ordre `select`
 alambiqué, un effort démesuré par rapport au gain obtenu.
 
+3 chemins au  lieu de 8, cela ne semble  pas grand-chose. Examinons le
+cas de  la région `IDF`  qui a  800 chemins hamiltoniens  régionaux et
+d'un macro chemin `...  HDF → IDF → BFC ...`.  L'accès depuis `HDF` se
+fait  soit  par le  département  `77`  (Seine-et-Marne), soit  par  le
+département  `95`  (Val-d'Oise)  et  la  sortie  vers  `BFC`  se  fait
+obligatoirement par le département `77`.
+
+Sans optimisation, il y a 104  chemins régionaux commençant en `77` et
+93 chemins  régionaux commençant en  `95`. Le programme  aurait empilé
+197 chemins dans la liste `to-do`.
+
+Avec l'optimisation retenue, il y a 60 chemins régionaux commençant en
+`77` et aboutissant dans un département intérieur (`75`, `92`, `93` ou
+`94`), 44 chemins régionaux commençant  en `77` et aboutissant dans un
+autre département  extérieur, 51 chemins régionaux  commençant en `95`
+et aboutissant dans un département  intérieur et 42 chemins commençant
+en `95`  et aboutissant  dans un  département extérieur.  Le programme
+empilera 86 chemins au lieu de 197.
+
+Avec l'optimisation plus fine, les seuls chemins régionaux utiles sont
+les chemins  commençant en  `95` et aboutissant  en `77`.  Cela ferait
+juste 13  chemins empilés dans la  liste `to-do`. C'est vrai  que cela
+semble intéressant, finalement. Cela dit, pour l'instant, je ne prends
+en compte que la première optimisation.
+
+Un  autre   point :  comme   pour  la  génération   des  macro-chemins
+hamiltoniens et  des chemins hamiltoniens régionaux,  la liste `to-do`
+du présent programme sera utilisée en mode LIFO.
 
 Affichage du résultat
 =====================

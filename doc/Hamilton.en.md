@@ -640,6 +640,32 @@ is adjacent  to the  `GES` region.  Trying to  remove these  two paths
 before storing them into the `to-do`  list would need a convoluted SQL
 statement, a big effort for a small result.
 
+3 paths instead of 8 does not seem  much. Let us examine the case of a
+more densely linked region, `IDF` with 800 regional Hamiltonian paths.
+With this region,  we will examine a macro-path containing  `... HDF →
+IDF  →  GES  ...`.  The  access from  `HDF`  is  either  through  `77`
+(Seine-et-Marne) or  through `95` (Val-d'Oise)  and the exit  to `BFC`
+must be from `77`.
+
+Without optimisation, there are 104  regional paths starting from `77`
+and 93 regional paths from `95`. The programme would push 197 into the
+`to-do` list.
+
+With the basic optimisation, there are  60 regional paths from `77` to
+interior departments  (`75`, `92`,  `93` or  `94`), 44  regional paths
+from  `77` to  exterior departments,  51 regional  paths from  `95` to
+interior  departments and  42  regional paths  from  `95` to  exterior
+departments. The programme will push 86 paths instead of 197.
+
+With the advanced optimisation, the only useful regional paths are the
+paths from  `95` to `77`. This  would result in pushing  only 13 paths
+into  the  `to-do`  list.  This  seems  much  better  than  the  basic
+optimisation, after  all. Yet, for  the moment,  I will use  the basic
+optimisation.
+
+Another point: from  reasons similar to the  generation of Hamiltonian
+macro-paths  and the  generation  of Hamiltonian  regional paths,  the
+`to-do` list is processed in a LIFO order, rather than FIFO.
 
 Displaying the Results
 ======================
