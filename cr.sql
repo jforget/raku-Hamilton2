@@ -74,6 +74,14 @@ create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, 
             from           Borders
             where          level = 2;
 
+create view Borders_With_Star (map, level, from_code, to_code, upper_from, upper_to)
+               as select       map, level, from_code, to_code, upper_from, upper_to
+                  from   Borders
+                  where level = 2
+            union select       map, 2    , '*'      , code   , '*'       , upper
+                  from   Areas
+                  where level = 2
+
 create view Macro_Paths   (map, num, path, from_code, to_code)
          as select         map, num, path, from_code, to_code
             from           Paths

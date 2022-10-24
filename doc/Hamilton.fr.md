@@ -684,6 +684,135 @@ Un  autre   point :  comme   pour  la  génération   des  macro-chemins
 hamiltoniens et  des chemins hamiltoniens régionaux,  la liste `to-do`
 du présent programme sera utilisée en mode LIFO.
 
+Simplification
+--------------
+
+Après avoir dédoublé un ordre SQL pour des besoins de performances, je
+vais rassembler deux ordres SQL pour des besoins de simplification.
+
+Dans le cadre de ce chapitre, je vais m'intéresser à la carte `fr2015`
+(12 régions) et à un macro-chemin `NOR  → HDF → GES → etc`, ainsi qu'à
+une  carte  ne  comportant  qu'une  seule  région  (et  donc  un  seul
+macro-chemin  réduit à  cette région).  Pour traiter  ces deux  cas de
+figure, il faut quatre boucles différentes.
+
+Étape 1 pour `fr2015`
+###
+
+Une boucle sélectionnant les chemins  régionaux en faisant attention à
+la sortie, mais sans se préoccuper de l'entrée.
+
+```
+select xxx
+from Region_Paths        B
+join with Small_Regions  C
+   on  C.map      = B.map
+   and C.code     = B.to_code
+   and C.exterior = 1
+where B.map  = ?
+where B.area = ?
+```
+
+On remplace la  première région par le  chemin régional correspondant,
+on insére  une double flèche entre  le chemin régional de  la première
+région  et le  code de  la deuxième  région, et  on alimente  la liste
+`to-do` avec le résultat.
+
+Étapes 2 à 11 pour `fr2015`
+###
+
+Une boucle sélectionnant les chemins  régionaux en faisant attention à
+la fois à l'entrée et à la sortie.
+
+```
+select xxx
+from Small_Borders        A
+join with Region_Paths    B
+   on  B.map  = A.map
+   and B.area = A.upper_to
+join with Small_Areas  C
+   on  C.map      = B.map
+   and C.code     = B.to_code
+   and C.exterior = 1
+where A.map       = ?
+and   A.from_code = ?
+```
+
+On  fait  glisser  la  double  flèche après  la  région  en  cours  de
+traitement,  on remplace  cette région  par le  chemin régional  et on
+alimente la liste `to-do`.
+
+Étape 12 pour `fr2015`
+###
+
+Une boucle sélectionnant les chemins  régionaux en faisant attention à
+l'entrée mais sans se préoccuper de la sortie.
+
+```
+select xxx
+from Small_Borders        A
+join with Region_Paths    B
+   on  B.map  = A.map
+   and B.area = A.upper_to
+where A.map       = ?
+and   A.from_code = ?
+```
+
+On remplace la  dernière région par son chemin régional,  on enlève la
+double flèche et on écrit le chemin complet dans la table `Paths`
+
+Étape unique pour la carte à une seule région
+###
+
+Une boucle sélectionnant  les chemins régionaux sans  se préoccuper de
+l'entrée ni de la sortie.
+
+```
+select xxx
+from Region_Paths B
+where B.map = ?
+```
+
+et on écrit le chemin complet dans  la table `Paths`. En fait, dans ce
+cas particulier, c'est  une simple recopie des  chemins régionaux vers
+les chemins complets, avec juste quelques changements, comme la valeur
+de `level`.
+
+Factorisation
+###
+
+L'idée est  d'ajouter une « étape  zéro » avec un  département virtuel
+`*` relié à tous  les départements de la carte et  à traiter le chemin
+`* →→  NOR → HDF →  GES → etc`  au lieu du chemin  `NOR → HDF →  GES →
+etc`.  De la  sorte, lors  de l'étape  1, « ne  pas faire  attention à
+l'entrée  du  chemin  régional »  est  équivalent  à  « s'assurer  que
+l'entrée du chemin régional colle bien au département `*` » . Il n'y a
+pas  besoin  d'insérer une  double  flèche,  elle existe  déjà  depuis
+l'« étape zéro » et il suffit juste de la faire glisser comme dans les
+étapes  2 à  11.  Le département  virtuel `*`  apparaît  dans une  vue
+`Borders_With_Star`, destinée à remplacer  la vue `Small_Borders` dans
+les ordres SQL ci-dessus.
+
+La vue  `Borders_With_Star` sert également  à fusionner l'étape  12 de
+`fr2015`  avec l'étape  unique  de  la carte  à  une  seule région.  À
+l'occasion de cette étape, on supprime le préfixe `* →` ajouté lors de
+l'étape zéro.
+
+L'ajout d'un  nouveau département  ne perturbe  pas la  génération des
+chemins complets.  En effet, comme  aucun macro-chemin ne  contient la
+région virtuelle `*` à laquelle appartient le département virtuel `*`,
+il n'y  a aucun  risque qu'un  chemin complet fasse  un détour  par le
+département `*`.
+
+Le   département  virtuel   `*`  apparaît   uniquement  dans   la  vue
+`Borders_With_Star`.  Il n'apparaît  dans aucune  autre vue  ni aucune
+table.  D'autre  part, les  frontières  virtuelles  entre `*`  et  les
+départements réels sont à sens  unique, alors que les frontières entre
+deux départements réels sont à double sens. La raison est que l'on n'a
+pas besoin d'aller  d'un département réel vers le  département `*`, il
+n'y a pas besoin de compliquer la vue `Borders_With_Star` pour assurer
+le sens inverse.
+
 Affichage du résultat
 =====================
 
