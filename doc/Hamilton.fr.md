@@ -696,8 +696,7 @@ une  carte  ne  comportant  qu'une  seule  région  (et  donc  un  seul
 macro-chemin  réduit à  cette région).  Pour traiter  ces deux  cas de
 figure, il faut quatre boucles différentes.
 
-Étape 1 pour `fr2015`
-###
+### Étape 1 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 la sortie, mais sans se préoccuper de l'entrée.
@@ -718,8 +717,7 @@ on insére  une double flèche entre  le chemin régional de  la première
 région  et le  code de  la deuxième  région, et  on alimente  la liste
 `to-do` avec le résultat.
 
-Étapes 2 à 11 pour `fr2015`
-###
+### Étapes 2 à 11 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 la fois à l'entrée et à la sortie.
@@ -742,8 +740,7 @@ On  fait  glisser  la  double  flèche après  la  région  en  cours  de
 traitement,  on remplace  cette région  par le  chemin régional  et on
 alimente la liste `to-do`.
 
-Étape 12 pour `fr2015`
-###
+### Étape 12 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 l'entrée mais sans se préoccuper de la sortie.
@@ -761,8 +758,7 @@ and   A.from_code = ?
 On remplace la  dernière région par son chemin régional,  on enlève la
 double flèche et on écrit le chemin complet dans la table `Paths`
 
-Étape unique pour la carte à une seule région
-###
+### Étape unique pour la carte à une seule région
 
 Une boucle sélectionnant  les chemins régionaux sans  se préoccuper de
 l'entrée ni de la sortie.
@@ -778,8 +774,7 @@ cas particulier, c'est  une simple recopie des  chemins régionaux vers
 les chemins complets, avec juste quelques changements, comme la valeur
 de `level`.
 
-Factorisation
-###
+### Factorisation
 
 L'idée est  d'ajouter une « étape  zéro » avec un  département virtuel
 `*` relié à tous  les départements de la carte et  à traiter le chemin

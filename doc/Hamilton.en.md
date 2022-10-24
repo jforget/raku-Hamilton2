@@ -667,6 +667,124 @@ Another point: from  reasons similar to the  generation of Hamiltonian
 macro-paths  and the  generation  of Hamiltonian  regional paths,  the
 `to-do` list is processed in a LIFO order, rather than FIFO.
 
+Simplification
+--------------
+
+After splitting a SQL statement for performance purposes, I will merge
+two SQL statements to simplify the programme.
+
+Within this chapter, I will deal  with the `fr2015` map (12 big areas)
+and a `NOR →  HDF → GES → etc` macro-path as  an example, plus another
+case with  an unnamed map  containing a  single big area  (which means
+also a single macro-path). To deal with these two cases, the programme
+needs four loops:
+
+### Step 1 for `fr2015`
+
+A  loop selects  the  regional paths  while taking  care  of exit  and
+disregarding entry:
+
+```
+select xxx
+from Region_Paths        B
+join with Small_Regions  C
+   on  C.map      = B.map
+   and C.code     = B.to_code
+   and C.exterior = 1
+where B.map  = ?
+where B.area = ?
+```
+
+The first region  is replaced by its regional path,  a double arrow is
+inserted between the first region's  path and the second region's code
+and the result is stored into the `to-do` list.
+
+### Steps 2 to 11 for `fr2015`
+
+The loops selects  regional paths while taking care of  both entry and
+exit.
+
+```
+select xxx
+from Small_Borders     A
+join with Region_Paths B
+   on  B.map  = A.map
+   and B.area = A.upper_to
+join with Small_Areas  C
+   on  C.map      = B.map
+   and C.code     = B.to_code
+   and C.exterior = 1
+where A.map       = ?
+and   A.from_code = ?
+```
+
+The  programme slides  the double  arrow past  the current  region and
+replaces this region by its regional  paths. The result is stored into
+the `to-do` list.
+
+### Step 12 for `fr2015`
+
+The  loop  selects regional  paths  while  taking  care of  entry  and
+disregarding exit.
+
+```
+select xxx
+from Small_Borders        A
+join with Region_Paths    B
+   on  B.map  = A.map
+   and B.area = A.upper_to
+where A.map       = ?
+and   A.from_code = ?
+```
+
+The last region is replaced by  its regional path, the double arrow is
+removed and the full path is written into the `Paths` table.
+
+### Single Step for a Single-Region Map
+
+The loop selects the regional  paths while disregarding both entry and
+exit.
+
+```
+select xxx
+from Region_Paths B
+where B.map = ?
+```
+
+The full path is immediately written into the `Paths` table. Actually,
+in the  special case of  a single-region  map, the generation  of full
+paths  is just  duplicating regional  paths to  full paths  with minor
+alterations, such as the value of the `level` field.
+
+### Refactoring
+
+The trick consists  in adding a "zero step" involving  a virtual small
+area `*`, which is  linked to all small areas on  the map. And instead
+of  processing  the `NOR  →  HDF  → GES  →  etc`  path, the  programme
+processes the `* →→  NOR → HDF → GES → etc` path.  In this way the "do
+not pay attention to the entry" clause  on step 1 is equivalent to the
+"be sure to link with the `*` virtual department". There is no need to
+insert a double  arrow, it has already been inserted  in step zero, we
+need just  to slide it  like in  steps 2 to  11. The virtual  area `*`
+appears  only  in the  `Borders_With_Star`  view,  that will  be  used
+instead of the `Small_Borders` in all SQL statements above.
+
+The  `Borders_With_Star` view  also allows  us  to merge  step 12  for
+`fr2015` with the  single step for a one-region map.  During this last
+step, we remove the `* →` prefix that was added in step 0.
+
+Adding a new small area `*`  does not change the generated full paths.
+Since no macro-paths include the `*` virtual region which contains the
+`*` virtual  small-area, there is no  risks that a full  path would be
+diverted to the `*` small area.
+
+The   virtual   small   area   `*`    appears   only   in   the   view
+`Borders_With_Star`. It appears in no other views and in no tables. In
+addition,  the borders  between `*`  and another  area are  single-way
+borders, while  all other borders  are two-way borders. The  reason is
+that we do not  need to go back from a real small  area to `*`, we can
+keep the `Borders_With_Star` simple.
+
 Displaying the Results
 ======================
 
