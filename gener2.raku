@@ -59,6 +59,15 @@ and   A.from_code = ?
 and   A.upper_to  = ?
 SQL
 
+my $sth-check-cyclic = $dbh.prepare(q:to/SQL/);
+select 'X'
+from   Borders
+where  map       = ?
+  and  level     = 2
+  and  from_code = ?
+  and  to_code   = ?
+SQL
+
 sub MAIN (
       Str  :$map             #= The code of the map
     ) {
@@ -67,6 +76,7 @@ sub MAIN (
   unless %map {
     die "Unkown map $map";
   }
+  my Int $max-macro = %map<nb_macro>;
 
   # Initial clean-up
   $dbh.execute("begin transaction");
@@ -83,6 +93,12 @@ sub MAIN (
   my Int $full-path-number   =    0;
   my Int $complete-threshold =    0;
   my Int $complete-increment = commit-interval();
+  my Int $max-to-do          = 0;
+  my Int $num;
+  my Int $to-do-nb;
+  sub aff-stat {
+    say "{DateTime.now.hh-mm-ss} macro number $num / $max-macro, complete paths $full-path-number, partial paths $partial-paths-nb (to-do list $to-do-nb / $max-to-do)";
+  }
 
   $dbh.execute("begin transaction");
   my $list-macro = $dbh.prepare(q:to/SQL/);
@@ -92,9 +108,9 @@ sub MAIN (
   order by num
   SQL
   for $list-macro.execute($map).allrows(:array-of-hash) -> $macro-path {
-    my Int $num  = $macro-path<num>;
+    $num  = $macro-path<num>;
     my Str $path = $macro-path<path>;
-    #say "generating macro-path $num for map $map: $path";
+
     my @to-do;
     my %partial = path      => '* →→ ' ~ $path
                 , relations => %()
@@ -103,6 +119,10 @@ sub MAIN (
     @to-do.push(%partial);
     #say @to-do.raku;
     while @to-do.elems > 0 {
+      $to-do-nb = @to-do.elems;
+      if $max-to-do < $to-do-nb {
+        $max-to-do = $to-do-nb;
+      }
       my     %old      = @to-do.pop;
       #   say %old;
       my Str $old-path = %old<path>; $old-path ~~  / '→→' \s* (\S+) /;
@@ -123,7 +143,7 @@ sub MAIN (
           @to-do.push(%new);
           ++$partial-paths-nb;
           if $partial-paths-nb ≥ $partial-threshold {
-            say join(' ', DateTime.now.hh-mm-ss, $partial-paths-nb, $new-path);
+            aff-stat();
             $partial-threshold += $partial-increment;
           }
         }
@@ -137,14 +157,22 @@ sub MAIN (
           my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<B.num>;
           $new-path ~~ / ^ $<from>=(\S+) .* \s $<to>=(\S+) $/;
           ++$full-path-number;
-          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, 0, $macro-path<num>);
+          my $result = $sth-check-cyclic.execute($map, $<from>.Str, $<to>.Str).row;
+          my Int $cyclic;
+          if $result eq 'X' {
+            $cyclic = 1;
+          }
+          else {
+            $cyclic = 0;
+          }
+          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>);
           for %new-rel.kv -> $area, $num {
             $sto-relation.execute($map, $full-path-number, $area, $num);
           }
           if $full-path-number ≥ $complete-threshold {
             $dbh.execute("commit");
             $dbh.execute("begin transaction");
-            say join(' ', DateTime.now.hh-mm-ss, $full-path-number, $new-path);
+            aff-stat();
             $complete-threshold += $complete-increment;
           }
         }
@@ -152,6 +180,8 @@ sub MAIN (
     }
   }
   $dbh.execute("commit");
+  $to-do-nb = 0;
+  aff-stat();
 
   # Last step, the report
   $dbh.execute("begin transaction");
