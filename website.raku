@@ -17,6 +17,7 @@ use Bailador;
 use access-sql;
 use map-list-page;
 use full-map;
+use full-path;
 use macro-map;
 use macro-path;
 use region-map;
@@ -199,6 +200,32 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , rpath-links    => @links
                            , fpath-links    => @full-links
                            );
+}
+
+get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Int $num    = + $num_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-small-areas($map);
+  my @borders = access-sql::list-small-borders($map);
+  for @areas -> $area {
+    $area<url> = "/$lng/region-with-full-path/$map/$area<code>/$num";
+  }
+  my %path       = access-sql::read-path($map, 3, '', $num);
+  my @messages   = access-sql::list-messages($map);
+  my @list-paths = list-numbers(%map<nb_full>, $num);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+  return full-path::render($lng, $map, %map
+                          , areas    => @areas
+                          , borders  => @borders
+                          , path     => %path
+                          , messages => @messages
+                          , links    => @links
+                          );
 }
 
 baile();
