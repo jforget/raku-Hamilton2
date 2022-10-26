@@ -763,7 +763,7 @@ area `*`, which is  linked to all small areas on  the map. And instead
 of  processing  the `NOR  →  HDF  → GES  →  etc`  path, the  programme
 processes the `* →→  NOR → HDF → GES → etc` path.  In this way the "do
 not pay attention to the entry" clause  on step 1 is equivalent to the
-"be sure to link with the `*` virtual department". There is no need to
+"be sure to link with the `*` virtual department" clause. There is no need to
 insert a double  arrow, it has already been inserted  in step zero, we
 need just  to slide it  like in  steps 2 to  11. The virtual  area `*`
 appears  only  in the  `Borders_With_Star`  view,  that will  be  used

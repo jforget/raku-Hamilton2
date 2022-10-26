@@ -80,7 +80,7 @@ create view Borders_With_Star (map, level, from_code, to_code, upper_from, upper
                   where level = 2
             union select       map, 2    , '*'      , code   , '*'       , upper
                   from   Areas
-                  where level = 2
+                  where level = 2;
 
 create view Macro_Paths   (map, num, path, from_code, to_code)
          as select         map, num, path, from_code, to_code
