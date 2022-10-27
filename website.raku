@@ -22,6 +22,7 @@ use macro-map;
 use macro-path;
 use region-map;
 use region-path;
+use region-with-full-path;
 
 my @languages = ( 'en', 'fr' );
 
@@ -213,7 +214,7 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @areas   = access-sql::list-small-areas($map);
   my @borders = access-sql::list-small-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-with-full-path/$map/$area<code>/$num";
+    $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
   }
   my %path       = access-sql::read-path($map, 3, '', $num);
   my @messages   = access-sql::list-messages($map);
@@ -226,6 +227,51 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
                           , messages => @messages
                           , links    => @links
                           );
+}
+
+get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_parm, $num_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Str $region = ~ $region_parm;
+  my Int $num    = + $num_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my %region  = access-sql::read-region($map, $region);
+
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+  @areas.append(@neighbours);
+  for @areas -> $area {
+    if $area<upper> eq $region {
+      $area<url> = '';
+    }
+    else {
+      $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
+    }
+  }
+  my %path     = access-sql::read-path($map, 3, '', $num);
+  my @messages = access-sql::list-regional-messages($map, $region);
+
+  my @list-paths = list-numbers(%region<nb_paths>, $num);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+
+  my @list-full  = list-numbers(%map<nb_full>, $num);
+  my @full-links = @list-full.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+
+  return region-with-full-path::render(lang           => $lng
+                                     , mapcode        => $map
+                                     , map            => %map
+                                     , region         => %region
+                                     , areas          => @areas
+                                     , borders        => @borders
+                                     , path           => %path
+                                     , messages       => @messages
+                                     , rpath-links    => @links
+                                     , fpath-links    => @full-links
+                                     );
 }
 
 baile();

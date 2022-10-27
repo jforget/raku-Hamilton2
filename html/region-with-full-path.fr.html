@@ -1,0 +1,45 @@
+<html><head>
+<title>Chemin complet dans une région</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+</head>
+<body>
+
+<p><a href="/fr/list/">Liste des cartes</a>
+<a href="/fr/full-map/xx"  class='full-map'>carte complète</a>
+<a href="/fr/macro-map/xx" class='macro-map'>macro-carte</a>
+<a href="/fr/region-map/xx/yyy" class='region-map'>carte régionale</a>
+<a href="/fr/full-path/xx/nn"  class='full-path'>chemin complet</a>
+<a href="/fr/macro-path/xx/nn" class='macro-path'>macro-chemin</a>
+<a href="/fr/region-path/xx/xx/nn" class='region-path'>chemin régional</a></p>
+
+<h1>Titre</h1>
+
+<h2>Chemin complet n° <span class='path-number'>1</span> dans la région <span class='region-name'>xxx</span></h2>
+
+<p><span class='extended-path'>01 → 02 → 03</span> (<span class='open'>ouvert</span><span class='cyclic'>cyclique</span>)</p>
+
+<img src='xxx' alt='Carte pour une région et les zones voisines, montrant un chemin hamiltonien dans la région' usemap="#map1" />
+
+<map name="map1" id="map1">
+<area shape="circle" coords="637,18,30"  href="/fr/region-with-full-path/fr2015/HDF/1" />
+<area shape="circle" coords="337,141,30" href="/fr/region-with-full-path/fr2015/NOR/1" />
+<area shape="circle" coords="18,287,30"  href="/fr/region-with-full-path/fr2015/BRE/1" />
+</map>
+
+<h2>Chemins régionaux</h2>
+
+<p class='list-of-region-paths'>xxx</p>
+
+<h2>Chemins complets</h2>
+
+<p class='empty-list-of-full-paths'>Cette carte n'a pas de chemins complets.</p>
+<p class='list-of-full-paths'>xxx</p>
+
+<h2>Messages</h2>
+
+<ul class='messages'>
+<li class='INIT'><span class='dh'>2022-09-13T20:51:00</span> chargement initial de la carte</li>
+</ul>
+
+</body>
+</html>
