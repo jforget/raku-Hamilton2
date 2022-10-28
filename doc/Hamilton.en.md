@@ -708,8 +708,9 @@ exit.
 select xxx
 from Small_Borders     A
 join with Region_Paths B
-   on  B.map  = A.map
-   and B.area = A.upper_to
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
 join with Small_Areas  C
    on  C.map      = B.map
    and C.code     = B.to_code
@@ -731,8 +732,9 @@ disregarding exit.
 select xxx
 from Small_Borders        A
 join with Region_Paths    B
-   on  B.map  = A.map
-   and B.area = A.upper_to
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
 where A.map       = ?
 and   A.from_code = ?
 ```
@@ -775,7 +777,7 @@ step, we remove the `* →` prefix that was added in step 0.
 
 Adding a new small area `*`  does not change the generated full paths.
 Since no macro-paths include the `*` virtual region which contains the
-`*` virtual  small-area, there is no  risks that a full  path would be
+`*` virtual  small area, there is no  risks that a full  path would be
 diverted to the `*` small area.
 
 The   virtual   small   area   `*`    appears   only   in   the   view
@@ -857,7 +859,7 @@ neighbouring departments. URL
 http://localhost:3000/en/region-map/fr2015/HDF
 
 * A regional map with a regional path. URL
-http://localhost:3000/en/region-map/fr2015/HDF
+http://localhost:3000/en/region-path/fr2015/HDF/1
 
 * A regional map with a (truncated) full path. URL
 http://localhost:3000/en/region-with-full-path/fr2015/HDF/3

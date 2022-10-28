@@ -726,8 +726,9 @@ la fois à l'entrée et à la sortie.
 select xxx
 from Small_Borders        A
 join with Region_Paths    B
-   on  B.map  = A.map
-   and B.area = A.upper_to
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
 join with Small_Areas  C
    on  C.map      = B.map
    and C.code     = B.to_code
@@ -749,8 +750,9 @@ l'entrée mais sans se préoccuper de la sortie.
 select xxx
 from Small_Borders        A
 join with Region_Paths    B
-   on  B.map  = A.map
-   and B.area = A.upper_to
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
 where A.map       = ?
 and   A.from_code = ?
 ```
