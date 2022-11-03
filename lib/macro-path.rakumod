@@ -1,7 +1,7 @@
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #
-#     Génération de la page HTML détaillant un macro-chemon de la base de données Hamilton.db
+#     Génération de la page HTML détaillant un macro-chemin de la base de données Hamilton.db
 #     Generating the HTML pages rendering a macro-path from the Hamilton.db database
 #     Copyright (C) 2022 Jean Forget
 #
@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@links) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -34,11 +34,20 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
-  my $links = join ' ', @links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+  my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-paths').content($links);
+
+  if @full-links.elems eq 0 {
+    $at.at('p.list-of-full-paths')».remove;
+  }
+  else {
+    my $links = join ' ', @full-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('p.list-of-full-paths').content($links);
+    $at.at('p.empty-list-of-full-paths')».remove;
+  }
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@links) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $map
@@ -47,7 +56,8 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , borders  => @borders
                 , messages => @messages
                 , path     => %path
-                , links    => @links
+                , macro-links => @macro-links
+                , full-links  => @full-links
                 );
 }
 

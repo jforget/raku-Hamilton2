@@ -148,14 +148,24 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   }
   my %path     = access-sql::read-path($map, 1, '', $num);
   my @messages = access-sql::list-messages($map);
+
   my @list-paths = list-numbers(%map<nb_macro>, $num);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+
+  my @full-interval = access-sql::full-path-interval($map, $num);
+  my @full-links = ();
+  if @full-interval[0] != 0 {
+    my @nums = list-numbers(@full-interval[1], @full-interval[0] - 1).grep({ $_ ≥ @full-interval[0] });
+    @full-links = @nums.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) });
+  }
+
   return macro-path::render($lng, $map, %map
                            , areas    => @areas
                            , borders  => @borders
                            , path     => %path
                            , messages => @messages
-                           , links    => @links
+                           , macro-links => @macro-links
+                           , full-links  => @full-links
                            );
 }
 

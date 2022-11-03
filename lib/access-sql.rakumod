@@ -159,6 +159,12 @@ our sub max-path-number(Str $map, Int $level, Str $area) {
   return @val[0];
 }
 
+our sub full-path-interval(Str $map, Int $path-num) {
+  my $sth = $dbh.prepare("select ifnull(min(num), 0), ifnull(max(num), 0) from Full_Paths where map = ? and macro_num = ?");
+  my @val = $sth.execute($map, $path-num).row;
+  return @val;
+}
+
 =begin POD
 
 =encoding utf8
