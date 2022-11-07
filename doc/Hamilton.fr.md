@@ -1051,6 +1051,79 @@ Certes, la fuite mémoire existe  toujours, mais c'est plus supportable
 lorsqu'elle se produit 162 fois  que lorsqu'elle se produit 3 millions
 de fois.
 
+### Syntaxe SQL
+
+Lorsque l'on effectue  une jointure entre plusieurs tables,  il est de
+bon ton  de qualifier chaque  nom de colonne avec  le nom de  la table
+correspondante, ou d'attribuer un alias à chaque table et de qualifier
+chaque nom de colonne avec l'alias de la table associée.
+
+Exemple à ne pas suivre :
+
+```
+select num, path, area, to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Exemple correct :
+
+```
+select B.num, B.path, B.area, B.to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Mais cet  ordre SQL présente  un défaut. Sur une  machine, l'exécution
+avec le paramètre `:array-of-hash` m'a renvoyé :
+
+```
+({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
+```
+
+et sur une autre machine, avec une autre version de Raku, de DBIish et
+de SQLite, j'ai obtenu :
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+Comment  s'affranchir de  cette alternative ?  En attribuant  un alias
+également aux colonnes :
+
+```
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Et le programme sur les deux machines m'a donné :
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
 LICENCE
 =======
 

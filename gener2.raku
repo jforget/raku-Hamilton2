@@ -32,7 +32,10 @@ insert into Path_Relations (map, full_num, area, region_num)
 SQL
 
 my $extract-region-paths  = $dbh.prepare(q:to/SQL/);
-select B.num, B.path, B.area, B.to_code
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
 from Borders_With_Star A
 join Region_Paths B
    on  B.map       = A.map
@@ -48,7 +51,10 @@ and   A.upper_to  = ?
 SQL
 
 my $extract-last-region-paths  = $dbh.prepare(q:to/SQL/);
-select B.num, B.path, B.area, B.to_code
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
 from Borders_With_Star A
 join Region_Paths B
    on  B.map       = A.map
@@ -134,14 +140,18 @@ sub MAIN (
         # extending the partial path by one region
         for $extract-region-paths.execute($map, %old<last>, $old-reg).allrows(:array-of-hash) -> $reg-path {
           #say $reg-path;
-          my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<B.path> →/;
-          my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<B.num>;
+          my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<path> →/;
+          my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<num>;
           my %new = path      => $new-path
                   , relations => %new-rel
-                  , last      => $reg-path<B.to_code>
+                  , last      => $reg-path<to_code>
                   ;
           @to-do.push(%new);
           ++$partial-paths-nb;
+          $to-do-nb = @to-do.elems;
+          if $max-to-do < $to-do-nb {
+            $max-to-do = $to-do-nb;
+          }
           if $partial-paths-nb ≥ $partial-threshold {
             aff-stat();
             $partial-threshold += $partial-increment;
@@ -152,9 +162,9 @@ sub MAIN (
       else {
         # processing the last region and storing into the database
         for $extract-last-region-paths.execute($map, %old<last>, $old-reg).allrows(:array-of-hash) -> $reg-path {
-          my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<B.path>/;
+          my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<path>/;
                                         $new-path ~~ s/'* → '//;
-          my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<B.num>;
+          my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<num>;
           $new-path ~~ / ^ $<from>=(\S+) .* \s $<to>=(\S+) $/;
           ++$full-path-number;
           my $result = $sth-check-cyclic.execute($map, $<from>.Str, $<to>.Str).row;

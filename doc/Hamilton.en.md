@@ -1013,6 +1013,79 @@ I removed the superfluous `commit`  + `begin transaction`. The leak is
 not plugged, but it happens 162 times instead of 3 millions, so it has
 no visible effects.
 
+### SQL Syntax
+
+When we  join several tables,  it is  advised to qualify  every column
+name  with the  table name,  or to  give an  alias to  each table  and
+qualify each column name with this alias.
+
+First, the wrong example:
+
+```
+select num, path, area, to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Then the right example:
+
+```
+select B.num, B.path, B.area, B.to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Yet, this  SQL statement has  a problem. When I  ran it on  a computer
+with the parameter `:array-of-hash`, the programme gave:
+
+```
+({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
+```
+
+and when I ran it on  another computer, with a different Raku version,
+a  different  DBIish  version  and a  different  SQLite  version,  the
+programme gave:
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+How can  we avoid  this problem?  By giving an  attribute also  to the
+columns:
+
+```
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+On both computers, I obtained:
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+
 License
 =======
 
