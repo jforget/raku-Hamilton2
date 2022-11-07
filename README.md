@@ -37,6 +37,41 @@ the  pathname of  the  SQLite  database in  `lib/db-conf-sql.rakumod`.
 Usage
 =====
 
+Create the `Hamilton.db` database file with:
+
+```
+sqlite3 Hamilton.db < cr.sql
+```
+
+Edit  the   `lib/db-conf-sql.rakumod`  file  to  enter   the  filename
+`Hamilton.db` with the proper directory name.
+
+Initialise the French maps with:
+
+```
+./init-fr.raku
+```
+
+Generate the Hamiltonian paths with:
+
+```
+./gener1.raku --map=fr2015
+./gener2.raku --map=fr2015
+```
+
+and the same thing with `fr1970` and `frreg`.
+
+Display the maps as HTML pages by running the webserver:
+
+```
+./website.raku
+```
+
+and in your favourite web browser, display the site at:
+
+```
+http://localhost:3000/
+```
 
 Author
 ======

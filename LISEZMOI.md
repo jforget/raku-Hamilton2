@@ -39,6 +39,42 @@ le chemin  d'accès de  la base SQLite  dans `lib/db-conf-sql.rakumod`.
 Utilisation
 ===========
 
+Créez le fichier de base de données `Hamilton.db` avec :
+
+```
+sqlite3 Hamilton.db < cr.sql
+```
+
+Mettez à  jour le fichier `lib/db-conf-sql.rakumod`  pour y renseigner
+le nom du fichier de base  de données `Hamilton.db` avec le répertoire
+adéquat.
+
+Initialisez les cartes de France avec :
+
+```
+./init-fr.raku
+```
+
+Lancez la génération des chemins hamiltoniens avec :
+
+```
+./gener1.raku --map=fr2015
+./gener2.raku --map=fr2015
+```
+
+en faisant de même avec `fr1970` et `frreg`.
+
+Pour afficher les cartes en HTML, lancez le serveur web :
+
+```
+./website.raku
+```
+
+et dans votre navigateur préféré, demandez l'adresse :
+
+```
+http://localhost:3000/
+```
 
 Auteur
 ======
