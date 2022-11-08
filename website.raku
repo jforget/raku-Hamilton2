@@ -198,7 +198,12 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   my @list-paths = list-numbers(%region<nb_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
 
-  my @full-links = (); # for the moment
+  my @full-numbers = access-sql::path-relations($map, $region, $num);
+  my @full-links;
+  for @full-numbers.kv -> $i, $num {
+    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num");
+  }
+  my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
 
   return region-path::render(lang     => $lng
                            , mapcode  => $map
@@ -209,7 +214,7 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , path     => %path
                            , messages => @messages
                            , rpath-links    => @links
-                           , fpath-links    => @full-links
+                           , fpath-links    => @full-links[@indices]
                            );
 }
 
@@ -268,8 +273,13 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
   my @list-paths = list-numbers(%region<nb_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
 
-  my @list-full  = list-numbers(%map<nb_full>, $num);
-  my @full-links = @list-full.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+  my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
+  my @full-numbers = access-sql::path-relations($map, $region, $region-num);
+  my @full-links;
+  for @full-numbers.kv -> $i, $num {
+    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num");
+  }
+  my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
 
   return region-with-full-path::render(lang           => $lng
                                      , mapcode        => $map
@@ -280,7 +290,7 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      , path           => %path
                                      , messages       => @messages
                                      , rpath-links    => @links
-                                     , fpath-links    => @full-links
+                                     , fpath-links    => @full-links[@indices]
                                      );
 }
 

@@ -165,6 +165,28 @@ our sub full-path-interval(Str $map, Int $path-num) {
   return @val;
 }
 
+our sub regional-path-of-full(Str $map, Str $area, Int $full-num) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select region_num
+  from Path_Relations
+  where map      = ?
+  and   area     = ?
+  and   full_num = ?
+  SQL
+  return $sth.execute($map, $area, $full-num).row[0];
+}
+
+our sub path-relations(Str $map, Str $area, Int $region-num) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select full_num
+  from Path_Relations
+  where map        = ?
+  and   area       = ?
+  and   region_num = ?
+  SQL
+  return $sth.execute($map, $area, $region-num).allrows.flat;
+}
+
 =begin POD
 
 =encoding utf8
