@@ -995,6 +995,15 @@ important than  in any other  department. If  this dent was  even more
 important, it could happen that the geometric centre of the department
 would be in this dent, that is, outside the department's borders.
 
+In the picture below, which are hard-copies from
+[Géoportail](https://www.geoportail.gouv.fr/),
+you can see the  south-east dent on the Moselle and  the south dent on
+Cantal.  For comparison  purposes,  the picture  includes  the map  of
+Mayenne, a  department with a  more regular  shape and which  may seem
+nearly convex when seen from some distance.
+
+![Maps of Mayenne, Moselle and Cantal](Mayenne-Moselle-Cantal.png)
+
 With the method I used to  initialise the longitudes and latitudes for
 the departements, it  could not happen. Even with a  very long dent, I
 would have chosen a point within the department. But if a region had a

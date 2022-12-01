@@ -1025,6 +1025,15 @@ prononcé que  les autres départements.  Si le creux était  encore plus
 prononcé, il se pourrait que le centre géométrique du département soit
 à  l'extérieur des limites du  département.
 
+Dans les cartes ci-dessous, des copies d'écran de
+[Géoportail](https://www.geoportail.gouv.fr/),
+vous pouvez voir le creux au sud-est  de la Moselle et le creux au sud
+du Cantal.  À titre de  comparaison, le dessin comporte  également une
+carte de  la Mayenne,  un département  qui, vu  d'assez loin,  a l'air
+d'être à peu près convexe.
+
+![Cartes de la Mayenne, de la Moselle et du Cantal](Mayenne-Moselle-Cantal.png)
+
 Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
 les coordonnées  des départements,  cela ne  pouvait pas  se produire.
 Même  si  un département  avait  eu  un  creux encore  plus  prononcé que le Cantal ou la Moselle,
