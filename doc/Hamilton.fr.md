@@ -47,7 +47,6 @@ régions  groupes correspondent  à des  continents. Ou  alors, sur  une
 ou celle de
 [Maharadjah](https://boardgamegeek.com/image/82336/maharaja).
 
-
 Le projet se base sur une base de données
 [SQLite](https://sqlite.org/index.html),
 des programmes
@@ -55,6 +54,51 @@ des programmes
 lancés en ligne de commande pour alimenter cette base de données et un
 affichage en mode web avec des programmes Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT).
+
+Quelques rappels sur la théorie des graphes
+===========================================
+
+Sauf  mention explicite  du  contraire,  dans tout  ce  texte il  sera
+question uniquement de graphes finis connexes non orientés.
+
+Un graphe est constitué de sommets et d'arêtes, mais compte tenu de la
+réalité  sous-jacente,  il  m'arrivera  souvent  de  parler  de  zones
+(régions et départements) et de frontières.
+
+Le degré d'un sommet est le nombre d'arêtes issues de ce sommet. Si un
+sommet a un degré 1, ce  sommet sera appelé « impasse ». Exemples : la
+région Nord-Pas-de-Calais  dans la  carte de France  de 1970,  qui est
+reliée uniquement à la Picardie ; ou alors dans l'Aquitaine de 1970 ou
+la Nouvelle Aquitaine de 2015, le département des Pyrénées-Atlantiques
+(64),   relié  uniquement   au  département   des  Landes   (40),  les
+départements 32 et 65 ne comptant pas.
+
+![Haut de la macro-carte fr1970](Macro-NPC-PIC.png)
+
+![Sud de la Nouvelle Aquitaine](Nouvelle-Aquitaine.png)
+
+En consultant le
+[lexique de la théorie des graphes](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
+j'ai trouvé la notion de
+[point d'articularion](https://fr.wikipedia.org/wiki/Point_d%27articulation_(th%C3%A9orie_des_graphes)).
+
+Dans le cas d'un graphe connexe, un point d'articulation est un sommet
+qui assure  la connexité  du graphe. C'est-à-dire,  si on  supprime ce
+sommet et les  arêtes associées, alors le graphe  restant cesse d'être
+connexe. En reprenant les exemples ci-dessus, la Picardie est un point
+d'articulation dans  la carte  des régions  de 1970,  car si  elle est
+supprimée, alors la région  Nord-Pas-de-Calais n'est plus connectée au
+reste de la  carte. De même, si on supprime  le département des Landes
+de  la  région  Aquitaine  ou   de  la  Nouvelle-Aquitaine,  alors  le
+département des  Pyrénées-Atlantiques n'est plus connecté  au reste de
+la région.
+
+Les  points  d'articulation  ne  sont  pas  toujours  associés  à  des
+impasses. Ainsi,  dans la région  Pays de la Loire,  le Maine-et-Loire
+(49) est  un point d'articulation  entre le groupe  Loire-Atlantique +
+Vendée (44 et 85) et le groupe Mayenne + Sarthe (53 et 72).
+
+![Pays de la Loire](Pays-de-la-Loire.png)
 
 Base de données
 ===============

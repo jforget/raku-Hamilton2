@@ -52,6 +52,51 @@ for computations and Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
 for display with a web browser.
 
+A Few Words about Graph Theory
+==============================
+
+Unless  explicitly  mentioned, I  will  restrict  these paragraphs  to
+finite connected undirected graphs.
+
+A graph  consists of  vertices (also  known as  nodes) and  edges, but
+because of  the underlying reality,  I will  also use the  words areas
+(regions and departments) and borders.
+
+The degree of a vertex is the  number of edges coming from the vertex.
+If the degree  of a vertex is 1,  I will call this vertex  a dead end.
+Examples are  the Nord-Pas-de-Calais  region in  the 1970  French map,
+linked only  to Picardy,  or the Pyrénées-Atlantiques  department (64)
+within the Aquitaine region (in 1970) or the Nouvelle Aquitaine region
+(in 2015),  this department  being linked only  to Landes  (40), since
+departments 32 and 64 are irrelevant.
+
+![Top of the fr1970 macro-map](Macro-NPC-PIC.png)
+
+![South of Nouvelle Aquitaine](Nouvelle-Aquitaine.png)
+
+When reading the
+[Glossary of graph theory](https://en.wikipedia.org/wiki/Glossary_of_graph_theory)
+I found a convenient notion, the
+[Articulation point](https://en.wikipedia.org/wiki/Articulation_point).
+
+Within  a connected  graph, an  articulation point  is a  vertex which
+ensures the  graph is  connected. In  other words,  if we  remove this
+vertex and  its edges,  the graph  is no  longer connected.  Using the
+examples above,  the Picady region  within the  1970 French map  is an
+articulation point,  because if it is  removed, the Nord-Pas-de-Calais
+region  is no  longer linked  to any  remaining region.  Likewise, the
+Landes (40) department  is an articulation point,  because if removed,
+the  Pyrénées-Atlantiques  department is  no  longer  linked to  other
+departments within the Aquitaine / Nouvelle Aquitaine region.
+
+Articulation points are not always  associated with dead ends. See for
+example the Maine-et-Loire department  in the Pays-de-la-Loire region.
+If removed,  the region  is split into  two connected  components, one
+with Loire-Atlantique  (44) and  Vendée (85),  the other  with Mayenne
+(53) and Sarthe (72).
+
+![Pays de la Loire](Pays-de-la-Loire.png)
+
 Database
 ========
 
