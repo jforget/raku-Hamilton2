@@ -75,8 +75,6 @@ départements 32 et 65 ne comptant pas.
 
 ![Haut de la macro-carte fr1970 et sud de la Nouvelle Aquitaine](NPC-PIC-NAQ.png)
 
-![](Nouvelle-Aquitaine.png)
-
 En consultant le
 [lexique de la théorie des graphes](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
 j'ai trouvé la notion de
