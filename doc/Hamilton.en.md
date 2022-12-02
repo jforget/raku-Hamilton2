@@ -70,9 +70,7 @@ within the Aquitaine region (in 1970) or the Nouvelle Aquitaine region
 (in 2015),  this department  being linked only  to Landes  (40), since
 departments 32 and 64 are irrelevant.
 
-![Top of the fr1970 macro-map](Macro-NPC-PIC.png)
-
-![South of Nouvelle Aquitaine](Nouvelle-Aquitaine.png)
+![Top of the fr1970 macro-map and South of Nouvelle Aquitaine](NPC-PIC-NAQ.png)
 
 When reading the
 [Glossary of graph theory](https://en.wikipedia.org/wiki/Glossary_of_graph_theory)
@@ -96,6 +94,12 @@ with Loire-Atlantique  (44) and  Vendée (85),  the other  with Mayenne
 (53) and Sarthe (72).
 
 ![Pays de la Loire](Pays-de-la-Loire.png)
+
+You  can easily  notice that  if a  graph contains  a dead  end, every
+Hamiltonian path will  either start from this dead end  or stop at it.
+On  the other  hand, if  a graph  contains an  articulation point,  no
+Hamiltonian  path   will  start  from  this   articulation  point,  no
+Hamiltonian path will stop at it.
 
 Database
 ========
@@ -351,10 +355,12 @@ longitudes of  these departments  and updates  the region  record with
 these computed values.
 
 Likewise,  the  programme  creates  the `Borders`  records  with  keys
-`fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`  by extracting
-all departments  borders `fr1970`+`2`  and `fr2015`+`2`  lying between
-two different regions, discarding all duplicates region-wise and store
-the result in the `Borders` table.
+`fr1970`+`1`  and `frreg`+`2`  by extracting  all departments  borders
+`fr1970`+`2`  lying  between  two different  regions,  discarding  all
+duplicates region-wise  and store the  result in the  `Borders` table.
+And  it creates  in  the  same way  the  `Borders`  records with  keys
+`fr2015`+`1`  and `frreg`+`1`  by extracting  all departments  borders
+`fr2015`+`2` lying between two different regions.
 
 Extracting Hamiltonian Paths
 ============================
@@ -498,6 +504,19 @@ Provence-Alpes-Côte-d'Azur. In this case, the lone Y1970-region has no
 neighbours  within its  Y2015-region. Yet,  we find  a regional  path,
 composed of one single node and no edge.
 
+Another case, exemplified by Wales in  the Britannia map, is not dealt
+with at initialisation time. For  game reasons, Cornwall and Devon are
+assigned to  Wales instead of  England. If  we do discard  the coastal
+links, then Wales is not a connected  graph, it has a Cornwall + Devon
+connected  component,  plus  a  main connected  component  (Powys  and
+others).  This   case  is   not  dealt   with  during   the  programme
+initialisation. The  programme will try to  generate Hamiltonian paths
+nevertheless. Since  Cornwall and Devon  are dead ends,  the programme
+will generate either `COR → DEV` or  `DEV → COR`, then it will fail to
+extend this partial path. The  generation programme will soon end with
+a  "failed" result,  as expected,  but it  will still  have run  for a
+little while.
+
 FIFO or LIFO?
 -------------
 
@@ -626,9 +645,10 @@ area neighbouring the currently final  small area, but this small area
 is the starting point of no  regional Hamiltonian path. Let us suppose
 we have a  path such as `... →  78 →→ NOR → ...`.  The programme finds
 just one neighbouring department `27`  (Eure), but in the `NOR` region
-(Normandy), no regional Hamiltonian path ever starts from `27`. So the
-programme will not store any partial  path into the `to-do` list after
-removing the `... → 78 →→ NOR → ...` path.
+(Normandy), the  `27` node  is an articulation  point, so  no regional
+Hamiltonian path ever  starts from `27`. The programme  will not store
+any partial path into the `to-do` list after removing the `... → 78 →→
+NOR → ...` path.
 
 In the explanation above, I have presented the extraction of neighbour
 small areas and  the extraction of regional paths as  two distinct and
@@ -1005,13 +1025,14 @@ nearly convex when seen from some distance.
 ![Maps of Mayenne, Moselle and Cantal](Mayenne-Moselle-Cantal.png)
 
 With the method I used to  initialise the longitudes and latitudes for
-the departements, it  could not happen. Even with a  very long dent, I
-would have chosen a point within the department. But if a region had a
-dent similar in proportions to Cantal's or Moselle's dent, the average
-longitude and the average latitude could have placed the centre of the
-region inside the  dent and outside the region's borders.  This is not
-the case  with the French regions  (both the Y1970 ones  and the Y2015
-ones).
+the departements,  a department  could not be  represented by  a point
+outside the  geographical limits of  the department. Even with  a very
+long dent, I would have chosen a point within the department. But if a
+region  had a  dent similar  in proportions  to Cantal's  or Moselle's
+dent, the average longitude and the average latitude could have placed
+the centre  of the  region inside  the dent  and outside  the region's
+borders. This is not the case  with the French regions (both the Y1970
+ones and the Y2015 ones).
 
 On the other hand, it happens with
 [Maharadjah](https://boardgamegeek.com/image/82336/maharaja),

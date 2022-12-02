@@ -73,9 +73,9 @@ la Nouvelle Aquitaine de 2015, le département des Pyrénées-Atlantiques
 (64),   relié  uniquement   au  département   des  Landes   (40),  les
 départements 32 et 65 ne comptant pas.
 
-![Haut de la macro-carte fr1970](Macro-NPC-PIC.png)
+![Haut de la macro-carte fr1970 et sud de la Nouvelle Aquitaine](NPC-PIC-NAQ.png)
 
-![Sud de la Nouvelle Aquitaine](Nouvelle-Aquitaine.png)
+![](Nouvelle-Aquitaine.png)
 
 En consultant le
 [lexique de la théorie des graphes](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
@@ -99,6 +99,12 @@ impasses. Ainsi,  dans la région  Pays de la Loire,  le Maine-et-Loire
 Vendée (44 et 85) et le groupe Mayenne + Sarthe (53 et 72).
 
 ![Pays de la Loire](Pays-de-la-Loire.png)
+
+Il  est facile  de voir  que si  un graphe  contient une  impasse, les
+chemins  hamiltoniens auront  tous cette  impasse comme  extrémité, au
+début ou à  la fin. Il est  facile de voir également que  si un graphe
+contient un  point d'articulation,  ce point d'articulation  ne pourra
+pas être à une extrémité d'un chemin hamiltonien.
 
 Base de données
 ===============
@@ -359,10 +365,11 @@ et des  latitudes des départements  appartenant à chaque  région, puis
 stocke  ces   deux  moyennes   dans  l'enregistrement  de   la  région
 correspondante.
 
-De  même,  le  programme alimente  les  enregistrements  `fr1970`+`1`,
-`fr2015`+`1`  `frreg`+`1`  et `frreg`+`2`  de  la  table `Borders`  en
-faisant  une  synthèse de  tous  les  enregistrements `fr1970`+`2`  et
-`fr2015`+`2` de `Borders` qui se trouvent à cheval sur deux régions.
+De même,  le programme  alimente les enregistrements  `fr1970`+`1`, et
+`frreg`+`2` de la table `Borders` en  faisant une synthèse de tous les
+enregistrements `fr1970`+`2` de `Borders` qui se trouvent à cheval sur
+deux régions.  Il alimente également les  enregistrements `fr2015`+`1`
+et `frreg`+`1` à partir des enregistrements `fr2015`+`2` de `Borders`.
 
 Extraction des chemins hamiltoniens
 ===================================
@@ -506,6 +513,20 @@ de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
 que l'unique région-1970 de la région-2015 n'ait aucun voisin.
 
+Un autre  cas de  figure, la région  Pays de Galles  dans la  carte de
+Britannia,  n'est pas  traité dès  l'initialisation. Pour  des raisons
+ludiques, la  zone Cornouailles  et la zone  Devon sont  rattachées au
+Pays de  Galles. Si l'on  ne tient  pas compte des  liaisons maritimes
+côtières,  alors il  n'y a  pas  d'arête entre  la composante  connexe
+Cornouailles +  Devon et la  composante connexe principale du  Pays de
+Galles (Powys et les autres). Ce cas  de figure ne sera pas détecté au
+début du  traitement. Le  programme commencera  à générer  les chemins
+hamiltoniens. Comme les Cornouailles et le Devon sont des impasses, le
+programme  générera soit  `COR  →  DEV`, soit  `DEV  →  COR`, puis  se
+retrouvera  bloqué.  Le  traitement   de  génération  s'arrêtera  donc
+rapidement avec  un constat  d'échec comme  attendu, mais  il tournera
+quand même.
+
 File FIFO ou pile LIFO ?
 ------------------------
 
@@ -636,7 +657,8 @@ dernier département du chemin et appartenant à la prochaine région. Il
 peut aussi  se produire  après avoir trouvé  ces départements  mais en
 cherchant  les chemins  hamiltoniens régionaux.  Ainsi, supposons  que
 l'on ait  un chemin `... →  78 →→ NOR  → ...`. Le programme  trouve un
-département qui convient, `27`  mais aucun chemin hamiltonien régional
+département qui convient, `27` mais  comme ce département est un point
+d'articulation dans la région `NOR`, aucun chemin hamiltonien régional
 ne  commence en  `27`.  Le  programme ne  stockera  donc aucun  chemin
 partiel en remplacement du chemin `... → 78 →→ NOR → ...`.
 
@@ -1035,8 +1057,9 @@ d'être à peu près convexe.
 ![Cartes de la Mayenne, de la Moselle et du Cantal](Mayenne-Moselle-Cantal.png)
 
 Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
-les coordonnées  des départements,  cela ne  pouvait pas  se produire.
-Même  si  un département  avait  eu  un  creux encore  plus  prononcé que le Cantal ou la Moselle,
+les coordonnées  des départements,  les départements ne  pouvaient pas
+être représentés  par un point  à l'extérieur. Même si  un département
+avait eu  un creux encore plus  prononcé que le Cantal  ou la Moselle,
 j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
 avait eu une  région avec un creux  proportionnellement aussi prononcé
 que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
