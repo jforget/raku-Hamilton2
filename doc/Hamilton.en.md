@@ -101,6 +101,28 @@ On  the other  hand, if  a graph  contains an  articulation point,  no
 Hamiltonian  path   will  start  from  this   articulation  point,  no
 Hamiltonian path will stop at it.
 
+The  articulation  point  notion  is  interesting  for  human-to-human
+discussions   (like   this   documentation    file),   but   not   for
+human-to-computer discussions. In other words, the articulation points
+are not implemented in the programmes from this project.
+
+Another  interesting  notion  is Hamiltonian  cycles.  In  Hamiltonian
+cycles, the end node  is the same as the begin  node, which means that
+it is visited twice.  For example, The `29 → 22 → 35  → 56 → 29` cycle
+in the Bretagne region. In my  project, this cycle will be represented
+by a path omitting the last step, that  is, `29 → 22 → 35 → 56`. There
+will be  a boolean  column in  the `Paths`  table and  a parenthesized
+mention in the web pages, nothing more.
+
+![Bretagne](Bretagne.png)
+
+You may consider that the cycle `56 → 29 → 22 → 35 → 56` and the cycle
+`35 → 56 →  29 → 22 → 35` are the  same as cycle `29 → 22 →  35 → 56 →
+29`. In my project, there will be four different paths `29 → 22 → 35 →
+56`. `56 → 29 → 22 → 35`, `35 → 56  → 29 → 22` and `22 → 35 → 56 → 29`
+for this cycle.
+
+
 Database
 ========
 
@@ -1159,6 +1181,83 @@ On both computers, I obtained:
 ```
 ({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
 ```
+
+Partial Conclusion
+==================
+
+Here are  the results  of the  paths generation,  while the  full path
+generation is optimised with the `exterior` field of the `Small_Areas`
+view.
+
+`frreg`, regions from 1970 within regions from 2015
+---------------------------------------------------
+
+The first  map generated was  the easiest,  `frreg`: 12 big  areas, no
+more than 3  small areas per big area. The  first generation programme
+ran for  12 seconds, generating  864 macro-paths (with  26 476 partial
+paths) and, for each region, from 2 to 6 regional paths.
+
+The  second generation  programme  ran  a bit  longer,  3 minutes,  to
+generate 210  full paths (with  9606 partial paths, while  the maximum
+size of the to-do list was 7 partial paths).
+
+`brit0`, Britannia map without the coastal links
+------------------------------------------------
+
+To check  a programme, you should  not test only the  sucessful cases,
+but also the error cases. So I  decided to deal with the Britannia map
+without  the  coastal  links,  that  is, the  Britannia  map  with  an
+unconnected Scotland region and an unconnected Wales region.
+
+With only three big areas, there  are only two macro-paths, which were
+generated immediately. The generation  for Scotland and the generation
+for Wales were  also immediate. On the other hand,  the generation for
+England  (20 nodes,  40  edges)  needed 7  minutes  to generate  16182
+regional paths  (with 3_562_796 partial  paths, of which only  43 were
+simultaneously in RAM).
+
+The 7 minutes are split into 4 minutes for the generation proper and 3
+minutes for the renumbering of the generated paths.
+
+With no Hamiltonian regional paths  for Scotland and Wales, the second
+generation programme stopped immediately.
+
+`brit1`, Britannia map with the coastal links
+---------------------------------------------
+
+In the  variant taking in account  the coastal links, but  not the sea
+areas, the three big areas are  connected graphs and the generation of
+regional paths  succeeds. Scotland  immediately gets 6  regional paths
+(with 190 partial paths, 9 of which simultaneously in the to-do list).
+Wales immediately gets  8 regional paths (with 24 partial  paths, 4 of
+which are simultaneously  in the to-do list). For  England, the values
+are  the same  as for  `brit0`. Why  so few  partial paths  for Wales?
+Because  the articulation  point in  Powys  acts as  funnel, with  the
+result that partial paths are much fewer than in Scotland.
+
+The second generation programme will fail. A human can easily see that
+there  are three  dead ends:  Hebrides  and Orkneys  in Scotland,  and
+Cornwall in  Wales. For the programme,  it is a bit  more complicated.
+When dealing with  the macro-path `SCO →  ENG → WAL`, the  end will be
+soon, because all regional paths in Scotland have Hebrides and Orkneys
+at both ends, which do not allow to extend the path into England. When
+dealing with the  other macro-path, `WAL → ENG →  SCO`, the processing
+will be much longer. Among the 8 regional paths, the programme chooses
+the two paths in Wales which ends  in an exterior region, in this case
+Clwyd. Then, the programme chooses all England regional paths starting
+from  Cheshire  or March  (Clwyd's  two  neighbours) and  stopping  at
+another exterior  area. Then all  partial paths are  rejected, because
+the two border  areas in Scotland, Strathclyde and  Dunedin, are never
+the starting  points of a  regional path. This  is the reason  why the
+programme has run  for 9 seconds, has pushed 786  partial paths in the
+to-do list, with a maximum of  393 paths simultaneously present in the
+list.
+
+The number 393  is the number of English regional  paths starting from
+Cheshire or  March and stopping at  another border area, even  if this
+area  is bordering  Wales and  not Scotland.  By selecting  only areas
+bordering Scotland, this number would has been diminished to 95.
+
 
 
 License

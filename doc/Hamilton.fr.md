@@ -104,6 +104,29 @@ début ou à  la fin. Il est  facile de voir également que  si un graphe
 contient un  point d'articulation,  ce point d'articulation  ne pourra
 pas être à une extrémité d'un chemin hamiltonien.
 
+Le  concept   de  point   d'articulation  est  intéressant   pour  les
+discussions d'humain à humain (cette documentation), mais pas pour les
+discussions  d'humain à  ordinateur.  En d'autres  termes, ce  concept
+n'est pas implémenté dans les programmes traitant les graphes.
+
+Une  autre notion  est celle  de  cycles hamiltoniens.  Dans un  cycle
+hamiltonien, le sommet d'arrivée est le  même que le sommet de départ,
+ce qui veut dire que ce sommet est visité deux fois, contrairement aux
+autres. Voici par  exemple le cycle `29 →  22 → 35 → 56 →  29` dans la
+région  Bretagne. Dans  mon projet,  ce cycle  sera représenté  par un
+chemin sans  l'étape finale, c'est-à-dire  `29 → 22 →  35 → 56`.  Il y
+aura également  un champ booléen  dans la  table `Paths` et  une brève
+mention entre parenthèses dans les pages web, rien de plus.
+
+![Bretagne](Bretagne.png)
+
+Il est possible de considérer que le cycle `56 → 29 → 22 → 35 → 56` et
+le cycle `35 → 56 → 29 → 22  → 35` sont la même chose que le cycle `29
+→ 22 →  35 → 56 → 29`, représentés  d'une façon légèrement différente.
+Dans mon projet,  il y aura quatre enregistrements  différents pour ce
+cycle dans la table des chemins, `29 → 22  → 35 → 56`. `56 → 29 → 22 →
+35`, `35 → 56 → 29 → 22` et `22 → 35 → 56 → 29`.
+
 Base de données
 ===============
 
@@ -1197,6 +1220,89 @@ Et le programme sur les deux machines m'a donné :
 ```
 ({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
 ```
+
+Conclusion partielle
+====================
+
+Voici les  résultats obtenus,  sachant que  la génération  des chemins
+complets se base sur l'optimisation par  le champ `exterior` de la vue
+`Small_Areas`.
+
+`frreg`, régions de 1970 dans les régions de 2015
+-------------------------------------------------
+
+La première carte générée a été  la plus facile, la carte `frreg` : 12
+grandes régions, pas  plus de 3 petites régions par  grande région. Le
+premier  programme  a   pris  un  total  de  12   secondes,  pour  894
+macro-chemins  (avec 26 476  macro-chemins partiels)  et, pour  chaque
+grande région, 2 à 6 chemins régionaux.
+
+Le second  programme a tourné un  peu plus longtemps, 3  minutes, pour
+trouver  210 chemins  complets  (avec 9606  chemins  partiels, dont  7
+simultanément en mémoire).
+
+`brit0`, Britannia sans les liaisons côtières
+---------------------------------------------
+
+Pour bien tester un programme, il ne faut pas seulement tester les cas
+qui fonctionnent  bien, mais  aussi les  cas d'erreur.  C'est pourquoi
+j'ai  quand même  fait  fonctionner  mes programmes  sur  la carte  de
+Britannia sans les liaisons côtières,  donc avec le graphe de l'Écosse
+et le graphe du Pays de Galles qui ne sont pas connexes.
+
+Avec seulement trois  grandes zones, il n'y a  que deux macro-chemins,
+qui ont été générés instantanément.  La génération pour l'Écosse et la
+génération pour le  Pays de Galles ont été  également instantanées. En
+revanche, la  génération pour l'Angleterre  (20 sommets, 40  arêtes) a
+pris  7 minutes  pour  générer   16 182  chemins  régionaux  (avec  la
+génération   de  3 562 796   chemins  partiels,   dont  seulement   43
+simultanément en mémoire).
+
+Sur  les 7  minutes  nécessaires  pour la  génération  des chemins  de
+l'Angleterre, il y a 4 minutes  pour la génération à proprement parler
+et 3 minutes pour la renumérotation des chemins.
+
+Faute d'avoir  des chemins hamiltoniens dans  le Pays de Galles  et en
+Écosse, le second programme de génération s'est arrêté instantanément.
+
+`brit1`, Britannia avec les liaisons côtières
+---------------------------------------------
+
+Dans la  version avec les  liaisons côtières,  mais sans les  zones de
+mer,  les trois  régions sont  connexes et  la génération  des chemins
+régionaux réussit. L'Écosse obtient instantanément 6 chemins régionaux
+(avec 190  chemins partiels, dont  9 simultanéments en mémoire)  et le
+Pays de  Galles obtient  instantanément 8  chemins régionaux  (avec 24
+chemins partiels, dont  4 simultanément en mémoire).  Les valeurs pour
+l'Angleterre sont similaires à celles de la carte `brit0`. Pourquoi le
+Pays  de  Galles nécessite  beaucoup  moins  de chemins  partiels  que
+l'Écosse ?  Parce  que le  point  d'articulation  en Powys  permet  de
+« canaliser » les chemins partiels.
+
+Le second programme échouera. C'est facile  pour un humain de le voir,
+car la carte comporte trois impasses :  les Hébrides et les Orcades en
+Écosse et les Cornouailles au Pays de Galles. Pour un programme, c'est
+plus compliqué. Pour le macro-chemin `SCO  → ENG → WAL`, cela ira très
+vite car tous les chemins régionaux  en Écosse ont pour extrémités les
+Hébrides  et  les Orcades,  qui  ne  permettent  pas de  continuer  en
+Angleterre. En revanche, pour le macro-chemin  `WAL → ENG → SCO`, cela
+prendra  un peu  plus  de  temps. Le  programme  choisira les  chemins
+régionaux du Pays de Galles aboutissant à une petite zone frontalière.
+Il y a deux chemins régionaux qui conviennent, tous deux aboutissant à
+Clwyd.  Ensuite, le  programme  déroulera tous  les chemins  régionaux
+d'Angleterre  commençant  en Cheshire  ou  en  March (les  voisins  de
+Clwyd). Finalement, il constatera que parmi les chemins partiels ainsi
+générés, aucun  ne peut entrer  en Écosse, car les  zones frontalières
+d'Écosse, Strathclyde  et Dunedin,  ne sont  jamais des  extrémités de
+chemins régionaux écossais. C'est ainsi  que le programme a quand même
+pris 9 secondes et a généré 786 chemins partiels, dont la moitié, 393,
+simultanément en mémoire.
+
+Le nombre 393  correspond au nombre de chemins  commençant en Cheshire
+ou en March et aboutissant à  une zone frontalière, même si cette zone
+est frontalière avec  le Pays de Galles. En se  restreignant aux zones
+frontalières avec l'Écosse, cela aurait pu descendre à 95.
+
 
 LICENCE
 =======
