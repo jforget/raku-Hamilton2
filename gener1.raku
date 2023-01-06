@@ -297,6 +297,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
       if $n %% $complete-increment {
         $dbh.execute("commit");
         $dbh.execute("begin transaction");
+        say "{DateTime.now.hh-mm-ss} renumbering path $n / $path-number";
       }
     }
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '8', $region, $path-number, '');
