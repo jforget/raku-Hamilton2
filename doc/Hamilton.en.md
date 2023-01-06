@@ -108,18 +108,18 @@ are not implemented in the programmes from this project.
 
 Another  interesting  notion  is Hamiltonian  cycles.  In  Hamiltonian
 cycles, the end node  is the same as the begin  node, which means that
-it is visited twice.  For example, The `29 → 22 → 35  → 56 → 29` cycle
+it is visited twice.  For example, The `29 → 56 → 35  → 22 → 29` cycle
 in the Bretagne region. In my  project, this cycle will be represented
-by a path omitting the last step, that  is, `29 → 22 → 35 → 56`. There
+by a path omitting the last step, that  is, `29 → 56 → 35 → 22`. There
 will be  a boolean  column in  the `Paths`  table and  a parenthesized
 mention in the web pages, nothing more.
 
 ![Bretagne](Bretagne.png)
 
-You may consider that the cycle `56 → 29 → 22 → 35 → 56` and the cycle
-`35 → 56 →  29 → 22 → 35` are the  same as cycle `29 → 22 →  35 → 56 →
-29`. In my project, there will be four different paths `29 → 22 → 35 →
-56`. `56 → 29 → 22 → 35`, `35 → 56  → 29 → 22` and `22 → 35 → 56 → 29`
+You may consider that the cycle `22 → 29 → 56 → 35 → 22` and the cycle
+`35 → 22 →  29 → 56 → 35` are the  same as cycle `29 → 56 →  35 → 22 →
+29`. In my project, there will be four different paths `29 → 56 → 35 →
+22`. `22 → 29 → 56 → 35`, `35 → 22  → 29 → 56` and `56 → 35 → 22 → 29`
 for this cycle.
 
 

@@ -112,20 +112,20 @@ n'est pas implémenté dans les programmes traitant les graphes.
 Une  autre notion  est celle  de  cycles hamiltoniens.  Dans un  cycle
 hamiltonien, le sommet d'arrivée est le  même que le sommet de départ,
 ce qui veut dire que ce sommet est visité deux fois, contrairement aux
-autres. Voici par  exemple le cycle `29 →  22 → 35 → 56 →  29` dans la
+autres. Voici par  exemple le cycle `29 →  56 → 35 → 22 →  29` dans la
 région  Bretagne. Dans  mon projet,  ce cycle  sera représenté  par un
-chemin sans  l'étape finale, c'est-à-dire  `29 → 22 →  35 → 56`.  Il y
+chemin sans  l'étape finale, c'est-à-dire  `29 → 56 →  35 → 22`.  Il y
 aura également  un champ booléen  dans la  table `Paths` et  une brève
 mention entre parenthèses dans les pages web, rien de plus.
 
 ![Bretagne](Bretagne.png)
 
-Il est possible de considérer que le cycle `56 → 29 → 22 → 35 → 56` et
-le cycle `35 → 56 → 29 → 22  → 35` sont la même chose que le cycle `29
-→ 22 →  35 → 56 → 29`, représentés  d'une façon légèrement différente.
+Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22` et
+le cycle `35 → 22 → 29 → 56  → 35` sont la même chose que le cycle `29
+→ 56 →  35 → 22 → 29`, représentés  d'une façon légèrement différente.
 Dans mon projet,  il y aura quatre enregistrements  différents pour ce
-cycle dans la table des chemins, `29 → 22  → 35 → 56`. `56 → 29 → 22 →
-35`, `35 → 56 → 29 → 22` et `22 → 35 → 56 → 29`.
+cycle dans la table des chemins, `29 → 56  → 35 → 22`. `22 → 29 → 56 →
+35`, `35 → 22 → 29 → 56` et `56 → 35 → 22 → 29`.
 
 Base de données
 ===============
