@@ -119,7 +119,7 @@ mention in the web pages, nothing more.
 You may consider that the cycle `22 → 29 → 56 → 35 → 22` and the cycle
 `35 → 22 →  29 → 56 → 35` are the  same as cycle `29 → 56 →  35 → 22 →
 29`. In my project, there will be four different paths `29 → 56 → 35 →
-22`. `22 → 29 → 56 → 35`, `35 → 22  → 29 → 56` and `56 → 35 → 22 → 29`
+22`, `22 → 29 → 56 → 35`, `35 → 22  → 29 → 56` and `56 → 35 → 22 → 29`
 for this cycle.
 
 
@@ -1258,7 +1258,21 @@ Cheshire or  March and stopping at  another border area, even  if this
 area  is bordering  Wales and  not Scotland.  By selecting  only areas
 bordering Scotland, this number would has been diminished to 95.
 
+`brit2`, Britannia map with the sea areas
+-----------------------------------------
 
+For the first programme, adding  sea areas changes nearly nothing. The
+bulk of the time is still spent while processing England.
+
+For  the  second programme,  using  the  same  ideas  as used  in  the
+preceding paragraph, a human can easily  find that full paths can only
+be derived from  the `SCO → OCE  → ENG → WAL`  and `WAL → ENG  → OCE →
+SCO` macro-paths. On the other side, the second programme cannot think
+in the same way. It tries all macro-paths, including the two fruitless
+macro-paths starting from England. Among  the 16 182 regional paths in
+England, 13 135 stop at a border area (remember that all coastal areas
+are now border areas). So the second programme pushes all 13 135 paths
+upto the `to-do` list, all of which will fail to generate a full path.
 
 License
 =======

@@ -124,7 +124,7 @@ Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22` et
 le cycle `35 → 22 → 29 → 56  → 35` sont la même chose que le cycle `29
 → 56 →  35 → 22 → 29`, représentés  d'une façon légèrement différente.
 Dans mon projet,  il y aura quatre enregistrements  différents pour ce
-cycle dans la table des chemins, `29 → 56  → 35 → 22`. `22 → 29 → 56 →
+cycle dans la table des chemins, `29 → 56  → 35 → 22`, `22 → 29 → 56 →
 35`, `35 → 22 → 29 → 56` et `56 → 35 → 22 → 29`.
 
 Base de données
@@ -1303,6 +1303,24 @@ ou en March et aboutissant à  une zone frontalière, même si cette zone
 est frontalière avec  le Pays de Galles. En se  restreignant aux zones
 frontalières avec l'Écosse, cela aurait pu descendre à 95.
 
+`brit2`, Britannia avec les zones maritimes
+-------------------------------------------
+
+Pour le premier programme, l'ajout des zones maritimes ne change rien.
+C'est l'Angleterre qui prend la quasi-totalité du temps.
+
+Pour le  second programme,  avec des  considérations sur  les impasses
+similaires à  celles du paragraphe  précédent, un humain  peut deviner
+que les seuls  macro-chemins qui produiront des  chemins complets sont
+`SCO → OCE  → ENG → WAL` et en  sens inverse `WAL → ENG →  OCE → SCO`.
+Néanmoins,  le  second programme  n'est  pas  en  mesure de  faire  ce
+raisonnement. Il  essaie tous  les macro-chemins,  y compris  les deux
+macro-chemins stériles  qui commencent  en Angleterre. Sur  les 16 182
+chemins régionaux d'Angleterre, il y en a 13 135 qui aboutissent à une
+petite zone  extérieure (rappelez-vous  que toutes les  zones côtières
+sont maintenant  des zones  extérieures) et  donc le  second programme
+empile à deux occasions 13 135 chemins partiels dans la liste `to-do`,
+pour un résultat nul.
 
 LICENCE
 =======
