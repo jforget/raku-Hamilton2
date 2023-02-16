@@ -116,8 +116,9 @@ mention in the web pages, nothing more.
 
 ![Bretagne](Bretagne.png)
 
-You may consider that the cycle `22 → 29 → 56 → 35 → 22` and the cycle
-`35 → 22 →  29 → 56 → 35` are the  same as cycle `29 → 56 →  35 → 22 →
+You may consider that the cycle `22 → 29 → 56 → 35 → 22`, the cycle
+`35 → 22 →  29 → 56 → 35` and the cycle
+`56 → 35 →  22 → 29 → 56` are the  same as cycle `29 → 56 →  35 → 22 →
 29`. In my project, there will be four different paths `29 → 56 → 35 →
 22`, `22 → 29 → 56 → 35`, `35 → 22  → 29 → 56` and `56 → 35 → 22 → 29`
 for this cycle.
@@ -197,8 +198,8 @@ Other fields:
 
 * `upper_from` the code of the region for departments' edges, empty for regions' edges,
 * `upper_to` similar,
-* `long`,
-* `lat`,
+* `long`, an optional longitude,
+* `lat`, an optional latitude,
 * `color`.
 
 Most of the time,  the longitude and latitude will be  zero and in the
@@ -207,6 +208,13 @@ segment. In some  cases, the picture will be a  bit overcrowed in some
 spots. A way  to unclutter the picture  is to draw a few  edges as two
 straight segments,  bypassing the overcrowed  spot. In this  case, the
 longitude and latitude define where the edge parts will join.
+
+Among  France's  departments,  the  only  problem  is  the  edge  from
+Seine-et-Marne (77) to  Val-d'Oise (95). If drawn as  a straight line,
+this edge may be masked by the Seine-Saint-Denis department (93). So I
+had to add a waypoint a little northward of the direct line.
+
+![Map of Île de France](Ile-de-France.png)
 
 For a  border between two departments  in the same region,  the border
 will  have the  same color  as the  region. For  a border  between two
@@ -357,6 +365,8 @@ have zoomed to know if two  departments are really neighbours. See for
 example the  4-way point  between Vaucluse, Bouches-du-Rhône,  Var and
 Alpes de Haute-Provence, at 43.72°N and 5.75°E.
 
+![4-way point in the South of France](point-quadruple.png)
+
 Theorically, each  border between departments is  specified twice. For
 example, the Var department (83) and the Vaucluse department (84) have
 a  common   border.  Therefore,  the  `C ; 83`   line  should  mention
@@ -398,6 +408,8 @@ the programme is running. In  the descriptions below, the curly braces
 represent sets,  like I have  been taught  in mathematics a  long time
 ago. In  this case, curly  braces have  nothing to do  with statements
 blocks or with references to hashes.
+
+![Map of Normandy](Normandie.png)
 
 Let us take the example of the Normandy region in the `fr2015` map. At
 the beginning, the programme fills the list of partial paths with:
@@ -1049,7 +1061,7 @@ nearly convex when seen from some distance.
 With the method I used to  initialise the longitudes and latitudes for
 the departements,  a department  could not be  represented by  a point
 outside the  geographical limits of  the department. Even with  a very
-long dent, I would have chosen a point within the department. But if a
+deep dent, I would have chosen a point within the department. But if a
 region  had a  dent similar  in proportions  to Cantal's  or Moselle's
 dent, the average longitude and the average latitude could have placed
 the centre  of the  region inside  the dent  and outside  the region's

@@ -120,8 +120,9 @@ mention entre parenthèses dans les pages web, rien de plus.
 
 ![Bretagne](Bretagne.png)
 
-Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22` et
-le cycle `35 → 22 → 29 → 56  → 35` sont la même chose que le cycle `29
+Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22`,
+le cycle `35 → 22 → 29 → 56  → 35` et
+le cycle `56 → 35 → 22 → 29  → 56` sont la même chose que le cycle `29
 → 56 →  35 → 22 → 29`, représentés  d'une façon légèrement différente.
 Dans mon projet,  il y aura quatre enregistrements  différents pour ce
 cycle dans la table des chemins, `29 → 56  → 35 → 22`, `22 → 29 → 56 →
@@ -202,8 +203,8 @@ Autres champs :
 
 * `upper_from` le code du supérieur hiérarchique de `from`,
 * `upper_to`  le code du supérieur hiérarchique de `to`,
-* `long`,
-* `lat`,
+* `long`, une longitude facultative,
+* `lat`, une latitude facultative,
 * `color`.
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
@@ -213,6 +214,13 @@ encombré par endroits.  Un moyen pour l'éclaircir peut  être de tracer
 les arêtes avec deux segments de droite  au lieu d'un. Dans ce cas, la
 longitude et  la latitude repèrent  l'endroit où les deux  segments se
 joignent.
+
+Dans  le cas  des départements  français, le  seul cas  de figure  est
+l'arête  entre  la Seine-et-Marne  (77)  et  le Val-d'Oise  (95),  qui
+risquait de se faire masquer  par la Seine-Saint-Denis (93). J'ai donc
+prévu un point intermédiaire un peu au nord de la ligne droite.
+
+![Carte de l'Île de France](Ile-de-France.png)
 
 Pour  une frontière  entre  deux départements  d'une  même région,  la
 couleur  sera  celle de  la  région.  Pour  une frontière  entre  deux
@@ -365,6 +373,8 @@ départements.  Voir  par exemple  la  limite  entre le  Vaucluse,  les
 Bouches-du-Rhône, le  Var et  les Alpes  de Haute-Provence,  par 43,72
 degrés de latitude nord et 5,75 degrés de longitude est.
 
+![Point quadruple au sud de la France](point-quadruple.png)
+
 Normalement, chaque  frontière entre  deux départements  est spécifiée
 deux fois. Par exemple, il y a une frontière commune entre le Var (83)
 et le Vaucluse (84). La  ligne `C ; 83` doit mentionner le département
@@ -407,6 +417,8 @@ descriptions  ci-dessous,   je  représente  les  ensembles   avec  des
 accolades ainsi que je l'ai appris  il y a longtemps en mathématiques.
 Les  accolades   n'ont  pas  de   rapport  avec  la  notion   de  bloc
 d'instructions ni avec la notion de référence à une table de hachage.
+
+![Carte de la Normandie](Normandie.png)
 
 Prenons comme exemple l'extraction des  chemins régionaux de la région
 Normandie dans la  carte `fr2015`. Au début, le  programme alimente la
@@ -1084,7 +1096,7 @@ avait eu  un creux encore plus  prononcé que le Cantal  ou la Moselle,
 j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
 avait eu une  région avec un creux  proportionnellement aussi prononcé
 que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
-des latitudes  aurait pu  aboutir à  un centre dans  le creux,  dont à
+des latitudes des départements aurait pu aboutir à un centre dans le creux, donc à
 l'extérieur de la frontière de la  région. Ce n'est pas le cas, aucune
 région française n'a un creux bien prononcé.
 
