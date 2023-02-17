@@ -367,7 +367,8 @@ Alpes de Haute-Provence, at 43.72°N and 5.75°E.
 
 ![4-way point in the South of France](point-quadruple.png)
 
-Theorically, each  border between departments is  specified twice. For
+Another  point, illustrated  by  the same  picture. Theorically,  each
+border between departments  is specified twice in the  input file. For
 example, the Var department (83) and the Vaucluse department (84) have
 a  common   border.  Therefore,  the  `C ; 83`   line  should  mention
 department 84 and the `C ; 84`  line should mention department 83. The
@@ -537,6 +538,8 @@ Loire,         Centre-Val-de-Loire,          Île-de-France         and
 Provence-Alpes-Côte-d'Azur. In this case, the lone Y1970-region has no
 neighbours  within its  Y2015-region. Yet,  we find  a regional  path,
 composed of one single node and no edge.
+
+![Excerpt from the frreg map with Bretagne, Pays de la Loire, Centre-Val-de-Loire and Île-de-France](BRE-CEN-IDF-PDL.png)
 
 Another case, exemplified by Wales in  the Britannia map, is not dealt
 with at initialisation time. For  game reasons, Cornwall and Devon are
@@ -1265,10 +1268,36 @@ programme has run  for 9 seconds, has pushed 786  partial paths in the
 to-do list, with a maximum of  393 paths simultaneously present in the
 list.
 
-The number 393  is the number of English regional  paths starting from
-Cheshire or  March and stopping at  another border area, even  if this
-area  is bordering  Wales and  not Scotland.  By selecting  only areas
-bordering Scotland, this number would has been diminished to 95.
+The number 393 is 392 + 1, where 392 is the number of English regional
+paths starting from  Cheshire or March and stopping  at another border
+area, even if this area is bordering  Wales and not Scotland, and 1 is
+the other macro-path where the `WAL` region has been replaced with the
+single regional  path that  reaches an  exterior region.  By selecting
+only areas bordering  Scotland, this number would  has been diminished
+to 96 (= 1 + 95).
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map = 'brit1'
+and   P.from_code in ('CHE', 'MRC')
+and   A.exterior = 1
+```
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'brit1'
+and   P.from_code in ('CHE', 'MRC')
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'SCO')
+              
+```
 
 `brit2`, Britannia map with the sea areas
 -----------------------------------------
@@ -1282,9 +1311,19 @@ be derived from  the `SCO → OCE  → ENG → WAL`  and `WAL → ENG  → OCE �
 SCO` macro-paths. On the other side, the second programme cannot think
 in the same way. It tries all macro-paths, including the two fruitless
 macro-paths starting from England. Among  the 16 182 regional paths in
-England, 13 135 stop at a border area (remember that all coastal areas
-are now border areas). So the second programme pushes all 13 135 paths
+England, 13 132 stop at a border area (remember that all coastal areas
+are now border areas). So the second programme pushes all 13 132 paths
 upto the `to-do` list, all of which will fail to generate a full path.
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map  = 'brit2'
+and   P.area = 'ENG'
+and   A.exterior = 1
+```
 
 License
 =======

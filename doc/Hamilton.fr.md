@@ -375,8 +375,10 @@ degrés de latitude nord et 5,75 degrés de longitude est.
 
 ![Point quadruple au sud de la France](point-quadruple.png)
 
-Normalement, chaque  frontière entre  deux départements  est spécifiée
-deux fois. Par exemple, il y a une frontière commune entre le Var (83)
+Autre  sujet,  illustré par  le  même  dessin ci-dessus.  Normalement,
+chaque frontière entre deux départements  est spécifiée deux fois dans
+le fichier en entrée. Par exemple,  il y a une frontière commune entre
+le Var (83)
 et le Vaucluse (84). La  ligne `C ; 83` doit mentionner le département
 84  et  la  ligne  `C ; 84`  doit mentionner  le  département  83.  Le
 programme  d'initialisation testera  que  les  déclarations sont  bien
@@ -545,6 +547,8 @@ Ce  cas de  figure  est présent  à plusieurs  reprises  dans la  carte
 de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
 que l'unique région-1970 de la région-2015 n'ait aucun voisin.
+
+![Extrait de la carte frreg avec la Bretagne, les Pays de la Loire, le Centre-Val-de-Loire et l'Île-de-France](BRE-CEN-IDF-PDL.png)
 
 Un autre  cas de  figure, la région  Pays de Galles  dans la  carte de
 Britannia,  n'est pas  traité dès  l'initialisation. Pour  des raisons
@@ -1310,10 +1314,36 @@ chemins régionaux écossais. C'est ainsi  que le programme a quand même
 pris 9 secondes et a généré 786 chemins partiels, dont la moitié, 393,
 simultanément en mémoire.
 
-Le nombre 393  correspond au nombre de chemins  commençant en Cheshire
-ou en March et aboutissant à  une zone frontalière, même si cette zone
-est frontalière avec  le Pays de Galles. En se  restreignant aux zones
-frontalières avec l'Écosse, cela aurait pu descendre à 95.
+Le  nombre  393  correspond  aux 392  chemins  régionaux  d'Angleterre
+commençant  en  Cheshire  ou  en  March  et  aboutissant  à  une  zone
+frontalière,  même si  cette  zone  est frontalière  avec  le Pays  de
+Galles,  plus l'un  des deux  chemins partiels  où le  chemin régional
+gallois  est développé,  mais pas  le chemin  régional anglais.  En se
+restreignant  aux zones  frontalières  avec l'Écosse,  cela aurait  pu
+descendre à 96 (= 1 + 95).
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map = 'brit1'
+and   P.from_code in ('CHE', 'MRC')
+and   A.exterior = 1
+```
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'brit1'
+and   P.from_code in ('CHE', 'MRC')
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'SCO')
+              
+```
 
 `brit2`, Britannia avec les zones maritimes
 -------------------------------------------
@@ -1328,11 +1358,21 @@ que les seuls  macro-chemins qui produiront des  chemins complets sont
 Néanmoins,  le  second programme  n'est  pas  en  mesure de  faire  ce
 raisonnement. Il  essaie tous  les macro-chemins,  y compris  les deux
 macro-chemins stériles  qui commencent  en Angleterre. Sur  les 16 182
-chemins régionaux d'Angleterre, il y en a 13 135 qui aboutissent à une
+chemins régionaux d'Angleterre, il y en a 13 132 qui aboutissent à une
 petite zone  extérieure (rappelez-vous  que toutes les  zones côtières
 sont maintenant  des zones  extérieures) et  donc le  second programme
-empile à deux occasions 13 135 chemins partiels dans la liste `to-do`,
+empile à deux occasions 13 132 chemins partiels dans la liste `to-do`,
 pour un résultat nul.
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map  = 'brit2'
+and   P.area = 'ENG'
+and   A.exterior = 1
+```
 
 LICENCE
 =======
