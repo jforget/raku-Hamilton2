@@ -44,6 +44,11 @@ areas are continents. On a more local scale, we can use the map for
 or from
 [Maharaja](https://boardgamegeek.com/image/82336/maharaja).
 
+Note: for copyright reasons, I do  not give the Britannia and Maharaja
+maps  in   this  repository.  Yet,   I  will  mention  these   in  the
+documentation below. If necessary, you  can access the links above and
+find the maps.
+
 The project uses
 [SQLite](https://sqlite.org/index.html)
 for storage,
@@ -603,6 +608,8 @@ will be able  to generate a _N-1_ path reaching  `BRE` (Britanny). All
 these "unsuccessful" _N-2_  paths will be stored in the  to-do list in
 addition to the 894 "successful" partial paths.
 
+![HDF, NOR, PDL, NAQ and BRE areas](HDF-NOR-PDL-NAQ-et-BRE.png)
+
 On the other  hand, when using a LIFO access,  some complete paths are
 built very  early during the  process and immediately stored  into the
 database. By  adding a telltale, we  can notice that for  `fr2015` the
@@ -669,6 +676,8 @@ etc.
 
 Each partial path is stored into  the `to-do` list. Then the programme
 takes one of them and processes the next big area.
+
+![HDF area](HDF.png)
 
 This process may encounter dead ends.  This is the case if we continue
 the example above with a `... → 62  →→ GES → ...` path. We can find no

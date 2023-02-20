@@ -47,6 +47,11 @@ régions  groupes correspondent  à des  continents. Ou  alors, sur  une
 ou celle de
 [Maharadjah](https://boardgamegeek.com/image/82336/maharaja).
 
+Remarque : pour des raisons de copyright, je ne fournis pas les cartes
+de Britannia et de Maharadjah. Néanmoins, je mentionne ces cartes dans
+la documentation ci-dessous. Si  nécessaire, vous pouvez consulter les
+cartes dans les liens donnés ci-dessus.
+
 Le projet se base sur une base de données
 [SQLite](https://sqlite.org/index.html),
 des programmes
@@ -123,7 +128,7 @@ mention entre parenthèses dans les pages web, rien de plus.
 Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22`,
 le cycle `35 → 22 → 29 → 56  → 35` et
 le cycle `56 → 35 → 22 → 29  → 56` sont la même chose que le cycle `29
-→ 56 →  35 → 22 → 29`, représentés  d'une façon légèrement différente.
+→ 56 →  35 → 22 → 29`, représenté  d'une façon légèrement différente.
 Dans mon projet,  il y aura quatre enregistrements  différents pour ce
 cycle dans la table des chemins, `29 → 56  → 35 → 22`, `22 → 29 → 56 →
 35`, `35 → 22 → 29 → 56` et `56 → 35 → 22 → 29`.
@@ -612,6 +617,8 @@ de  ces chemins  ne pourra  engendrer  un chemin  _S-1_ atteignant  la
 Bretagne (`BRE`).  Tous ces chemins partiels  infructueux sont stockés
 dans la liste avec les 894 chemins partiels fructueux.
 
+![Régions HDF, NOR, PDL, NAQ et BRE](HDF-NOR-PDL-NAQ-et-BRE.png)
+
 À  l'inverse, avec  un accès  en pile,  certains chemins  entiers sont
 générés  et stockés  en  base  de données  très  tôt.  En ajoutant  un
 mouchard dans la génération des chemins, on peut constater que pour la
@@ -681,6 +688,8 @@ etc.
 Chaque  chemin partiel  est  stocké  dans la  liste  `to-do`. Puis  on
 continue en prenant l'un de ces chemins partiels et en s'intéressant à
 la région suivante.
+
+![Région HDF](HDF.png)
 
 Il  est  possible  que  l'on  soit   coincé.  C'est  le  cas  dans  la
 continuation de l'exemple ci-dessus avec l'un des chemins `... → 62 →→
