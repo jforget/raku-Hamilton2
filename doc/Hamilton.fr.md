@@ -551,7 +551,10 @@ Ce  cas de  figure  est présent  à plusieurs  reprises  dans la  carte
 `frreg`. Certaines régions de 2015  ne contiennent qu'une seule région
 de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 Île-de-France et Provence-Alpes-Côte-d'Azur. Dans ce cas il est normal
-que l'unique région-1970 de la région-2015 n'ait aucun voisin.
+que l'unique région-1970 de la région-2015 n'ait aucun voisin. Dans le
+dessin ci-dessous,  on voit clairement  que les régions-1970  `IDF` et
+`BRE` sont isolées dans les  régions-2015 correspondantes et on devine
+qu'il en est de même pourles régions-1970 `PDL` et `CEN`.
 
 ![Extrait de la carte frreg avec la Bretagne, les Pays de la Loire, le Centre-Val-de-Loire et l'Île-de-France](BRE-CEN-IDF-PDL.png)
 
@@ -707,6 +710,8 @@ département qui convient, `27` mais  comme ce département est un point
 d'articulation dans la région `NOR`, aucun chemin hamiltonien régional
 ne  commence en  `27`.  Le  programme ne  stockera  donc aucun  chemin
 partiel en remplacement du chemin `... → 78 →→ NOR → ...`.
+
+![Du département 78 à la région NOR](78-NOR.png)
 
 Ci-dessus, la recherche  des départements voisins et  la recherche des
 chemins  régionaux  sont présentées  comme  des  processus séparés  et
@@ -1272,8 +1277,8 @@ Et le programme sur les deux machines m'a donné :
 ({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
 ```
 
-Conclusion partielle
-====================
+Première Tentative
+==================
 
 Voici les  résultats obtenus,  sachant que  la génération  des chemins
 complets se base sur l'optimisation par  le champ `exterior` de la vue
@@ -1408,6 +1413,41 @@ where P.map  = 'brit2'
 and   P.area = 'ENG'
 and   A.exterior = 1
 ```
+
+`mah1`, la carte de Maharadjah, sans les pays étrangers ni les mers
+-------------------------------------------------------------------
+
+Dans la  carte de Maharadjah,  il y a quatre  grandes régions. Il  y a
+deux régions très  simples, Ceylan (2 zones et  une frontière interne)
+et  l'Himalaya (4  zones et  3 frontières  internes). Et  il y  a deux
+régions plus compliquées :  l'Inde du Nord (18 zones  et 34 frontières
+internes) et l'Inde du Sud (12 régions et 24 frontières internes).
+
+```
+select max(upper), count(*)
+from Small_Areas
+where map = 'mah1'
+group by upper
+
+select max(upper_to), count(*) / 2
+from Small_Borders
+where map = 'mah1'
+and   upper_to = upper_from
+group by upper_from
+```
+
+La génération des  macro-chemins, ainsi que la  génération des chemins
+régionaux de  Ceylan et de  l'Himalaya ont  été, vous vous  en doutez,
+très rapides.  Pour les  deux autres régions,  j'ai noté  un phénomène
+inattendu. L'Inde du Nord a 1578 chemins régionaux, ce qui a nécessité
+4 293 386 chemins  partiels. L'Inde du Sud  a en a presque  le double,
+3088, mais après  avoir utilisé seulement 43 592  chemins partiels. La
+taille maximale  de la liste  `to-do` était de 37  pour le Nord  et 26
+pour le Sud.
+
+Le second programme a fonctionné pendant 7 minutes pour générer 13 464
+chemins   complets,  en   utilisant  41 642   chemins  partiels   (361
+simultanément dans la liste `to-do`).
 
 LICENCE
 =======

@@ -542,7 +542,10 @@ Y2015-regions contain only one Y1970-region each: Britanny, Pays de la
 Loire,         Centre-Val-de-Loire,          Île-de-France         and
 Provence-Alpes-Côte-d'Azur. In this case, the lone Y1970-region has no
 neighbours  within its  Y2015-region. Yet,  we find  a regional  path,
-composed of one single node and no edge.
+composed of one single node and no edge. In the picture below, you can
+see that Y1970-regions  `BRE` and `IDF` are alone  in their respective
+Y2015 regions, and  you guess the same applies  to Y1970-regions `PDL`
+and `CEN`.
 
 ![Excerpt from the frreg map with Bretagne, Pays de la Loire, Centre-Val-de-Loire and Île-de-France](BRE-CEN-IDF-PDL.png)
 
@@ -679,14 +682,14 @@ takes one of them and processes the next big area.
 
 ![HDF area](HDF.png)
 
-This process may encounter dead ends.  This is the case if we continue
+This process may encounter blocked situations. This is the case if we continue
 the example above with a `... → 62  →→ GES → ...` path. We can find no
 departments which are simultaneously  neighbour of the `62` department
 and belong to the  `GES` region. In this case, no  new partial path is
 stored into the `to-do` list after  the previous partial path has been
 removed.
 
-The dead end  can appear a bit  later. The programme may  find a small
+The blocked situations can appear a bit later. The programme may find a small
 area neighbouring the currently final  small area, but this small area
 is the starting point of no  regional Hamiltonian path. Let us suppose
 we have a  path such as `... →  78 →→ NOR → ...`.  The programme finds
@@ -695,6 +698,8 @@ just one neighbouring department `27`  (Eure), but in the `NOR` region
 Hamiltonian path ever  starts from `27`. The programme  will not store
 any partial path into the `to-do` list after removing the `... → 78 →→
 NOR → ...` path.
+
+![From 78 to NOR](78-NOR.png)
 
 In the explanation above, I have presented the extraction of neighbour
 small areas and  the extraction of regional paths as  two distinct and
@@ -1232,8 +1237,8 @@ On both computers, I obtained:
 ({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
 ```
 
-Partial Conclusion
-==================
+First Attempt
+=============
 
 Here are  the results  of the  paths generation,  while the  full path
 generation is optimised with the `exterior` field of the `Small_Areas`
@@ -1347,8 +1352,10 @@ SCO` macro-paths. On the other side, the second programme cannot think
 in the same way. It tries all macro-paths, including the two fruitless
 macro-paths starting from England. Among  the 16 182 regional paths in
 England, 13 132 stop at a border area (remember that all coastal areas
-are now border areas). So the second programme pushes all 13 132 paths
-upto the `to-do` list, all of which will fail to generate a full path.
+are  now  border  areas).  So,  on both  occasions,  when  the  second
+programme processes the two sterile  macro-paths, it pushes all 13 132
+paths upto the `to-do` list, all of which will fail to generate a full
+path.
 
 ```
 select count(*)
@@ -1359,6 +1366,40 @@ where P.map  = 'brit2'
 and   P.area = 'ENG'
 and   A.exterior = 1
 ```
+
+`mah1`, Maharaja map without the foreign lands and the seas
+------ ----------------------------------------------------
+
+In the Maharaja  map, there are four big areas.  Two very simple ones:
+Ceylon (2  small areas and  1 interior  small border) and  Himalaya (4
+small areas  and 3 interior  borders), and two much  more complicated:
+Northern India (18  small areas and 34 interior  borders) and Southern
+India (12 small areas and 24 interior borders).
+
+```
+select max(upper), count(*)
+from Small_Areas
+where map = 'mah1'
+group by upper
+
+select max(upper_to), count(*) / 2
+from Small_Borders
+where map = 'mah1'
+and   upper_to = upper_from
+group by upper_from
+```
+
+The generation  of macro-paths  and the  generation of  regional paths
+within  Himalaya and  Ceylon is,  you guess  it, very  fast. Something
+curious happens  with the two  other regions. Northern India  has 1578
+regional paths, but after processing 4 293 386 partial paths. Southern
+India  has  3088 regional  paths,  but  after processing  only  43 592
+partial paths.  The max size of  the `to-do` list was  37 for Northern
+India and 26 for Southern India.
+
+The second programme ran for 7  minutes or so, to generate 13 464 full
+paths,  while  generating  41 642 partial  paths  (361  simultaneously
+present in the `to-do` list).
 
 License
 =======
