@@ -769,14 +769,27 @@ alambiqué, un effort démesuré par rapport au gain obtenu.
 
 3 chemins au  lieu de 8, cela ne semble  pas grand-chose. Examinons le
 cas de  la région `IDF`  qui a  800 chemins hamiltoniens  régionaux et
-d'un macro chemin `...  HDF → IDF → BFC ...`.  L'accès depuis `HDF` se
-fait  soit  par le  département  `77`  (Seine-et-Marne), soit  par  le
-département  `95`  (Val-d'Oise)  et  la  sortie  vers  `BFC`  se  fait
-obligatoirement par le département `77`.
+d'un macro  chemin `...  HDF →  IDF → GES  ...`. L'accès  depuis `HDF`
+(`60` ou `80`) se fait  soit par le département `77` (Seine-et-Marne),
+soit  par le  département `95`  (Val-d'Oise) et  la sortie  vers `GES`
+(`10` or `51`) se fait obligatoirement par le département `77`.
+
+![Carte de la région IDF avec ses voisins HDF et GES](HDF-IDF-GES.png)
 
 Sans optimisation, il y a 104  chemins régionaux commençant en `77` et
 93 chemins  régionaux commençant en  `95`. Le programme  aurait empilé
 197 chemins dans la liste `to-do`.
+
+```
+select max(P.from_code), max(A.exterior), count(*)
+from Region_Paths P
+join Small_Areas  A
+  on A.map   = P.Map
+  and A.code = P.to_code
+where P.map  = 'fr2015'
+and   P.area = 'IDF'
+group by P.from_code, A.exterior
+```
 
 Avec l'optimisation retenue, il y a 60 chemins régionaux commençant en
 `77` et aboutissant dans un département intérieur (`75`, `92`, `93` ou
@@ -791,6 +804,19 @@ les chemins  commençant en  `95` et aboutissant  en `77`.  Cela ferait
 juste 13  chemins empilés dans la  liste `to-do`. C'est vrai  que cela
 semble intéressant, finalement. Cela dit, pour l'instant, je ne prends
 en compte que la première optimisation.
+
+```
+select max(P.from_code), max(P.to_code), count(*)
+from Region_Paths P
+where P.map  = 'fr2015'
+and   P.area = 'IDF'
+and   exists (select 'x'
+              from Small_Borders B
+              where  B.map       = P.Map
+              and    B.from_code = P.to_code
+              and    B.upper_to  = 'GES')
+group by P.from_code, P.to_code
+```
 
 Un  autre   point :  comme   pour  la  génération   des  macro-chemins
 hamiltoniens et  des chemins hamiltoniens régionaux,  la liste `to-do`

@@ -754,13 +754,26 @@ statement, a big effort for a small result.
 3 paths instead of 8 does not seem  much. Let us examine the case of a
 more densely linked region, `IDF` with 800 regional Hamiltonian paths.
 With this region,  we will examine a macro-path containing  `... HDF →
-IDF  →  GES  ...`.  The  access from  `HDF`  is  either  through  `77`
-(Seine-et-Marne) or  through `95` (Val-d'Oise)  and the exit  to `BFC`
-must be from `77`.
+IDF → GES ...`. The access from `HDF` (`60` or `80`) is either through
+`77` (Seine-et-Marne)  or through  `95` (Val-d'Oise)  and the  exit to
+`GES` (`10` or `51`) must be from `77`.
+
+![Map of IDF region with HDF and GES neighbours](HDF-IDF-GES.png)
 
 Without optimisation, there are 104  regional paths starting from `77`
-and 93 regional paths from `95`. The programme would push 197 into the
-`to-do` list.
+and 93 regional paths from `95`.  The programme would push 197 partial
+paths into the `to-do` list.
+
+```
+select max(P.from_code), max(A.exterior), count(*)
+from Region_Paths P
+join Small_Areas  A
+  on A.map   = P.Map
+  and A.code = P.to_code
+where P.map  = 'fr2015'
+and   P.area = 'IDF'
+group by P.from_code, A.exterior
+```
 
 With the basic optimisation, there are  60 regional paths from `77` to
 interior departments  (`75`, `92`,  `93` or  `94`), 44  regional paths
@@ -773,6 +786,19 @@ paths from  `95` to `77`. This  would result in pushing  only 13 paths
 into  the  `to-do`  list.  This  seems  much  better  than  the  basic
 optimisation, after  all. Yet, for  the moment,  I will use  the basic
 optimisation.
+
+```
+select max(P.from_code), max(P.to_code), count(*)
+from Region_Paths P
+where P.map  = 'fr2015'
+and   P.area = 'IDF'
+and   exists (select 'x'
+              from Small_Borders B
+              where  B.map       = P.Map
+              and    B.from_code = P.to_code
+              and    B.upper_to  = 'GES')
+group by P.from_code, P.to_code
+```
 
 Another point: from  reasons similar to the  generation of Hamiltonian
 macro-paths  and the  generation  of Hamiltonian  regional paths,  the
