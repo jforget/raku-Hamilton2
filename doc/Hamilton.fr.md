@@ -554,7 +554,7 @@ de   1970 :  Bretagne,   Pays   de   la  Loire,   Centre-Val-de-Loire,
 que l'unique région-1970 de la région-2015 n'ait aucun voisin. Dans le
 dessin ci-dessous,  on voit clairement  que les régions-1970  `IDF` et
 `BRE` sont isolées dans les  régions-2015 correspondantes et on devine
-qu'il en est de même pourles régions-1970 `PDL` et `CEN`.
+qu'il en est de même pour les régions-1970 `PDL` et `CEN`.
 
 ![Extrait de la carte frreg avec la Bretagne, les Pays de la Loire, le Centre-Val-de-Loire et l'Île-de-France](BRE-CEN-IDF-PDL.png)
 
@@ -1441,13 +1441,69 @@ régionaux de  Ceylan et de  l'Himalaya ont  été, vous vous  en doutez,
 très rapides.  Pour les  deux autres régions,  j'ai noté  un phénomène
 inattendu. L'Inde du Nord a 1578 chemins régionaux, ce qui a nécessité
 4 293 386 chemins  partiels. L'Inde du Sud  a en a presque  le double,
-3088, mais après  avoir utilisé seulement 43 592  chemins partiels. La
-taille maximale  de la liste  `to-do` était de 37  pour le Nord  et 26
-pour le Sud.
+3088, mais après avoir utilisé seulement 43 592 chemins partiels, soit
+à peu  près cent fois  moins. La taille  maximale de la  liste `to-do`
+était de 37 pour le Nord et 26 pour le Sud.
 
 Le second programme a fonctionné pendant 7 minutes pour générer 13 464
 chemins   complets,  en   utilisant  41 642   chemins  partiels   (361
 simultanément dans la liste `to-do`).
+
+`mah2`, la carte de Maharadjah, avec les pays étrangers ni les mers
+-------------------------------------------------------------------
+
+Cartes abandonnées
+------------------
+
+Il y a un certain nombre de cartes que je n'ai pas essayées, car elles
+ne pourront donner aucun chemin  doublement hamiltonien. Le blocage se
+produit en fait dès la  génération des chemins hamiltoniens régionaux.
+Par exemple, prenons l'Afrique dans la carte de
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+Ce  continent a  6  zones,  dont deux  impasses,  «_South Africa_»  et
+«_Madagascar_», toutes deux reliées au point d'articulation «_Sudan_».
+S'il existait  un chemin  hamiltonien régional  dans ce  continent, il
+commencerait  en Afrique  du Sud  et se  terminerait à  Madagascar, ou
+l'inverse. Donc  le point d'articulation  du Soudan devrait être  à la
+fois en deuxième position et en avant-dernière position. Gênant, non ?
+
+Dans 
+[History of the World](https://boardgamegeek.com/image/384589/history-world),
+la situation est pire, les impasses sont légions. Comme le montre cette reproduction d'une
+[partie de la carte](https://boardgamegeek.com/image/799290/history-world),
+la  zone « Europe  du  Nord »  (en rose)  a  pour  impasses les  zones
+« Ireland »,    « Western   Gaul »    et   « Danubia »,    ainsi   que
+« Scandinavia »  légèrement  en  dehors  du cadre.  Et  dans  la  zone
+« Europe du Sud », comment voulez-vous aller de la zone « Crete » à la
+zone « Southern Appenines » en passant par la péninsule ibérique, mais
+sans traverser deux fois la zone « Northern Appenines » ?
+
+Quant à
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
+les  zones Amérique  Centrale  et Asie  ont  chacune trois  impasses :
+Mexique,  République  Dominicaine  et  Panama  dans  le  premier  cas,
+Afghanistan, Corée  du Nord et Australie  dans le second cas  (oui, en
+fait le nom de la région devrait être « Asie-Pacifique »).
+
+Il y a un autre problème dans la région Afrique de Twilight Struggle.
+En simplifiant, la structure de cette région est la suivante :
+
+```
+                               zone A
+                             /        \
+impasse 1 --- articulation 1            articulation 2 --- impasse 2
+                             \        /
+                               zone B
+```
+
+sans  frontière entre  la zone  A et  la zone  B. Comment  voulez-vous
+générer un chemin hamiltonien avec cela ?
+
+Finalement, je n'ai pas fait la carte de
+[Risk](https://boardgamegeek.com/boardgame/181/risk)
+parce que je ne l'avais pas à ma disposition. Mais je n'exclus
+pas de m'y intéresser à l'avenir.
+
 
 LICENCE
 =======

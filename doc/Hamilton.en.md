@@ -1368,7 +1368,7 @@ and   A.exterior = 1
 ```
 
 `mah1`, Maharaja map without the foreign lands and the seas
------- ----------------------------------------------------
+-----------------------------------------------------------
 
 In the Maharaja  map, there are four big areas.  Two very simple ones:
 Ceylon (2  small areas and  1 interior  small border) and  Himalaya (4
@@ -1393,13 +1393,68 @@ The generation  of macro-paths  and the  generation of  regional paths
 within  Himalaya and  Ceylon is,  you guess  it, very  fast. Something
 curious happens  with the two  other regions. Northern India  has 1578
 regional paths, but after processing 4 293 386 partial paths. Southern
-India  has  3088 regional  paths,  but  after processing  only  43 592
-partial paths.  The max size of  the `to-do` list was  37 for Northern
-India and 26 for Southern India.
+India  has  nearly twice  as  many  regional  paths, 3088,  but  after
+processing only 43 592 partial paths,  hardly more than one hundredth.
+The max size of the `to-do` list  was 37 for Northern India and 26 for
+Southern India.
 
 The second programme ran for 7  minutes or so, to generate 13 464 full
 paths,  while  generating  41 642 partial  paths  (361  simultaneously
 present in the `to-do` list).
+
+`mah2`, Maharaja map with the foreign lands and the seas
+--------------------------------------------------------
+
+Discarded Maps
+--------------
+
+There are  some maps  I have  not tried,  because they  cannot produce
+doubly Hamiltonian paths,  or even regional Hamiltonian  paths. Let us
+consider Africa in the
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+map. This  continent has  6 areas,  2 of which  are dead  ends: "South
+Africa" and  "Madagascar", both linked to  articulation point "Sudan".
+If there were  an Hamiltonian path within Africa, it  would start from
+South Africa and  stop at Madagascar or the other  way. In both cases,
+the Sudan articulation point would be  both in the second place and in
+the next-to-last place. Awkward, isn't it?
+
+The situation is worse in
+[History of the World](https://boardgamegeek.com/image/384589/history-world),
+there are  many dead ends.  As shown in  this
+[partial picture  of the map](https://boardgamegeek.com/image/799290/history-world),
+the  big area  "Northern Europe"  (in pink)  includes four  dead ends:
+"Ireland", "Western  Gaul" and  "Danubia" visible  in the  picture and
+"Scandinavia"  a bit  outside  the picture.  And  about the  "Southern
+Europe" big area, how  can you move from dead end  "Crete" to dead end
+"Southern  Appenines", while  crossing the  "Northern Appenines"  only
+once and yet visiting the Iberic peninsula?
+
+About
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
+both  big areas  "Central America"  and "Asia"  have three  dead ends:
+"Mexico",  "Dominican  Republic"  and  "Panama"  in  the  first  case,
+"Afghanistan", "North Korea" and "Australia"  in the second case (yes,
+this big area should have been named "Asia-Pacific").
+
+And there is another problem in the "Africa" big area. A simplified
+version of this area is:
+
+```
+                                area A
+                              /        \
+dead end 1 --- articulation 1            articulation 2 --- dead end 2
+                              \        /
+                                area B
+```
+
+with  no  edge  between area  A  and  area  B.  How can  you  find  an
+Hamiltonian path in this graph?
+
+Lastly, I have no map of
+[Risk](https://boardgamegeek.com/boardgame/181/risk)
+so I  did not  study it.  But if  I can find  this map,  I may  try to
+extract doubly Hamiltonian paths from it.
 
 License
 =======
