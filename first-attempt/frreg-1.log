@@ -1,0 +1,51 @@
+generating macro-paths for frreg
+07:12:28 complete paths 0, partial paths 13 (to-do list 12 / 12)
+07:12:28 complete paths 1, partial paths 263 (to-do list 17 / 26)
+07:12:29 complete paths 100, partial paths 2587 (to-do list 16 / 26)
+07:12:29 complete paths 200, partial paths 4657 (to-do list 16 / 26)
+07:12:29 complete paths 300, partial paths 8698 (to-do list 16 / 26)
+07:12:30 complete paths 316, partial paths 10000 (to-do list 13 / 26)
+07:12:30 complete paths 400, partial paths 12624 (to-do list 11 / 26)
+07:12:30 complete paths 500, partial paths 15942 (to-do list 7 / 26)
+07:12:30 complete paths 600, partial paths 19091 (to-do list 8 / 26)
+07:12:30 complete paths 634, partial paths 20000 (to-do list 7 / 26)
+07:12:31 complete paths 700, partial paths 20949 (to-do list 5 / 26)
+07:12:31 complete paths 800, partial paths 23148 (to-do list 6 / 26)
+07:12:31 complete paths 894, partial paths 26476 (to-do list 0 / 26)
+07:12:34 renumbering path 100 / 894
+07:12:37 renumbering path 200 / 894
+07:12:39 renumbering path 300 / 894
+07:12:42 renumbering path 400 / 894
+07:12:45 renumbering path 500 / 894
+07:12:48 renumbering path 600 / 894
+07:12:50 renumbering path 700 / 894
+07:12:53 renumbering path 800 / 894
+generating regional paths for all regions of frreg
+generating regional paths for region HDF of frreg
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+generating regional paths for region NOR of frreg
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+generating regional paths for region BRE of frreg
+generating regional paths for region PDL of frreg
+generating regional paths for region NAQ of frreg
+07:12:56 complete paths 0, partial paths 4 (to-do list 3 / 3)
+07:12:56 complete paths 1, partial paths 5 (to-do list 3 / 4)
+07:12:56 complete paths 6, partial paths 9 (to-do list 0 / 4)
+generating regional paths for region OCC of frreg
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+generating regional paths for region PAC of frreg
+generating regional paths for region ARA of frreg
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+07:12:56 complete paths 2, partial paths 1 (to-do list 0 / 1)
+generating regional paths for region CVL of frreg
+generating regional paths for region IDF of frreg
+generating regional paths for region BFC of frreg
+07:12:57 complete paths 2, partial paths 1 (to-do list 0 / 1)
+07:12:57 complete paths 2, partial paths 1 (to-do list 0 / 1)
+generating regional paths for region GES of frreg
+07:12:57 complete paths 0, partial paths 2 (to-do list 1 / 1)
+07:12:57 complete paths 2, partial paths 2 (to-do list 0 / 1)
+07:12:57 complete paths 2, partial paths 2 (to-do list 0 / 1)

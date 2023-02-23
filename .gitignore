@@ -1,7 +1,6 @@
 *~
 *.bak
 *.db
-*.log
 *.out
 *.pdf
 pod2*
