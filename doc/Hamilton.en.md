@@ -1252,7 +1252,7 @@ more than 3  small areas per big area. The  first generation programme
 ran for  12 seconds, generating  864 macro-paths (with  26 476 partial
 paths) and, for each region, from 2 to 6 regional paths.
 
-The  second generation  programme  ran  a bit  longer,  3 minutes,  to
+The  second generation  programme  ran  a bit  longer,  5 minutes,  to
 generate 210  full paths (with  9606 partial paths, while  the maximum
 size of the to-do list was 7 partial paths).
 
@@ -1366,6 +1366,24 @@ where P.map  = 'brit2'
 and   P.area = 'ENG'
 and   A.exterior = 1
 ```
+
+With the alternate  optimisation, the number of paths  stacked in vain
+to the `to-do` list would drop from 13 132 to 1463.
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'brit2'
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'SCO')
+```
+
+On  the other  hand, when  I run  this query  in `sqlitebrowser`,  the
+answer  is displayed  after several  seconds.  Maybe this  is not  the
+proper solution.
 
 `mah1`, Maharaja map without the foreign lands and the seas
 -----------------------------------------------------------

@@ -1293,7 +1293,7 @@ premier  programme  a   pris  un  total  de  12   secondes,  pour  894
 macro-chemins  (avec 26 476  macro-chemins partiels)  et, pour  chaque
 grande région, 2 à 6 chemins régionaux.
 
-Le second  programme a tourné un  peu plus longtemps, 3  minutes, pour
+Le second  programme a tourné un  peu plus longtemps, 5  minutes, pour
 trouver  210 chemins  complets  (avec 9606  chemins  partiels, dont  7
 simultanément en mémoire).
 
@@ -1414,6 +1414,24 @@ and   P.area = 'ENG'
 and   A.exterior = 1
 ```
 
+Avec la  seconde optimisation,  le nombre de  chemins empilés  en vain
+aurait été limité à 1463 au lieu de 13 132.
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'brit2'
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'SCO')
+```
+
+D'un autre côté, lorsque je  lance cette requête dans `sqlitebrowser`,
+elle met  plusieurs secondes à  s'exécuter. Ce n'est peut-être  pas la
+solution à retenir.
+
 `mah1`, la carte de Maharadjah, sans les pays étrangers ni les mers
 -------------------------------------------------------------------
 
@@ -1449,7 +1467,7 @@ Le second programme a fonctionné pendant 7 minutes pour générer 13 464
 chemins   complets,  en   utilisant  41 642   chemins  partiels   (361
 simultanément dans la liste `to-do`).
 
-`mah2`, la carte de Maharadjah, avec les pays étrangers ni les mers
+`mah2`, la carte de Maharadjah, avec les pays étrangers et les mers
 -------------------------------------------------------------------
 
 Cartes abandonnées

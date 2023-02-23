@@ -11,6 +11,9 @@ paths is not logged, that was  an earlier version of the `gener1.raku`
 programme. Looking through the history is  left as an exercice for the
 reader.
 
+The  `gener2.raku`  programme  is  the version  using  the  `exterior`
+optimisation, not the `where exists (select 'x'...)`.
+
 Ce  répertoire contient  les fichiers  traces pour  la génération  des
 chemins hamiltoniens, pour les  cartes françaises `frreg`, `fr1970` et
 `fr2015` ainsi que pour les cartes de Britannia et de Maharadjah.
@@ -23,3 +26,8 @@ où   le   programme   `gener1.raku`  n'affichait   rien   pendant   la
 renumérotation des  chemins. La  recherche dans l'historique  de cette
 version  de  `gener1.raku` est  laissée  à  titre d'exercice  pour  le
 lecteur.
+
+Pour  le   programme  `gener2.raku`,  la  version   utilisée  dans  ce
+répertoire  est   la  version  légèrement  optimisée   avec  le  champ
+`exterior`,  pas la  version optimisée  avec la  clause `where  exists
+(select 'x'...)`.
