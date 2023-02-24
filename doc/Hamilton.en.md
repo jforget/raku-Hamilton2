@@ -1313,8 +1313,8 @@ paths starting from  Cheshire or March and stopping  at another border
 area, even if this area is bordering  Wales and not Scotland, and 1 is
 the other macro-path where the `WAL` region has been replaced with the
 single regional  path that  reaches an  exterior region.  By selecting
-only areas bordering  Scotland, this number would  has been diminished
-to 96 (= 1 + 95).
+only areas bordering  Scotland, this number would has  been reduced to
+96 (= 1 + 95).
 
 ```
 select count(*)
@@ -1331,12 +1331,12 @@ select count(*)
 from Region_Paths as P
 where P.map = 'brit1'
 and   P.from_code in ('CHE', 'MRC')
+and   P.area = 'ENG'
 and   exists (select 'X'
               from  Small_Borders as B
               where B.map       = P.map
                 and B.from_code = P.to_code
                 and B.upper_to  = 'SCO')
-              
 ```
 
 `brit2`, Britannia map with the sea areas
@@ -1422,6 +1422,90 @@ present in the `to-do` list).
 
 `mah2`, Maharaja map with the foreign lands and the seas
 --------------------------------------------------------
+
+The `mah2` map adds two more big areas: `ASI` for the foreign lands in
+Asia (6  areas, 6 inner  borders) and `MER` for  the seas (3  areas, 2
+inner borders).  Nothing changes  much when running  the `gener1.raku`
+programme. The number of macro-paths raises from 2 to 56.
+
+But the `gener2.raku` programme has run  for a very long time, about a
+12-hour night  instead of 7 minutes.  And actually, I have  killed the
+job in the morning. It was nearly  finished, but I could not wait. Why
+did it take so long?
+
+The  reason is  the same  as  for map  `brit2`, but  with much  larger
+values.  In `brit2`,  there  was a  macro-border  between England  and
+Scotland (small areas `STR` and  `DUN`), but no Scottish regional path
+would  ever  start  from  `STR`  or  `DUN`.  In  `mah2`,  there  is  a
+macro-border between Ceylon (`CEY`) and the sea region (`MER`), but no
+regional  Hamiltonian  path within  `MER`  starts  from `OCE`  (Indian
+Ocean). Therefore, the six Hamiltonian macro-paths  `SUD → CEY → MER →
+etc`  will  generate no  Hamiltonian  full  paths. Unfortunately,  the
+programme cannot guess it without doing the full extraction.
+
+So on  6 occasions, the programme  pushes 2382 partial paths  into the
+`to-do` list, to no avail.
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map      = 'mah2'
+and   P.area     = 'SUD'
+and   A.exterior = 1
+```
+
+With  the more  precise  optimisation, the  number  of Southern  India
+regional paths would  be narrowed to 346. When multiplied  by 6, it is
+still a  big number, but at  least much smaller than  the previous big
+number 6 × 2382 = 14 292.
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'mah2'
+and   P.area = 'SUD'
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'CEY')
+```
+
+But wait, there is  more! We also have macro-paths `NOR →  SUD → CEY →
+MER →  ASI → HIM` and  `NOR → SUD  → CEY → MER  → HIM → ASI`.  In both
+cases, we first push 1416 partial paths to the `to-do` list: expansion
+of `NOR`  with partial paths  within Northern  India and ending  at an
+exterior  small area.  Of these  1416  paths, 793  cannot extend  into
+Southern India and 623 can. Each of these 623 partial paths can extend
+with between  192 and 423  Southern India partial paths,  depending on
+whether the  end of the  Northern India  regional path is  adjacent to
+`AND` only, to  `MAH` only, to both  `AND` and `GON` or  to both `MAH`
+and `KHA`.  If using  the lower  value 192,  we get  2 ×  623 ×  192 =
+239 232 partial paths  which will be pushed to the  `to-do` list to no
+avail.
+
+```
+select P.from_code, count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map      = 'mah2'
+and   P.area     = 'SUD'
+and   P.from_code in ('MAH','KHA','GON','AND')
+and   A.exterior = 1
+group by P.from_code
+
+   AND  192
+   GON  231
+   KHA  231
+   MAH  192
+```
+
+I will  not discuss further,  similar computations could give  a rough
+value of the number of sterile  partial paths generated for `HIM → NOR
+→ SUD → CEY → MER → ASI` or `ASI → HIM → NOR → SUD → CEY → MER`.
 
 Discarded Maps
 --------------

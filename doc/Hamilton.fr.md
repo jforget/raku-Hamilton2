@@ -1421,6 +1421,7 @@ aurait été limité à 1463 au lieu de 13 132.
 select count(*)
 from Region_Paths as P
 where P.map = 'brit2'
+and   P.area = 'ENG'
 and   exists (select 'X'
               from  Small_Borders as B
               where B.map       = P.map
@@ -1469,6 +1470,93 @@ simultanément dans la liste `to-do`).
 
 `mah2`, la carte de Maharadjah, avec les pays étrangers et les mers
 -------------------------------------------------------------------
+
+La  carte `mah2`  ajoute deux  grandes régions :  la région  `ASI` des
+zones  asiatiques (6  zones, 6  frontières intérieures)  et la  région
+maritime `MER` (3 zones, 2 frontières intérieures). Cela ne change pas
+grand chose  à l'exécution de  `gener1.raku`. Remarquons juste  que le
+nombre de macro-chemins passe de 2 à 56.
+
+En  revanche,  le  programme  `gener2.raku`  a  tourné  beaucoup  plus
+longtemps :  une nuit  complète de  presque 12  heures, au  lieu de  7
+minutes. Et encore, j'ai dû arrêter l'exécution au bout des 12 heures,
+même si la fin était relativement proche. Pourquoi ce programme a-t-il
+pris autant de temps ?
+
+C'est la même  raison que pour la carte `brit2`,  mais avec des ordres
+de grandeur différents. Dans `brit2`, il y a une macro-frontière entre
+l'Angleterre et  l'Écosse avec  les zones  écossaises `STR`  et `DUN`,
+mais aucun chemin  hamiltonien régional en Écosse ne part  de ces deux
+zones. Dans la  carte `mah2`, il y a une  macro-frontière entre Ceylan
+(`CEY`)  et  la  macro-région  maritime  (`MER`),  mais  aucun  chemin
+hamiltonien régional  de `MER`  ne part de  la zone  élémentaire `OCE`
+(Océan Indien). Donc les six macro-chemins `SUD  → CEY → MER → etc` ne
+donneront lieu à aucun chemin complet,  mais le programme n'est pas en
+mesure de le deviner par lui-même.
+
+Donc par  6 fois, le  programme empile  2382 chemins partiels  dans la
+liste `to-do`, en pure perte.
+
+```
+select count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map      = 'mah2'
+and   P.area     = 'SUD'
+and   A.exterior = 1
+```
+
+Avec  l'optimisation  plus poussée,  le  nombre  de chemins  régionaux
+d'Inde du Sud  aurait été réduit à 346. Avec  la multiplication par 6,
+cela  fait encore  beaucoup, mais  on y  aurait quand  même gagné,  ce
+nombre  aurait  été quand  même  beaucoup  plus  petit que  le  nombre
+précédent, 6 × 2382 = 14 292.
+
+```
+select count(*)
+from Region_Paths as P
+where P.map = 'mah2'
+and   P.area = 'SUD'
+and   exists (select 'X'
+              from  Small_Borders as B
+              where B.map       = P.map
+                and B.from_code = P.to_code
+                and B.upper_to  = 'CEY')
+```
+
+Et ce n'est pas tout ! Il y  a aussi les deux macro-chemins `NOR → SUD
+→ CEY → MER → ASI → HIM` et `NOR  → SUD → CEY → MER → HIM → ASI`. Dans
+ces deux cas,  on commence par empiler 1416  chemins partiels couvrant
+l'Inde du Nord et arrivant à une zone extérieure. 793 chemins partiels
+ne peuvent pas s'étendre à l'Inde  du Sud, mais les 623 autres peuvent
+se raccorder à  un certain nombre de chemins régionaux  d'Inde du Sud,
+192 à 423 selon que la région nord finale est reliée seulement à `AND`
+ou à  `MAH`, ou  bien à `AND`  et `GON`  ou bien à  `MAH` et  `KHA`. En
+prenant la  limite basse de 192,  cela donne 2  × 623 × 192  = 239 232
+chemins partiels qui seront empilés dans  la liste `to-do` à un moment
+ou à un autre et ne donneront pas lieu à un chemin complet.
+
+```
+select P.from_code, count(*)
+from Region_Paths as P
+join Small_Areas  as A
+  on  A.map = P.map and A.code = P.to_code
+where P.map      = 'mah2'
+and   P.area     = 'SUD'
+and   P.from_code in ('MAH','KHA','GON','AND')
+and   A.exterior = 1
+group by P.from_code
+
+   AND  192
+   GON  231
+   KHA  231
+   MAH  192
+```
+
+Et je m'arrête  là pour le décompte, sans chercher  à calculer combien
+de chemins partiels seraient générés pour `HIM → NOR → SUD → CEY → MER
+→ ASI` ou pour `ASI → HIM → NOR → SUD → CEY → MER`.
 
 Cartes abandonnées
 ------------------
