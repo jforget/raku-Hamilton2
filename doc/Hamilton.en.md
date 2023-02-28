@@ -111,6 +111,17 @@ discussions   (like   this   documentation    file),   but   not   for
 human-to-computer discussions. In other words, the articulation points
 are not implemented in the programmes from this project.
 
+An interior border  is a border between two  departments (small areas)
+belonging  to the  same region  (big area).  An exterior  border is  a
+border between  two departments belonging  to different regions.  I do
+not  care  about  foreign  countries such  as  Belgium  or  Luxemburg.
+Likewise, an interior area is a  small area with only interior borders
+and  an exterior  area is  a  small area  with at  least one  exterior
+border.  Thus, in  the  `fr2015`  map, department  `60`  (Oise) is  an
+exterior department, linked  to two departments from  Normandy and two
+departments  from  Île-de-France  and  department `59`  (Nord)  is  an
+interior department, although adjacent to Belgium.
+
 Another  interesting  notion  is Hamiltonian  cycles.  In  Hamiltonian
 cycles, the end node  is the same as the begin  node, which means that
 it is visited twice.  For example, The `29 → 56 → 35  → 22 → 29` cycle
@@ -1479,12 +1490,12 @@ cases, we first push 1416 partial paths to the `to-do` list: expansion
 of `NOR`  with partial paths  within Northern  India and ending  at an
 exterior  small area.  Of these  1416  paths, 793  cannot extend  into
 Southern India and 623 can. Each of these 623 partial paths can extend
-with between  192 and 423  Southern India partial paths,  depending on
+with between 192  and 423 Southern India regional  paths, depending on
 whether the  end of the  Northern India  regional path is  adjacent to
 `AND` only, to  `MAH` only, to both  `AND` and `GON` or  to both `MAH`
 and `KHA`.  If using  the lower  value 192,  we get  2 ×  623 ×  192 =
-239 232 partial paths  which will be pushed to the  `to-do` list to no
-avail.
+239 232 partial paths  which will be pushed at one  time or another to
+the `to-do` list to no avail.
 
 ```
 select P.from_code, count(*)
@@ -1506,6 +1517,24 @@ group by P.from_code
 I will  not discuss further,  similar computations could give  a rough
 value of the number of sterile  partial paths generated for `HIM → NOR
 → SUD → CEY → MER → ASI` or `ASI → HIM → NOR → SUD → CEY → MER`.
+
+Maps `fr1970` and `fr2015`
+--------------------------
+
+For these  maps, the running time  of `gener1.raku` is fine:  nearly 2
+minutes  for  `fr2015` and  3  minutes  for  `fr1970`. The  number  of
+regional paths  is rather  low. The  biggest region  is Île-de-France,
+with 8 departments,  17 interior borders and  800 Hamiltonian regional
+paths (with  4014 partial  paths). On the  macro level,  the programme
+generates 3982  macro-paths for  `fr1970` and  894 for  `fr2015`, with
+respectively 448 223 and 26 476 partial paths.
+
+On the other hand, I did not try to run `gener2.raku` on these maps. I
+guess that  the running time would  be similar to `mah2`.  Each region
+has fewer regional paths than `mah2`,  but there are 12 or 21 regions,
+so the combinatorial explosion may be  as huge as for `mah2`. I prefer
+waiting  for  the second  optimisation  to  generate full  Hamiltonian
+paths.
 
 Discarded Maps
 --------------

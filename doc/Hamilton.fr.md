@@ -83,7 +83,7 @@ départements 32 et 65 ne comptant pas.
 En consultant le
 [lexique de la théorie des graphes](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
 j'ai trouvé la notion de
-[point d'articularion](https://fr.wikipedia.org/wiki/Point_d%27articulation_(th%C3%A9orie_des_graphes)).
+[point d'articulation](https://fr.wikipedia.org/wiki/Point_d%27articulation_(th%C3%A9orie_des_graphes)).
 
 Dans le cas d'un graphe connexe, un point d'articulation est un sommet
 qui assure  la connexité  du graphe. C'est-à-dire,  si on  supprime ce
@@ -113,6 +113,20 @@ Le  concept   de  point   d'articulation  est  intéressant   pour  les
 discussions d'humain à humain (cette documentation), mais pas pour les
 discussions  d'humain à  ordinateur.  En d'autres  termes, ce  concept
 n'est pas implémenté dans les programmes traitant les graphes.
+
+Une  frontière intérieure  est une  frontière entre  deux départements
+appartenant  à  la  même  région. Une  frontière  extérieure  est  une
+frontière  entre   deux  départements   appartenant  à   deux  régions
+différentes.  Ne vous  imaginez  pas  que cela  fasse  référence à  la
+Belgique, au Luxembourg  et aux autres pays limitrophes  de la France.
+Par extension,  un département  extérieur est  un département  avec au
+moins  une frontière  extérieure et  un département  intérieur est  un
+département qui  n'a que  des frontières  intérieures. Ainsi,  dans la
+carte  `fr2015`, le  département  du Nord  (`59`)  est un  département
+intérieur, car  toutes ses frontières  sont avec des  départements des
+Hauts-de-France,  tandis   que  l'Oise   (`60`)  est   un  département
+extérieur,   connecté  avec   deux  départements   normands  et   deux
+départements d'Île-de-France.
 
 Une  autre notion  est celle  de  cycles hamiltoniens.  Dans un  cycle
 hamiltonien, le sommet d'arrivée est le  même que le sommet de départ,
@@ -1532,7 +1546,7 @@ l'Inde du Nord et arrivant à une zone extérieure. 793 chemins partiels
 ne peuvent pas s'étendre à l'Inde  du Sud, mais les 623 autres peuvent
 se raccorder à  un certain nombre de chemins régionaux  d'Inde du Sud,
 192 à 423 selon que la région nord finale est reliée seulement à `AND`
-ou à  `MAH`, ou  bien à `AND`  et `GON`  ou bien à  `MAH` et  `KHA`. En
+ou à  `MAH`, ou bien  à `AND` et  `GON` ou bien  à `MAH` et  `KHA`. En
 prenant la  limite basse de 192,  cela donne 2  × 623 × 192  = 239 232
 chemins partiels qui seront empilés dans  la liste `to-do` à un moment
 ou à un autre et ne donneront pas lieu à un chemin complet.
@@ -1557,6 +1571,26 @@ group by P.from_code
 Et je m'arrête  là pour le décompte, sans chercher  à calculer combien
 de chemins partiels seraient générés pour `HIM → NOR → SUD → CEY → MER
 → ASI` ou pour `ASI → HIM → NOR → SUD → CEY → MER`.
+
+Cartes `fr1970` et `fr2015`
+---------------------------
+
+Pour ces  deux cartes, le  temps d'exécution du premier  programme est
+très  correct : à  peine 2  minutes pour  `fr2015` et  3 minutes  pour
+`fr1970`. Le nombre de chemins  est assez réduit également. Le maximum
+est  la  région  Île-de-France,  avec 8  départements,  17  frontières
+intérieures pour 800 chemins hamiltoniens régionaux (avec 4014 chemins
+partiels).  Au niveau  macro, le  programme génère  3982 macro-chemins
+pour  la  carte   `fr1970`  et  894  pour  la   carte  `fr2015`,  avec
+respectivement 448 223 et 26 476 chemins partiels.
+
+En revanche, je  n'ai pas osé lancer le second  programme sur ces deux
+cartes. Je pense que le temps aurait été similaire à celui de la carte
+`mah2`. Il y a moins de  chemins régionaux pour chaque région, mais il
+y  a 12  ou  21  régions, donc  l'explosion  combinatoire pourrait  se
+révéler aussi lourde que pour `mah2` qui ne comporte que 8 régions. Je
+préfère attendre la deuxième tentative, avec l'optimisation plus fine,
+pour générer les chemins hamiltoniens complets.
 
 Cartes abandonnées
 ------------------
