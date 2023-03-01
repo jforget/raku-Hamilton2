@@ -1644,6 +1644,18 @@ Finalement, je n'ai pas fait la carte de
 parce que je ne l'avais pas à ma disposition. Mais je n'exclus
 pas de m'y intéresser à l'avenir.
 
+Conclusion
+----------
+
+L'optimisation basée sur l'indicateur `exterior` n'est pas suffisante.
+L'intérêt  de  l'optimisation  `where  exists (select  'x'  ...)`  est
+qu'elle   réduit   considérablement    le   nombre   de   possibilités
+intermédiaires. D'un  autre côté,  ainsi que j'ai  pu le  constater en
+lançant  les  ordres  avec  `where   exists  (select  'x"  ...)`  dans
+`sqlitebrowser`, ces  ordres ne  sont pas  optimisés pour  SQL, chacun
+prend plusieurs secondes à s'exécuter. Diminuer le nombre d'itérations
+pour augmenter la  durée de chaque itération n'a aucun  intérêt. Il va
+falloir trouver autre chose.
 
 LICENCE
 =======

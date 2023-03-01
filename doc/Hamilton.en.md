@@ -1587,6 +1587,21 @@ Lastly, I have no map of
 so I  did not  study it.  But if  I can find  this map,  I may  try to
 extract doubly Hamiltonian paths from it.
 
+Conclusion
+----------
+
+The optimisation based  on the `exterior` flag is  not sufficient. The
+good point  of the `where exists  (select 'x' ...)` clause  is that it
+reduces drastically the  number of intermediate results.  On the other
+hand,  as I  have found  on `sqlitebrowser`,  the queries  with `where
+exists  (select  'x' ...)`  are  not  optimised  for SQL.  So  running
+iterations  that are  fewer and  longer, I  am not  sure it  may be  a
+beneficial change.
+
+Although I am not master of the  world in an
+[Arthur Clarke novel](https://tvtropes.org/pmwiki/pmwiki.php/Literature/TheSpaceOdysseySeries?from=Literature.TwoThousandOneASpaceOdyssey),
+I am not quite sure what to do next. But I will think of something.
+
 License
 =======
 
