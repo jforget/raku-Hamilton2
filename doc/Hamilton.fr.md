@@ -1588,7 +1588,7 @@ En revanche, je  n'ai pas osé lancer le second  programme sur ces deux
 cartes. Je pense que le temps aurait été similaire à celui de la carte
 `mah2`. Il y a moins de  chemins régionaux pour chaque région, mais il
 y  a 12  ou  21  régions, donc  l'explosion  combinatoire pourrait  se
-révéler aussi lourde que pour `mah2` qui ne comporte que 8 régions. Je
+révéler aussi lourde que pour `mah2` qui ne comporte que 6 régions. Je
 préfère attendre la deuxième tentative, avec l'optimisation plus fine,
 pour générer les chemins hamiltoniens complets.
 
@@ -1651,11 +1651,101 @@ L'optimisation basée sur l'indicateur `exterior` n'est pas suffisante.
 L'intérêt  de  l'optimisation  `where  exists (select  'x'  ...)`  est
 qu'elle   réduit   considérablement    le   nombre   de   possibilités
 intermédiaires. D'un  autre côté,  ainsi que j'ai  pu le  constater en
-lançant  les  ordres  avec  `where   exists  (select  'x"  ...)`  dans
+lançant  les  ordres  avec  `where   exists  (select  'x'  ...)`  dans
 `sqlitebrowser`, ces  ordres ne  sont pas  optimisés pour  SQL, chacun
 prend plusieurs secondes à s'exécuter. Diminuer le nombre d'itérations
 pour augmenter la  durée de chaque itération n'a aucun  intérêt. Il va
 falloir trouver autre chose.
+
+Deuxième tentative
+==================
+
+Prenons l'exemple d'un macro-chemin `HDF → GES → ...`. Pour développer
+la région `HDF`, je cherche les  chemins régionaux de cette région qui
+permettent de continuer vers `GES`. C'est-à-dire des chemins régionaux
+tels que le département `Region_Paths.to_code`  soit relié à la région
+`GES`.
+
+![Région HDF](HDF.png)
+
+« Relié  à la  région `GES` »  peut se  traduire par  « il existe  une
+frontière  entre `Region_Paths.to_code`  et un  département de  `GES`.
+Soit en SQL :
+
+```
+where exists (select 'x'
+      	      from   Small_Borders
+	      where  from_code = Region_Paths.to_code
+	      and    upper_to  = 'GES'
+```
+
+Dans le cas présent, la clause permet de sélectionner uniquement
+les chemins régionaux aboutissant en `02`.
+
+Il  y a  longtemps, j'ai  appris qu'en  SQL, la  sélection `where  not
+exists`  est très  pénalisante. Comme  j'ai pu  le constater  avec mes
+tentatives  sur `sqlitebrowser`,  la clause  `where exists`  n'est pas
+franchement meilleure. Une jointure est  plus efficace. Hélas, ici, la
+jointure :
+
+```
+join Small_Borders
+  on  from_code = Region_Paths.to_code
+```
+
+ne donnerait pas le résultat attendu, car elle générerait des doublons
+à  cause des  deux  frontières `(02,  08)` et  `(02,  51)`. Alors  que
+faire ?
+
+* Créer un index sur `Small_Borders`. Cela dit, d'après
+[la doc de SQLite](https://sqlite.org/lang_createindex.html),
+les index conernent les tables, pas les vues.
+
+* Créer un  index sur `Borders`.  Peut-être. Mais il faut  adapter les
+instructions  SQL  pour  utiliser  cette  table  au  lieu  de  la  vue
+`Small_Borders`.
+
+Puis j'ai eu la solution. Créer une table ou une vue avec soit `select
+distinct`, soit `group by`, pour réunir les deux frontières `(02, 08)`
+et `(02,  51)` en une  seule frontière `(02,  GES)`. Pour en  avoir le
+cœur net, je commence par un programme de _benchmark_.
+
+Programme `benchmark`
+---------------------
+
+Le programme `benchmark` reçoit trois paramètres :
+
+1. Le code de la carte. Dans l'exemple ci-dessus, ce serait `fr2015`.
+
+2. La région en cours de traitement. Dans l'exemple ci-dessus, ce serait `HDF`.
+
+3. La région suivante.  Dans l'exemple ci-dessus, ce serait `GES`.
+
+Le programme effectue six tests :
+
+1. avec la clause `where exists` et sans index,
+
+2. avec la clause `where exists` et avec index,
+
+3. avec une table alimentée par `select distinct`,
+
+4. avec une vue définie par `select distinct`,
+
+5. avec une table alimentée par `select ... group by`,
+
+6. avec une vue définie par `select ... group by`,
+
+Chaque test comporte les quatre étapes suivantes :
+
+1. Copie le fichier base de données de la première tentative dans un fichier temporaire.
+
+2. Modifier la base de données du fichier temporaire pour y ajouter la table, la vue ou l'index concerné.
+
+3. Dans le cas d'un test avec une nouvelle table, alimenter cette table.
+
+4. Lancer l'instruction SQL qui extrait les chemins régionaux pour construire la première étape du chemin complet.
+
+Les étapes 2 à 4 sont chronométrées avec les valeurs de `DateTime.now` avant et après l'instruction.
 
 LICENCE
 =======

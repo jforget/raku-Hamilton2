@@ -1602,6 +1602,95 @@ Although I am not master of the  world in an
 [Arthur Clarke novel](https://tvtropes.org/pmwiki/pmwiki.php/Literature/TheSpaceOdysseySeries?from=Literature.TwoThousandOneASpaceOdyssey),
 I am not quite sure what to do next. But I will think of something.
 
+Second Attempt
+==============
+
+Let  us use  the example  of  a macro-path  `HDF  → GES  → ...`.  When
+replacing the  `HDF` region with a  regional path, I try  to find only
+paths  that would  connect to  the  following region  `GES`, that  is,
+regional  paths for  which  the  department `Region_Paths.to_code`  is
+linked with region `GES`.
+
+![Région HDF](HDF.png)
+
+"Linked with  region `GES`"  can translate to  "there exists  a border
+between  department `Region_Paths.to_code`  and region  `GES`. In  SQL
+syntax:
+
+```
+where exists (select 'x'
+      	      from   Small_Borders
+	      where  from_code = Region_Paths.to_code
+	      and    upper_to  = 'GES'
+```
+
+With the current example, this  clause selects only the regional paths
+ending at department `02`.
+
+A long time ago, I learned that in SQL, the `where not exists` clauses
+are  very inefficient.  When running  the SQL  statements in  the text
+above within  `sqlitebrowser`, I see  that the `where  exists` clauses
+too  are not  very efficient.  A  join would  be better.  Yet, in  the
+present case, the join:
+
+```
+join Small_Borders
+  on  from_code = Region_Paths.to_code
+```
+
+is not the  solution, because it would give  duplicate results because
+of the borders `(02, 08)` and `(02,51)`. So what can we do?
+
+* Create an index on `Small_Borders`. Yet, according to
+[the SQLite documentation](https://sqlite.org/lang_createindex.html),
+indexes apply only to tables, not views.
+
+* Create an index  on `Borders`. Maybe. I will have  to alter a little
+the SQL statements,  to use this table instead  of the `Small_Borders`
+view.
+
+Then  I found  the solution.  Create  a table  or a  view with  either
+`select distinct` or  `group by`, to merge the two  borders `(02, 08)`
+and `(02,  51)` into  a single one  `(02, GES)`. To  be sure,  I first
+write a benchmark.
+
+Benchmark
+---------
+
+The benchmark receives three parameters:
+
+1. The map. In the example above, this would be `fr2015`.
+
+2. The current region. In the example above, this would be `HDF`.
+
+3. The next region. In the example above, this would be `GES`.
+
+The programme runs six tests:
+
+1. unindexed `where exists`,
+
+2. indexed `where exists`,
+
+3. table filled by `select distinct`,
+
+4. view defined as `select distinct`,
+
+5. table filled by `select ... group by`,
+
+6. view defined as `select ... group by`.
+
+Each test contains the following steps:
+
+1. Copy the database file from the first attempt into a new database file.
+
+2. Alter the new database file: create a new index, a new table or a new view.
+
+3. In the case of tables, feed the new table.
+
+4. Run the SQL statement extracting the regional paths which would be substituted to the region code.
+
+Step 2 to 4 will be timed by extracting `DateTime.now` before and after the statement. 
+
 License
 =======
 
