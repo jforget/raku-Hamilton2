@@ -1659,11 +1659,11 @@ Benchmark
 
 The benchmark receives three parameters:
 
-1. The map. In the example above, this would be `fr2015`.
+1. The map. In the example above, this would be `--map=fr2015`.
 
-2. The current region. In the example above, this would be `HDF`.
+2. The current region. In the example above, this would be `--current=HDF`.
 
-3. The next region. In the example above, this would be `GES`.
+3. The next region. In the example above, this would be `--next=GES`.
 
 The programme runs six tests:
 

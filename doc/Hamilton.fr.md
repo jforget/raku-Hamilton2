@@ -1699,7 +1699,7 @@ faire ?
 
 * Créer un index sur `Small_Borders`. Cela dit, d'après
 [la doc de SQLite](https://sqlite.org/lang_createindex.html),
-les index conernent les tables, pas les vues.
+les index concernent les tables, pas les vues.
 
 * Créer un  index sur `Borders`.  Peut-être. Mais il faut  adapter les
 instructions  SQL  pour  utiliser  cette  table  au  lieu  de  la  vue
@@ -1715,11 +1715,11 @@ Programme `benchmark`
 
 Le programme `benchmark` reçoit trois paramètres :
 
-1. Le code de la carte. Dans l'exemple ci-dessus, ce serait `fr2015`.
+1. Le code de la carte. Dans l'exemple ci-dessus, ce serait `--map=fr2015`.
 
-2. La région en cours de traitement. Dans l'exemple ci-dessus, ce serait `HDF`.
+2. La région en cours de traitement. Dans l'exemple ci-dessus, ce serait `--current=HDF`.
 
-3. La région suivante.  Dans l'exemple ci-dessus, ce serait `GES`.
+3. La région suivante.  Dans l'exemple ci-dessus, ce serait `--next=GES`.
 
 Le programme effectue six tests :
 
