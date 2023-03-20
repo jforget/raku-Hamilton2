@@ -86,6 +86,8 @@ sub check(Str $test, $map, $current, $next) {
   }
   @e[4] = DateTime.now;
 
+  $dbh.dispose;
+
   # results
   for 2..4 -> $i {
     say "@b[$i] @e[$i] {sprintf("%.5f", @e[$i] - @b[$i])} step $i";

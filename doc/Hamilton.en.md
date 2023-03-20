@@ -1667,7 +1667,7 @@ The benchmark receives three parameters:
 
 The programme runs six tests:
 
-1. unindexed `where exists`,
+1. unindexed `where exists`, referred to as the "reference test",
 
 2. indexed `where exists`,
 
@@ -1690,6 +1690,33 @@ Each test contains the following steps:
 4. Run the SQL statement extracting the regional paths which would be substituted to the region code.
 
 Step 2 to 4 will be timed by extracting `DateTime.now` before and after the statement. 
+
+Lest some caching would introduce a bias in the benchmark, each one of
+the 6 tests will  use its own database file. In  addition, the 6 tests
+are run in a random order.
+
+Lessons learned: as  I was suspecting, index creation  applies only to
+tables. On the other hand, index  creation benefits views. I can still
+code  a SQL  statement with  the  view instead  of the  table and  the
+statement will run fast enough.
+
+I was right when  I decided to run the tests in  random order. Even if
+the tests use different files, we  can notice that the test which runs
+first is  significantly slower  that the other  tests, except  for the
+reference test. By  running several times the series of  tests, we can
+see that  all five tests are  better than the reference  test and that
+they are equivalent to each other.
+
+Within the five solutions, I discard  the two solutions based on a new
+table. There is a very slight  overhead during step 3, because we have
+to  fill the  table. Also,  this  table contains  only redundant  data
+alreaxdy  present  in  table  `Borders`,  therefore  it  degrades  the
+database  normalisation. We  must  admit that  these  two reasons  are
+rather feeble  reasons, but since  it is easy to  fix them, let  us do
+that.
+
+As for  the three other solutions,  I have no further  criterion, so I
+adopt the view defined by `select distinct`.
 
 License
 =======

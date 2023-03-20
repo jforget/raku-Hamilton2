@@ -1723,7 +1723,7 @@ Le programme `benchmark` reçoit trois paramètres :
 
 Le programme effectue six tests :
 
-1. avec la clause `where exists` et sans index,
+1. avec la clause `where exists` et sans index, appelé « test de référence »,
 
 2. avec la clause `where exists` et avec index,
 
@@ -1746,6 +1746,35 @@ Chaque test comporte les quatre étapes suivantes :
 4. Lancer l'instruction SQL qui extrait les chemins régionaux pour construire la première étape du chemin complet.
 
 Les étapes 2 à 4 sont chronométrées avec les valeurs de `DateTime.now` avant et après l'instruction.
+
+Pour éviter  qu'un phénomène de  mise en cache favorise  ou défavorise
+tel ou tel  test, chacun des 6  tests a son propre fichier  de base de
+données. De plus, ils sont effectués dans un ordre aléatoire.
+
+Leçons tirées : comme je m'en doutais,  la création d'index ne peut se
+faire que  sur une table.  En revanche, elle  profite aux vues  sur la
+table.  Donc c'est  une  solution possible,  il n'y  a  pas besoin  de
+changer le SQL pour remplacer la vue par la table.
+
+J'ai bien  fait de lancer les  tests dans un ordre  aléatoire. Même si
+les tests utilisent des fichiers  différents, on peut remarquer que le
+premier test, quel  qu'il soit, est toujours plus lent  que les autres
+tests, à l'exception  du test de référence `where  exists` sans index.
+En lançant la série de tests  plusieurs fois, le test lancé en premier
+change d'un coup  à l'autre et on  peut se rendre compte  que les cinq
+tests sont  meilleurs que  le test de  référence et  équivalents entre
+eux.
+
+Parmi les cinq  solutions, je laisse tomber les  deux solutions basées
+sur une nouvelle table. En effet,  il y a un très léger ralentissement
+à l'étape 3,  puisqu'il faut remplir la table.  Également, cette table
+est  constituée  entièrement  de  données redondantes  avec  la  table
+`Borders`, donc elle  diminue la normalisation de la  base de données.
+Reconnaissons que ces deux inconvénients  sont très bénins, mais comme
+il est facile de les corriger, faisons-le.
+
+Finalement,   entre   les    trois   solutions   restantes,   j'adopte
+arbitrairement la vue basée sur un `select distinct`.
 
 LICENCE
 =======
