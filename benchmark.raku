@@ -20,7 +20,7 @@ my %tests =  'xn' => 'where exists (without index)'
            , 'tg' => 'table filled by select ... group by'
            , 'vd' => 'view defined by select distinct'
            , 'vg' => 'view defined by select ... group by'
-	   ;
+           ;
 
 sub MAIN (
       Str  :$map     = 'fr2015' #= The code of the map
@@ -41,6 +41,7 @@ sub check(Str $test, $map, $current, $next) {
 
   # step 1, copying the database
   my $new-db = "Hamilton-$test.db";
+  run 'rm',           $new-db;
   run 'cp', $orig-db, $new-db;
   my $dbh = DBIish.connect('SQLite', database => $new-db);
 

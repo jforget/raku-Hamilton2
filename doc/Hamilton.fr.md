@@ -1396,7 +1396,6 @@ and   exists (select 'X'
               where B.map       = P.map
                 and B.from_code = P.to_code
                 and B.upper_to  = 'SCO')
-              
 ```
 
 `brit2`, Britannia avec les zones maritimes
@@ -1607,7 +1606,7 @@ commencerait  en Afrique  du Sud  et se  terminerait à  Madagascar, ou
 l'inverse. Donc  le point d'articulation  du Soudan devrait être  à la
 fois en deuxième position et en avant-dernière position. Gênant, non ?
 
-Dans 
+Dans
 [History of the World](https://boardgamegeek.com/image/384589/history-world),
 la situation est pire, les impasses sont légions. Comme le montre cette reproduction d'une
 [partie de la carte](https://boardgamegeek.com/image/799290/history-world),
@@ -1674,9 +1673,9 @@ Soit en SQL :
 
 ```
 where exists (select 'x'
-      	      from   Small_Borders
-	      where  from_code = Region_Paths.to_code
-	      and    upper_to  = 'GES'
+              from   Small_Borders
+              where  from_code = Region_Paths.to_code
+              and    upper_to  = 'GES'
 ```
 
 Dans le cas présent, la clause permet de sélectionner uniquement

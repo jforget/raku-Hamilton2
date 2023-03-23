@@ -1619,9 +1619,9 @@ syntax:
 
 ```
 where exists (select 'x'
-      	      from   Small_Borders
-	      where  from_code = Region_Paths.to_code
-	      and    upper_to  = 'GES'
+              from   Small_Borders
+              where  from_code = Region_Paths.to_code
+              and    upper_to  = 'GES'
 ```
 
 With the current example, this  clause selects only the regional paths
@@ -1689,7 +1689,7 @@ Each test contains the following steps:
 
 4. Run the SQL statement extracting the regional paths which would be substituted to the region code.
 
-Step 2 to 4 will be timed by extracting `DateTime.now` before and after the statement. 
+Step 2 to 4 will be timed by extracting `DateTime.now` before and after the statement.
 
 Lest some caching would introduce a bias in the benchmark, each one of
 the 6 tests will  use its own database file. In  addition, the 6 tests
