@@ -41,13 +41,13 @@ join Region_Paths B
    on  B.map       = A.map
    and B.area      = A.upper_to
    and B.from_code = A.to_code
-join Small_Areas  C
-   on  C.map      = B.map
-   and C.code     = B.to_code
-   and C.exterior = 1
+join Exit_Borders C
+   on  C.map       = B.map
+   and C.from_code = B.to_code
 where A.map       = ?
 and   A.from_code = ?
 and   A.upper_to  = ?
+and   C.upper_to  = ?
 SQL
 
 my $extract-last-region-paths  = $dbh.prepare(q:to/SQL/);
@@ -137,8 +137,12 @@ sub MAIN (
       #say $old-reg , "//", $old-path;
       if %old<path> ~~ / '→→' .* '→' / {
 
+	# Finding the next region after the soon-replaced region
+        %old<path> ~~ / '→→' .*? '→' \s+ (\S*) /;
+        my Str $next-reg = $0.Str;
+
         # extending the partial path by one region
-        for $extract-region-paths.execute($map, %old<last>, $old-reg).allrows(:array-of-hash) -> $reg-path {
+        for $extract-region-paths.execute($map, %old<last>, $old-reg, $next-reg).allrows(:array-of-hash) -> $reg-path {
           #say $reg-path;
           my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<path> →/;
           my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<num>;

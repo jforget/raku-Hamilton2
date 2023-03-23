@@ -96,3 +96,8 @@ create view Full_Paths    (map, num, path, from_code, to_code, macro_num)
          as select         map, num, path, from_code, to_code, macro_num
             from           Paths
             where          level = 3;
+
+create view Exit_Borders   (map, from_code, upper_to)
+         as select distinct map, from_code, upper_to
+            from            Borders
+            where           level = 2
