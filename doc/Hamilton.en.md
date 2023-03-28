@@ -1708,7 +1708,7 @@ see that  all five tests are  better than the reference  test and that
 they are equivalent to each other.
 
 Within the five solutions, I discard  the two solutions based on a new
-table. There is a very slight  overhead during step 3, because we have
+table. There is a very slight  overhead during step 3 (a few thousandths of a second), because we have
 to  fill the  table. Also,  this  table contains  only redundant  data
 alreaxdy  present  in  table  `Borders`,  therefore  it  degrades  the
 database  normalisation. We  must  admit that  these  two reasons  are
@@ -1717,6 +1717,26 @@ that.
 
 As for  the three other solutions,  I have no further  criterion, so I
 adopt the view defined by `select distinct`.
+
+Result for the first programme
+------------------------------
+
+The `gener1.raku` programme  has not changed. So its  result should be
+the same  as during  the first  attempt. Actually,  there is  a slight
+variation in the  number of partial paths pushed to  the `to-do` list.
+On  the other  hand,  the number  of complete  paths  stored into  the
+database are the same, so I suppose the detailed contents is the same.
+
+The difference  in the number of  partial paths is probably  caused by
+the fact  that the `select` statements  have no `order by`  clause, so
+the data are extracted in an undefined order, which can change between
+a run  and the next. Also,  the programme uses a  `Set` data structure
+and accessing  the elements of a  `Set` does not specify  the order in
+which the elements are accessed.
+
+Result for the second programme
+-------------------------------
+
 
 License
 =======

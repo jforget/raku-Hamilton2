@@ -1766,7 +1766,7 @@ eux.
 
 Parmi les cinq  solutions, je laisse tomber les  deux solutions basées
 sur une nouvelle table. En effet,  il y a un très léger ralentissement
-à l'étape 3,  puisqu'il faut remplir la table.  Également, cette table
+à l'étape 3 (quelques millièmes de secondes),  puisqu'il faut remplir la table.  Également, cette table
 est  constituée  entièrement  de  données redondantes  avec  la  table
 `Borders`, donc elle  diminue la normalisation de la  base de données.
 Reconnaissons que ces deux inconvénients  sont très bénins, mais comme
@@ -1774,6 +1774,25 @@ il est facile de les corriger, faisons-le.
 
 Finalement,   entre   les    trois   solutions   restantes,   j'adopte
 arbitrairement la vue basée sur un `select distinct`.
+
+Résultat de la première étape
+-----------------------------
+
+Le programme `gener1.raku` n'ayant pas changé, on peut s'attendre à un
+résultat identique  à la première  étape de la première  tentative. Le
+résultat  n'est pas  tout-à-fait  identique, parce  que  le nombre  de
+chemins partiels  dans la liste  `to-do` est légèrement  différent. En
+revanche,  le  nombre  de  chemins  stockés en  base  de  données  est
+identique, donc je suppose que le contenu est identique.
+
+La différence dans le nombre de chemins partiels est vraisemblablement
+due au fait  que les instructions `select` extraient  les données dans
+un ordre  arbitraire, qui peut  changer d'une exécution à  l'autre. De
+même, pour un `set`, les éléments  de l'ensemble sont extraits dans un
+ordre aléatoire.
+
+Résultat de la seconde étape
+----------------------------
 
 LICENCE
 =======
