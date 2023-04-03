@@ -1737,6 +1737,62 @@ which the elements are accessed.
 Result for the second programme
 -------------------------------
 
+For the `gener2.raku` programme, the running time is divided by 3 to 4
+between  the first  attempt  and the  second one.  For  the number  of
+partial paths,  the ratio varies from  1.25 (`frreg`, 9606 →  7656) to
+nearly 5 (`brit2`, 140278 → 27863).
+
+For map `mah2`, since I have  killed the first attempt after 12 hours,
+I base my computation on the  last message dealing with macro-path 50.
+The  running time  to reach  this  point was  11h 45min  in the  first
+attempt, and 4h 15min in the second  attempt, that is, a ratio of only
+2.7. For partial paths, the ratio is a bit less than 2.
+
+During the first attempt, I killed  the generation for `mah2` after 12
+hours,  thinking that  all  full  paths were  generated  and that  the
+programme was  nearly over.  Yet, as  the second  attemp shows,  I was
+right that  all full paths were  generated, but on the  other hand the
+programme  was  far from  over,  there  were still  several  fruitless
+macro-paths to process. With a  proportional computation, we can guess
+that the total runnning time would be a few minutes short of 17 hours.
+
+![PAC-LRO.png](Regions PAC and LRO)
+
+I have run the generation of full paths for map `fr1970`. I found that
+there is still room for  optimisation, by discarding macro-paths which
+cannot generate full paths. When  casually looking at map `fr1970`, we
+notice  there  is  one dead-end  region,  `NPC`  (Nord-Pas-de-Calais),
+linked  to only  `PIC` (Picardie).  On  the other  hand, region  `PAC`
+(Provence-Alpes-Côte-d'Azur)  is linked  to two  other regions,  `RAL`
+(Rhône-Alpes) and `LRO`  (Languedoc-Roussillon). Looking more closely,
+we notice that the border  between `PAC` and `LRO` involves department
+`30`  (Gard).  This department  is  an  articulation point  in  `LRO`,
+therefore, no regional path can start  from `30` nor stop at `30`. The
+next  consequence is  that no  full  Hamiltonian path  will cross  the
+border between `PAC` and `LRO`. Region `PAC` then appears to be a dead
+end region  functionally linked  to only  `RAL`. The  only macro-paths
+able to generate full Hamiltonian paths are macro-paths beginning with
+`NPC → PIC`  and ending with `RAL  → PAC` or the other  way. There are
+only 486 fruitful macro-paths out of 3982.
+
+This  case  is  found in  other  maps,  but  with  a lower  impact  on
+processing times. In  map `brit2`, `SCO` (Scotland) is  linked to both
+`ENG` (England)  and `OCE`  (Oceanic areas),  but no  full Hamiltonian
+paths  crosses the  `SCO` to  `ENG` border  and `SCO`  is therefore  a
+functional dead-end linked to only  `OCE`. Likewise, in `mah2`, region
+`CEY`  (Ceylon) is  linked to  `SUD` (Southern  India) and  `MER` (sea
+areas), but  only the border between  `CEY` and `SUD` is  used by full
+Hamiltonian paths, `CEY` is functionaly a dead-end.
+
+I have also run the generation of full paths for `fr2015`. I killed it
+when I realised the number of  generated full paths would be huge. The
+generation  ran  for  more  than  11  hours  and  processed  only  two
+macro-paths, the second only only partially. The first one produced no
+full paths, yet it took  one-and-a-half hour to reach this conclusion.
+The second one was nearly at 2 millions when I killed the process. And
+there are 894  macro-paths in all. Even if we  discard the macro-paths
+which will  generate no  full paths, as  suggested above,  the running
+time would still be huge.
 
 License
 =======

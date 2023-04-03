@@ -1794,6 +1794,73 @@ ordre aléatoire.
 Résultat de la seconde étape
 ----------------------------
 
+Pour le programme `gener2.raku`, le  temps entre la première tentative
+et  la deuxième  est divisé  par 3  ou 4.  Pour le  nombre de  chemins
+partiels, le rapport  varie entre 1,25 seulement pour  `frreg` (9606 →
+7656) et 5 pour `brit2` (140278 → 27863).
+
+Dans le  cas de  la carte  `mah2`, comme la  première tentative  a été
+interrompue au  bout de 12 heures,  j'ai pris en compte  le passage du
+macro-chemin 50 au  macro-chemin 51. Cela a pris 11h  45min lors de la
+première tentative et 4h 15min lors  de la deuxième tentative, soit un
+rapport  de 2,7  seulement. Pour  le  nombre de  chemins partiels,  le
+rapport est légèrement en-deçà de 2.
+
+J'ai interrompu la première tentative  pour `mah2` après 12 heures, en
+croyant  que tous  les  chemins  complets étaient  générés  et que  le
+traitement  était  quasiment  terminé.  En  fait,  comme  la  deuxième
+tentative  le  montre,  les  chemins complets  étaient  tous  générés,
+certes,  mais  il restait  encore  quelques  macro-chemins stériles  à
+traiter. Si l'on  fait une règle de trois pour  estimer le temps total
+de la  première tentative, le temps  total aurait été un  peu moins de
+17h.
+
+![PAC-LRO.png](Régions PAC et LRO)
+
+J'ai lancé la génération des  chemins complets pour la carte `fr1970`.
+Je me  suis rendu compte  qu'il y  aurait encore moyen  d'optimiser la
+recherche en éliminant les macro-chemins  qui ne peuvent pas engendrer
+de chemins  complets. Lorsque  l'on regarde rapidement  la macro-carte
+`fr1970`, on  voit qu'il  existe une région  impasse, la  région `NPC`
+(Nord-Pas-de-Calais) reliée  uniquement à la région  `PIC` (Picardie).
+En revanche,  la région  `PAC` (Provence-Alpes-Côte-d'Azur)  n'est pas
+une impasse,  car elle  est reliée  à `RAL`  (Rhône-Alpes) et  à `LRO`
+(Languedoc-Rousillon). En regardant  de plus près, on  constate que la
+frontière  entre   `PAC`  et   `LRO`  passe  obligatoirement   par  le
+département `30` (Gard). Ce département est un point d'articulation de
+la région  `LRO`, donc aucun  chemin hamiltonien régional de  `LRO` ne
+peut  commencer en  `30` ni  y  aboutir. La  conséquence est  qu'aucun
+chemin hamiltonien complet  ne traversera la frontière  entre `PAC` et
+`LRO`. Ou encore, tout se passe comme si la région `PAC` était devenue
+une impasse, liée  uniquement à `RAL. Les  seuls macro-chemins pouvant
+conduire à des chemins complets  sont les macro-chemins commençant par
+`NPC → PIC` et finissant par `RAL → PAC` ou l'inverse. Il y a donc 486
+macro-chemins à traiter au lieu de 3982.
+
+Ce  cas  de  figure  existe  dans  d'autres  cartes,  où  il  a  moins
+d'influence sur  la durée des  traitements. Dans la carte  `brit2`, la
+région `SCO` (Écosse)  est reliée à la fois à  `ENG` (Angleterre) et à
+`OCE`  (zones maritimes),  mais  aucun chemin  hamiltonien complet  ne
+traverse la  frontière entre `SCO`  et `ENG`.  Tout se passe  comme si
+`SCO` est une impasse reliée uniquement à `OCE`. De même, dans `mah2`,
+la région `CEY` (Ceylan) est reliée à la fois à `SUD` (Inde du Sud) et
+à  `MER` (zones  maritimes), mais  seule la  frontière entre  `CEY` et
+`SUD` est utilisée par les chemins hamiltoniens complets. Donc tout se
+passe comme si `CEY` était une impasse.
+
+J'ai également lancé la génération des chemins complets pour `fr2015`.
+Je l'ai arrêtée au bout de 11 heures et demie lorsque je me suis rendu
+compte que le nombre de chemins générés serait énorme. La génération a
+eu le  temps de  traiter seulement deux  macro-chemins. Et  encore, le
+traitement du  deuxième macro-chemin  n'était pas terminé.  Le premier
+n'a donné lieu  à aucun chemin complet,  mais il a fallu  une heure et
+demie  pour  obtenir  ce  résultat.  Après  dix  heures,  le  deuxième
+macro-chemin  en était  à presque  deux millions  de chemins  complets
+lorsque  j'ai  interrompu la  génération.  Et  il  y  a au  total  894
+macro-chemins à  traiter. Même en  éliminant les macro-chemins  qui ne
+peuvent pas donner lieu à des chemins complets, le temps de traitement
+restera énorme pour `fr2015`.
+
 LICENCE
 =======
 
