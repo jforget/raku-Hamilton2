@@ -1756,7 +1756,7 @@ programme  was  far from  over,  there  were still  several  fruitless
 macro-paths to process. With a  proportional computation, we can guess
 that the total runnning time would be a few minutes short of 17 hours.
 
-![PAC-LRO.png](Regions PAC and LRO)
+![Régions PAC et LRO](PAC-LRO.png)
 
 I have run the generation of full paths for map `fr1970`. I found that
 there is still room for  optimisation, by discarding macro-paths which

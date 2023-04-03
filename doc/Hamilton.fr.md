@@ -1815,7 +1815,7 @@ traiter. Si l'on  fait une règle de trois pour  estimer le temps total
 de la  première tentative, le temps  total aurait été un  peu moins de
 17h.
 
-![PAC-LRO.png](Régions PAC et LRO)
+![Régions PAC et LRO](PAC-LRO.png)
 
 J'ai lancé la génération des  chemins complets pour la carte `fr1970`.
 Je me  suis rendu compte  qu'il y  aurait encore moyen  d'optimiser la
