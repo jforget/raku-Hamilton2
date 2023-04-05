@@ -1832,7 +1832,7 @@ la région  `LRO`, donc aucun  chemin hamiltonien régional de  `LRO` ne
 peut  commencer en  `30` ni  y  aboutir. La  conséquence est  qu'aucun
 chemin hamiltonien complet  ne traversera la frontière  entre `PAC` et
 `LRO`. Ou encore, tout se passe comme si la région `PAC` était devenue
-une impasse, liée  uniquement à `RAL. Les  seuls macro-chemins pouvant
+une impasse, liée uniquement à  `RAL`. Les seuls macro-chemins pouvant
 conduire à des chemins complets  sont les macro-chemins commençant par
 `NPC → PIC` et finissant par `RAL → PAC` ou l'inverse. Il y a donc 486
 macro-chemins à traiter au lieu de 3982.
@@ -1860,6 +1860,85 @@ lorsque  j'ai  interrompu la  génération.  Et  il  y  a au  total  894
 macro-chemins à  traiter. Même en  éliminant les macro-chemins  qui ne
 peuvent pas donner lieu à des chemins complets, le temps de traitement
 restera énorme pour `fr2015`.
+
+Troisième tentative
+===================
+
+La  troisième tentative  sert à  diminuer le  nombre de  macro-chemins
+sélectionnés  dans  le  programme  `gener2.raku`.  Cela  traitera  les
+« quasi-impasses »  comme `PAC`  dans `fr1970`  ou `CEY`  dans `mah2`,
+mais aussi les  cas de figure comme  la frontière `IDF →  NOR` dans la
+carte `fr2015`. Je prends ce dernier exemple pour l'explication.
+
+Dans la table `Paths` et la vue `Macro_Paths`, on ajoute les colonnes
+suivantes :
+
+* `fruitless` indicateur numérique, 1  si le macro-chemin contient une
+frontière  comme  `IDF →  NOR`  qui  l'empêche  de générer  un  chemin
+complet, 0 sinon.
+
+* `fruitless_reason` chaîne de caractère rappelant la frontière posant
+problème. Si le programme trouve plusieurs frontières posant problème,
+elles  sont  concaténées dans  ce  champ,  séparées par  une  virgule.
+Inutile pour  les algorithmes de  recherche, mais cela fait  beau dans
+les pages web et dans les fichiers log.
+
+Dans la table `Borders` et la vue `Big_Borders`, on ajoute une colonne
+`fruitless` semblable à celle de `Paths`.
+
+Alimentation des nouvelles colonnes
+-----------------------------------
+
+Par défaut la colonne `fruitless` est initialisée à zéro. Le programme
+effectue une boucle sur chaque  ligne de la vue `Big_Borders` (maximum
+86  itérations pour  la carte  `fr1970`). Pour  chaque macro-frontière
+trouvée,   on   extrait   les  frontières   entre   départements   qui
+correspondent, puis on  vérifie si un chemin  complet pourra traverser
+chacune de  ces frontières départementale. En  cas d'impossibilité, on
+met à jour les macro-chemins contenant cette macro-frontière.
+
+![Du département 78 à la région NOR](78-NOR.png)
+
+Exemple, lorsque  l'on traite la  frontière `IDF →  NOR`. Il y  a deux
+frontières départementales, de `78` à `27` et de `95` à `27`. On tente
+de joindre les chemins régionaux de  la région `IDF` avec la frontière
+passant de  `78` à `27`  et avec  la frontière de  `95` à `27`.  Il en
+existe, donc pas  de mise à jour des macro-chemins.  Ensuite, on tente
+de joindre les chemins régionaux de `NOR` avec la frontière passant de
+`78` à  `27` et avec  la frontière  de `95` à  `27`. Là, on  ne trouve
+rien. Donc  on met à  jour les  macro-chemins qui contiennent  `%IDF →
+NOR%`.
+
+Variante : on ne  fait qu'une recherche, mais avec deux  mises à jour.
+On tente de  joindre les chemins régionaux de `NOR`  avec la frontière
+passant de  `78` à `27`  et avec  la frontière de  `95` à `27`.  On ne
+trouve  rien, donc  on met  à jour  les macro-chemins  qui contiennent
+`%IDF → NOR%`, ainsi que les macro-chemins contenant `%NOR → IDF%`.
+
+En fait, il  y aura quatre mises  à jour. Si un  macro-chemin est déjà
+marqué  comme  stérile  (`fruitless`),  le  programme  mettra  à  jour
+`fruitless_reason` en concaténant la chaîne `,  IDF → NOR` à la valeur
+courante de cette  colonne. Si un macro-chemin n'est  pas marqué comme
+stérile, le programme mettra à  jour `fruitless_reason` avec la chaîne
+`IDF → NOR` et la colonne `fruitless` à 1. Idem pour `NOR → IDF`.
+
+Génération des chemins complets
+-------------------------------
+
+Lors  de   la  génération  des   chemins  complets,  on   évitera  les
+macro-chemins stériles. On ne gagnera pas grand-chose avec les chemins
+commençant par  `IDF → NOR  → ...` mais  on gagnera beaucoup  avec les
+chemins finissant  par `...  → IDF  → NOR`.  Dans le  cas de  la carte
+`mah2`, on  peut espérer que  la génération  durera moins de  7 heures
+comme c'était le cas pour la deuxième tentative.
+
+En  revanche, cela  ne réglera  pas le  problème du  nombre énorme  de
+chemins complets pour `fr2015`. Et pour  la carte `fr1970`, au lieu de
+passer  24 heures  à traiter  2461 chemins  stériles et  générer aucun
+chemin complet avant interruption, le  programme passera _nn_ heures à
+traiter les  486 macro-chemins avec  les extrémités `NPC` et  `PAC` et
+générer des millions de chemins complets.
+
 
 LICENCE
 =======

@@ -1794,6 +1794,82 @@ there are 894  macro-paths in all. Even if we  discard the macro-paths
 which will  generate no  full paths, as  suggested above,  the running
 time would still be huge.
 
+Third Attempt
+=============
+
+The third attempt  aims to reduce the number of  macro-paths that will
+be  processed  in  `gener2.raku`.  This  will  deal  with  "functional
+dead-ends" as `PAC` in `fr1970` or `CEY` in `mah2`, but also the cases
+without dead-ends  as the `IDF →  NOR` border in map  `fr2015`. I will
+take this last example to illustrate the new case.
+
+In table `Paths` and view `Macro_Paths` we have two new columns:
+
+* `fruitless`, a numeric  flag. 1 if the macro-path  contains a border
+such as `IDF → NOR` which  prevents the generation of full Hamiltonian
+paths, 0 else.
+
+* `fruitless_reason`, a string storing  the border which triggered the
+problem.  If  a macro-path  is  deemed  fruitless because  of  several
+borders, all borders are stored in  this string, separated by a comma.
+This column is useless in the search algorithms, but it will give fine
+results in the web pages and in the log files.
+
+The column  `fruitless` is also added  to the `Borders` table  and the
+`Big_Borders` view.
+
+Feeding the New Columns
+-----------------------
+
+By default,  column `fruitless` is  initialised with 0.  The programme
+loops  over  the  `Big_Borders`  view  (max  86  iterations,  for  map
+`fr1970`).  For  each processed  border,  the  programme extracts  all
+"Small  Borders" corresponding  to this  macro-border. Then  it checks
+whether a full  path can cross these borders. In  case of failure, the
+macro-paths containing the macro-border are updated.
+
+![From 78 to NOR](78-NOR.png)
+
+Example, processing the `IDF → NOR`  border in map `fr2015`. The small
+borders are `78  → 27` and `95  → 27`. The programme  attempts to link
+regional Hamiltonian paths from region `IDF` with either the `78 → 27`
+border or  the `95 → 27`  border. Links exists, so  the programme does
+not  update  the macro-paths.  Then  the  programme attempts  to  link
+regional Hamiltonian paths from region `NOR` with either the `78 → 27`
+border or the `95  → 27` border. No links are  found, so the programme
+updates all macro-paths containing `%IDF → NOR%`.
+
+Variant,  with  only one  `select`  but  two `update`.  The  programme
+attempts to  link regional  Hamiltonian paths  from region  `NOR` with
+either the  `78 → 27`  border or  the `95 →  27` border. No  links are
+found, so  the programme  updates all  macro-paths containing  `%IDF →
+NOR%` as well as all macro-paths containing `%NOR → IDF%`.
+
+Actually,  there  will be  four  `update`  statements. Any  macro-path
+containing  `%IDF →  NOR%` and  already flagged  as fruitless  will be
+updated  by contatenating  `,  IDF →  NOR` to  the  existing value  of
+`fruitless_reason`. Any macro-path containing  `%IDF → NOR%` and still
+flagged as not fruitless will be updated by filling `fruitless_reason`
+with `IDF → NOR` and `fruitless` with 1. Same thing with `NOR → IDF`.
+
+Full Path Generation
+--------------------
+
+When generating  the full paths,  of course all  fruitless macro-paths
+are discarded. We will no gain much by discarding macro-paths starting
+with  `IDF  →  NOR  →  ...`  but there  will  be  huge  benefits  with
+macro-paths ending with `... → IDF  → NOR`. Likewise, with map `mah2`,
+the processing  will be  much faster  than the 7  hours of  the second
+attempt.
+
+On the  other hand, this new  optimisation will do nothing  to fix the
+huge number  of full Hamiltonian  paths generated when  processing map
+`fr2015`. For  map `fr1970`, instead  of spending 24 hours  to process
+1461 fruitless  macro-paths and generating  0 full paths  before being
+killed,  the  programme will  spend  _nn_  hours  to process  the  486
+fruitful macro-paths between `HPC` and  `PAC` and generate millions of
+full paths.
+
 License
 =======
 
