@@ -25,6 +25,7 @@ create table Borders (map       TEXT
                    , long       NUMERIC
                    , lat        NUMERIC
                    , color      TEXT
+                   , fruitless  INTEGER
                    );
 
 create table Paths   (map       TEXT
@@ -35,7 +36,9 @@ create table Paths   (map       TEXT
                    , from_code  TEXT
                    , to_code    TEXT
                    , cyclic     INTEGER
-                   , macro_num  INTEGER
+                   , macro_num         INTEGER
+                   , fruitless         INTEGER
+                   , fruitless_reason  TEXT
                    );
 
 create table Path_Relations (map        TEXT
@@ -64,8 +67,8 @@ create view Small_Areas (map, code, name, long, lat, color, upper, exterior)
             from         Areas
             where        level = 2;
 
-create view Big_Borders (map, from_code, to_code, long, lat)
-         as select       map, from_code, to_code, long, lat
+create view Big_Borders (map, from_code, to_code, long, lat, fruitless)
+         as select       map, from_code, to_code, long, lat, fruitless
             from         Borders
             where        level = 1;
 
@@ -82,8 +85,8 @@ create view Borders_With_Star (map, level, from_code, to_code, upper_from, upper
                   from   Areas
                   where level = 2;
 
-create view Macro_Paths   (map, num, path, from_code, to_code)
-         as select         map, num, path, from_code, to_code
+create view Macro_Paths   (map, num, path, from_code, to_code, fruitless, fruitless_reason)
+         as select         map, num, path, from_code, to_code, fruitless, fruitless_reason
             from           Paths
             where          level = 1;
 

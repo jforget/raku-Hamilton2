@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0)
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, fruitless, fruitless_reason)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0,         0,         '')
 SQL
 
 my $sth-neighbours = $dbh.prepare(q:to/SQL/);

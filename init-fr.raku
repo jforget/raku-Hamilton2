@@ -41,8 +41,8 @@ insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths, ex
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
-insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color)
-       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    )
+insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0)
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);
