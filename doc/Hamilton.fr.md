@@ -1906,21 +1906,23 @@ passant de  `78` à `27`  et avec  la frontière de  `95` à `27`.  Il en
 existe, donc pas  de mise à jour des macro-chemins.  Ensuite, on tente
 de joindre les chemins régionaux de `NOR` avec la frontière passant de
 `78` à  `27` et avec  la frontière  de `95` à  `27`. Là, on  ne trouve
-rien. Donc  on met à  jour les  macro-chemins qui contiennent  `%IDF →
-NOR%`.
+rien. Donc  on met à jour  les macro-chemins qui contiennent  `'%IDF →
+NOR%'`.
 
 Variante : on ne  fait qu'une recherche, mais avec deux  mises à jour.
 On tente de  joindre les chemins régionaux de `NOR`  avec la frontière
 passant de  `78` à `27`  et avec  la frontière de  `95` à `27`.  On ne
 trouve  rien, donc  on met  à jour  les macro-chemins  qui contiennent
-`%IDF → NOR%`, ainsi que les macro-chemins contenant `%NOR → IDF%`.
+`'%IDF  →  NOR%'`, ainsi  que  les  macro-chemins contenant  `'%NOR  →
+IDF%'`.
 
 En fait, il  y aura quatre mises  à jour. Si un  macro-chemin est déjà
 marqué  comme  stérile  (`fruitless`),  le  programme  mettra  à  jour
-`fruitless_reason` en concaténant la chaîne `,  IDF → NOR` à la valeur
-courante de cette  colonne. Si un macro-chemin n'est  pas marqué comme
-stérile, le programme mettra à  jour `fruitless_reason` avec la chaîne
-`IDF → NOR` et la colonne `fruitless` à 1. Idem pour `NOR → IDF`.
+`fruitless_reason`  en concaténant  la chaîne  `',  IDF →  NOR'` à  la
+valeur courante de cette colonne.  Si un macro-chemin n'est pas marqué
+comme stérile, le  programme mettra à jour  `fruitless_reason` avec la
+chaîne `'IDF → NOR'`  et la colonne `fruitless` à 1.  Idem pour `NOR →
+IDF`.
 
 Génération des chemins complets
 -------------------------------

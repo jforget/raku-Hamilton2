@@ -1837,20 +1837,21 @@ border or  the `95 → 27`  border. Links exists, so  the programme does
 not  update  the macro-paths.  Then  the  programme attempts  to  link
 regional Hamiltonian paths from region `NOR` with either the `78 → 27`
 border or the `95  → 27` border. No links are  found, so the programme
-updates all macro-paths containing `%IDF → NOR%`.
+updates all macro-paths containing `'%IDF → NOR%'`.
 
 Variant,  with  only one  `select`  but  two `update`.  The  programme
 attempts to  link regional  Hamiltonian paths  from region  `NOR` with
 either the  `78 → 27`  border or  the `95 →  27` border. No  links are
-found, so  the programme  updates all  macro-paths containing  `%IDF →
-NOR%` as well as all macro-paths containing `%NOR → IDF%`.
+found, so  the programme updates  all macro-paths containing  `'%IDF →
+NOR%'` as well as all macro-paths containing `'%NOR → IDF%'`.
 
 Actually,  there  will be  four  `update`  statements. Any  macro-path
-containing  `%IDF →  NOR%` and  already flagged  as fruitless  will be
-updated  by contatenating  `,  IDF →  NOR` to  the  existing value  of
-`fruitless_reason`. Any macro-path containing  `%IDF → NOR%` and still
-flagged as not fruitless will be updated by filling `fruitless_reason`
-with `IDF → NOR` and `fruitless` with 1. Same thing with `NOR → IDF`.
+containing `'%IDF  → NOR%'` and  already flagged as fruitless  will be
+updated by  contatenating `',  IDF →  NOR'` to  the existing  value of
+`fruitless_reason`.  Any macro-path  containing  `'%IDF  → NOR%'`  and
+still  flagged   as  not   fruitless  will   be  updated   by  filling
+`fruitless_reason` with  `'IDF →  NOR'` and  `fruitless` with  1. Same
+thing with `NOR → IDF`.
 
 Full Path Generation
 --------------------
