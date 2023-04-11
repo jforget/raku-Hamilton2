@@ -37,13 +37,20 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-paths').content($links);
 
-  if @full-links.elems eq 0 {
-    $at.at('p.list-of-full-paths')».remove;
+  if %path<fruitless> == 1 {
+    $at('span.fruitless-reason')».content(%path<fruitless_reason>);
+    $at('p.list-of-full-paths'      )».remove;
+    $at('p.empty-list-of-full-paths')».remove;
+  }
+  elsif @full-links.elems == 0 {
+    $at('p.fruitless-path'    )».remove;
+    $at('p.list-of-full-paths')».remove;
   }
   else {
     my $links = join ' ', @full-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
     $at.at('p.list-of-full-paths').content($links);
-    $at.at('p.empty-list-of-full-paths')».remove;
+    $at('p.fruitless-path'          )».remove;
+    $at('p.empty-list-of-full-paths')».remove;
   }
 }
 
