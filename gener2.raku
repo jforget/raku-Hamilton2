@@ -31,6 +31,49 @@ insert into Path_Relations (map, full_num, area, region_num)
        values              (?,   ?,        ?,    ?)
 SQL
 
+my $upd-fruitless-b0 = $dbh.prepare(q:to/SQL/);
+update Borders
+set fruitless = 0
+where map       = ?
+and   level     = 1
+SQL
+
+my $upd-fruitless-b1 = $dbh.prepare(q:to/SQL/);
+update Borders
+set fruitless = 1
+where map       = ?
+and   level     = 1
+and   from_code = ?
+and   to_code   = ?
+SQL
+
+my $upd-fruitless-p0 = $dbh.prepare(q:to/SQL/);
+update Paths
+set fruitless        = 0
+  , fruitless_reason = ''
+where map       = ?
+and   level     = 1
+SQL
+
+my $upd-fruitless-p1 = $dbh.prepare(q:to/SQL/);
+update Paths
+set fruitless        = 1
+  , fruitless_reason = ?
+where map       = ?
+and   level     = 1
+and   fruitless = 0
+and   path      like ?
+SQL
+
+my $upd-fruitless-p2 = $dbh.prepare(q:to/SQL/);
+update Paths
+set fruitless_reason = fruitless_reason || ?
+where map       = ?
+and   level     = 1
+and   fruitless = 1
+and   path      like ?
+SQL
+
 my $extract-region-paths  = $dbh.prepare(q:to/SQL/);
 select B.num     as num
      , B.path    as path
@@ -93,6 +136,44 @@ sub MAIN (
   $dbh.execute("commit");
   my Int $path-number = 0;
 
+  # fruitless macro-paths
+  $upd-fruitless-p0.execute($map);
+  $upd-fruitless-b0.execute($map);
+  my $extract-fruitless = $dbh.prepare(q:to/SQL/);
+  select B.map, B.upper_from as upper_from, B.upper_to as upper_to, count(P.map) as nb
+  from Small_Borders B
+  left join Region_Paths P
+    on  P.map       = B.map
+    and P.from_code = B.to_code
+  where B.upper_from != B.upper_to
+  and B.map = ?
+  group by B.map, B.upper_from, B.upper_to
+  SQL
+  for $extract-fruitless.execute($map).allrows(:array-of-hash) -> $border {
+    if $border<nb> == 0 {
+      my Str $border-str = "$border<upper_from> → $border<upper_to>";
+      $upd-fruitless-p2.execute(", " ~ $border-str, $map, '%' ~  $border-str ~ '%');
+      $upd-fruitless-p1.execute(       $border-str, $map, '%' ~  $border-str ~ '%');
+      $upd-fruitless-b1.execute($map, $border<upper_from>, $border<upper_to>);
+
+      $sto-mesg.execute($map, DateTime.now.Str, 'FUL4', '', 0, $border-str);
+
+      $border-str = "$border<upper_to> → $border<upper_from>";
+      $upd-fruitless-p2.execute(", " ~ $border-str, $map, '%' ~  $border-str ~ '%');
+      $upd-fruitless-p1.execute(       $border-str, $map, '%' ~  $border-str ~ '%');
+      $upd-fruitless-b1.execute($map, $border<upper_to>, $border<upper_from>);
+    }
+  }
+  my $counting = $dbh.prepare(q:to/SQL/);
+  select count(*) as nb
+  from   Macro_Paths
+  where  map       = ?
+  and    fruitless = 1
+  SQL
+  my Int @nb;
+  @nb = $counting.execute($map).row();
+  $sto-mesg.execute($map, DateTime.now.Str, 'FUL5', '', @nb[0], '');
+
   my Int $partial-paths-nb   =    0;
   my Int $partial-threshold  =    0;
   my Int $partial-increment  = 1000;
@@ -137,7 +218,7 @@ sub MAIN (
       #say $old-reg , "//", $old-path;
       if %old<path> ~~ / '→→' .* '→' / {
 
-	# Finding the next region after the soon-replaced region
+        # Finding the next region after the soon-replaced region
         %old<path> ~~ / '→→' .*? '→' \s+ (\S*) /;
         my Str $next-reg = $0.Str;
 
