@@ -1924,6 +1924,13 @@ comme stérile, le  programme mettra à jour  `fruitless_reason` avec la
 chaîne `'IDF → NOR'`  et la colonne `fruitless` à 1.  Idem pour `NOR →
 IDF`.
 
+Pour  alimenter le  champ `fruitless`  dans la  table `Borders`  et la
+table `Paths`, il  est nécessaire d'avoir créé  tous les macro-chemins
+et tous les chemins régionaux. Comme le programme `gener1.raku` permet
+de générer ces  divers chemins en plusieurs  étapes, l'alimentation de
+`fruitless` se fera  au début de `gener2.raku`, au moment  où tous les
+chemins nécessaires auront été générés.
+
 Génération des chemins complets
 -------------------------------
 
@@ -1941,6 +1948,11 @@ chemin complet avant interruption, le  programme passera _nn_ heures à
 traiter les  486 macro-chemins avec  les extrémités `NPC` et  `PAC` et
 générer des millions de chemins complets.
 
+Cette optimisation ne  rend pas caduque l'optimisation  de la deuxième
+tentative.  Les   deux  optimisations   sont  utiles  et   elles  sont
+compatibles entre elles. L'optimisation  `Exit_Borders` sert à réduire
+le  nombre de  chemins régionaux  traités, l'optimisation  `fruitless`
+sert à réduire le nombre de macro-chemins traités.
 
 LICENCE
 =======

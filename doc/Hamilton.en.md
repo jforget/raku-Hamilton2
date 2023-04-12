@@ -1853,6 +1853,12 @@ still  flagged   as  not   fruitless  will   be  updated   by  filling
 `fruitless_reason` with  `'IDF →  NOR'` and  `fruitless` with  1. Same
 thing with `NOR → IDF`.
 
+Filling the `fruitless`  column requires that all  macro-paths and all
+regional paths are generated. Since the `gener1.raku` programme allows
+the  progressive  generation of  paths,  step  by step,  region  after
+region,  the `fruitless`  column will  be filled  at the  beginning of
+`gener2.raku`, when all necessary paths are generated.
+
 Full Path Generation
 --------------------
 
@@ -1870,6 +1876,12 @@ huge number  of full Hamiltonian  paths generated when  processing map
 killed,  the  programme will  spend  _nn_  hours  to process  the  486
 fruitful macro-paths between `HPC` and  `PAC` and generate millions of
 full paths.
+
+This optimisation does  not mean that the  second attempt optimisation
+is obsolete.  Both optimisations  are useful  and they  are compatible
+with each other. The `Exit_Borders` optimisation reduces the number of
+regional  paths processed,  the `fruitless`  optimisation reduces  the
+number of macro-paths processed.
 
 License
 =======
