@@ -1874,8 +1874,8 @@ huge number  of full Hamiltonian  paths generated when  processing map
 `fr2015`. For  map `fr1970`, instead  of spending 24 hours  to process
 1461 fruitless  macro-paths and generating  0 full paths  before being
 killed,  the  programme will  spend  _nn_  hours  to process  the  486
-fruitful macro-paths between `HPC` and  `PAC` and generate millions of
-full paths.
+fruitful macro-paths between dead-end  `HPC` and pseudo-dead-end `PAC`
+and generate millions of full paths.
 
 This optimisation does  not mean that the  second attempt optimisation
 is obsolete.  Both optimisations  are useful  and they  are compatible

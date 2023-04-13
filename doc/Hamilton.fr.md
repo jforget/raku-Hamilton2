@@ -1945,8 +1945,8 @@ En  revanche, cela  ne réglera  pas le  problème du  nombre énorme  de
 chemins complets pour `fr2015`. Et pour  la carte `fr1970`, au lieu de
 passer  24 heures  à traiter  2461 chemins  stériles et  générer aucun
 chemin complet avant interruption, le  programme passera _nn_ heures à
-traiter les  486 macro-chemins avec  les extrémités `NPC` et  `PAC` et
-générer des millions de chemins complets.
+traiter   les  486   macro-chemins   entre  l'impasse   `NPC`  et   la
+quasi-impasse `PAC` et générer des millions de chemins complets.
 
 Cette optimisation ne  rend pas caduque l'optimisation  de la deuxième
 tentative.  Les   deux  optimisations   sont  utiles  et   elles  sont

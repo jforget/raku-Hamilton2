@@ -157,6 +157,7 @@ sub MAIN (
       $upd-fruitless-b1.execute($map, $border<upper_from>, $border<upper_to>);
 
       $sto-mesg.execute($map, DateTime.now.Str, 'FUL4', '', 0, $border-str);
+      say "Fruitless border: $border-str";
 
       $border-str = "$border<upper_to> → $border<upper_from>";
       $upd-fruitless-p2.execute(", " ~ $border-str, $map, '%' ~  $border-str ~ '%');
@@ -173,6 +174,7 @@ sub MAIN (
   my Int @nb;
   @nb = $counting.execute($map).row();
   $sto-mesg.execute($map, DateTime.now.Str, 'FUL5', '', @nb[0], '');
+  say "Fruitless macro-paths: @nb[0]";
 
   my Int $partial-paths-nb   =    0;
   my Int $partial-threshold  =    0;
@@ -181,7 +183,7 @@ sub MAIN (
   my Int $complete-threshold =    0;
   my Int $complete-increment = commit-interval();
   my Int $max-to-do          = 0;
-  my Int $num;
+  my Int $num                = 0;
   my Int $to-do-nb;
   sub aff-stat {
     say "{DateTime.now.hh-mm-ss} macro number $num / $max-macro, complete paths $full-path-number, partial paths $partial-paths-nb (to-do list $to-do-nb / $max-to-do)";
@@ -191,7 +193,8 @@ sub MAIN (
   my $list-macro = $dbh.prepare(q:to/SQL/);
   select num, path
   from   Macro_Paths
-  where  map = ?
+  where  map       = ?
+  and    fruitless = 0
   order by num
   SQL
   for $list-macro.execute($map).allrows(:array-of-hash) -> $macro-path {
