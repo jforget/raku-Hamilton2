@@ -1883,6 +1883,37 @@ with each other. The `Exit_Borders` optimisation reduces the number of
 regional  paths processed,  the `fruitless`  optimisation reduces  the
 number of macro-paths processed.
 
+Result of the third attempt
+---------------------------
+
+As seen with the second attempt, there  are a few minor changes in the
+first step, nothing of any significance.
+
+For  maps  `frreg`   and  `mah1`,  no  macro-paths   were  flagged  as
+`fruitless`, so the  running time was similar between  the second step
+of the  second attempt and the  second step of the  third attempt: 1.5
+min for `frreg` and 4 min for `mah1`.
+
+For `brit1`, there are only two macro-paths, both of which are flagged
+as  `fruitless`. The  second  step is  quasi  instantaneous. This  was
+already the case for the second step of the second attempt.
+
+I also ran the second step for map `brit0`, to check what happens when
+a  macro-path is  flagged as  `fruitless` because  of two  `fruitless`
+macro-borders instead of just one `fruitless` macro-border.
+
+Map `brit2` has  12 macro-paths, only 2 of which  generate full paths.
+For  the other  10  macro-paths,  8 are  flagged  `fruitless`. So  the
+generation programme runs in vain for 2 macro-paths instead of 10. The
+total processing time is reduced from 7 minutes to 2 minutes.
+
+The  same happens  on a  bigger scale  with map  `mah2`. There  are 56
+macro-paths,  40  of  which  do   not  generate  any  full  paths.  32
+macro-paths are flagged as  `fruitless`. The generation programme runs
+in vain for 8 macro-paths and generates full paths for 16 macro-paths.
+The  total processing  time  is reduced  from  7 hours  to  1 hour  40
+minutes. A big win and a welcome one.
+
 License
 =======
 

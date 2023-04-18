@@ -1894,7 +1894,7 @@ effectue une boucle sur chaque  ligne de la vue `Big_Borders` (maximum
 86  itérations pour  la carte  `fr1970`). Pour  chaque macro-frontière
 trouvée,   on   extrait   les  frontières   entre   départements   qui
 correspondent, puis on  vérifie si un chemin  complet pourra traverser
-chacune de  ces frontières départementale. En  cas d'impossibilité, on
+chacune de ces frontières  départementales. En cas d'impossibilité, on
 met à jour les macro-chemins contenant cette macro-frontière.
 
 ![Du département 78 à la région NOR](78-NOR.png)
@@ -1953,6 +1953,41 @@ tentative.  Les   deux  optimisations   sont  utiles  et   elles  sont
 compatibles entre elles. L'optimisation  `Exit_Borders` sert à réduire
 le  nombre de  chemins régionaux  traités, l'optimisation  `fruitless`
 sert à réduire le nombre de macro-chemins traités.
+
+Résultat de la troisième tentative
+----------------------------------
+
+Comme  cela a  été vu  pour  la deuxième  tentative, il  y a  quelques
+changements pour la première étape, mais rien de significatif.
+
+Pour les  cartes `frreg` et  `mah1`, aucun macro-chemin n'a  été coché
+`fruitless`, donc la  seconde étape a duré à peu  près le même temps :
+1,5 min pour `frreg` et 3,5 à 4 min pour `mah1`.
+
+Pour la carte `brit1`, il n'y a que deux macro-chemins en tout et tous
+deux sont stériles.  La seconde étape est donc  instantanée pour cette
+carte,  tout  comme  la  seconde   étape  de  la  deuxième  tentative,
+d'ailleurs.
+
+J'ai également  lancé la  seconde étape pour  la carte  `brit0`, juste
+pour  vérifier  ce qui  arrive  à  un  macro-chemin pour  lequel  deux
+macro-frontières  et  non  pas   une  seule  sont  déclarées  stériles
+(`fruitless`).
+
+Pour  la carte  `brit2`, il  y a  12 macro-chemins,  dont seulement  2
+permettent de générer des chemins  complets. Pour les 10 macro-chemins
+restants,  8  ont  été  cochés   `fruitless`,  donc  le  programme  de
+génération  a   quand  même   « tourné  dans   le  vide »   pour  deux
+macro-chemins. Le  temps de traitement a  été réduit de 7  minutes à 2
+minutes.
+
+C'est la même chose, à une autre échelle, pour la carte `mah2`. Il y a
+56  macro-chemins, dont  40 ne  donnent pas  lieu à  la génération  de
+chemins complets. 32 macro-chemins ont été cochés `fruitless`. Donc le
+programme de génération a « tourné dans le vide » pour 8 macro-chemins
+et il  a généré des chemins  complets pour 16 macro-chemins.  Le temps
+d'exécution  est de  1  h 40  min  au lieu  de 7  h  pour la  deuxième
+tentative. Le gain est appréciable.
 
 LICENCE
 =======
