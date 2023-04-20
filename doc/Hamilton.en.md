@@ -1914,6 +1914,31 @@ in vain for 8 macro-paths and generates full paths for 16 macro-paths.
 The  total processing  time  is reduced  from  7 hours  to  1 hour  40
 minutes. A big win and a welcome one.
 
+For map `fr1970`, there is also  a big win. The first 3200 macro-paths
+are kind-of processed  in a mere second, while this  would have lasted
+more  than 24  hours in  the previous  attempt. Then,  in the  next 20
+minutes or  so, the programme  processes macro-paths numbered  3201 to
+3293 (35 with `fruitless` equal to  0 and 58 with `fruitless` equal to
+1)  without any  full  path generated.  Then  the programme  processes
+macro-path 3294  and generates more  than 177000 full  paths in 2  h 9
+min, before I kill the process.
+
+On the  other hand,  there is  a bit slowdown  with map  `fr2015`. The
+first macro-path, which  has `fruitless` equal to  zero, but generates
+no  full path,  has  been processed  in  4 hours,  while  it has  been
+processed in 1 h 30 min in the previous attempt. The second macro-path
+has generated  1 037 600 full paths in  about 4 hours before  I killed
+the process.  In the previous attempt,  the same number of  full paths
+has been generated in 3 h 22 min only.
+
+Fourth Attempt
+==============
+
+The fourth attempt aims at reducing the combinatory explosion, where a
+single macro-path in maps `fr1970` and `fr2015` can generate more than
+1 million full paths.
+
+
 License
 =======
 

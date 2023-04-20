@@ -157,7 +157,7 @@ sub MAIN (
       $upd-fruitless-b1.execute($map, $border<upper_from>, $border<upper_to>);
 
       $sto-mesg.execute($map, DateTime.now.Str, 'FUL4', '', 0, $border-str);
-      say "Fruitless border: $border-str";
+      say "{DateTime.now.hh-mm-ss} Fruitless border: $border-str";
 
       $border-str = "$border<upper_to> → $border<upper_from>";
       $upd-fruitless-p2.execute(", " ~ $border-str, $map, '%' ~  $border-str ~ '%');
@@ -174,7 +174,7 @@ sub MAIN (
   my Int @nb;
   @nb = $counting.execute($map).row();
   $sto-mesg.execute($map, DateTime.now.Str, 'FUL5', '', @nb[0], '');
-  say "Fruitless macro-paths: @nb[0]";
+  say "{DateTime.now.hh-mm-ss} Fruitless macro-paths: @nb[0]";
 
   my Int $partial-paths-nb   =    0;
   my Int $partial-threshold  =    0;

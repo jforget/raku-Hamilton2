@@ -1989,6 +1989,30 @@ et il  a généré des chemins  complets pour 16 macro-chemins.  Le temps
 d'exécution  est de  1  h 40  min  au lieu  de 7  h  pour la  deuxième
 tentative. Le gain est appréciable.
 
+Pour la  carte `fr1970`,  le gain est  appréciable. Les  3200 premiers
+macro-chemins  sont « traités »  en  une seconde,  alors qu'il  aurait
+fallu plus de  24 heures avec la précédente version.  Puis il faut une
+vingtaine de  minutes pour traiter  les macro-chemins 3201 à  3293 (35
+avec `fruitless`  à zéro,  58 avec  `fruitless` à  1) sans  générer de
+chemin complet. Enfin,  le programme traite le  macro-chemin 3294 pour
+lequel il génère plus  de 177000 chemins complets en 2  h 9 min, avant
+que je l'interrompe.
+
+Pour  la  carte  `fr2015`,  on  note  un  ralentissement.  Le  premier
+macro-chemin, qui ne génère aucun chemin  complet, a été traité en 4 h
+lors de cette tentative,  alors qu'il a été traité en 1  h 30 min lors
+de la  tentative précédente.  Également, au moment  où j'ai  arrêté le
+programme, le programme  avait généré 1 037 600 chemins  complets en 4
+heures, alors que lors de la  tentative précédente il avait suffi de 3
+h 22 min pour générer le même nombre de chemins complets.
+
+Quatrième tentative
+===================
+
+Le but de la quatrième tentative est d'éviter l'explosion combinatoire
+qui fait  que pour un  macro-chemin de `fr1970`  ou de `fr2015`,  on a
+plus d'un million de chemins complets.
+
 LICENCE
 =======
 
