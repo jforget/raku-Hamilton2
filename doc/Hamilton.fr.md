@@ -139,13 +139,14 @@ mention entre parenthèses dans les pages web, rien de plus.
 
 ![Bretagne](Bretagne.png)
 
-Il est possible de considérer que le cycle `22 → 29 → 56 → 35 → 22`,
-le cycle `35 → 22 → 29 → 56  → 35` et
-le cycle `56 → 35 → 22 → 29  → 56` sont la même chose que le cycle `29
-→ 56 →  35 → 22 → 29`, représenté  d'une façon légèrement différente.
-Dans mon projet,  il y aura quatre enregistrements  différents pour ce
-cycle dans la table des chemins, `29 → 56  → 35 → 22`, `22 → 29 → 56 →
-35`, `35 → 22 → 29 → 56` et `56 → 35 → 22 → 29`.
+Il est possible de  considérer que le cycle `22 → 29 →  56 → 35 → 22`,
+le cycle `35 → 22 → 29 → 56 → 35` et le cycle `56 → 35 → 22 → 29 → 56`
+sont la même chose  que le cycle `29 → 56 → 35  → 22 → 29`, représenté
+d'une façon légèrement  différente. Dans mon projet, il  y aura quatre
+enregistrements différents  pour ce cycle  dans la table  des chemins,
+`29 → 56 → 35 → 22`, `22 → 29 → 56 → 35`, `35 → 22 → 29 → 56` et `56 →
+35 → 22 → 29`, plus  quatre autres enregistrements pour le parcours en
+sens inverse.
 
 Base de données
 ===============
@@ -224,7 +225,8 @@ Autres champs :
 * `upper_to`  le code du supérieur hiérarchique de `to`,
 * `long`, une longitude facultative,
 * `lat`, une latitude facultative,
-* `color`.
+* `color`,
+* `fruitless`.
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
 dans  la représentation  graphique,  l'arête sera  représentée par  un
@@ -253,6 +255,9 @@ intervertissant `from_code` et `to_code`.
 Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
 
+L'utilité du champ `fruitless` sera expliquée dans la
+[troisième version du logiciel}(#user-content-troisième-tentative).
+
 Paths
 -----
 
@@ -272,7 +277,9 @@ Les autres champs sont :
 * `from_code`, code de la zone de départ du chemin,
 * `to_code`, code de la zone d'arrivée du chemin,
 * `cyclic`, indiquant si le chemin est cyclique,
-* `macro_num`, numéro éventuel du macro-chemin associé.
+* `macro_num`, numéro éventuel du macro-chemin associé,
+* `fruitless`,
+* `fruitless_reason`.
 
 Le champ  `path` contient les  codes des départements (ou  des régions
 pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
@@ -307,6 +314,9 @@ mais on ne le  fait pas. Par convention, les chemins  à une seule zone
 et zéro  frontière sont cycliques (chemin  pour la région `IDF`  de la
 carte `frreg`), tout  comme les chemins à deux zones  et une frontière
 (chemins pour la région `NOR` de la carte `frreg`).
+
+L'utilité des champs `fruitless` et `fruitless_reason` sera expliquée dans la
+[troisième version du logiciel}(#user-content-troisième-tentative).
 
 La relation  entre les macro-chemins  et les chemins complets  est une
 relation 0..n ↔  1..1. Un macro-chemin permet de générer  un nombre _a

@@ -132,12 +132,12 @@ mention in the web pages, nothing more.
 
 ![Bretagne](Bretagne.png)
 
-You may consider that the cycle `22 → 29 → 56 → 35 → 22`, the cycle
-`35 → 22 →  29 → 56 → 35` and the cycle
-`56 → 35 →  22 → 29 → 56` are the  same as cycle `29 → 56 →  35 → 22 →
-29`. In my project, there will be four different paths `29 → 56 → 35 →
-22`, `22 → 29 → 56 → 35`, `35 → 22  → 29 → 56` and `56 → 35 → 22 → 29`
-for this cycle.
+You may consider  that the cycle `22 →  29 → 56 → 35 →  22`, the cycle
+`35 → 22 →  29 → 56 → 35` and the  cycle `56 → 35 → 22 →  29 → 56` are
+the same as cycle `29 → 56 → 35  → 22 → 29`. In my project, there will
+be four different paths `29 → 56 → 35  → 22`, `22 → 29 → 56 → 35`, `35
+→ 22  → 29 → 56`  and `56 →  35 → 22 →  29` for this cycle,  plus four
+other, running along the cycle in the opposite direction.
 
 
 Database
@@ -216,7 +216,8 @@ Other fields:
 * `upper_to` similar,
 * `long`, an optional longitude,
 * `lat`, an optional latitude,
-* `color`.
+* `color`,
+* `fruitless`.
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -243,6 +244,9 @@ switching `from_code` with `to_code`.
 As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 `Small_Borders`.
 
+The use and meaning of `fruitless` will be explained in the
+[third version of the software](#user-content-third-attempt).
+
 Paths
 -----
 
@@ -262,7 +266,9 @@ Other fields are:
 * `from_code` the code of the area where the path begins,
 * `to_code` the code of the area where the path ends,
 * `cyclic` to show if the path is cyclic,
-* `macro_num` the number of the associated macro path, if there is one.
+* `macro_num` the number of the associated macro path, if there is one,
+* `fruitless`,
+* `fruitless_reason`.
 
 The `path`  field contains the  department codes (or region  codes for
 macro-paths)  separated   by  arrows  `→`.   In  the  1970   map,  the
@@ -296,6 +302,9 @@ convention, paths  with 1 region  and 0  borders are cyclic  (e.g. the
 single path in  region `IDF` in map `frreg`) and  paths with 2 regions
 and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
 `frreg`).
+
+The use and meaning of `fruitless` and `fruitless_reason` will be explained in the
+[third version of the software](#user-content-third-attempt).
 
 The  relation between  macro-paths and  full paths  is a  0..n ↔  1..1
 relation. A macro-path  can generate an unknown number  of full paths,
@@ -1918,8 +1927,8 @@ For map `fr1970`, there is also  a big win. The first 3200 macro-paths
 are kind-of processed  in a mere second, while this  would have lasted
 more  than 24  hours in  the previous  attempt. Then,  in the  next 20
 minutes or  so, the programme  processes macro-paths numbered  3201 to
-3293 (35 with `fruitless` equal to  0 and 58 with `fruitless` equal to
-1)  without any  full  path generated.  Then  the programme  processes
+3293 (35 with `fruitless` equal to  0 and 58 with `fruitless` equal
+to 1)  without any full  path generated. Then the  programme processes
 macro-path 3294  and generates more  than 177000 full  paths in 2  h 9
 min, before I kill the process.
 
