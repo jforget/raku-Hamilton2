@@ -256,7 +256,7 @@ Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
 
 L'utilité du champ `fruitless` sera expliquée dans la
-[troisième version du logiciel}(#user-content-troisième-tentative).
+[troisième version du logiciel](#user-content-troisième-tentative).
 
 Paths
 -----
@@ -316,7 +316,7 @@ carte `frreg`), tout  comme les chemins à deux zones  et une frontière
 (chemins pour la région `NOR` de la carte `frreg`).
 
 L'utilité des champs `fruitless` et `fruitless_reason` sera expliquée dans la
-[troisième version du logiciel}(#user-content-troisième-tentative).
+[troisième version du logiciel](#user-content-troisième-tentative).
 
 La relation  entre les macro-chemins  et les chemins complets  est une
 relation 0..n ↔  1..1. Un macro-chemin permet de générer  un nombre _a
