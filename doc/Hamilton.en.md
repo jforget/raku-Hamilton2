@@ -1947,6 +1947,60 @@ The fourth attempt aims at reducing the combinatory explosion, where a
 single macro-path in maps `fr1970` and `fr2015` can generate more than
 1 million full paths.
 
+![Areas IDF and CEN](IDF-CEN.png)
+
+To explain the method, I will use map `fr1970`, while disregarding the
+case of  dead-end `NPC` and  the case  of quasi-dead-end `PAC`,  and I
+will  pretend to  use  a  FIFO approach  instead  of  the LIFO  method
+currently implemented in `gener2.raku`. Let  us suppose we deal with a
+macro-path starting with `* →→ HNO →  IDF → CEN → PDL`. The `HNO` area
+is very simple, so the first generated partial path is `* → 76 → 27 →→
+IDF → CEN`. Then, the programme feeds the `to-do` list with:
+
+* 19 partial paths `* → 76 → 27 → 78 → xxx → 91 →→ CEN → PDL`
+* 19 partial paths `* → 76 → 27 → 95 → xxx → 78 →→ CEN → PDL`
+* 10 partial paths `* → 76 → 27 → 95 → xxx → 91 →→ CEN → PDL`
+
+For each one of the 19 partial  paths from `78` to `91`, the programme
+feeds the `to-do` liste with:
+
+* 1 partial path `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 41 →→ PDL`
+* 4 partial paths `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 37 →→ PDL`
+* 1 partial path `* → 76 → 27 → 78 → xxx → 91 → 45 → yyy → 28 →→ PDL`
+* 1 partial path `* → 76 → 27 → 78 → xxx → 91 → 45 → yyy → 37 →→ PDL`
+
+For each one of the 19 partial  paths from `95` to `78`, the programme
+feeds the `to-do` liste with:
+
+* 1 partial path `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 41 →→ PDL`
+* 4 partial paths `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 37 →→ PDL`
+
+For each one of the 10 partial  paths from `95` to `91`, the programme
+feeds the `to-do` liste with:
+
+* 1 partial path `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 41 →→ PDL`
+* 4 partial paths `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 37 →→ PDL`
+* 1 partial path `* → 76 → 27 → 95 → xxx → 91 → 45 → yyy → 28 →→ PDL`
+* 1 partial path `* → 76 → 27 → 95 → xxx → 91 → 45 → yyy → 37 →→ PDL`
+
+```
+select max(area), from_code, to_code, count(*)
+from Region_Paths
+where map = 'fr1970'
+and   from_code in ('78','95','28','45')
+and   to_code   in ('78','91','28','41','37')
+group by  from_code, to_code
+```
+
+This is  how the combinatory explosion  occurs. As you can  see, if we
+could regroup together  all 19 regional paths  `78 → xxx →  91` into a
+single  generic regional  path, if  we could  regroup all  19 regional
+paths `95 → xxx → 78` into  another generic regional path, if we could
+regroup all 10  regional paths `95 →  xxx → 91` into  a third regional
+path and if we could regroup all 4 regional paths `28 → yyy → 37` into
+a fourth regional path, the combinatory increase would no longer be an
+explosive one.
+
 
 License
 =======

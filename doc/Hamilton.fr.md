@@ -2023,6 +2023,61 @@ Le but de la quatrième tentative est d'éviter l'explosion combinatoire
 qui fait  que pour un  macro-chemin de `fr1970`  ou de `fr2015`,  on a
 plus d'un million de chemins complets.
 
+![Régions IDF et CEN](IDF-CEN.png)
+
+Pour  illustrer la  méthode,  je  vais prendre  la  carte `fr1970`  en
+ignorant le problème  de l'impasse `NPC` et de  la quasi-impasse `PAC`
+et  en  adoptant  une  démarche  FIFO au  lieu  de  la  démarche  LIFO
+implémentée   dans  `gener2.raku`.   Nous  traitons   un  macro-chemin
+commençant par `* →→ HNO → IDF → CEN → PDL`. La région Haute-Normandie
+étant très simple, le programme convertit ce chemin partiel en `* → 76
+→ 27  →→ IDF → CEN`.  Ensuite, le programme alimente  la liste `to-do`
+avec :
+
+* 19 chemins partiels `* → 76 → 27 → 78 → xxx → 91 →→ CEN → PDL`
+* 19 chemins partiels `* → 76 → 27 → 95 → xxx → 78 →→ CEN → PDL`
+* 10 chemins partiels `* → 76 → 27 → 95 → xxx → 91 →→ CEN → PDL`
+
+Pour chacun des  19 chemins partiels venant de `78`  et aboutissant en
+`91`, le programme insère dans la liste `to-do` :
+
+* 1 chemin partiel `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 41 →→ PDL`
+* 4 chemins partiels `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 37 →→ PDL`
+* 1 chemin partiel `* → 76 → 27 → 78 → xxx → 91 → 45 → yyy → 28 →→ PDL`
+* 1 chemin partiel `* → 76 → 27 → 78 → xxx → 91 → 45 → yyy → 37 →→ PDL`
+
+Pour chacun des  19 chemins partiels venant de `95`  et aboutissant en
+`78`, le programme insère dans la liste `to-do` :
+
+* 1 chemin partiel `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 41 →→ PDL`
+* 4 chemins partiels `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 37 →→ PDL`
+
+Pour chacun des  10 chemins partiels venant de `95`  et aboutissant en
+`91`, le programme insère dans la liste `to-do` :
+
+* 1 chemin partiel `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 41 →→ PDL`
+* 4 chemins partiels `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 37 →→ PDL`
+* 1 chemin partiel `* → 76 → 27 → 95 → xxx → 91 → 45 → yyy → 28 →→ PDL`
+* 1 chemin partiel `* → 76 → 27 → 95 → xxx → 91 → 45 → yyy → 37 →→ PDL`
+
+```
+select max(area), from_code, to_code, count(*)
+from Region_Paths
+where map = 'fr1970'
+and   from_code in ('78','95','28','45')
+and   to_code   in ('78','91','28','41','37')
+group by  from_code, to_code
+```
+
+On voit  ainsi comment  se produit  l'explosion combinatoire.  On voit
+également que si l'on assimilait ensemble les 19 chemins régionaux `78
+→ xxx → 91` dans un premier chemin générique, les 19 chemins régionaux
+`95 →  xxx → 78`  dans un deuxième  chemin régional générique,  les 10
+chemins régionaux  `95 → xxx →  91` dans un troisième  chemin régional
+générique et les 4 chemins régionaux `28 → yyy → 37` dans un quatrième
+chemin régional  générique, la croissance combinatoire  ne serait plus
+explosive.
+
 LICENCE
 =======
 
