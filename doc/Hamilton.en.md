@@ -2029,7 +2029,7 @@ In the records for the specific regional paths, we have:
 
 * `num` = 327 to 349
 * `level` = 2
-* `gener_num` = 17.
+* `generic_num` = 17.
 
 In the record for the generic regional path, we have:
 
@@ -2059,7 +2059,53 @@ replaced by the specific path:
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
+Fifth Attempt
+=============
 
+The  third  attempt aimed  at  avoiding  the processing  of  fruitless
+macro-paths. The  optimisation with fruitless borders  was successful,
+but not  completely. There are still  a few macro-paths which  fail to
+generate full paths,  while not being bordered by  a fruitless border.
+Why?
+
+![Borders between Île-de-France, Burgundy and Champagne-Ardenne](IDF-CHA-BOU.png)
+
+In map `fr1970`, let us look  at the Eastern part of Île-de-France and
+its links  with Burgundy  and Champagne-Ardenne.  The single  point of
+contact from `CHA` to `IDF` is department `77` (Seine-et-Marne). Also,
+the single point of contact from  `BOU` to `IDF` is `77`. What happens
+with a macro-path `%CHA  → IDF → BOU%` (or the  other way around)? The
+full  path enters  `IDF` through  `77`, visits  all other  departments
+within  `IDF` and  exits to  `BOU` through  `77`. This  cannot happen,
+department `77` cannot be visited twice in an Hamiltonian path.
+
+Being a single point of contact is not a problem. What is a problem is
+being a single point  of contact for two regions or  more. This is the
+case for `77` with `BOU` and `CHA`, this is the case for `03` (Allier)
+with `BOU`  and `CEN` (Centre)  and this is  the case for  `27` (Eure)
+with  `IDF`, `CEN`  and  `BNO` (Lower  Normandy).  Therefore, all  the
+following macro-paths will be flagged as fruitless:
+
+* `%BOU → IDF → CHA%`
+* `%CHA → IDF → BOU%`
+* `%CEN → AUV → BOU%`
+* `%BOU → AUV → CEN%`
+* `%BNO → HNO → CEN%`
+* `%BNO → HNO → IDF%`
+* `%CEN → HNO → BNO%`
+* `%CEN → HNO → IDF%`
+* `%IDF → HNO → BNO%`
+* `%IDF → HNO → CEN%`
+
+A special case, which happens many times in map `frreg`: if a big area
+contains  only one  small area,  this  small area  is automatically  a
+single point of  contact for all neighbour regions, yet  this is not a
+problem. For example, the `BRE` small  area is single point of contact
+for both  `NOR` (Normandy) and `PDL`  (Pays de la Loire),  but it does
+not prevent the  macro-paths `%NOR → BRE → PDL%`  from generating full
+paths `%HNO → BNO → BRE → PDL%`
+
+![Excerpt from the frreg map with Bretagne, Pays de la Loire, Centre-Val-de-Loire and Île-de-France](BRE-CEN-IDF-PDL.png)
 
 License
 =======

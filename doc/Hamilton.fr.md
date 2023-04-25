@@ -2108,7 +2108,7 @@ Dans les enregistrements des chemins régionaux spécifiques, on aura donc :
 
 * `num` = 327 à 349
 * `level` = 2
-* `gener_num` = 17.
+* `generic_num` = 17.
 
 Et dans l'enregistrement du chemin régional générique, on aura :
 
@@ -2139,6 +2139,57 @@ la formule correspondante par le chemin spécifique :
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
+Cinquième tentative
+===================
+
+La  troisième tentative  avait  pour but  d'éviter  le traitement  des
+macro-chemins stériles.  L'optimisation par les frontières  stériles a
+porté ses  fruits, mais elle  n'était pas suffisante. Il  reste encore
+des  macro-chemins  qui  ne  donnent  lieu  à  aucun  chemin  complet.
+Pourquoi ?
+
+![Frontière entre l'Île-de-France, la Bourgogne et la Champagne-Ardenne](IDF-CHA-BOU.png)
+
+Dans la carte `fr1970`, regardons  la partie est de l'Île-de-France et
+les liens avec  la Bourgogne et la Champagne-Ardenne. Le  seul accès à
+`IDF` depuis `CHA`  se fait par le  département `77` (Seine-et-Marne).
+De même, le seul accès à `IDF` depuis `BOU` se fait par le département
+`77`. Que se passe-t-il si le macro-chemin contient `CHA → IDF → BOU`,
+ou l'inverse ? Le chemin complet pénètre dans `IDF` par le département
+`77`, fait  un tour dans  l'Île-de-France, puis ressort par  `77` pour
+gagner la Bourgogne. Hélas, ce n'est  pas possible de passer deux fois
+par le même département dans un chemin hamiltonien.
+
+En soi, ce n'est  pas un problème si un département  est le seul point
+de contact pour passer d'une région  à une autre. C'est un problème si
+le  même département  est  le  seul point  de  contact pour  plusieurs
+régions. C'est le cas  de `77` pour `BOU` et pour  `CHA`, c'est le cas
+de `03`  (Allier) pour `CEN` et  `BOU`, c'est le cas  pour `27` (Eure)
+pour  `IDF`, `CEN`  et `BNO`.  Il  faudra donc  déclarer stériles  les
+macro-chemins suivants :
+
+* `%BOU → IDF → CHA%`
+* `%CHA → IDF → BOU%`
+* `%CEN → AUV → BOU%`
+* `%BOU → AUV → CEN%`
+* `%BNO → HNO → CEN%`
+* `%BNO → HNO → IDF%`
+* `%CEN → HNO → BNO%`
+* `%CEN → HNO → IDF%`
+* `%IDF → HNO → BNO%`
+* `%IDF → HNO → CEN%`
+
+Un cas  particulier, qui se produit  à maintes reprises dans  la carte
+`frreg` :  si une  région ne  contient qu'une  seule sous-zone,  cette
+sous-zone  est forcément  le seul  point  de contact  pour toutes  les
+régions  voisines,   mais  ce  n'est   pas  un  problème.   Ainsi,  le
+« département » `BRE` de la région  `BRE` (Bretagne) est le seul point
+de contact  pour la région `NOR`  (Normandie) et pour la  région `PDL`
+(Pays-de-la-Loire),  mais  cela  ne  pose pas  de  problème  pour  les
+macro-chemins `%NOR →  BRE → PDL%` qui donneront  des chemins complets
+`%HNO → BNO → BRE → PDL%`
+
+![Extrait de la carte frreg avec la Bretagne, les Pays de la Loire, le Centre-Val-de-Loire et l'Île-de-France](BRE-CEN-IDF-PDL.png)
 
 LICENCE
 =======
