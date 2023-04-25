@@ -267,7 +267,7 @@ les départements  au sein  d'une région et  chemins complets  pour les
 départements dans la carte complète. La clé est constituée de :
 
 * `map` le code de la carte (table `Maps`),
-* `level` valant `1` pour les macro-chemins, `2` pour les chemins régionaux et `3` pour les chemins complets,
+* `level` valant `1` pour les macro-chemins, `2` pour les chemins régionaux, `3` pour les chemins complets et `4` pour les chemins régionaux génériques,
 * `area`, champ vide pour les macro-chemins et les chemins complets, le code de la région concernée pour les chemins régionaux.
 * `num`, un numéro séquentiel.
 
@@ -317,6 +317,9 @@ carte `frreg`), tout  comme les chemins à deux zones  et une frontière
 
 L'utilité des champs `fruitless` et `fruitless_reason` sera expliquée dans la
 [troisième version du logiciel](#user-content-troisième-tentative).
+
+Les  chemins régionaux  génériques  (`level=4`) sont  décrits dans  la
+[quatrième version du logiciel](#user-content-quatrième-tentative).
 
 La relation  entre les macro-chemins  et les chemins complets  est une
 relation 0..n ↔  1..1. Un macro-chemin permet de générer  un nombre _a
@@ -2077,6 +2080,45 @@ chemins régionaux  `95 → xxx →  91` dans un troisième  chemin régional
 générique et les 4 chemins régionaux `28 → yyy → 37` dans un quatrième
 chemin régional  générique, la croissance combinatoire  ne serait plus
 explosive.
+
+On  introduit donc  une  nouvelle catégorie  de  chemins, les  chemins
+régionaux génériques.  Un chemin régional générique  regroupe tous les
+chemins régionaux spécifiques qui ont le même département de départ et
+le même département d'arrivée.
+
+De la même manière, il y a maintenant les chemins complets génériques,
+constitués de la concaténation de chemins régionaux génériques, et les
+chemins  complets  spécifiques,  concaténations de  chemins  régionaux
+spécifiques. Les chemins  complets génériques sont stockés  en base de
+données avec `level=2`.  Les chemins complets spécifiques  ne sont pas
+stockés en base  de données (il y  en a des millions  pour `fr1970` et
+pour `fr2015`), ils  sont reconstitués lors de l'affichage  de la page
+web correspondante.
+
+Relations entre les différents chemins
+--------------------------------------
+
+Compte tenu de la renumérotation  des chemins dans `gener1.raku`, tous
+les chemins régionaux  spécifiques associés à un  même chemin régional
+générique  possèdent des  numéros  consécutifs. Par  exemple, dans  la
+région `IDF` de la carte `fr1970`, les 19 chemins régionaux partant de
+`78` et arrivant en `91` sont numérotés 327 à 345.
+
+Dans les enregistrements des chemins régionaux spécifiques, on aura donc :
+
+* `num` = 327 à 349
+* `level` = 2
+* `gener_num` = 17.
+
+Et dans l'enregistrement du chemin régional générique, on aura :
+
+* `num` = 17,
+* `level` = 4
+* `first_num` = 327,
+* `paths_nb` = 19.
+
+Dorénavant, la table `Path\_Relations` sert à matérialiser la relation
+entre un chemin complet générique et un chemin régional générique.
 
 LICENCE
 =======

@@ -256,7 +256,7 @@ departments (small  areas) belonging to  the same big area  and lastly
 full paths linking all small areas. The key is:
 
 * `map` the key from table `Maps`,
-* `level` with `1` for macro-paths, `2` for regional paths and `3` for full paths,
+* `level` with `1` for macro-paths, `2` for regional paths, `3` for full paths and `4` for generic regional paths,
 * `area` empty for macro-paths and full paths, the code of the big area for regional paths,
 * `num` a sequential number.
 
@@ -305,6 +305,9 @@ and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
 
 The use and meaning of `fruitless` and `fruitless_reason` will be explained in the
 [third version of the software](#user-content-third-attempt).
+
+Generic regional paths (`level=4`) are described in the
+[fourth version of the software](#user-content-fourth-attempt).
 
 The  relation between  macro-paths and  full paths  is a  0..n ↔  1..1
 relation. A macro-path  can generate an unknown number  of full paths,
@@ -2001,6 +2004,42 @@ path and if we could regroup all 4 regional paths `28 → yyy → 37` into
 a fourth regional path, the combinatory increase would no longer be an
 explosive one.
 
+So I  introduce a  new category  of paths,  generic regional  paths. A
+generic regional path is the gathering  of all specific paths within a
+region, sharing the same begin area and the same end area.
+
+Likewise, there  are now  generic full  paths, built  by concatenating
+generic   regional  paths,   plus  specific   full  paths,   built  by
+concatenating  specific regional  paths.  The generic  full paths  are
+stored in the database with `level=2`. The specific full paths are not
+stored in the  database (there are millions of them  just for `fr1970`
+and `fr2015`!), they are  built on demand when a web  page is about to
+display this specific full path.
+
+Relations Between The Various Paths
+-----------------------------------
+
+Since  the  regional   paths  are  created  and   then  renumbered  in
+`gener1.raku`, all specific  regional paths linked to  a given generic
+regional path have contiguous numbers. For exemple, in region `IDF` in
+map `fr1970`, the 19 regional paths from `78` to `91` are numbered 327
+to 345.
+
+In the records for the specific regional paths, we have:
+
+* `num` = 327 to 349
+* `level` = 2
+* `gener_num` = 17.
+
+In the record for the generic regional path, we have:
+
+* `num` = 17,
+* `level` = 4
+* `first_num` = 327,
+* `paths_nb` = 19.
+
+Now, the `Path\_Relations` table holds the relation between a generic
+full path and a generic regional path.
 
 License
 =======
