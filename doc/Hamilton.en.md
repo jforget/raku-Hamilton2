@@ -1001,7 +1001,7 @@ The  website is  bilingual  and  can scale  easily  to a  multilingual
 status. For  the moment,  only English and  French are  available. The
 language code is the first element of the URLs.
 
-The front page  is nothing more than the liste  of all available maps.
+The front page  is nothing more than the list  of all available maps.
 By default, it is displayed in  English, but by typing the proper URL,
 you can have the list in French.
 
@@ -1965,7 +1965,7 @@ IDF → CEN`. Then, the programme feeds the `to-do` list with:
 * 10 partial paths `* → 76 → 27 → 95 → xxx → 91 →→ CEN → PDL`
 
 For each one of the 19 partial  paths from `78` to `91`, the programme
-feeds the `to-do` liste with:
+feeds the `to-do` list with:
 
 * 1 partial path `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 41 →→ PDL`
 * 4 partial paths `* → 76 → 27 → 78 → xxx → 91 → 28 → yyy → 37 →→ PDL`
@@ -1973,13 +1973,13 @@ feeds the `to-do` liste with:
 * 1 partial path `* → 76 → 27 → 78 → xxx → 91 → 45 → yyy → 37 →→ PDL`
 
 For each one of the 19 partial  paths from `95` to `78`, the programme
-feeds the `to-do` liste with:
+feeds the `to-do` list with:
 
 * 1 partial path `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 41 →→ PDL`
 * 4 partial paths `* → 76 → 27 → 95 → xxx → 78 → 28 → yyy → 37 →→ PDL`
 
 For each one of the 10 partial  paths from `95` to `91`, the programme
-feeds the `to-do` liste with:
+feeds the `to-do` list with:
 
 * 1 partial path `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 41 →→ PDL`
 * 4 partial paths `* → 76 → 27 → 95 → xxx → 91 → 28 → yyy → 37 →→ PDL`
@@ -2038,8 +2038,28 @@ In the record for the generic regional path, we have:
 * `first_num` = 327,
 * `paths_nb` = 19.
 
-Now, the `Path\_Relations` table holds the relation between a generic
+Now, the `Path_Relations`  table holds the relation  between a generic
 full path and a generic regional path.
+
+`Paths` table and `Full_Paths` view: the field `path` contains
+formulas which describe the range of specific regional paths in this
+generic full path. Using the example above, the generic full path 
+including all 19 regional paths from `78` to `91` and all 4 regional
+paths from `28` to `37`, the field `path` contains:
+
+```
+(HNO,2,1) → (IDF,327,19) → (CEN,7,4)
+```
+
+Another possibility, since  the generic path for `HNO` is  linked to a
+single specific  regional path, maybe  the formula can  be immediately
+replaced by the specific path:
+
+```
+76 → 27 → (IDF,327,19) → (CEN,7,4)
+```
+
+
 
 License
 =======

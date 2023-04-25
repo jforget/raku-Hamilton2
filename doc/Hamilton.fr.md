@@ -2117,8 +2117,28 @@ Et dans l'enregistrement du chemin régional générique, on aura :
 * `first_num` = 327,
 * `paths_nb` = 19.
 
-Dorénavant, la table `Path\_Relations` sert à matérialiser la relation
+Dorénavant, la table `Path_Relations`  sert à matérialiser la relation
 entre un chemin complet générique et un chemin régional générique.
+
+Table  `Paths` et  vue  `Full_Paths` : le  champ  `path` contient  des
+formules  permettant  de  rappeler  l'éventail  de  chemins  régionaux
+spécifiques à  chaque étape. Ainsi, en  reprenant l'exemple ci-dessus,
+pour le  chemin complet générique  contenant les 19  chemins régionaux
+spécifiques de `78`  à `91` et les 4 chemins  régionaux spécifiques de
+`28` à `37`, le champ `path` contient :
+
+```
+(HNO,2,1) → (IDF,327,19) → (CEN,7,4)
+```
+
+Ou alors, compte tenu du fait que le chemin générique de `HNO` est
+associé à un seul chemin spécifique, peut-être pourrait-on remplacer
+la formule correspondante par le chemin spécifique :
+
+```
+76 → 27 → (IDF,327,19) → (CEN,7,4)
+```
+
 
 LICENCE
 =======
