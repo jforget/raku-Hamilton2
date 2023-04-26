@@ -2059,6 +2059,67 @@ replaced by the specific path:
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
+Rebuilding a specific full path
+-------------------------------
+
+Specific full  paths are  not stored  in the  database. They  are just
+known with  their keys:  map code  and sequential  number. How  can we
+rebuild the full path when these two values are given?
+
+Let us suppose we want path  number `2345` in map `fr1970`. First, the
+programme extracts the corresponding generic full path:
+
+```
+select ...
+where map = 'fr1970'
+and   first_num <= 2345
+and   first_num + path_nb > 2345
+```
+
+We get:
+
+```
+num         45
+first_num   1800
+path_nb     760
+path        (HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,2) → (PCH,20,5)
+```
+
+The programme extracts  the numbers of specific  regional paths, which
+form  a list  `(1, 19,  4,  2, 5)`.  Then the  programme computes  the
+numbers `x`, `y`, `z`, `t` and `u` from the equations:
+
+```
+2345 - 1800 = (((x × 19 + y) × 4 + z) × 2 + t) × 5 + u
+0 ≤ x <  1
+0 ≤ y < 19
+0 ≤ z <  4
+0 ≤ t <  2
+0 ≤ u <  5
+```
+
+The results are:
+
+* x =  0
+* y = 13
+* z =  2
+* t =  1
+* u =  0
+
+The specific regional path numbers are:
+
+* HNO:   2 +  0 =   2
+* IDF: 327 + 13 = 340
+* CEN:   7 +  2 =   9
+* PDL:   8 +  1 =   9 
+* PCH:  20 +  0 =  20
+
+The programme  reads these specific  regional paths. For each  one, it
+loads the  field `path`,  and replaces  the formula  `(XX,YY,ZZ)` with
+this  regional   path  within   the  generic   full  path.   When  all
+substitutions are done, the specific full path is done.
+
+
 Fifth Attempt
 =============
 

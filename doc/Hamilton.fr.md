@@ -2139,6 +2139,69 @@ la formule correspondante par le chemin spécifique :
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
+Reconstitution d'un chemin complet spécifique
+---------------------------------------------
+
+Les  chemins complets  spécifiques  ne  sont pas  stockés  en base  de
+données. Ils sont  juste connus par leur clé, c'est-à-dire  le code de
+la carte  et le numéro  séquentiel. Comment fait-on pour  retrouver le
+chemin complet spécifique en fonction de ces deux éléments ?
+
+Supposons que l'on  cherche le chemin `2345` de la  carte `fr1970`. Le
+programme   commence  par   chercher  le   chemin  complet   générique
+correspondant au numéro spécifique 2345 :
+
+```
+select ...
+where map = 'fr1970'
+and   first_num <= 2345
+and   first_num + path_nb > 2345
+```
+
+On obtient :
+
+```
+num         45
+first_num   1800
+path_nb     760
+path        (HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,2) → (PCH,20,5)
+```
+
+Le programme  rassemble les  nombres de chemins  régionaux spécifiques
+pour en  faire une liste  `(1, 19, 4, 2,  5)`. Il cherche  ensuite les
+nombres `x`, `y`, `z`, `t` et `u` tels que :
+
+```
+2345 - 1800 = (((x × 19 + y) × 4 + z) × 2 + t) × 5 + u
+0 ≤ x <  1
+0 ≤ y < 19
+0 ≤ z <  4
+0 ≤ t <  2
+0 ≤ u <  5
+```
+
+Ce qui donne :
+
+* x =  0
+* y = 13
+* z =  2
+* t =  1
+* u =  0
+
+Les numéros des chemins régionaux spécifiques sont :
+
+* HNO :   2 +  0 =   2
+* IDF : 327 + 13 = 340
+* CEN :   7 +  2 =   9
+* PDL :   8 +  1 =   9 
+* PCH :  20 +  0 =  20
+
+Le programme accède alors à  ces divers chemins régionaux spécifiques,
+récupère  le   champ  `path`  de   chacun,  et  remplace   la  formule
+`(XX,YY,ZZ)` par  ce chemin  dans le  champ `path`  générique. Lorsque
+toutes  les substitutions  sont  effectuées, on  a  le chemin  complet
+spécifique.
+
 Cinquième tentative
 ===================
 
