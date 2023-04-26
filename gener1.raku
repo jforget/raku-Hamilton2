@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, fruitless, fruitless_reason)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0,         0,         '')
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, fruitless, fruitless_reason, generic_num, first_num, paths_nb)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0,         0,         '',               0,           ?,         ?)
 SQL
 
 my $sth-neighbours = $dbh.prepare(q:to/SQL/);
@@ -89,6 +89,7 @@ sub MAIN (
       $dbh.execute("begin transaction");
       $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
       $dbh.execute("commit");
+      generic-paths($map, $region<code>);
     }
   }
   if $regions ne '' {
@@ -98,6 +99,7 @@ sub MAIN (
       $dbh.execute("begin transaction");
       $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
       $dbh.execute("commit");
+      generic-paths($map, $region<code>);
     }
   }
 }
@@ -142,7 +144,7 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     my Str $single-area = @isolated-areas[0];
     #say "region $region has only one area, only one path and its length is zero";
     $dbh.execute("begin transaction");
-    $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area, 1);
+    $sto-path.execute($map, $level, $region, 1, $single-area, $single-area, $single-area, 1, 0, 0);
     $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '2', $region, 1, '');
     $dbh.execute("commit");
     return 1;
@@ -229,11 +231,11 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
             $cyclic = 0;
           }
 
-          $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next, $cyclic);
+          $sto-path.execute($map, $level, $region, $path-number, $new-path, $partial-path<from>, $next, $cyclic, 0, 0);
           if $there-and-back-again {
             my Str $rev-path = $new-path.split(/ \s* '→' \s* /).reverse.join(" → ");
             ++ $path-number;
-            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>, $cyclic);
+            $sto-path.execute($map, $level, $region, $path-number, $rev-path, $next, $partial-path<from>, $cyclic, 0, 0);
           }
           if $path-number ≥ $complete-threshold {
             $dbh.execute("commit");
@@ -304,6 +306,46 @@ sub generate(Str $map, Int $level, Str $region, Str $prefix --> Int) {
     $dbh.execute("commit");
   }
   return $path-number;
+}
+
+sub generic-paths(Str $map, Str $region) {
+  my Str $prefix = 'REG';
+  my Int $path-number  = 0;
+  my Int $first-number = 1;
+
+  say "{DateTime.now.hh-mm-ss} computing generic regional paths for region $region of $map";
+  $dbh.execute("begin transaction");
+  $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ '9', $region, 0, '');
+  $dbh.execute("delete from Paths where map = ? and level = 4 and area = ?", $map, $region);
+
+  my $sth-sel = $dbh.prepare(q:to/SQL/);
+  select from_code as from_code, to_code as to_code, count(*) as nb
+  from Region_Paths
+  where map  = ?
+    and area = ?
+  group by from_code, to_code
+  order by from_code, to_code
+  SQL
+
+  my $sth-upd = $dbh.prepare(q:to/SQL/);
+  update Paths
+  set generic_num = ?
+  where map       = ?
+    and level     = 2
+    and area      = ?
+    and from_code = ?
+    and to_code   = ?
+  SQL
+
+  for $sth-sel.execute($map, $region).allrows(:array-of-hash) -> $row {
+    $path-number++;
+    $sto-path.execute($map, 4, $region, $path-number, "($region,$first-number,$row<nb>)", $row<from_code>, $row<to_code>, 0, $first-number, $row<nb>);
+    $sth-upd.execute($path-number, $map, $region, $row<from_code>, $row<to_code>);
+    $first-number += $row<nb>
+  }
+
+  $sto-mesg.execute($map, DateTime.now.Str, $prefix ~ 'A', $region, $path-number, '');
+  $dbh.execute("commit");
 }
 
 =begin POD

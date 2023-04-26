@@ -33,12 +33,15 @@ create table Paths   (map       TEXT
                    , area       TEXT
                    , num        INTEGER
                    , path       TEXT
-                   , from_code  TEXT
-                   , to_code    TEXT
-                   , cyclic     INTEGER
+                   , from_code         TEXT
+                   , to_code           TEXT
+                   , cyclic            INTEGER
                    , macro_num         INTEGER
                    , fruitless         INTEGER
                    , fruitless_reason  TEXT
+                   , generic_num       INTEGER
+                   , first_num         INTEGER
+                   , paths_nb          INTEGER
                    );
 
 create table Path_Relations (map        TEXT
@@ -90,13 +93,18 @@ create view Macro_Paths   (map, num, path, from_code, to_code, fruitless, fruitl
             from           Paths
             where          level = 1;
 
-create view Region_Paths  (map, area, num, path, from_code, to_code)
-         as select         map, area, num, path, from_code, to_code
+create view Region_Paths  (map, area, num, path, from_code, to_code, generic_num)
+         as select         map, area, num, path, from_code, to_code, generic_num
             from           Paths
             where          level = 2;
 
-create view Full_Paths    (map, num, path, from_code, to_code, macro_num)
-         as select         map, num, path, from_code, to_code, macro_num
+create view Generic_Region_Paths  (map, area, num, path, from_code, to_code, first_num, paths_nb)
+         as select                 map, area, num, path, from_code, to_code, first_num, paths_nb
+            from                   Paths
+            where                  level = 4;
+
+create view Full_Paths    (map, num, path, from_code, to_code, macro_num, first_num, paths_nb)
+         as select         map, num, path, from_code, to_code, macro_num, first_num, paths_nb
             from           Paths
             where          level = 3;
 
