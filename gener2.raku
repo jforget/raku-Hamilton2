@@ -1,8 +1,8 @@
 #!/usr/bin/env perl6
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
-#     Génération des chemins hamiltoniens complets à partir des macro-chemins et des chemins régionaux
-#     Genetating full Hamiltonian paths using macro-paths and regional paths
+#     Génération des chemins hamiltoniens complets à partir des macro-chemins et des chemins régionaux génériques
+#     Generating full Hamiltonian paths using macro-paths and generic regional paths
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?)
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, generic_num, first_num, paths_nb)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?,	       0,	    ?,	       ?)
 SQL
 
 my $sto-relation = $dbh.prepare(q:to/SQL/);
@@ -75,12 +75,13 @@ and   path      like ?
 SQL
 
 my $extract-region-paths  = $dbh.prepare(q:to/SQL/);
-select B.num     as num
-     , B.path    as path
-     , B.area    as area
-     , B.to_code as to_code
+select B.num      as num
+     , B.path     as path
+     , B.area     as area
+     , B.to_code  as to_code
+     , B.paths_nb as paths_nb
 from Borders_With_Star A
-join Region_Paths B
+join Generic_Region_Paths B
    on  B.map       = A.map
    and B.area      = A.upper_to
    and B.from_code = A.to_code
@@ -91,21 +92,24 @@ where A.map       = ?
 and   A.from_code = ?
 and   A.upper_to  = ?
 and   C.upper_to  = ?
+order by B.num desc
 SQL
 
 my $extract-last-region-paths  = $dbh.prepare(q:to/SQL/);
-select B.num     as num
-     , B.path    as path
-     , B.area    as area
-     , B.to_code as to_code
+select B.num      as num
+     , B.path     as path
+     , B.area     as area
+     , B.to_code  as to_code
+     , B.paths_nb as paths_nb
 from Borders_With_Star A
-join Region_Paths B
+join Generic_Region_Paths B
    on  B.map       = A.map
    and B.area      = A.upper_to
    and B.from_code = A.to_code
 where A.map       = ?
 and   A.from_code = ?
 and   A.upper_to  = ?
+order by B.num desc
 SQL
 
 my $sth-check-cyclic = $dbh.prepare(q:to/SQL/);
@@ -184,9 +188,10 @@ sub MAIN (
   my Int $complete-increment = commit-interval();
   my Int $max-to-do          = 0;
   my Int $num                = 0;
+  my Int $first-num          = 1;
   my Int $to-do-nb;
   sub aff-stat {
-    say "{DateTime.now.hh-mm-ss} macro number $num / $max-macro, complete paths $full-path-number, partial paths $partial-paths-nb (to-do list $to-do-nb / $max-to-do)";
+    say "{DateTime.now.hh-mm-ss} macro number $num / $max-macro, generic paths $full-path-number, specific paths {$first-num - 1}, partial paths $partial-paths-nb (to-do list $to-do-nb / $max-to-do)";
   }
 
   $dbh.execute("begin transaction");
@@ -205,6 +210,7 @@ sub MAIN (
     my %partial = path      => '* →→ ' ~ $path
                 , relations => %()
                 , last      => '*'
+                , paths_nb  => 1
                 ;
     @to-do.push(%partial);
     #say @to-do.raku;
@@ -233,6 +239,7 @@ sub MAIN (
           my %new = path      => $new-path
                   , relations => %new-rel
                   , last      => $reg-path<to_code>
+                  , paths_nb  => %old<paths_nb> × $reg-path<paths_nb>
                   ;
           @to-do.push(%new);
           ++$partial-paths-nb;
@@ -263,7 +270,8 @@ sub MAIN (
           else {
             $cyclic = 0;
           }
-          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>);
+          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>, $first-num, %old<paths_nb> × $reg-path<paths_nb>);
+ 	  $first-num += %old<paths_nb> × $reg-path<paths_nb>;
           for %new-rel.kv -> $area, $num {
             $sto-relation.execute($map, $full-path-number, $area, $num);
           }
