@@ -1,7 +1,8 @@
-create table Maps (map       TEXT
-                 , name      TEXT
-                 , nb_macro  INTEGER
-                 , nb_full   INTEGER
+create table Maps (map        TEXT
+                 , name       TEXT
+                 , nb_macro   INTEGER
+                 , nb_full    INTEGER
+                 , nb_generic INTEGER
                  );
 
 create table Areas (map      TEXT

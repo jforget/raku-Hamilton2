@@ -23,7 +23,7 @@ SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
 insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, generic_num, first_num, paths_nb)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?,	       0,	    ?,	       ?)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?,         0,           ?,         ?)
 SQL
 
 my $sto-relation = $dbh.prepare(q:to/SQL/);
@@ -271,7 +271,7 @@ sub MAIN (
             $cyclic = 0;
           }
           $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>, $first-num, %old<paths_nb> × $reg-path<paths_nb>);
- 	  $first-num += %old<paths_nb> × $reg-path<paths_nb>;
+          $first-num += %old<paths_nb> × $reg-path<paths_nb>;
           for %new-rel.kv -> $area, $num {
             $sto-relation.execute($map, $full-path-number, $area, $num);
           }
@@ -295,8 +295,8 @@ sub MAIN (
     $sto-mesg.execute($map, DateTime.now.Str, 'FUL2', '', 0, '');
   }
   else {
-    $dbh.execute("update Maps set nb_full = ? where map = ?", $full-path-number, $map);
-    $sto-mesg.execute($map, DateTime.now.Str, 'FUL3', '', $full-path-number, '');
+    $dbh.execute("update Maps set nb_generic = ?, nb_full = ? where map = ?", $full-path-number, $first-num - 1, $map);
+    $sto-mesg.execute($map, DateTime.now.Str, 'FUL3', '', $full-path-number, $first-num - 1);
   }
   $dbh.execute("commit");
 
