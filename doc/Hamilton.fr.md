@@ -164,6 +164,8 @@ Les autres informations sont :
 * `name` une désignation compréhensible pour cette carte,
 * `nb_macro` le nombre de macro-chemins pour cette carte,
 * `nb_full` le nombre de chemins complets pour cette carte.
+* `nb_generic` champ décrit dans la
+[quatrième version du logiciel](#user-content-quatrième-tentative).
 
 Areas
 -----
@@ -279,7 +281,11 @@ Les autres champs sont :
 * `cyclic`, indiquant si le chemin est cyclique,
 * `macro_num`, numéro éventuel du macro-chemin associé,
 * `fruitless`,
-* `fruitless_reason`.
+* `fruitless_reason`,
+* `generic_num`,
+* `first_num`,
+* `paths_nb`,
+* `num_s2g`.
 
 Le champ  `path` contient les  codes des départements (ou  des régions
 pour les macro-chemins)  séparés par une flèche `→`. Dans  la carte de
@@ -318,7 +324,8 @@ carte `frreg`), tout  comme les chemins à deux zones  et une frontière
 L'utilité des champs `fruitless` et `fruitless_reason` sera expliquée dans la
 [troisième version du logiciel](#user-content-troisième-tentative).
 
-Les  chemins régionaux  génériques  (`level=4`) sont  décrits dans  la
+Les   chemins  régionaux   génériques   (`level=4`)   et  les   champs
+`macro_num`, `first_num`, `paths_nb` et `num_s2g` sont décrits dans la
 [quatrième version du logiciel](#user-content-quatrième-tentative).
 
 La relation  entre les macro-chemins  et les chemins complets  est une
@@ -2193,7 +2200,7 @@ Les numéros des chemins régionaux spécifiques sont :
 * HNO :   2 +  0 =   2
 * IDF : 327 + 13 = 340
 * CEN :   7 +  2 =   9
-* PDL :   8 +  1 =   9 
+* PDL :   8 +  1 =   9
 * PCH :  20 +  0 =  20
 
 Le programme accède alors à  ces divers chemins régionaux spécifiques,
@@ -2201,6 +2208,54 @@ récupère  le   champ  `path`  de   chacun,  et  remplace   la  formule
 `(XX,YY,ZZ)` par  ce chemin  dans le  champ `path`  générique. Lorsque
 toutes  les substitutions  sont  effectuées, on  a  le chemin  complet
 spécifique.
+
+On retrouve les valeurs  2, 327, 7, 8 et 20  dans le champ `first_num`
+des  enregistrements de  la vue  `Generic_Region_Paths`. De  même, les
+valeurs 1, 19, 4, 2 et 5  sont stockées dans le champ `paths_nb` de la
+vue `Generic_Region_Paths`.
+
+Lister les chemins complets spécifiques pour un chemin régional spécifique
+--------------------------------------------------------------------------
+
+Les chemins  régionaux spécifiques sont  conservés en table,  mais pas
+les chemins complets spécifiques, qui sont générés à la demande. Quant
+à  la table  `Path_Relations`,  elle concerne  uniquement les  chemins
+génériques, pas les chemins  spécifiques. Comment fait-on pour générer
+la  liste  des  chemins  complets spécifiques  associés  à  un  chemin
+régional spécifique ?
+
+Reprenons  l'exemple  ci-dessus, en  cherchant  la  liste des  chemins
+complets  associés  au  chemin  régional  `(CEN,9)`.  L'enregistrement
+`(CEN,9)` de la vue `Region_Paths`  donne le numéro du chemin régional
+générique correspondant (champ `generic_num`) et on sait que le chemin
+régional spécifique est  le troisième pour ce  chemin générique (champ
+`num_s2g` égal à 2, les valeurs de ce champ commençant à 0).
+
+En reprenant  la formule ci-dessus, on  voit que la liste  des chemins
+complets spécifiques associés est donnée par la formule :
+
+```
+num =  1800 + (((x × 19 + y) × 4 + z) × 2 + t) × 5 + u
+0 ≤ x <  1
+0 ≤ y < 19
+z = num_s2g = 2
+0 ≤ t <  2
+0 ≤ u <  5
+```
+
+On peut compacter cette formule ainsi :
+
+```
+num =  1800 + coef1 × x + coef2 × y + z
+0 ≤ x < range1 = 19,    coef1 = 4 × 2 × 5 = 40
+    y = num_s2g = 2     coef2 =     2 × 5 = 10
+0 ≤ z < range3 = 10    (coef3 = 1)
+```
+
+Par construction, `coef3`  est toujours 1 et `coef2`  et `range3` sont
+égaux.  La table  `Path_Relations`  stocke donc  les champs  `range1`,
+`coef1` et `coef2`.
+
 
 Cinquième tentative
 ===================

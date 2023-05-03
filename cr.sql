@@ -43,12 +43,16 @@ create table Paths   (map       TEXT
                    , generic_num       INTEGER
                    , first_num         INTEGER
                    , paths_nb          INTEGER
+                   , num_s2g           INTEGER
                    );
 
 create table Path_Relations (map        TEXT
                            , full_num   INTEGER
                            , area       TEXT
                            , region_num INTEGER
+                           , range1     INTEGER
+                           , coef1      INTEGER
+                           , coef2      INTEGER
                            );
 
 create table Messages (map        TEXT

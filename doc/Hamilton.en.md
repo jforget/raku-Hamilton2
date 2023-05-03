@@ -154,7 +154,9 @@ Other fields are:
 
 * `name` a user-intelligible designation,
 * `nb_macro` the number of macro-paths for this map,
-* `nb_full` the number of full paths for this map.
+* `nb_full` the number of full paths for this map,
+* `nb_generic` field described in the
+[fourth version of the software](#user-content-fourth-attempt).
 
 Areas
 -----
@@ -268,7 +270,11 @@ Other fields are:
 * `cyclic` to show if the path is cyclic,
 * `macro_num` the number of the associated macro path, if there is one,
 * `fruitless`,
-* `fruitless_reason`.
+* `fruitless_reason`,
+* `generic_num`,
+* `first_num`,
+* `paths_nb`,
+* `num_s2g`.
 
 The `path`  field contains the  department codes (or region  codes for
 macro-paths)  separated   by  arrows  `→`.   In  the  1970   map,  the
@@ -306,7 +312,8 @@ and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
 The use and meaning of `fruitless` and `fruitless_reason` will be explained in the
 [third version of the software](#user-content-third-attempt).
 
-Generic regional paths (`level=4`) are described in the
+Generic   regional   paths  (`level=4`)   and   the   use  of   fields
+`generic_num`, `first_num`, `paths_nb` and  `num_s2g` are described in the
 [fourth version of the software](#user-content-fourth-attempt).
 
 The  relation between  macro-paths and  full paths  is a  0..n ↔  1..1
@@ -2041,10 +2048,10 @@ In the record for the generic regional path, we have:
 Now, the `Path_Relations`  table holds the relation  between a generic
 full path and a generic regional path.
 
-`Paths` table and `Full_Paths` view: the field `path` contains
-formulas which describe the range of specific regional paths in this
-generic full path. Using the example above, the generic full path 
-including all 19 regional paths from `78` to `91` and all 4 regional
+`Paths`  table  and  `Full_Paths`  view:  the  field  `path`  contains
+formulas which describe  the range of specific regional  paths in this
+generic  full path.  Using the  example above,  the generic  full path
+including all 19  regional paths from `78` to `91`  and all 4 regional
 paths from `28` to `37`, the field `path` contains:
 
 ```
@@ -2111,7 +2118,7 @@ The specific regional path numbers are:
 * HNO:   2 +  0 =   2
 * IDF: 327 + 13 = 340
 * CEN:   7 +  2 =   9
-* PDL:   8 +  1 =   9 
+* PDL:   8 +  1 =   9
 * PCH:  20 +  0 =  20
 
 The programme  reads these specific  regional paths. For each  one, it
@@ -2119,6 +2126,50 @@ loads the  field `path`,  and replaces  the formula  `(XX,YY,ZZ)` with
 this  regional   path  within   the  generic   full  path.   When  all
 substitutions are done, the specific full path is done.
 
+Values 2, 237, 7,  8 and 20 can also be found  in field `first_num` of
+the  records accessible  from  view `Generic_Region_Paths`.  Likewise,
+values 1, 19,  4, 2 and 5  are stored in field `paths_nb`  of the same
+records.
+
+Listing All Specific Full Paths Linked to a Specific Regional Path
+------------------------------------------------------------------
+
+The specific  regional paths are stored  in the database, but  not the
+specific full  paths, which are  generated only when required.  As for
+table `Path_Relations`, it stores  the relation between generic paths,
+not specific  paths. How  can we  generate the  list of  specific full
+paths linked to a specific regional path?
+
+Let us reuse the example above, trying to find all specific full paths
+linked  to   regional  path   `(CEN,9)`.  Record  `(CEN,9)`   of  view
+`Region_Paths`  gives the  key  of the  generic  regional path  (field
+`generic_num`) and  the specific  path is the  third for  this generic
+path (field `num_s2g` equal to 2, with a zero-based number scheme).
+
+With the formula above, we find that the list of specific full paths is
+given with this formula:
+
+```
+num =  1800 + (((x × 19 + y) × 4 + z) × 2 + t) × 5 + u
+0 ≤ x <  1
+0 ≤ y < 19
+z = num_s2g = 2
+0 ≤ t <  2
+0 ≤ u <  5
+```
+
+The formula can be shorten in this way:
+
+```
+num =  1800 + coef1 × x + coef2 × y + z
+0 ≤ x < range1 = 19,    coef1 = 4 × 2 × 5 = 40
+    y = num_s2g = 2     coef2 =     2 × 5 = 10
+0 ≤ z < range3 = 10    (coef3 = 1)
+```
+
+The way the  ranges and coefficients are defined, `coef3`  is always 1
+and  `coef2` and  `range3` are  equal. So  the `Path_Relations`  table
+stores the fields `range1`, `coef1` and `coef2`.
 
 Fifth Attempt
 =============
