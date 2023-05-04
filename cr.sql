@@ -98,8 +98,8 @@ create view Macro_Paths   (map, num, path, from_code, to_code, fruitless, fruitl
             from           Paths
             where          level = 1;
 
-create view Region_Paths  (map, area, num, path, from_code, to_code, generic_num)
-         as select         map, area, num, path, from_code, to_code, generic_num
+create view Region_Paths  (map, area, num, path, from_code, to_code, generic_num, num_s2g)
+         as select         map, area, num, path, from_code, to_code, generic_num, num_s2g
             from           Paths
             where          level = 2;
 

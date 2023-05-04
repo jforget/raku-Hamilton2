@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, fruitless, fruitless_reason, generic_num, first_num, paths_nb)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0,         0,         '',               0,           ?,         ?)
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, fruitless, fruitless_reason, generic_num, first_num, paths_nb, num_s2g)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      0,         0,         '',               0,           ?,         ?,        0)
 SQL
 
 my $sth-neighbours = $dbh.prepare(q:to/SQL/);
@@ -330,6 +330,7 @@ sub generic-paths(Str $map, Str $region) {
   my $sth-upd = $dbh.prepare(q:to/SQL/);
   update Paths
   set generic_num = ?
+    , num_s2g     = num - ?
   where map       = ?
     and level     = 2
     and area      = ?
@@ -340,7 +341,7 @@ sub generic-paths(Str $map, Str $region) {
   for $sth-sel.execute($map, $region).allrows(:array-of-hash) -> $row {
     $path-number++;
     $sto-path.execute($map, 4, $region, $path-number, "($region,$first-number,$row<nb>)", $row<from_code>, $row<to_code>, 0, $first-number, $row<nb>);
-    $sth-upd.execute($path-number, $map, $region, $row<from_code>, $row<to_code>);
+    $sth-upd.execute($path-number, $first-number, $map, $region, $row<from_code>, $row<to_code>);
     $first-number += $row<nb>
   }
 
@@ -425,7 +426,7 @@ running the F<gener1.raku> programme.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright (C) 2022, Jean Forget, all rights reserved
+Copyright (C) 2022, 2023, Jean Forget, all rights reserved
 
 This programme  is published  under the same  conditions as  Raku: the
 Artistic License version 2.0.
