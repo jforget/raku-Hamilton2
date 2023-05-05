@@ -2260,7 +2260,7 @@ Pour le chemin générique `(HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,
 les relations avec les chemins régionaux utilisent les valeurs suivantes :
 
 | région | range1       | coef1    | (range2) | coef2    | (range3)     | (coef3) |
-|:------:|:------------:|---------:|:--------:|---------:|:-------------|:-------:|
+|:------:|:------------:|---------:|:--------:|---------:|:------------:|:-------:|
 | HNO    | (vide)       | (vide)   | 0..^1    | 19×4×2×5 | 0..^19×4×2×5 |    1    |
 | IDF    | 0..^1        | 19×4×2×5 | 0..^19   |    4×2×5 | 0..^4×2×5    |    1    |
 | CEN    | 0..^1×19     |    4×2×5 | 0..^4    |      2×5 | 0..^2×5      |    1    |
@@ -2270,7 +2270,9 @@ les relations avec les chemins régionaux utilisent les valeurs suivantes :
 Les  champs  `(vide)`  correspondent à  des  valeurs  conceptuellement
 inutilisées. Pour  éviter des cas  particuliers dans les  formules, on
 prendra un intervalle  `0..^1` (donc réduit à une  seule valeur, zéro)
-et un coefficient 1.
+et un coefficient 1. Les champs  `range2`, `range3` et `coef3` ne sont
+pas  stockés  dans la  table  `Path_Relations`,  car on  les  retrouve
+ailleurs.
 
 Cinquième tentative
 ===================

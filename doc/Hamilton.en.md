@@ -2171,6 +2171,24 @@ The way the  ranges and coefficients are defined, `coef3`  is always 1
 and  `coef2` and  `range3` are  equal. So  the `Path_Relations`  table
 stores the fields `range1`, `coef1` and `coef2`.
 
+For generic path `(HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,2) → (PCH,20,5)`,
+the relations with the regional paths contain the following values:
+
+| region | range1       | coef1    | (range2) | coef2    | (range3)     | (coef3) |
+|:------:|:------------:|---------:|:--------:|---------:|:------------:|:-------:|
+| HNO    | (empty)      | (empty)  | 0..^1    | 19×4×2×5 | 0..^19×4×2×5 |    1    |
+| IDF    | 0..^1        | 19×4×2×5 | 0..^19   |    4×2×5 | 0..^4×2×5    |    1    |
+| CEN    | 0..^1×19     |    4×2×5 | 0..^4    |      2×5 | 0..^2×5      |    1    |
+| PDL    | 0..^1×19×4   |      2×5 | 0..^2    |        5 | 0..^5        |    1    |
+| PCH    | 0..^1×19×4×2 |        5 | 0..^5    |        1 | (empty)      | (empty) |
+
+The values `(empty)`  correspond to logically unused  values. To avoid
+special  cases in  the formulas,  these  values will  contain a  range
+`0..^1`, that is, containing a single zero, and a coefficient equal to
+1.  Fields `range2`,  `range3` and  `coef3`  are not  stored in  table
+`Path_Relations`, because  they can be  easily found elsewhere  in the
+database.
+
 Fifth Attempt
 =============
 
