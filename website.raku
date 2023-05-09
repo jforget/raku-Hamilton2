@@ -4,7 +4,7 @@
 #
 #     Serveur web permettant de consulter la base Hamilton.db des chemins doublement hamiltoniens
 #     Web server to display the database storing doubly-Hamitonian paths
-#     Copyright (C) 2022 Jean Forget
+#     Copyright (C) 2022, 2023 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -231,7 +231,7 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
   }
-  my %path       = access-sql::read-path($map, 3, '', $num);
+  my %path       = access-sql::read-specific-path($map, $num);
   my @messages   = access-sql::list-messages($map);
   my @list-paths = list-numbers(%map<nb_full>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
@@ -267,7 +267,7 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
     }
   }
-  my %path     = access-sql::read-path($map, 3, '', $num);
+  my %path     = access-sql::read-specific-path($map, $num);
   my @messages = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_paths>, $num);
@@ -338,7 +338,7 @@ webserver was lauched.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, Jean Forget, all rights reserved
+Copyright 2022, 2023, Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

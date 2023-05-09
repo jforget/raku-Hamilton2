@@ -3,7 +3,7 @@
 #
 #     Partie "modèle" du serveur web permettant de consulter la base Hamilton.db des chemins doublement hamiltoniens
 #     Model part of the MVC web server which displays the database storing doubly-Hamiltonian paths
-#     Copyright (C) 2022 Jean Forget
+#     Copyright (C) 2022, 2023 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -153,14 +153,64 @@ our sub read-path(Str $map, Int $level, Str $area, Int $num) {
   return %val;
 }
 
+our sub read-specific-path(Str $map, Int $num) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select *
+  from Paths
+  where map   = ?
+    and level = 3
+    and first_num <= ? and ? < first_num + paths_nb
+  SQL
+  my $sth1 = $dbh.prepare(q:to/SQL/);
+  select path
+  from Region_Paths
+  where map  = ?
+    and area = ?
+    and num  = ?
+  SQL
+
+  my %val = $sth.execute($map, $num, $num).row(:hash);
+
+  # expanding the path string
+  my Str $path = %val<path>;
+  my @words = $path.comb( / \w+ / );
+  my Str @t-area  = @words[0, 3 ... *];
+  my Int @t-first = @words[1, 4 ... *].map({ +$_ });
+  my Int @t-coef  = @words[2, 5 ... *].map({ +$_ }).reverse;
+  my Int $rel-num  = $num - %val<first_num>;
+  #say join ' ', $num, $rel-num;
+  #say @t-coef;
+  my @t-index = $rel-num.polymod(@t-coef).reverse[1...*];
+  #say @t-index;
+  for @t-area.kv -> $i, $area {
+    my @reg-val = $sth1.execute($map, $area, @t-first[$i] + @t-index[$i]).row(:hash);
+    $path ~~ s/ '(' .*? ')' /@reg-val[0]<path>/;
+  }
+
+  %val<num> = $num;
+  %val<path> = $path;
+  return %val;
+}
+
 our sub max-path-number(Str $map, Int $level, Str $area) {
   my $sth = $dbh.prepare("select max(num) from Paths where map = ? and level = ? and area = ?");
   my @val = $sth.execute($map, $level, $area).row;
   return @val[0];
 }
 
-our sub full-path-interval(Str $map, Int $path-num) {
+our sub generic-path-interval(Str $map, Int $path-num) {
   my $sth = $dbh.prepare("select ifnull(min(num), 0), ifnull(max(num), 0) from Full_Paths where map = ? and macro_num = ?");
+  my @val = $sth.execute($map, $path-num).row;
+  return @val;
+}
+
+our sub full-path-interval(Str $map, Int $path-num) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select ifnull(min(first_num), 0), ifnull(max(first_num + paths_nb - 1), 0)
+  from   Full_Paths
+  where  map       = ?
+  and    macro_num = ?
+  SQL
   my @val = $sth.execute($map, $path-num).row;
   return @val;
 }
@@ -202,7 +252,7 @@ is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, Jean Forget, all rights reserved
+Copyright 2022, 2023, Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.
