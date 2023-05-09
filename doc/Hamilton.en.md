@@ -2184,8 +2184,8 @@ the relations with the regional paths contain the following values:
 
 The values `(empty)`  correspond to logically unused  values. To avoid
 special  cases in  the formulas,  these  values will  contain a  range
-`0..^1`, that is, containing a single zero, and a coefficient equal to
-1.  Fields `range2`,  `range3` and  `coef3`  are not  stored in  table
+`0..^1`, that is, containing a single zero, and a coefficient equal to 1.
+ Fields `range2`,  `range3` and  `coef3`  are not  stored in  table
 `Path_Relations`, because  they can be  easily found elsewhere  in the
 database.
 

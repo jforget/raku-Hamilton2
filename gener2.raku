@@ -27,8 +27,8 @@ insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macr
 SQL
 
 my $sto-relation = $dbh.prepare(q:to/SQL/);
-insert into Path_Relations (map, full_num, area, region_num)
-       values              (?,   ?,        ?,    ?)
+insert into Path_Relations (map, full_num, area, region_num, range1, coef1, coef2)
+       values              (?,   ?,        ?,    ?,          ?,      ?,     ?)
 SQL
 
 my $upd-fruitless-b0 = $dbh.prepare(q:to/SQL/);
@@ -272,8 +272,21 @@ sub MAIN (
           }
           $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>, $first-num, %old<paths_nb> × $reg-path<paths_nb>);
           $first-num += %old<paths_nb> × $reg-path<paths_nb>;
+
+          # Computing the coefficients and range for the path relations
+          my @words = $new-path.comb( / \w+ / );
+          my @t-area = @words[0, 3 ... *];
+          my @t-coef = @words[2, 5 ... *];
+          my Int (%range1, %coef1, %coef2);
+          for @t-area.kv -> $i, $area {
+            %range1{$area} = [×] @t-coef[  0..^$i];
+            %coef1{ $area} = [×] @t-coef[ $i..*];
+            %coef2{ $area} = [×] @t-coef[$i^..*];
+          }
+
+          # Storing the path relations
           for %new-rel.kv -> $area, $num {
-            $sto-relation.execute($map, $full-path-number, $area, $num);
+            $sto-relation.execute($map, $full-path-number, $area, $num, %range1{$area}, %coef1{$area}, %coef2{$area});
           }
           if $full-path-number ≥ $complete-threshold {
             $dbh.execute("commit");
@@ -299,6 +312,7 @@ sub MAIN (
     $sto-mesg.execute($map, DateTime.now.Str, 'FUL3', '', $full-path-number, $first-num - 1);
   }
   $dbh.execute("commit");
+  say "{DateTime.now.hh-mm-ss} the end";
 
 }
 
@@ -335,7 +349,7 @@ running the F<gener1.raku> and F<gener2.raku> programmes.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright (C) 2022, Jean Forget, all rights reserved
+Copyright (C) 2022, 2023, Jean Forget, all rights reserved
 
 This programme  is published  under the same  conditions as  Raku: the
 Artistic License version 2.0.
