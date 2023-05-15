@@ -218,12 +218,15 @@ our sub full-path-interval(Str $map, Int $path-num) {
 our sub regional-path-of-full(Str $map, Str $area, Int $full-num) {
   my $sth = $dbh.prepare(q:to/SQL/);
   select region_num
-  from Path_Relations
-  where map      = ?
-  and   area     = ?
-  and   full_num = ?
+  from Path_Relations as PR
+  join Full_Paths     as FP
+    on  FP.map = PR.map
+    and FP.num = PR.full_num
+  where PR.map      = ?
+  and   PR.area     = ?
+  and   ? between FP.first_num and FP.first_num + FP.paths_nb - 1
   SQL
-  return $sth.execute($map, $area, $full-num).row[0];
+  return + $sth.execute($map, $area, $full-num).row[0];
 }
 
 our sub path-relations(Str $map, Str $area, Int $region-num) {
