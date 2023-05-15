@@ -2267,12 +2267,185 @@ les relations avec les chemins régionaux utilisent les valeurs suivantes :
 | PDL    | 0..^1×19×4   |      2×5 | 0..^2    |        5 | 0..^5        |    1    |
 | PCH    | 0..^1×19×4×2 |        5 | 0..^5    |        1 | (vide)       | (vide)  |
 
-Les  champs  `(vide)`  correspondent à  des  valeurs  conceptuellement
+Les champs  « `(vide)` » correspondent à des  valeurs conceptuellement
 inutilisées. Pour  éviter des cas  particuliers dans les  formules, on
 prendra un intervalle  `0..^1` (donc réduit à une  seule valeur, zéro)
 et un coefficient 1. Les champs  `range2`, `range3` et `coef3` ne sont
-pas  stockés  dans la  table  `Path_Relations`,  car on  les  retrouve
-ailleurs.
+pas stockés dans la table `Path_Relations`,  car il est très facile de
+les recalculer à partir des autres champs.
+
+Dans la page « chemin complet _nn_ dans la région _xxx_ », il faudrait
+faire ce calcul  pour _chaque_ chemin complet générique  relié avec le
+chemin  régional  générique  associé  au  chemin  régional  spécifique
+affiché. Dans  le cas ci-dessus,  on voit  que pour un  chemin complet
+générique, il y a 760 chemins complets spécifiques contenant le chemin
+spécifique  de  `HNO`.  En  bouclant sur  tous  les  chemins  complets
+génériques possibles  contenant le chemin  spécifique « `(HNO,2,1)` »,
+on   risque  d'avoir   une  importante   liste  de   chemins  complets
+spécifiques.
+
+On découpe la  liste en deux morceaux. Le premier  morceau contient la
+liste  de tous  les chemins  complets spécifiques  associés au  chemin
+complet   générique   et   au    chemin   régional   spécifique   (par
+l'intermédiaire du chemin régional  générique). Le deuxième morceau de
+la liste  contient boucle  sur tous  les chemins  complets génériques,
+mais en prenant un seul chemin complet spécifique à chaque fois.
+
+Résumé. On affiche
+
+```
+https://localhost:3000/fr/egion-with-full-path/fr1970/CEN/2345
+```
+
+Le chemin complet générique (stocké en table) est `(fr1970,45)`
+avec :
+
+```
+num         45
+first_num   1800
+path_nb     760
+path        (HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,2) → (PCH,20,5)
+```
+
+Les identifiants `num_s2g` des chemins régionaux spécifiques sont :
+
+| région | num_s2g |
+|:------:|--------:|
+| HNO    |  0      |
+| IDF    | 13      |
+| CEN    |  2      |
+| PDL    |  1      |
+| PCH    |  0      |
+
+Comme c'est `CEN` qui nous intéresse, nous conservons « 2 ».
+
+### Premier morceau de la liste
+
+Le premier morceau de la liste des chemins complets contient `760 / 4 = 190` chemins
+complets. Comme c'est un peu gros, on construit une liste de décalages :
+
+
+```
+-200 -100 -90 -80 -70 -60 -50 -40 -30 -20 -10 -9 -8 -7 -6 -5 -4 -3 -2 -1 1 2 3 4 5 6 7 8 9 10 20 30 40 50 60 70 80 90 100 200
+```
+
+Sachant que le `num_s2g` du chemin régional spécifique est :
+
+```
+2345 - 1800 = 545 = (((x × 19 +  y) × 4 + z) × 2 + t) × 5 + u
+2345 - 1800 = 545 = (((0 × 19 + 13) × 4 + 2) × 2 + 1) × 5 + 0
+```
+
+On enlève le terme correspondant à `CEN`, ce qui donne :
+
+```
+base = ((0 × 19 + 13) × 2 + 1) × 5 + 0 = 135
+```
+
+On additionne cette base à la liste de décalages ce qui donne :
+
+```
+-65 35 45 55 65 75 85 95 105 115 125 126 127 128 129 130 131 132 133 134 136 137 138 139 140 141 142 143 144 145 155 165 175 185 195 205 215 225 235 335
+```
+
+On restreint à l'intervalle `0..^190` (nombre de chemins complets spécifiques dans ce premier morceau de liste), ce qui donne :
+
+```
+35 45 55 65 75 85 95 105 115 125 126 127 128 129 130 131 132 133 134 136 137 138 139 140 141 142 143 144 145 155 165 175 185
+```
+
+Pour chaque numéro ainsi obtenu, on reprend théoriquement le découpage en `(x,y,t,u)` :
+
+```
+_n_ = ((x × 19 +  y) × 2 + t) × 5 + u
+```
+
+Mais cela va plus vite de faire le découpage avec `coef2` :
+
+```
+_n_ = coef2 × x + y
+```
+
+Cela donne :
+
+```
+35 = 10 × 3 + 5
+45 = 10 × 4 + 5
+55 = 10 × 5 + 5
+...
+134 = 10 × 13 + 4
+136 = 10 × 13 + 6
+...
+185 = 10 × 18 + 5
+```
+
+Et on réinjecte la composante « `2` » dans ces couples `(x,y)` puis on
+applique la formule « `coef1 × x + coef2 × y + z` » :
+
+```
+ 35 = 10 ×  3 + 5 → (3,5) → (3,2,5) → 40 × 3 + 10 × 2 + 5 = 145
+ 45 = 10 ×  4 + 5 → (4,5) → (4,2,5) → 40 × 4 + 10 × 2 + 5 = 185
+ 55 = 10 ×  5 + 5 → (5,5) → (5,2,5) → 40 × 5 + 10 × 2 + 5 = 225
+...
+134 = 10 × 13 + 4 → (13,4) → (13,2,4) → 40 × 13 + 10 × 2 + 4 = 544
+136 = 10 × 13 + 6 → (13,6) → (13,2,6) → 40 × 13 + 10 × 2 + 6 = 546
+...
+185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 40 × 18 + 10 × 2 + 5 = 745
+```
+
+La liste  ainsi obtenue  est la  liste des  champs `num_s2g`  pour les
+chemins complets spécifiques.
+
+### Deuxième morceau de la liste
+
+Le  calcul de  `num_s2g=2` pour  le chemin  régional spécifique  et de
+`num=45` pour  le chemin  complet générique est  identique à  celui du
+premier morceau.
+
+Il y a 10 080 chemins complets génériques, donc on compose la liste
+
+```
+-20000 -10000 -9000 -8000 ... -2 -1 1 2 ... 9 10 20 ... 90 100 200 ... 900 1000 2000 ... 9000 10000 20000
+```
+
+On additionne `num=45` ce qui donne :
+
+```
+-19955 -9955 -8955 -7955 ... 43 44 46 47 ... 54 55 65 ... 135 145 245 ... 945 1045 2045 ... 9045 10045 20045
+```
+
+Le programme applique la fenêtre `1..10080`, ce qui donne :
+
+```
+5 15 25 35 36 37 38 39 40 41 42 43 44 46 47 ... 54 55 65 ... 135 145 245 ... 945 1045 2045 ... 9045 10045
+```
+
+Cela  donne  la  liste  des   `full_num`  à  chercher  dans  la  table
+`Path_Relations` et des `num` à  chercher dans la vue `Full_Paths`. La
+table `Path_Relations`  donne le champ  `coef2` (on n'aura  pas besoin
+des autres) et la table  `Full_Paths` donne le champ `first_num`. Pour
+chaque chemin complet générique, on applique la formule
+
+```
+first_num + coef1 × x + coef2 × y + z
+x = 0
+y = num_s2g
+z = 0
+```
+
+C'est-à-dire en fait la formule `first_num + coef2 × num_s2g`.
+
+|          | Full_Paths | Path_Relations | chemin complet |
+|---------:|:----------:|:--------------:|:--------------:|
+| full_num | first_num  |      coef2     |   spécifique   |
+|    5     |    209     |       52       |      313       |
+|   15     |    547     |       52       |      651       |
+|   25     |   1223     |      104       |     1431       |
+|  ...     |   ...      |      ...       |      ...       |
+| 10045    |  1113361   |        1       |   1113363      |
+
+Le résultat  est la  liste des  clés `num`  pour les  chemins complets
+spécifiques.
 
 Cinquième tentative
 ===================
