@@ -2279,8 +2279,8 @@ faire ce calcul  pour _chaque_ chemin complet générique  relié avec le
 chemin  régional  générique  associé  au  chemin  régional  spécifique
 affiché. Dans  le cas ci-dessus,  on voit  que pour un  chemin complet
 générique, il y a 760 chemins complets spécifiques contenant le chemin
-spécifique  de  `HNO`.  En  bouclant sur  tous  les  chemins  complets
-génériques possibles  contenant le chemin  spécifique « `(HNO,2,1)` »,
+spécifique  de  `CEN`.  En  bouclant sur  tous  les  chemins  complets
+génériques possibles  contenant le chemin  spécifique « `(CEN,7,4)` »,
 on   risque  d'avoir   une  importante   liste  de   chemins  complets
 spécifiques.
 
@@ -2324,7 +2324,6 @@ Comme c'est `CEN` qui nous intéresse, nous conservons « 2 ».
 Le premier morceau de la liste des chemins complets contient `760 / 4 = 190` chemins
 complets. Comme c'est un peu gros, on construit une liste de décalages :
 
-
 ```
 -200 -100 -90 -80 -70 -60 -50 -40 -30 -20 -10 -9 -8 -7 -6 -5 -4 -3 -2 -1 1 2 3 4 5 6 7 8 9 10 20 30 40 50 60 70 80 90 100 200
 ```
@@ -2357,13 +2356,13 @@ On restreint à l'intervalle `0..^190` (nombre de chemins complets spécifiques 
 Pour chaque numéro ainsi obtenu, on reprend théoriquement le découpage en `(x,y,t,u)` :
 
 ```
-_n_ = ((x × 19 +  y) × 2 + t) × 5 + u
+n = ((x × 19 +  y) × 2 + t) × 5 + u
 ```
 
 Mais cela va plus vite de faire le découpage avec `coef2` :
 
 ```
-_n_ = coef2 × x + y
+n = coef2 × x + y
 ```
 
 Cela donne :
@@ -2427,13 +2426,13 @@ des autres) et la table  `Full_Paths` donne le champ `first_num`. Pour
 chaque chemin complet générique, on applique la formule
 
 ```
-first_num + coef1 × x + coef2 × y + z
+n = first_num + coef1 × x + coef2 × y + z
 x = 0
 y = num_s2g
 z = 0
 ```
 
-C'est-à-dire en fait la formule `first_num + coef2 × num_s2g`.
+C'est-à-dire en fait la formule `n = first_num + coef2 × num_s2g`.
 
 |          | Full_Paths | Path_Relations | chemin complet |
 |---------:|:----------:|:--------------:|:--------------:|

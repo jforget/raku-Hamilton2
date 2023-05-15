@@ -2182,12 +2182,182 @@ the relations with the regional paths contain the following values:
 | PDL    | 0..^1×19×4   |      2×5 | 0..^2    |        5 | 0..^5        |    1    |
 | PCH    | 0..^1×19×4×2 |        5 | 0..^5    |        1 | (empty)      | (empty) |
 
-The values `(empty)`  correspond to logically unused  values. To avoid
+The values "`(empty)`" correspond to logically unused values. To avoid
 special  cases in  the formulas,  these  values will  contain a  range
 `0..^1`, that is, containing a single zero, and a coefficient equal to 1.
- Fields `range2`,  `range3` and  `coef3`  are not  stored in  table
+Fields `range2`,  `range3` and  `coef3`  are not  stored in  table
 `Path_Relations`, because  they can be  easily found elsewhere  in the
-database.
+database or recomputed.
+
+In the web  page "Full Path _nn_ Within Region  _XXX_", you would have
+to run  this computation  for _all_  generic full  path linked  to the
+displayed specific  regional path. In  the example above,  the generic
+full path has 760 specific  full paths containing the "`CEN`" specific
+regional  path. When  iterating over  all possible  generic full  path
+containing the generic  regional path "`(CEN,7,4)`", you  may obtain a
+huge list of paths.
+
+We split the list in two parts. The first part include the list of all
+specific full paths linked to the current generic full path and to the
+current specific regional path (through the generic regional path).
+The second part iterates over the generic full paths containing
+"`(CEN,7,4)`" and each time selects a single specific full path as a
+sample.
+
+In summary, we want to display
+
+```
+https://localhost:3000/fr/egion-with-full-path/fr1970/CEN/2345
+```
+
+The generic full path (stored in the database) is `(fr1970,45)`, with:
+
+```
+num         45
+first_num   1800
+path_nb     760
+path        (HNO,2,1) → (IDF,327,19) → (CEN,7,4) → (PDL,8,2) → (PCH,20,5)
+```
+
+The `num_s2g` numbers for the specific regional paths are:
+
+| région | num_s2g |
+|:------:|--------:|
+| HNO    |  0      |
+| IDF    | 13      |
+| CEN    |  2      |
+| PDL    |  1      |
+| PCH    |  0      |
+
+As we are interested in `CEN`, we put aside "`2`".
+
+### First Part of the List
+
+The first part of the list of specific full paths contains `760 / 4 = 190`
+paths. This is a big list, so we build this list of shifts:
+
+```
+-200 -100 -90 -80 -70 -60 -50 -40 -30 -20 -10 -9 -8 -7 -6 -5 -4 -3 -2 -1 1 2 3 4 5 6 7 8 9 10 20 30 40 50 60 70 80 90 100 200
+```
+
+Since the `num_s2g` value for the current specific regional path is:
+
+```
+2345 - 1800 = 545 = (((x × 19 +  y) × 4 + z) × 2 + t) × 5 + u
+2345 - 1800 = 545 = (((0 × 19 + 13) × 4 + 2) × 2 + 1) × 5 + 0
+```
+
+We remove the terms corresponding to `CEN`, which gives:
+
+```
+base = ((0 × 19 + 13) × 2 + 1) × 5 + 0 = 135
+```
+
+We add this base to the list of shifts, which gives:
+
+```
+-65 35 45 55 65 75 85 95 105 115 125 126 127 128 129 130 131 132 133 134 136 137 138 139 140 141 142 143 144 145 155 165 175 185 195 205 215 225 235 335
+```
+
+We restrict the  list to the `0..^190` window (the  number of specific
+full paths in this part of the list), which gives:
+
+```
+35 45 55 65 75 85 95 105 115 125 126 127 128 129 130 131 132 133 134 136 137 138 139 140 141 142 143 144 145 155 165 175 185
+```
+
+For each resulting numbern we recompute the split into `(x,y,t,u)` (no `z`):
+
+```
+n = ((x × 19 +  y) × 2 + t) × 5 + u
+```
+
+But is it faster with the `coef2` formula:
+
+```
+n = coef2 × x + y
+```
+
+Which gives:
+
+```
+35 = 10 × 3 + 5
+45 = 10 × 4 + 5
+55 = 10 × 5 + 5
+...
+134 = 10 × 13 + 4
+136 = 10 × 13 + 6
+...
+185 = 10 × 18 + 5
+```
+
+We insert  back the "`2`" element  in these `(x,y)` doublets,  then we
+apply the full formula "`coef1 × x + coef2 × y + z`":
+
+```
+ 35 = 10 ×  3 + 5 → (3,5) → (3,2,5) → 40 × 3 + 10 × 2 + 5 = 145
+ 45 = 10 ×  4 + 5 → (4,5) → (4,2,5) → 40 × 4 + 10 × 2 + 5 = 185
+ 55 = 10 ×  5 + 5 → (5,5) → (5,2,5) → 40 × 5 + 10 × 2 + 5 = 225
+...
+134 = 10 × 13 + 4 → (13,4) → (13,2,4) → 40 × 13 + 10 × 2 + 4 = 544
+136 = 10 × 13 + 6 → (13,6) → (13,2,6) → 40 × 13 + 10 × 2 + 6 = 546
+...
+185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 40 × 18 + 10 × 2 + 5 = 745
+```
+
+The resulting  list is  the list  of `num_s2g`  for the  specific full
+paths.
+
+### Second Part of the List
+
+Computing `num_s2g=2` for the specific  regional path and `num=45` for
+the generic full path is the same as for the first part.
+
+There are  10 080 generic  full paths, so we  first build the  list of
+shifts:
+
+```
+-20000 -10000 -9000 -8000 ... -2 -1 1 2 ... 9 10 20 ... 90 100 200 ... 900 1000 2000 ... 9000 10000 20000
+```
+
+We add `num=45`, which gives:
+
+```
+-19955 -9955 -8955 -7955 ... 43 44 46 47 ... 54 55 65 ... 135 145 245 ... 945 1045 2045 ... 9045 10045 20045
+```
+
+The programme applies the `1..10080` window, which gives:
+
+```
+5 15 25 35 36 37 38 39 40 41 42 43 44 46 47 ... 54 55 65 ... 135 145 245 ... 945 1045 2045 ... 9045 10045
+```
+
+This gives the list of `full_num`  to look for in the `Path_Relations`
+table and the list of `num` to  look for in the `Full_Paths` view. The
+`Path_Relations` table provides the `coef2` number (the others are not
+needed) and the `Full_Paths` view  provides the `first_num` field. For
+each generic full path, we compute the formula:
+
+```
+n = first_num + coef1 × x + coef2 × y + z
+x = 0
+y = num_s2g
+z = 0
+```
+
+That is, actually, the formula `n = first_num + coef2 × num_s2g`.
+
+|          | Full_Paths | Path_Relations |   specific     |
+|---------:|:----------:|:--------------:|:--------------:|
+| full_num | first_num  |      coef2     |   full path    |
+|    5     |    209     |       52       |      313       |
+|   15     |    547     |       52       |      651       |
+|   25     |   1223     |      104       |     1431       |
+|  ...     |   ...      |      ...       |      ...       |
+| 10045    |  1113361   |        1       |   1113363      |
+
+The result of  the list of keys `num` for  the generated specific full
+paths.
 
 Fifth Attempt
 =============
