@@ -2266,7 +2266,7 @@ full paths in this part of the list), which gives:
 35 45 55 65 75 85 95 105 115 125 126 127 128 129 130 131 132 133 134 136 137 138 139 140 141 142 143 144 145 155 165 175 185
 ```
 
-For each resulting numbern we recompute the split into `(x,y,t,u)` (no `z`):
+For each resulting number, we recompute the split into `(x,y,t,u)` (no `z`):
 
 ```
 n = ((x × 19 +  y) × 2 + t) × 5 + u
@@ -2306,7 +2306,19 @@ apply the full formula "`coef1 × x + coef2 × y + z`":
 ```
 
 The resulting  list is  the list  of `num_s2g`  for the  specific full
-paths.
+paths. We just have to add `first_num` and the final list contains the
+`num` keys for specific full paths.
+
+```
+ 35 = 10 ×  3 + 5 → (3,5) → (3,2,5) → 1800 + 40 × 3 + 10 × 2 + 5 = 1945
+ 45 = 10 ×  4 + 5 → (4,5) → (4,2,5) → 1800 + 40 × 4 + 10 × 2 + 5 = 1685
+ 55 = 10 ×  5 + 5 → (5,5) → (5,2,5) → 1800 + 40 × 5 + 10 × 2 + 5 = 2025
+...
+134 = 10 × 13 + 4 → (13,4) → (13,2,4) → 1800 + 40 × 13 + 10 × 2 + 4 = 2344
+136 = 10 × 13 + 6 → (13,6) → (13,2,6) → 1800 + 40 × 13 + 10 × 2 + 6 = 2346
+...
+185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 1800 + 40 × 18 + 10 × 2 + 5 = 2545
+```
 
 ### Second Part of the List
 

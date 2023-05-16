@@ -2393,7 +2393,20 @@ applique la formule « `coef1 × x + coef2 × y + z` » :
 ```
 
 La liste  ainsi obtenue  est la  liste des  champs `num_s2g`  pour les
-chemins complets spécifiques.
+chemins  complets  spécifiques.  Il  ne reste  plus  qu'à  additionner
+`first_num` et l'on  obtient la liste des clés `num`  pour les chemins
+complets spécifiques.
+
+```
+ 35 = 10 ×  3 + 5 → (3,5) → (3,2,5) → 1800 + 40 × 3 + 10 × 2 + 5 = 1945
+ 45 = 10 ×  4 + 5 → (4,5) → (4,2,5) → 1800 + 40 × 4 + 10 × 2 + 5 = 1685
+ 55 = 10 ×  5 + 5 → (5,5) → (5,2,5) → 1800 + 40 × 5 + 10 × 2 + 5 = 2025
+...
+134 = 10 × 13 + 4 → (13,4) → (13,2,4) → 1800 + 40 × 13 + 10 × 2 + 4 = 2344
+136 = 10 × 13 + 6 → (13,6) → (13,2,6) → 1800 + 40 × 13 + 10 × 2 + 6 = 2346
+...
+185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 1800 + 40 × 18 + 10 × 2 + 5 = 2545
+```
 
 ### Deuxième morceau de la liste
 
