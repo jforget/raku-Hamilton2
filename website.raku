@@ -267,19 +267,25 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
     }
   }
-  my %path     = access-sql::read-specific-path($map, $num);
-  my @messages = access-sql::list-regional-messages($map, $region);
+  my %specific-path = access-sql::read-specific-path($map, $num);
+  my @messages 	    = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
 
   my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
-  my @full-numbers = access-sql::path-relations($map, $region, $region-num);
+  my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
   my @full-links;
   for @full-numbers.kv -> $i, $num {
     push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num");
   }
   my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
+
+  my @rel = relations-for-full-path-in-region($map, $region, $num);
+  my $rel1 = @rel[0];
+  my $rel2 = @rel[1];
+  my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]" ) } );
+  my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]" ) } );
 
   return region-with-full-path::render(lang           => $lng
                                      , mapcode        => $map
@@ -287,7 +293,7 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      , region         => %region
                                      , areas          => @areas
                                      , borders        => @borders
-                                     , path           => %path
+                                     , path           => %specific-path
                                      , messages       => @messages
                                      , rpath-links    => @links
                                      , fpath-links    => @full-links[@indices]
@@ -308,6 +314,45 @@ sub list-numbers(Int $max, Int $center) {
   }
   my @possible = (-1, 1 X× 1..9 X× @pow10) «+» $center;
   return @possible.sort.grep( { 1 ≤ $_ ≤ $max } );
+}
+
+sub relations-for-full-path-in-region(Str $map, Str $area, Int $sf-num) {
+  my ($gf-num, $gf-first-num, $gf-paths-nb, $gf-path) = access-sql::find-generic-full-path-for-specific($map, $sf-num.Int);
+  my $f-num-s2g = $sf-num - $gf-first-num;
+
+  my @words = $gf-path.comb( / \w+ / );
+  my Str @t-area  = @words[0, 3 ... *];
+  my Int @t-first = @words[1, 4 ... *].map({ +$_ });
+  my Int @t-coef  = @words[2, 5 ... *].map({ +$_ });
+  my Int @t-index = $f-num-s2g.polymod(@t-coef.reverse).reverse[1...*];
+
+  my Int $pivot-s2g = @t-index[@t-area.first( { $_ eq $area }, :k)];
+
+  my Int ($range1, $coef1, $coef2, $gr-num) = access-sql::find-relations($map, $gf-num, $area);
+  my Int $pivot-y = $f-num-s2g % $coef2;
+  my Int $pivot-x = ($f-num-s2g / $coef1).Int;
+  my Int $center  = $coef2 × $pivot-x + $pivot-y;
+
+  my @list1 = gather {
+    for list-numbers($range1 × $coef2, $center) -> Int $n {
+      my Int $y     = $n % $coef2;
+      my Int $x     = (($n - $y) / $coef2).Int;
+      my Int $n-s2g = $x × $coef1 + $pivot-s2g × $coef2 + $y;
+      my Int $full  = $n-s2g + $gf-first-num;
+      take ($n, $full);
+    }
+  }
+
+  my @list2 = gather {
+    for list-numbers(access-sql::max-path-number($map, 3, ''), $gf-num) -> $n {
+      my $related = access-sql::find-related-path($map, $n, $gr-num);
+      if $related {
+        take ($n, $related<first_num> + $related<coef2> × $pivot-s2g);
+        #say $related;
+      }
+    }
+  }
+  return (@list1, @list2);
 }
 
 =begin POD

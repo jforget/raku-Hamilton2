@@ -240,6 +240,41 @@ our sub path-relations(Str $map, Str $area, Int $region-num) {
   return $sth.execute($map, $area, $region-num).allrows.flat;
 }
 
+our sub find-generic-full-path-for-specific(Str $map, Int $spec-num) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select num, first_num, paths_nb, path
+  from   Full_Paths
+  where map  = ?
+  and   ? between first_num and (first_num + paths_nb - 1)
+  SQL
+  return $sth.execute($map, $spec-num).allrows.flat;
+}
+
+our sub find-relations(Str $map, Int $full-num, Str $area) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select range1, coef1, coef2, region_num
+  from   Path_Relations
+  where map      = ?
+  and   full_num = ?
+  and   area     = ?
+  SQL
+  return $sth.execute($map, $full-num.Str, $area).allrows.flat;
+}
+
+our sub find-related-path(Str $map, Int $full-num, Int $region-num) {
+  my $sth = $dbh.prepare(q:to/EOF/);
+  select FP.first_num, PR.range1, PR.coef1, PR.coef2
+  from Path_Relations as PR
+  join Full_Paths     as FP
+    on  FP.map = PR.map
+    and FP.num = PR.full_num
+  where PR.map        = ?
+  and   PR.full_num   = ?
+  and   PR.region_num = ?
+  EOF
+  return $sth.execute($map, $full-num.Str, $region-num.Str).row(:hash);
+}
+
 =begin POD
 
 =encoding utf8
