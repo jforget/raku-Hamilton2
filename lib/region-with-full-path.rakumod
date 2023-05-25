@@ -15,7 +15,11 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links) {
+sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
+      , :%path
+      , :@rpath-links
+      , :@fpath-links1
+      , :@fpath-links2) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -43,19 +47,19 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-region-paths').content($links);
 
-  if @fpath-links.elems eq 0 {
-    $at.at('p.list-of-full-paths')».remove;
+  if @fpath-links1.elems > 0 {
+    $links = join ' ', @fpath-links1.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('span.full-paths-1').content($links);
   }
-  else {
-    $links = join ' ', @fpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-full-paths').content($links);
-    $at.at('p.empty-list-of-full-paths')».remove;
+  if @fpath-links2.elems > 0 {
+    $links = join ' ', @fpath-links2.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('span.full-paths-2').content($links);
   }
 
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
-our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links) {
+our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links1, :@fpath-links2) {
   my &filling = anti-template :source("html/region-with-full-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
                 , mapcode        => $mapcode
@@ -66,7 +70,8 @@ our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :
                 , messages       => @messages
                 , path           => %path
                 , rpath-links    => @rpath-links
-                , fpath-links    => @fpath-links
+                , fpath-links1   => @fpath-links1
+                , fpath-links2   => @fpath-links2
                 );
 }
 

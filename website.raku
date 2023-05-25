@@ -275,11 +275,6 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
 
   my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
   my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
-  my @full-links;
-  for @full-numbers.kv -> $i, $num {
-    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num");
-  }
-  my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
 
   my @rel = relations-for-full-path-in-region($map, $region, $num);
   my $rel1 = @rel[0];
@@ -296,7 +291,8 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      , path           => %specific-path
                                      , messages       => @messages
                                      , rpath-links    => @links
-                                     , fpath-links    => @full-links[@indices]
+                                     , fpath-links1   => @links1
+                                     , fpath-links2   => @links2
                                      );
 }
 
