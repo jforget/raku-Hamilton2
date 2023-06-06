@@ -2371,6 +2371,63 @@ That is, actually, the formula `n = first_num + coef2 × num_s2g`.
 The result of  the list of keys `num` for  the generated specific full
 paths.
 
+Conlusions for the Fourth Variant
+---------------------------------
+
+As before,  the running  time for `gener1.raku`  has not  changed much
+from a variant to the next. A limited slow-down for some maps, nothing
+special. So let us take a look at `gener2.raku` instead.
+
+For maps `brit0` and `brit1`, doomed to fail, there is no change.
+
+More  curious, there  is no  change either  for map  `frreg`. This  is
+easily explained when you notice that there are 210 generic full paths
+for 210  specific full paths: each  generic full path groups  a single
+specific path.  This can be  explained in turn  by the fact  that each
+Y2015-region contains  1, 2  or 3  Y1975-regions and  the optimisation
+works only when a  big area contains at least 4  small areas (and even
+then,  it is  not  always  the case).  So  in  `frreg`, each  specific
+regional path  is associated with  a different generic  regional path.
+The  optimisation introduced  in  version 4  gave  no improvement  for
+`frreg`,  but  on  the  other  hand it  did  not  worsen  the  current
+situation.
+
+With map `fr1970`,  on the other hand, the  improvement is tremendous.
+With version 3, I  killed the process after 2 hours  and a half, there
+were  177 600 specific  full paths  generated up  to this  point. With
+version  4, the  programme  ran  for 9  minutes  and generated  10 080
+generic  full  paths, representing  1 114 960  specific  paths. If  we
+compare the aborted run of version 3 with version 4, the first 179 063
+specific  paths, embodied  by 1500  generic paths,  were processed  in
+about 50 seconds.
+
+For map  `mah2`, there is  also a big  improvement, even if  version 3
+successfully generated  all 122 720 specific full  paths without being
+interrupted.  These 122 720  paths were  generated  in 1  hour and  40
+minutes. But version  4 ran for just 13 seconds  and generated all 484
+generic  paths  corresponding  to  these  122 270  specific  paths.  A
+460-fold improvement!
+
+For maps  `brit2` and `mah1`,  the improvement was  also a big  one in
+relative values, yet a small one in absolute values. Version 3 spent 3
+minutes generating the 6840 full paths for `brit2` and spent 4 minutes
+to generate the 13 646 full paths for `mah1`. Version 4 spent only 2.6
+seconds to  generate the 36  generic full  paths for `brit2`  and only
+0.95 second to generate the 38 generic paths for `mah1`.
+
+On the other hand, nothing is fixed for map `fr2015`. During the third
+attempt, I interrupted the process  after more than 8 hours, 1 037 600
+full paths  having been  generated. For version  4, I  interrupted the
+process  after  20  minutes,  when  78 400  generic  full  paths  were
+generated.  These 78 400  generic paths  are equivalent  to 93 490 098
+specific paths.  For map `fr2015`,  there are 894 macro-paths,  220 of
+them  fruitless. When  I  killed  the process  after  20 minutes,  the
+currently  processed macro-path  was the  7th macro-path  out of  894.
+Doing a  rule of three,  we guess we  would end with  about 10 012 800
+generic  paths. The  optimisation aiming  at reducing  the combinatory
+explosion has  divided the number  of database records by  100 (78 400
+instead of 93 millions), but the combinatory explosion is still there.
+
 Fifth Attempt
 =============
 

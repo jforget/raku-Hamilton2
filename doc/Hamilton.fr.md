@@ -2459,6 +2459,69 @@ C'est-à-dire en fait la formule `n = first_num + coef2 × num_s2g`.
 Le résultat  est la  liste des  clés `num`  pour les  chemins complets
 spécifiques.
 
+Conclusions pour la quatrième variante
+--------------------------------------
+
+Comme précédemment,  le temps de  `gener1.raku` a très peu  changé. Un
+léger ralentissement pour certaines cartes, rien de notable. Examinons
+plutôt `gener2.raku`.
+
+Pour les cartes `brit0` et `brit1`,  qui sont vouées à l'échec, il n'y
+a pas de changement.
+
+Plus curieux,  pour la carte  `frreg` il n'y  a pas de  changement non
+plus, on reste à un temps  voisin d'une minute. Cela s'explique par le
+fait qu'il  y a 210  chemins génériques pour 210  chemins spécifiques,
+c'est-à-dire que chaque  chemin générique ne groupe  qu'un seul chemin
+spécifique.  Cela  s'explique  à  son  tour par  le  fait  que  chaque
+région-2015 contient seulement une, deux  ou trois régions-1970 et que
+le regroupement de chemins  régionaux spécifiques en chemins régionaux
+génériques ne peut avoir d'effets que si la région comporte au moins 4
+départements  (et encore,  ce n'est  pas toujours  le cas).  Donc dans
+`frreg`, chaque  chemin régional spécifique  est associé à  son propre
+chemin  régional  générique.  L'optimisation  de  la  variante  4  n'a
+absolument rien apporté à la carte  `frreg`, mais elle n'a rien enlevé
+non plus.
+
+Pour la carte `fr1970`, en revanche,  le gain est appréciable. Lors de
+la  troisième tentative,  j'ai interrompu  le processus  au bout  de 2
+heures   et  demie,   le  programme   avait  généré   177 600  chemins
+spécifiques. Lors de la quatrième  tentative, le programme a tourné en
+9  minutes, pour  générer 10 080  chemins génériques,  correspondant à
+1 114 960  chemins  spécifiques.  Si l'on  veut  comparer  l'exécution
+interrompue de  la version 3 avec  la version 4, les  179 063 premiers
+chemins spécifiques, matérialisés par 1500 chemins génériques, ont été
+traités en une cinquantaine de secondes.
+
+Pour la  carte `mah2`, le gain  est lui aussi appréciable,  même si la
+génération était allée à son terme  lors de la troisième tentative. Il
+avait  fallu  1 heure  et  40  minutes  pour générer  122 720  chemins
+spécifiques lors de la troisième tentative,  il a suffi de 13 secondes
+lors de la quatrième tentative pour générer les 484 chemins génériques
+correspondant à ces 122 720 chemins  spécifiques. Un gain d'un facteur
+460 !
+
+Pour  les cartes  `brit2`  et `mah1`,  le temps  de  génération de  la
+troisième variante était  déjà très correct : 3 minutes  pour les 6840
+chemins spécifiques  de `brit2` et  4 minutes pour les  13 646 chemins
+spécifiques de `mah1`. La quatrième variante  a réduit ces temps à 2,6
+secondes pour les  36 chemins génériques de `brit2` et  à 0,95 seconde
+pour les 38 chemins génériques de `mah1`.
+
+En revanche,  pour la carte  `fr2015`, rien  n'est résolu. Lors  de la
+troisième tentative,  j'ai interrompu  le traitement  après plus  de 8
+heures,  alors qu'il  y avait  1 037 600 chemins  spécifiques générés.
+Lors de la quatrième tentative,  j'ai interrompu le processus après 20
+minutes, alors  qu'il avait traité  78 400 chemins génériques,  ce qui
+correspond à 93 490 098 chemins spécifiques.  Pour cette carte, il y a
+894 macro-chemins,  dont 220 stériles.  Et lorsque j'ai  interrompu le
+traitement au bout de 20 minutes, on en était au macro-chemin numéro 7
+sur 894. En faisant faute de mieux une règle de trois, on aboutirait à
+un nombre de chemins génériques de 10 012 800. L'optimisation destinée
+à  limiter l'explosion  combinatoire  a permis  de  réduire le  nombre
+d'enregistrements d'un  facteur 100 (78 400  au lieu de  93 millions),
+mais l'explosion combinatoire est toujours là.
+
 Cinquième tentative
 ===================
 
