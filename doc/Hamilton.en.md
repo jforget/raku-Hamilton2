@@ -173,7 +173,7 @@ for overseas departments, but they are out of the scope). This 2-digit
 number will be used for `code`. For regions (the 2015 variant), I have
 used the last 3 characters of ISO 3166-2, as seen
 [on this page](https://en.wikipedia.org/wiki/ISO_3166-2:FR#First-level_metropolitan_subdivisions).
-For regions (the  1970 variant), I have used  unofficial 3-letter code
+For regions (the 1970 variant),  I have used unofficial 3-letter codes
 similar to the codes for the 2015-variant regions.
 
 Other fields are:
@@ -302,7 +302,7 @@ together.
 The `cyclic`  column contains `1`  for cyclic  paths and `0`  for open
 paths. A cyclic path is a path in which the first area shares a border
 with the  last area. For  example, in the  `fr1970` map and  the `PIC`
-region, the `02 →  60 → 80` is cyclic, because  it could be lengthened
+region, the `02 →  60 → 80` is cyclic, because  it could  be  extended
 to `02  → 60 → 80  → 02`. But  we keep this  path with a `80`  end. By
 convention, paths  with 1 region  and 0  borders are cyclic  (e.g. the
 single path in  region `IDF` in map `frreg`) and  paths with 2 regions
@@ -334,7 +334,18 @@ paths. It contains the following fields:
 * `map` the key from table `Maps`,
 * `full_num`, the `num` field of the full path,
 * `area`, the `code` field of the region or the `area` field of the regional path,
-* `region_num` the `num` field of the regional path.
+* `region_num` the `num` field of the regional path,
+* `range1`,
+* `coef1`,
+* `coef2`.
+
+Up  to  version  3,  `full_num`   and  `region_num`  are  the  numbers
+identifying specific full paths  and specific regional paths. Starting
+from version 4, these columns refer  to generic full paths and generic
+regional paths.
+
+The use of fields `range1`, `coef1` et `coef2` is explained in
+[fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
 
 Messages
 --------
@@ -502,8 +513,8 @@ checks  the list  of unvisited  departments  and finds  only one,  the
 Seine-Maritime (76).  Fortunately, this  department is a  neighbour of
 Eure (27). So `'76'` is added to  the string and removed from the set.
 Since the  set of unvisited  departments is  an empty set,  that means
-that the path `'50 → 61 → 14 →  27 → 76'` is no longer a partial path,
-but a complete regional path. It is stored in the `Paths` table and it
+that the path `'50 → 61 → 14 →  27 → 76'` is no longer a _partial_ path,
+but a _complete_ regional path. It is stored in the `Paths` table and it
 is not inserted in the list of partial paths.
 
 Special Case: Dead Ends
@@ -1051,7 +1062,7 @@ degrees are  not altered. This distorsion  is much less than  what you
 get with the Mercator projection at high latitudes.
 
 In  a second  step, the  geographical dimensions  are adjusted  to the
-canvas  dimensions,  that  is,  1000 × 1000  pixels.  For  continental
+canvas  dimensions,  that  is,  1000 × 1000  pixels, later reduced to 800 × 800.  For  continental
 France, which  is 950 km in the  E-W direction and 1000 km  in the N-S
 direction, there is no distorsion, because  the scale is about 1 pixel
 per km in both directions. This  is different with, say, Britanny. The
@@ -1188,7 +1199,7 @@ journal low, there  is also a `commit` immediately  followed by `begin
 transaction` every 100 complete paths.  Because of an error, there was
 also  a  `commit`  +  `begin  transaction`  each  time  the  programme
 processed  a partial  path.  The English  Hamiltonian path  generation
-would produce 16_182 complete paths after processing 3_562_769 partial
+would produce 16 182 complete paths after processing 3 562 769 partial
 paths. So there were more than 3 millions commits instead of just 162.
 
 I removed the superfluous `commit`  + `begin transaction`. The leak is
@@ -1298,7 +1309,7 @@ With only three big areas, there  are only two macro-paths, which were
 generated immediately. The generation  for Scotland and the generation
 for Wales were  also immediate. On the other hand,  the generation for
 England  (20 nodes,  40  edges)  needed 7  minutes  to generate  16182
-regional paths  (with 3_562_796 partial  paths, of which only  43 were
+regional paths  (with 3 562 796 partial  paths, of which only  43 were
 simultaneously in RAM).
 
 The 7 minutes are split into 4 minutes for the generation proper and 3
@@ -1721,7 +1732,7 @@ statement will run fast enough.
 
 I was right when  I decided to run the tests in  random order. Even if
 the tests use different files, we  can notice that the test which runs
-first is  significantly slower  that the other  tests, except  for the
+first is  significantly slower  that the other  tests minus the
 reference test. By  running several times the series of  tests, we can
 see that  all five tests are  better than the reference  test and that
 they are equivalent to each other.
@@ -1729,7 +1740,7 @@ they are equivalent to each other.
 Within the five solutions, I discard  the two solutions based on a new
 table. There is a very slight  overhead during step 3 (a few thousandths of a second), because we have
 to  fill the  table. Also,  this  table contains  only redundant  data
-alreaxdy  present  in  table  `Borders`,  therefore  it  degrades  the
+already  present  in  table  `Borders`,  therefore  it  degrades  the
 database  normalisation. We  must  admit that  these  two reasons  are
 rather feeble  reasons, but since  it is easy to  fix them, let  us do
 that.
@@ -2034,7 +2045,7 @@ to 345.
 
 In the records for the specific regional paths, we have:
 
-* `num` = 327 to 349
+* `num` = 327 to 345
 * `level` = 2
 * `generic_num` = 17.
 
@@ -2158,7 +2169,7 @@ z = num_s2g = 2
 0 ≤ u <  5
 ```
 
-The formula can be shorten in this way:
+The formula can be shortened in this way:
 
 ```
 num =  1800 + coef1 × x + coef2 × y + z

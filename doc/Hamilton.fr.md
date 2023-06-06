@@ -346,7 +346,18 @@ chemins régionaux. Elle contient les champs suivants :
 * `map` le code de la carte (table `Maps`),
 * `full_num` le numéro `num` du chemin complet,
 * `area` le code de la région,
-* `region_num` le numéro `num` du chemin régional.
+* `region_num` le numéro `num` du chemin régional,
+* `range1`,
+* `coef1`,
+* `coef2`.
+
+Jusqu'à la  version 3,  les champs  `full_num` et  `regional_num` font
+référence  à  des  chemins  complets  spécifiques  et  à  des  chemins
+régionaux spécifiques. À partir de la  version 4, ils font référence à
+des chemins complets génériques et à des chemins régionaux génériques.
+
+L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
+[quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
 
 Messages
 --------
@@ -1060,7 +1071,7 @@ http://localhost:3000/fr/macro-path/fr2015/2
 * L'affichage d'une région, avec les départements limitrophes. URL :
 http://localhost:3000/fr/region-map/fr2015/HDF
 
-* L'affichage d'une région, avec un micro-chemin. URL :
+* L'affichage d'une région, avec un chemin régional. URL :
 http://localhost:3000/fr/region-path/fr2015/HDF/3
 
 * L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
@@ -1082,7 +1093,7 @@ En  revanche,  les  degrés  de  latitude  ne  sont  pas  affectés.  La
 distorsion est donc moindre qu'avec la projection de Mercator.
 
 Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
-du  graphique  de  1000 × 1000  pixels.  Dans  le  cas  de  la  France
+du  graphique  de  1000 × 1000  pixels, réduite ultérieurement à 800 × 800.  Dans  le  cas  de  la  France
 continentale, qui  fait 950 km d'ouest  en est  et 1000 km du  nord au
 sud, cet ajustement  ne provoque pas de distorsion. Dans  le cas de la
 Bretagne, par exemple, les quatre points  représentant les quatre départements sont
@@ -1778,7 +1789,7 @@ changer le SQL pour remplacer la vue par la table.
 J'ai bien  fait de lancer les  tests dans un ordre  aléatoire. Même si
 les tests utilisent des fichiers  différents, on peut remarquer que le
 premier test, quel  qu'il soit, est toujours plus lent  que les autres
-tests, à l'exception  du test de référence `where  exists` sans index.
+tests (sauf le test de référence `where  exists` sans index).
 En lançant la série de tests  plusieurs fois, le test lancé en premier
 change d'un coup  à l'autre et on  peut se rendre compte  que les cinq
 tests sont  meilleurs que  le test de  référence et  équivalents entre
@@ -2113,7 +2124,7 @@ région `IDF` de la carte `fr1970`, les 19 chemins régionaux partant de
 
 Dans les enregistrements des chemins régionaux spécifiques, on aura donc :
 
-* `num` = 327 à 349
+* `num` = 327 à 345
 * `level` = 2
 * `generic_num` = 17.
 
