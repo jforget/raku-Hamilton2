@@ -1,8 +1,9 @@
-create table Maps (map        TEXT
-                 , name       TEXT
-                 , nb_macro   INTEGER
-                 , nb_full    INTEGER
-                 , nb_generic INTEGER
+create table Maps (map               TEXT
+                 , name              TEXT
+                 , nb_macro          INTEGER
+                 , nb_full           INTEGER
+                 , nb_generic        INTEGER
+                 , fruitless_reason  TEXT
                  );
 
 create table Areas (map      TEXT

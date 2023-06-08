@@ -24,15 +24,15 @@ for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
 }
 
 $dbh.execute(q:to/SQL/);
-insert into Maps values ('fr1970', 'Départements dans les régions de 1970', 0, 0, 0);
+insert into Maps values ('fr1970', 'Départements dans les régions de 1970', 0, 0, 0, '');
 SQL
 
 $dbh.execute(q:to/SQL/);
-insert into Maps values ('fr2015', 'Départements dans les régions de 2015', 0, 0, 0);
+insert into Maps values ('fr2015', 'Départements dans les régions de 2015', 0, 0, 0, '');
 SQL
 
 $dbh.execute(q:to/SQL/);
-insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015', 0, 0, 0);
+insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015', 0, 0, 0, '');
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);

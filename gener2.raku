@@ -142,6 +142,7 @@ sub MAIN (
   my Int $path-number = 0;
 
   # exit borders and single points of contact
+  $dbh.execute("begin transaction");
   $dbh.prepare(q:to/SQL/).execute($map);
   insert into Exit_Borders(map, from_code, upper_from, upper_to, spoc)
            select distinct map, from_code, upper_from, upper_to, 0
@@ -168,8 +169,11 @@ sub MAIN (
               where  B.map   = A.map
               and    B.upper = A.upper_from)
   SQL
+  $dbh.execute("commit");
 
   # fruitless macro-paths
+  my Str $total-fruitless-reason = '';
+  $dbh.execute("begin transaction");
   $upd-fruitless-p0.execute($map);
   $upd-fruitless-b0.execute($map);
   my $extract-fruitless = $dbh.prepare(q:to/SQL/);
@@ -191,6 +195,12 @@ sub MAIN (
 
       $sto-mesg.execute($map, DateTime.now.Str, 'FUL4', '', 0, $border-str);
       say "{DateTime.now.hh-mm-ss} Fruitless border: $border-str";
+      if $total-fruitless-reason eq '' {
+        $total-fruitless-reason = $border-str;
+      }
+      else {
+        $total-fruitless-reason ~= ", " ~ $border-str;
+      }
 
       $border-str = "$border<upper_to> → $border<upper_from>";
       $upd-fruitless-p2.execute(", " ~ $border-str, $map, '%' ~  $border-str ~ '%');
@@ -206,8 +216,48 @@ sub MAIN (
   SQL
   my Int @nb;
   @nb = $counting.execute($map).row();
-  $sto-mesg.execute($map, DateTime.now.Str, 'FUL5', '', @nb[0], '');
   say "{DateTime.now.hh-mm-ss} Fruitless macro-paths: @nb[0]";
+
+  $extract-fruitless = $dbh.prepare(q:to/SQL/);
+  select A.upper_to    as up_from
+       , A.upper_from  as up_via
+       , B.upper_to    as up_to
+       , A.spoc        as spoc_from
+       , B.spoc        as spoc_to
+  from Exit_Borders A
+  join Exit_Borders B
+    on  B.map       = A.map
+    and B.from_code = A.from_code
+    and B.upper_to != A.upper_to
+  where A.map     = ?
+  and   spoc_from = 1
+  and   spoc_to   = 1
+  order by up_from, up_via, up_to
+  SQL
+  for $extract-fruitless.execute($map).allrows(:array-of-hash) -> $path {
+    my Str $path-str = "$path<up_from> → $path<up_via> → $path<up_to>";
+    #say $path-str;
+    $upd-fruitless-p2.execute(", " ~ $path-str, $map, '%' ~  $path-str ~ '%');
+    $upd-fruitless-p1.execute(       $path-str, $map, '%' ~  $path-str ~ '%');
+    if $path<up_from> lt $path<up_to> {
+      if $total-fruitless-reason eq '' {
+        $total-fruitless-reason = $path-str;
+      }
+      else {
+        $total-fruitless-reason ~= ", " ~ $path-str;
+      }
+    }
+  }
+  @nb = $counting.execute($map).row();
+  $sto-mesg.execute($map, DateTime.now.Str, 'FUL5', '', @nb[0], '');
+  $dbh.prepare(q:to/SQL/).execute($total-fruitless-reason, $map);
+  update Maps
+  set    fruitless_reason = ?
+  where  map = ?
+  SQL
+  $dbh.execute("commit");
+  say "{DateTime.now.hh-mm-ss} Fruitless macro-paths: @nb[0]";
+  say $total-fruitless-reason;
 
   my Int $partial-paths-nb   =    0;
   my Int $partial-threshold  =    0;
