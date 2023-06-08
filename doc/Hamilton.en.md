@@ -1746,7 +1746,10 @@ rather feeble  reasons, but since  it is easy to  fix them, let  us do
 that.
 
 As for  the three other solutions,  I have no further  criterion, so I
-adopt the view defined by `select distinct`.
+adopt the view defined by `select distinct`. And with the
+[fifth version of the software](#user-content-fifth-version),
+I upgrade  this view to a  real table, because  I need to store  a new
+column.
 
 Result for the first programme
 ------------------------------
@@ -2439,7 +2442,7 @@ generic  paths. The  optimisation aiming  at reducing  the combinatory
 explosion has  divided the number  of database records by  100 (78 400
 instead of 93 millions), but the combinatory explosion is still there.
 
-Fifth Attempt
+Fifth Version
 =============
 
 The  third  attempt aimed  at  avoiding  the processing  of  fruitless
@@ -2483,9 +2486,40 @@ single point of  contact for all neighbour regions, yet  this is not a
 problem. For example, the `BRE` small  area is single point of contact
 for both  `NOR` (Normandy) and `PDL`  (Pays de la Loire),  but it does
 not prevent the  macro-paths `%NOR → BRE → PDL%`  from generating full
-paths `%HNO → BNO → BRE → PDL%`
+paths  `%HNO →  BNO →  BRE →  PDL%`. These  "trivial single  points of
+contacts" will not trigger a fruitless flagging.
 
 ![Excerpt from the frreg map with Bretagne, Pays de la Loire, Centre-Val-de-Loire and Île-de-France](BRE-CEN-IDF-PDL.png)
+
+I know  that this new optimisation  will not solve the  problem of the
+combinatory   explosion  of   `fr2015`,  but   I  will   implement  it
+nevertheless.
+
+Implementation
+--------------
+
+To  implement  this  optimisation,  I take  the  `Exit_Borders`  view,
+upgrade it to a real table and  I add a new column `spoc`, for "single
+point of contact". Actually, the meaning is rather "non-trivial single
+point of  contact". In map `fr1970`,  this field will contain  `1` for
+`(77,BOU)`, `(77,CHA)`, `(27,IDF)`, `(27,CEN)`,  `(27,BNO)` and so on.
+But in map `frreg`, it  will still be `0` for`(BRE,NOR)`, `(BRE,PDL)`,
+`(IDF,NOR)`, `(IDF,HDF)` and so on,  because these are trivial spoc's.
+On the other hand,  the `spoc` column will be filled  with `1` for map
+`frreg`  and for  `(PIC,NOR)`,  `(PIC,IDF)`  and `(PIC,GES)`,  because
+Picardy  is  a  non-trivial  single point  of  contact  for  Normandy,
+Île-de-France and Grand-Est.
+
+To keep the code readable, the table `Exit_Borders` will be updated in
+three steps.
+
+1. A `select distinct`, as in the benchmark programme for the second version,
+
+2. An  `update` with a  `select count(*)` sub-request, to  fill `spoc`
+with `1` for both trivial spoc's and non-trivial spoc's.
+
+3. Another `update` to fill back `spoc` with `0` for trivial spoc's.
+
 
 License
 =======

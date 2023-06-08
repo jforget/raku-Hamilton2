@@ -1804,7 +1804,10 @@ Reconnaissons que ces deux inconvénients  sont très bénins, mais comme
 il est facile de les corriger, faisons-le.
 
 Finalement,   entre   les    trois   solutions   restantes,   j'adopte
-arbitrairement la vue basée sur un `select distinct`.
+arbitrairement la vue basée sur un `select distinct`. Et avec la
+[cinquième version du logiciel](#user-content-cinquième-version)
+du projet,  je reviens sur  ma décision  et j'utilise une  vraie table
+contenant un nouveau champ dont j'ai besoin.
 
 Résultat de la première étape
 -----------------------------
@@ -2533,8 +2536,8 @@ un nombre de chemins génériques de 10 012 800. L'optimisation destinée
 d'enregistrements d'un  facteur 100 (78 400  au lieu de  93 millions),
 mais l'explosion combinatoire est toujours là.
 
-Cinquième tentative
-===================
+Cinquième version
+=================
 
 La  troisième tentative  avait  pour but  d'éviter  le traitement  des
 macro-chemins stériles.  L'optimisation par les frontières  stériles a
@@ -2581,9 +2584,43 @@ régions  voisines,   mais  ce  n'est   pas  un  problème.   Ainsi,  le
 de contact  pour la région `NOR`  (Normandie) et pour la  région `PDL`
 (Pays-de-la-Loire),  mais  cela  ne  pose pas  de  problème  pour  les
 macro-chemins `%NOR →  BRE → PDL%` qui donneront  des chemins complets
-`%HNO → BNO → BRE → PDL%`
+`%HNO → BNO  → BRE → PDL%`. Ces « points  de contact unique triviaux »
+ne provoqueront pas de rejet.
 
 ![Extrait de la carte frreg avec la Bretagne, les Pays de la Loire, le Centre-Val-de-Loire et l'Île-de-France](BRE-CEN-IDF-PDL.png)
+
+Je  sais  bien que  cette  nouvelle  optimisation  ne réglera  pas  le
+problème de l'explosion combinatoire de `fr2015`, mais je l'implémente
+quand même.
+
+Implémentation
+--------------
+
+Pour implémenter cette optimisation,  je prends la vue `Exit_Borders`,
+je la  convertis en  table et  je lui ajoute  un nouveau  champ `spoc`
+(pour _single  point of contact_  ou « point de contact  unique »). En
+fait, c'est  plutôt « point de  contact unique non trivial ».  Dans la
+carte  `fr1970`,  ce  champ  sera  alimenté  à  `1`  pour  `(77,BOU)`,
+`(77,CHA)`, `(27,IDF)`,  `(27,CEN)`, `(27,BNO)` et ainsi  de suite. En
+revanche, dans  la carte `frreg`,  il restera à `0`  pour `(BRE,NOR)`,
+`(BRE,PDL)`,  `(IDF,NOR)`, `(IDF,HDF)`  et  ainsi de  suite, car  dans
+cette carte il s'agit de points de contact uniques _triviaux_. Il sera
+quand  même alimenté  dans  `frreg` pour  `(PIC,NOR)`, `(PIC,IDF)`  et
+`(PIC,GES)`, car pour la Picardie, il  s'agit bel et bien de points de
+contact uniques non triviaux.
+
+Pour rester simple  et clair dans le code, la  table sera alimentée en
+trois temps.
+
+1. Un `select disctinct` comme c'était prévu à l'origine (voir dans le
+programme de _benchmark_), le champ `spoc` étant initialisé à `0`,
+
+2. Un  `update` avec  une sous-requête  `select count(*)`,  pour faire
+passer `spoc`  à `1` pour tous  les points de contact  uniques, qu'ils
+soient triviaux ou pas,
+
+3. Un `update`  pour remettre `spoc` à `0` pour  les points de contact
+uniques triviaux.
 
 LICENCE
 =======
