@@ -157,6 +157,8 @@ Other fields are:
 * `nb_full` the number of full paths for this map,
 * `nb_generic` field described in the
 [fourth version of the software](#user-content-fourth-attempt).
+* `fruitless_reason` field described in the
+[fifth version of the software](#user-content-fifth-version),
 
 Areas
 -----
@@ -2520,6 +2522,25 @@ with `1` for both trivial spoc's and non-trivial spoc's.
 
 3. Another `update` to fill back `spoc` with `0` for trivial spoc's.
 
+To  identify the  fruitless macro-paths,  we  use a  self-join on  the
+`Exit_Borders`  table.  Until  now,   the  "obvious"  direction  of  a
+`Exit_Borders` record was to start from the small area `from_code` and
+to stop  at the big  area `upper_to`. For  this self-join, one  of the
+`Exit_Borders`  records  is  crossed   backwards  from  the  big  area
+`upper_to` to  the small  area `from_code` and  then the  other record
+takes over  and is  crossed in  the natural  way, from  `from_code` to
+`upper_to`.
+
+With  this fifth  version, I  add a  `fruitless_reason` column  to the
+`Maps` table, to summarise all the `fruitless_reason` columns from all
+the  macro-paths belonging  to the  map.  This field  stores both  the
+fruitless borders  from the  third variant  and the  fruitless triples
+from  the fifth  variant. This  field is  not used  in the  extraction
+programmes, its  only use is to  be displayed in the  webpages showing
+the  map (macro  or full).  The  fruitless borders  and the  fruitless
+triples are displayed  in one direction only, that is,  if the webpage
+displays the fruitless part `A → B`, it will not display the part `B →
+A`.
 
 License
 =======

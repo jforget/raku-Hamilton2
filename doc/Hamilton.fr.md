@@ -166,6 +166,8 @@ Les autres informations sont :
 * `nb_full` le nombre de chemins complets pour cette carte.
 * `nb_generic` champ décrit dans la
 [quatrième version du logiciel](#user-content-quatrième-tentative).
+* `fruitless_reason` champ décrit dans la
+[cinquième version du logiciel](#user-content-cinquième-version)
 
 Areas
 -----
@@ -2621,6 +2623,25 @@ soient triviaux ou pas,
 
 3. Un `update`  pour remettre `spoc` à `0` pour  les points de contact
 uniques triviaux.
+
+L'identification  des   macro-chemins  stériles   se  fait   avec  une
+auto-jointure sur  la table  `Exit_Borders`. Jusqu'à présent,  le sens
+« naturel »  d'un enregistrement  `Exit_Borders` était  du département
+`from_code`   vers  la   région  `upper_to`.   Pour  les   besoins  de
+l'auto-jointure, on prend l'un des deux enregistrements `Exit_Borders`
+« à  rebrousse-poil »,  en  partant  de la  région  `upper_to`  et  en
+arrivant  au  département  `from_code`, pour  continuer  avec  l'autre
+enregistrement de la jointure, dans le sens habituel.
+
+Je  profite   de  cette  nouvelle   version  pour  ajouter   le  champ
+`fruitless_reason` à la  table `Maps`, pour faire la  synthèse de tous
+les champs `fruitless_reason` des  macro-chemins associés à une table.
+Ce champ  contient à la fois  les frontières stériles de  la troisième
+version et les triplets stériles de  la cinquième version. Ce champ ne
+sert  pas pour  les  programmes  de calcul,  il  sert uniquement  pour
+l'affichage  des pages  des  cartes. Les  frontières  stériles et  les
+triplets stériles sont affichés dans un seul sens, c'est-à-dire que si
+l'on affiche `A → B`, on n'affichera pas `B → A`.
 
 LICENCE
 =======
