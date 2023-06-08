@@ -63,6 +63,13 @@ create table Messages (map        TEXT
                     ,  data       TEXT
                     );
 
+create table Exit_Borders (map       TEXT
+                        , from_code  TEXT
+                        , upper_from TEXT
+                        , upper_to   TEXT
+                        , spoc       INTEGER
+                        );
+
 
 
 create view Big_Areas (map, code, name, long, lat, color, nb_paths)
@@ -113,7 +120,3 @@ create view Full_Paths    (map, num, path, from_code, to_code, macro_num, first_
             from           Paths
             where          level = 3;
 
-create view Exit_Borders   (map, from_code, upper_to)
-         as select distinct map, from_code, upper_to
-            from            Borders
-            where           level = 2

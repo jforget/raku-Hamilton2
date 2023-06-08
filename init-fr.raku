@@ -19,7 +19,7 @@ my $dbh = DBIish.connect('SQLite', database => dbname());
 
 # No this is not a Bobby Tables problem. All table names are controlled by the programme,
 # they do not come from an external source.
-for <Maps Areas Borders Paths Path_Relations Messages> -> $table {
+for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
   $dbh.execute("delete from $table where map in ('fr1970', 'fr2015', 'frreg');");
 }
 

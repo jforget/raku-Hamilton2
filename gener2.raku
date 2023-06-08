@@ -135,10 +135,39 @@ sub MAIN (
   $dbh.execute("begin transaction");
   $dbh.execute("delete from Paths          where map = ? and level = 3"          , $map);
   $dbh.execute("delete from Path_Relations where map = ?"                        , $map);
+  $dbh.execute("delete from Exit_Borders   where map = ?"                        , $map);
   $dbh.execute("delete from Messages       where map = ? and errcode like 'FUL_'", $map);
   $sto-mesg.execute($map, DateTime.now.Str, 'FUL1', '', 0, '');
   $dbh.execute("commit");
   my Int $path-number = 0;
+
+  # exit borders and single points of contact
+  $dbh.prepare(q:to/SQL/).execute($map);
+  insert into Exit_Borders(map, from_code, upper_from, upper_to, spoc)
+           select distinct map, from_code, upper_from, upper_to, 0
+           from   Small_Borders
+           where  map = ?
+           and    upper_from != upper_to
+  SQL
+  $dbh.prepare(q:to/SQL/).execute($map);
+  update Exit_Borders as A
+  set    spoc = 1
+  where  A.map = ?
+  and    1 = (select count(*)
+              from   Exit_Borders B
+              where  B.map = A.map
+              and    B.upper_from = A.upper_from
+              and    B.upper_to   = A.upper_to)
+  SQL
+  $dbh.prepare(q:to/SQL/).execute($map);
+  update Exit_Borders as A
+  set    spoc = 0
+  where  A.map = ?
+  and    1 = (select count(*)
+              from   Small_Areas B
+              where  B.map   = A.map
+              and    B.upper = A.upper_from)
+  SQL
 
   # fruitless macro-paths
   $upd-fruitless-p0.execute($map);
