@@ -26,6 +26,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 
   if %map<fruitless_reason> eq '' {
+    $at.at('span.fruitless-reason')».remove;
     $at.at('p.fruitless')».remove;
   }
   else {

@@ -96,7 +96,7 @@ our sub draw(@areas, @borders, :$path = '') {
       $thickness = 3;
     }
 
-    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness);
+    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>);
   }
 
   my Str $imagemap = '';
@@ -110,17 +110,25 @@ our sub draw(@areas, @borders, :$path = '') {
   return $image.png(), $imagemap;
 }
 
-sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name, Int $thickness) {
+sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name, Int $thickness, Int $fruitless) {
+  my $style;
+  if $fruitless {
+    $img.setStyle($color, $color, gdTransparent, gdTransparent);
+    $style = gdStyled;
+  }
+  else {
+    $style = $color;
+  }
   $img.setThickness($thickness);
   if $x-mid == 0 && $y-mid == 0 {
-    $img.line($x-from, $y-from, $x-to , $y-to , $color);
+    $img.line($x-from, $y-from, $x-to , $y-to , $style);
     if $color-name eq 'Black' {
       $img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
     }
   }
   else {
-    $img.line($x-from, $y-from, $x-mid, $y-mid, $color);
-    $img.line($x-mid , $y-mid , $x-to , $y-to , $color);
+    $img.line($x-from, $y-from, $x-mid, $y-mid, $style);
+    $img.line($x-mid , $y-mid , $x-to , $y-to , $style);
     if $color-name eq 'Black' {
       # do not bother to compute the middle of the line, just use the turning point
       $img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
