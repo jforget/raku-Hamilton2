@@ -2640,9 +2640,14 @@ l'auto-jointure, on prend l'un des deux enregistrements `Exit_Borders`
 arrivant  au  département  `from_code`, pour  continuer  avec  l'autre
 enregistrement de la jointure, dans le sens habituel.
 
+Et à la réflexion, j'estime qu'il  n'y a pas lieu de dissocier l'ordre
+`update`  de  l'étape  2  et  celui de  l'étape  3.  En  ajoutant  les
+commentaires qui vont  bien, la lisibilité du  programme de génération
+est conservée.
+
 Je  profite   de  cette  nouvelle   version  pour  ajouter   le  champ
 `fruitless_reason` à la  table `Maps`, pour faire la  synthèse de tous
-les champs `fruitless_reason` des  macro-chemins associés à une table.
+les champs `fruitless_reason` des  macro-chemins associés à une carte.
 Ce champ  contient à la fois  les frontières stériles de  la troisième
 version et les triplets stériles de  la cinquième version. Ce champ ne
 sert  pas pour  les  programmes  de calcul,  il  sert uniquement  pour

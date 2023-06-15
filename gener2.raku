@@ -154,17 +154,14 @@ sub MAIN (
   update Exit_Borders as A
   set    spoc = 1
   where  A.map = ?
+  -- single points of access
   and    1 = (select count(*)
               from   Exit_Borders B
               where  B.map = A.map
               and    B.upper_from = A.upper_from
               and    B.upper_to   = A.upper_to)
-  SQL
-  $dbh.prepare(q:to/SQL/).execute($map);
-  update Exit_Borders as A
-  set    spoc = 0
-  where  A.map = ?
-  and    1 = (select count(*)
+  -- but not trivial single points of access
+  and   1 != (select count(*)
               from   Small_Areas B
               where  B.map   = A.map
               and    B.upper = A.upper_from)

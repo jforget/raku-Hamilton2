@@ -2537,6 +2537,10 @@ to stop  at the big  area `upper_to`. For  this self-join, one  of the
 takes over  and is  crossed in  the natural  way, from  `from_code` to
 `upper_to`.
 
+Actually, I  think that there is  no need to separate  the `update` in
+step 3 from the `update` in step 2. If I add comments, the readability
+is kept.
+
 With  this fifth  version, I  add a  `fruitless_reason` column  to the
 `Maps` table, to summarise all the `fruitless_reason` columns from all
 the  macro-paths belonging  to the  map.  This field  stores both  the

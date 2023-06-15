@@ -35,6 +35,9 @@ our sub draw(@areas, @borders, :$path = '') {
   my Num $lat-min  = min map { $_<lat>  }, @areas;
   my Num $lat-max  = max map { $_<lat>  }, @areas;
   my Int $char-max = max map { $_<code>.chars }, @areas;
+  if $char-max == 1 {
+    $char-max = 2;
+  }
   my Int $margin   = 6 × $char-max;
 
   for @borders -> $border {
@@ -139,7 +142,10 @@ sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-t
 sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url) {
   my ($dx, $dy) = ( 2.5 × $txt.chars,  5);
   my Int $radius   =  5 × $txt.chars;
-  my Int $diameter = 10 × $txt.chars;
+  if $radius < 10 {
+    $radius = 10;
+  }
+  my Int $diameter =  2 × $radius;
   $img.setThickness(3);
   $img.filledEllipse($x, $y, $diameter, $diameter, $backg);
   $img.ellipse(      $x, $y, $diameter, $diameter, $color);
