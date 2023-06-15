@@ -1,0 +1,694 @@
+generating macro-paths for brit0
+20:10:28 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:28 complete paths 2, partial paths 2 (to-do list 0 / 1)
+20:10:28 complete paths 2, partial paths 2 (to-do list 0 / 1)
+generating regional paths for all regions of brit0
+generating regional paths for region SCO of brit0
+20:10:28 computing generic regional paths for region SCO of brit0
+generating regional paths for region ENG of brit0
+20:10:28 complete paths 0, partial paths 21 (to-do list 20 / 20)
+20:10:29 complete paths 0, partial paths 10000 (to-do list 30 / 41)
+20:10:29 complete paths 1, partial paths 10323 (to-do list 31 / 41)
+20:10:30 complete paths 25, partial paths 20000 (to-do list 34 / 41)
+20:10:30 complete paths 62, partial paths 30000 (to-do list 26 / 41)
+20:10:31 complete paths 100, partial paths 31603 (to-do list 27 / 41)
+20:10:31 complete paths 133, partial paths 40000 (to-do list 26 / 41)
+20:10:32 complete paths 200, partial paths 49558 (to-do list 22 / 41)
+20:10:32 complete paths 203, partial paths 50000 (to-do list 29 / 41)
+20:10:33 complete paths 265, partial paths 60000 (to-do list 28 / 41)
+20:10:33 complete paths 300, partial paths 61030 (to-do list 27 / 41)
+20:10:33 complete paths 400, partial paths 64717 (to-do list 25 / 41)
+20:10:34 complete paths 419, partial paths 70000 (to-do list 25 / 41)
+20:10:34 complete paths 428, partial paths 80000 (to-do list 33 / 42)
+20:10:35 complete paths 431, partial paths 90000 (to-do list 35 / 42)
+20:10:36 complete paths 431, partial paths 100000 (to-do list 34 / 42)
+20:10:36 complete paths 431, partial paths 110000 (to-do list 33 / 42)
+20:10:37 complete paths 431, partial paths 120000 (to-do list 33 / 42)
+20:10:38 complete paths 455, partial paths 130000 (to-do list 34 / 42)
+20:10:39 complete paths 455, partial paths 140000 (to-do list 27 / 42)
+20:10:39 complete paths 455, partial paths 150000 (to-do list 26 / 42)
+20:10:40 complete paths 476, partial paths 160000 (to-do list 33 / 42)
+20:10:41 complete paths 500, partial paths 167371 (to-do list 32 / 42)
+20:10:41 complete paths 575, partial paths 170000 (to-do list 26 / 42)
+20:10:41 complete paths 600, partial paths 174506 (to-do list 31 / 42)
+20:10:42 complete paths 643, partial paths 180000 (to-do list 29 / 42)
+20:10:42 complete paths 700, partial paths 185974 (to-do list 26 / 42)
+20:10:42 complete paths 706, partial paths 190000 (to-do list 33 / 42)
+20:10:43 complete paths 706, partial paths 200000 (to-do list 32 / 42)
+20:10:44 complete paths 706, partial paths 210000 (to-do list 32 / 42)
+20:10:45 complete paths 770, partial paths 220000 (to-do list 31 / 42)
+20:10:45 complete paths 776, partial paths 230000 (to-do list 29 / 42)
+20:10:45 complete paths 800, partial paths 232719 (to-do list 27 / 42)
+20:10:46 complete paths 874, partial paths 240000 (to-do list 30 / 42)
+20:10:46 complete paths 900, partial paths 243128 (to-do list 26 / 42)
+20:10:47 complete paths 941, partial paths 250000 (to-do list 29 / 42)
+20:10:47 complete paths 1000, partial paths 251878 (to-do list 31 / 42)
+20:10:48 complete paths 1076, partial paths 260000 (to-do list 33 / 42)
+20:10:48 complete paths 1094, partial paths 270000 (to-do list 30 / 42)
+20:10:49 complete paths 1100, partial paths 273875 (to-do list 28 / 42)
+20:10:49 complete paths 1118, partial paths 280000 (to-do list 24 / 42)
+20:10:50 complete paths 1118, partial paths 290000 (to-do list 35 / 42)
+20:10:51 complete paths 1130, partial paths 300000 (to-do list 33 / 42)
+20:10:51 complete paths 1130, partial paths 310000 (to-do list 28 / 42)
+20:10:52 complete paths 1130, partial paths 320000 (to-do list 33 / 42)
+20:10:53 complete paths 1200, partial paths 329709 (to-do list 28 / 42)
+20:10:53 complete paths 1221, partial paths 330000 (to-do list 29 / 42)
+20:10:54 complete paths 1238, partial paths 340000 (to-do list 31 / 42)
+20:10:54 complete paths 1300, partial paths 347980 (to-do list 29 / 42)
+20:10:54 complete paths 1306, partial paths 350000 (to-do list 28 / 42)
+20:10:55 complete paths 1327, partial paths 360000 (to-do list 27 / 42)
+20:10:55 complete paths 1400, partial paths 364721 (to-do list 26 / 42)
+20:10:56 complete paths 1402, partial paths 370000 (to-do list 33 / 42)
+20:10:57 complete paths 1402, partial paths 380000 (to-do list 32 / 42)
+20:10:57 complete paths 1405, partial paths 390000 (to-do list 32 / 42)
+20:10:58 complete paths 1417, partial paths 400000 (to-do list 29 / 42)
+20:10:59 complete paths 1426, partial paths 410000 (to-do list 27 / 42)
+20:10:59 complete paths 1437, partial paths 420000 (to-do list 29 / 42)
+20:11:00 complete paths 1447, partial paths 430000 (to-do list 27 / 42)
+20:11:01 complete paths 1447, partial paths 440000 (to-do list 32 / 42)
+20:11:02 complete paths 1447, partial paths 450000 (to-do list 28 / 42)
+20:11:02 complete paths 1447, partial paths 460000 (to-do list 29 / 42)
+20:11:03 complete paths 1447, partial paths 470000 (to-do list 27 / 42)
+20:11:04 complete paths 1447, partial paths 480000 (to-do list 27 / 42)
+20:11:04 complete paths 1500, partial paths 483474 (to-do list 26 / 42)
+20:11:05 complete paths 1519, partial paths 490000 (to-do list 28 / 42)
+20:11:05 complete paths 1537, partial paths 500000 (to-do list 31 / 42)
+20:11:06 complete paths 1561, partial paths 510000 (to-do list 29 / 42)
+20:11:07 complete paths 1600, partial paths 515149 (to-do list 26 / 42)
+20:11:07 complete paths 1620, partial paths 520000 (to-do list 27 / 42)
+20:11:07 complete paths 1700, partial paths 526044 (to-do list 23 / 42)
+20:11:08 complete paths 1739, partial paths 530000 (to-do list 30 / 42)
+20:11:08 complete paths 1800, partial paths 537314 (to-do list 26 / 42)
+20:11:08 complete paths 1826, partial paths 540000 (to-do list 28 / 42)
+20:11:09 complete paths 1900, partial paths 548821 (to-do list 23 / 42)
+20:11:09 complete paths 1934, partial paths 550000 (to-do list 27 / 42)
+20:11:10 complete paths 1973, partial paths 560000 (to-do list 26 / 42)
+20:11:10 complete paths 2000, partial paths 562525 (to-do list 25 / 42)
+20:11:11 complete paths 2047, partial paths 570000 (to-do list 25 / 42)
+20:11:11 complete paths 2100, partial paths 577177 (to-do list 22 / 42)
+20:11:12 complete paths 2135, partial paths 580000 (to-do list 22 / 42)
+20:11:12 complete paths 2135, partial paths 590000 (to-do list 32 / 42)
+20:11:13 complete paths 2135, partial paths 600000 (to-do list 25 / 42)
+20:11:14 complete paths 2197, partial paths 610000 (to-do list 25 / 42)
+20:11:14 complete paths 2200, partial paths 611418 (to-do list 24 / 42)
+20:11:15 complete paths 2291, partial paths 620000 (to-do list 28 / 42)
+20:11:15 complete paths 2291, partial paths 630000 (to-do list 31 / 42)
+20:11:16 complete paths 2300, partial paths 636668 (to-do list 27 / 42)
+20:11:16 complete paths 2309, partial paths 640000 (to-do list 25 / 42)
+20:11:17 complete paths 2321, partial paths 650000 (to-do list 28 / 42)
+20:11:17 complete paths 2321, partial paths 660000 (to-do list 31 / 42)
+20:11:18 complete paths 2341, partial paths 670000 (to-do list 25 / 42)
+20:11:19 complete paths 2400, partial paths 674232 (to-do list 24 / 42)
+20:11:19 complete paths 2500, partial paths 678553 (to-do list 23 / 42)
+20:11:19 complete paths 2551, partial paths 680000 (to-do list 22 / 42)
+20:11:19 complete paths 2600, partial paths 683093 (to-do list 22 / 42)
+20:11:20 complete paths 2651, partial paths 690000 (to-do list 28 / 42)
+20:11:20 complete paths 2651, partial paths 700000 (to-do list 27 / 42)
+20:11:21 complete paths 2651, partial paths 710000 (to-do list 28 / 42)
+20:11:22 complete paths 2657, partial paths 720000 (to-do list 21 / 42)
+20:11:22 complete paths 2700, partial paths 725935 (to-do list 26 / 42)
+20:11:23 complete paths 2780, partial paths 730000 (to-do list 27 / 42)
+20:11:23 complete paths 2793, partial paths 740000 (to-do list 27 / 42)
+20:11:24 complete paths 2800, partial paths 746774 (to-do list 27 / 42)
+20:11:24 complete paths 2810, partial paths 750000 (to-do list 27 / 42)
+20:11:25 complete paths 2818, partial paths 760000 (to-do list 26 / 42)
+20:11:26 complete paths 2887, partial paths 770000 (to-do list 28 / 42)
+20:11:26 complete paths 2900, partial paths 770542 (to-do list 24 / 42)
+20:11:26 complete paths 3000, partial paths 776122 (to-do list 21 / 42)
+20:11:26 complete paths 3006, partial paths 780000 (to-do list 26 / 42)
+20:11:27 complete paths 3025, partial paths 790000 (to-do list 32 / 42)
+20:11:28 complete paths 3025, partial paths 800000 (to-do list 23 / 42)
+20:11:29 complete paths 3034, partial paths 810000 (to-do list 27 / 42)
+20:11:29 complete paths 3044, partial paths 820000 (to-do list 28 / 42)
+20:11:30 complete paths 3044, partial paths 830000 (to-do list 25 / 42)
+20:11:31 complete paths 3050, partial paths 840000 (to-do list 23 / 42)
+20:11:32 complete paths 3068, partial paths 850000 (to-do list 26 / 42)
+20:11:32 complete paths 3076, partial paths 860000 (to-do list 18 / 42)
+20:11:33 complete paths 3100, partial paths 861525 (to-do list 22 / 42)
+20:11:33 complete paths 3190, partial paths 870000 (to-do list 27 / 42)
+20:11:34 complete paths 3195, partial paths 880000 (to-do list 24 / 42)
+20:11:34 complete paths 3200, partial paths 880626 (to-do list 21 / 42)
+20:11:34 complete paths 3300, partial paths 886488 (to-do list 21 / 42)
+20:11:35 complete paths 3387, partial paths 890000 (to-do list 28 / 42)
+20:11:35 complete paths 3400, partial paths 890846 (to-do list 22 / 42)
+20:11:35 complete paths 3500, partial paths 897245 (to-do list 17 / 42)
+20:11:36 complete paths 3565, partial paths 900000 (to-do list 25 / 42)
+20:11:36 complete paths 3600, partial paths 903467 (to-do list 19 / 42)
+20:11:36 complete paths 3642, partial paths 910000 (to-do list 23 / 42)
+20:11:37 complete paths 3699, partial paths 920000 (to-do list 28 / 42)
+20:11:37 complete paths 3700, partial paths 922755 (to-do list 24 / 42)
+20:11:38 complete paths 3754, partial paths 930000 (to-do list 24 / 42)
+20:11:38 complete paths 3800, partial paths 936676 (to-do list 25 / 42)
+20:11:39 complete paths 3834, partial paths 940000 (to-do list 21 / 42)
+20:11:39 complete paths 3888, partial paths 950000 (to-do list 20 / 42)
+20:11:39 complete paths 3900, partial paths 951008 (to-do list 22 / 42)
+20:11:40 complete paths 4000, partial paths 957151 (to-do list 24 / 42)
+20:11:40 complete paths 4011, partial paths 960000 (to-do list 25 / 42)
+20:11:41 complete paths 4071, partial paths 970000 (to-do list 29 / 42)
+20:11:42 complete paths 4086, partial paths 980000 (to-do list 29 / 42)
+20:11:42 complete paths 4100, partial paths 984740 (to-do list 23 / 42)
+20:11:43 complete paths 4186, partial paths 990000 (to-do list 22 / 42)
+20:11:43 complete paths 4200, partial paths 992595 (to-do list 20 / 42)
+20:11:43 complete paths 4249, partial paths 1000000 (to-do list 20 / 42)
+20:11:44 complete paths 4281, partial paths 1010000 (to-do list 30 / 42)
+20:11:44 complete paths 4300, partial paths 1012634 (to-do list 24 / 42)
+20:11:45 complete paths 4321, partial paths 1020000 (to-do list 25 / 42)
+20:11:45 complete paths 4400, partial paths 1024107 (to-do list 20 / 42)
+20:11:46 complete paths 4500, partial paths 1029198 (to-do list 22 / 42)
+20:11:46 complete paths 4558, partial paths 1030000 (to-do list 25 / 42)
+20:11:46 complete paths 4600, partial paths 1030674 (to-do list 19 / 42)
+20:11:46 complete paths 4692, partial paths 1040000 (to-do list 26 / 42)
+20:11:46 complete paths 4700, partial paths 1040312 (to-do list 24 / 42)
+20:11:47 complete paths 4800, partial paths 1048479 (to-do list 22 / 42)
+20:11:47 complete paths 4824, partial paths 1050000 (to-do list 26 / 42)
+20:11:48 complete paths 4900, partial paths 1059923 (to-do list 26 / 42)
+20:11:48 complete paths 4907, partial paths 1060000 (to-do list 25 / 42)
+20:11:49 complete paths 5000, partial paths 1068990 (to-do list 21 / 42)
+20:11:49 complete paths 5031, partial paths 1070000 (to-do list 21 / 42)
+20:11:49 complete paths 5100, partial paths 1072062 (to-do list 17 / 42)
+20:11:49 complete paths 5200, partial paths 1075714 (to-do list 22 / 42)
+20:11:50 complete paths 5281, partial paths 1080000 (to-do list 24 / 42)
+20:11:50 complete paths 5284, partial paths 1090000 (to-do list 19 / 42)
+20:11:51 complete paths 5300, partial paths 1097077 (to-do list 22 / 42)
+20:11:51 complete paths 5332, partial paths 1100000 (to-do list 23 / 42)
+20:11:51 complete paths 5400, partial paths 1102730 (to-do list 19 / 42)
+20:11:52 complete paths 5500, partial paths 1105148 (to-do list 18 / 42)
+20:11:52 complete paths 5548, partial paths 1110000 (to-do list 28 / 42)
+20:11:53 complete paths 5584, partial paths 1120000 (to-do list 23 / 42)
+20:11:53 complete paths 5600, partial paths 1122488 (to-do list 25 / 42)
+20:11:54 complete paths 5671, partial paths 1130000 (to-do list 22 / 42)
+20:11:54 complete paths 5700, partial paths 1136023 (to-do list 18 / 42)
+20:11:54 complete paths 5757, partial paths 1140000 (to-do list 21 / 42)
+20:11:55 complete paths 5800, partial paths 1142969 (to-do list 19 / 42)
+20:11:55 complete paths 5900, partial paths 1145488 (to-do list 19 / 42)
+20:11:55 complete paths 5967, partial paths 1150000 (to-do list 18 / 42)
+20:11:55 complete paths 6000, partial paths 1153396 (to-do list 22 / 42)
+20:11:56 complete paths 6070, partial paths 1160000 (to-do list 24 / 42)
+20:11:57 complete paths 6070, partial paths 1170000 (to-do list 19 / 42)
+20:11:57 complete paths 6079, partial paths 1180000 (to-do list 14 / 42)
+20:11:58 complete paths 6100, partial paths 1188157 (to-do list 20 / 42)
+20:11:58 complete paths 6127, partial paths 1190000 (to-do list 19 / 42)
+20:11:59 complete paths 6200, partial paths 1199375 (to-do list 24 / 42)
+20:11:59 complete paths 6227, partial paths 1200000 (to-do list 23 / 42)
+20:11:59 complete paths 6300, partial paths 1202955 (to-do list 22 / 42)
+20:12:00 complete paths 6400, partial paths 1207365 (to-do list 23 / 42)
+20:12:00 complete paths 6444, partial paths 1210000 (to-do list 27 / 42)
+20:12:01 complete paths 6444, partial paths 1220000 (to-do list 28 / 42)
+20:12:01 complete paths 6497, partial paths 1230000 (to-do list 28 / 42)
+20:12:01 complete paths 6500, partial paths 1230438 (to-do list 25 / 42)
+20:12:02 complete paths 6578, partial paths 1240000 (to-do list 25 / 42)
+20:12:03 complete paths 6578, partial paths 1250000 (to-do list 26 / 42)
+20:12:04 complete paths 6578, partial paths 1260000 (to-do list 26 / 42)
+20:12:04 complete paths 6600, partial paths 1261911 (to-do list 19 / 42)
+20:12:04 complete paths 6662, partial paths 1270000 (to-do list 20 / 42)
+20:12:05 complete paths 6686, partial paths 1280000 (to-do list 29 / 42)
+20:12:05 complete paths 6700, partial paths 1283210 (to-do list 22 / 42)
+20:12:06 complete paths 6722, partial paths 1290000 (to-do list 24 / 42)
+20:12:07 complete paths 6758, partial paths 1300000 (to-do list 19 / 42)
+20:12:07 complete paths 6782, partial paths 1310000 (to-do list 18 / 42)
+20:12:08 complete paths 6800, partial paths 1310711 (to-do list 19 / 42)
+20:12:08 complete paths 6806, partial paths 1320000 (to-do list 26 / 42)
+20:12:09 complete paths 6825, partial paths 1330000 (to-do list 20 / 42)
+20:12:10 complete paths 6825, partial paths 1340000 (to-do list 29 / 42)
+20:12:10 complete paths 6825, partial paths 1350000 (to-do list 24 / 42)
+20:12:11 complete paths 6900, partial paths 1356805 (to-do list 22 / 42)
+20:12:11 complete paths 6937, partial paths 1360000 (to-do list 22 / 42)
+20:12:12 complete paths 6952, partial paths 1370000 (to-do list 24 / 42)
+20:12:13 complete paths 6974, partial paths 1380000 (to-do list 26 / 42)
+20:12:14 complete paths 6990, partial paths 1390000 (to-do list 21 / 42)
+20:12:14 complete paths 7000, partial paths 1396116 (to-do list 20 / 42)
+20:12:14 complete paths 7067, partial paths 1400000 (to-do list 21 / 42)
+20:12:15 complete paths 7100, partial paths 1401011 (to-do list 20 / 42)
+20:12:15 complete paths 7178, partial paths 1410000 (to-do list 20 / 42)
+20:12:16 complete paths 7178, partial paths 1420000 (to-do list 29 / 42)
+20:12:17 complete paths 7178, partial paths 1430000 (to-do list 27 / 42)
+20:12:17 complete paths 7178, partial paths 1440000 (to-do list 23 / 42)
+20:12:18 complete paths 7178, partial paths 1450000 (to-do list 20 / 42)
+20:12:19 complete paths 7178, partial paths 1460000 (to-do list 24 / 42)
+20:12:20 complete paths 7178, partial paths 1470000 (to-do list 20 / 42)
+20:12:21 complete paths 7178, partial paths 1480000 (to-do list 20 / 42)
+20:12:21 complete paths 7183, partial paths 1490000 (to-do list 17 / 42)
+20:12:22 complete paths 7197, partial paths 1500000 (to-do list 23 / 42)
+20:12:23 complete paths 7197, partial paths 1510000 (to-do list 23 / 42)
+20:12:24 complete paths 7197, partial paths 1520000 (to-do list 18 / 42)
+20:12:24 complete paths 7197, partial paths 1530000 (to-do list 21 / 42)
+20:12:25 complete paths 7197, partial paths 1540000 (to-do list 18 / 42)
+20:12:26 complete paths 7200, partial paths 1549725 (to-do list 16 / 42)
+20:12:26 complete paths 7201, partial paths 1550000 (to-do list 16 / 42)
+20:12:27 complete paths 7210, partial paths 1560000 (to-do list 17 / 42)
+20:12:27 complete paths 7221, partial paths 1570000 (to-do list 17 / 42)
+20:12:28 complete paths 7221, partial paths 1580000 (to-do list 20 / 42)
+20:12:29 complete paths 7235, partial paths 1590000 (to-do list 25 / 42)
+20:12:30 complete paths 7235, partial paths 1600000 (to-do list 24 / 42)
+20:12:30 complete paths 7262, partial paths 1610000 (to-do list 19 / 42)
+20:12:31 complete paths 7277, partial paths 1620000 (to-do list 24 / 42)
+20:12:32 complete paths 7282, partial paths 1630000 (to-do list 20 / 42)
+20:12:33 complete paths 7292, partial paths 1640000 (to-do list 25 / 42)
+20:12:33 complete paths 7292, partial paths 1650000 (to-do list 18 / 42)
+20:12:34 complete paths 7292, partial paths 1660000 (to-do list 19 / 42)
+20:12:35 complete paths 7292, partial paths 1670000 (to-do list 20 / 42)
+20:12:36 complete paths 7292, partial paths 1680000 (to-do list 20 / 42)
+20:12:36 complete paths 7292, partial paths 1690000 (to-do list 22 / 42)
+20:12:36 complete paths 7300, partial paths 1690346 (to-do list 19 / 42)
+20:12:37 complete paths 7400, partial paths 1699378 (to-do list 18 / 42)
+20:12:37 complete paths 7424, partial paths 1700000 (to-do list 18 / 42)
+20:12:37 complete paths 7500, partial paths 1702468 (to-do list 13 / 42)
+20:12:38 complete paths 7600, partial paths 1708281 (to-do list 21 / 42)
+20:12:38 complete paths 7674, partial paths 1710000 (to-do list 12 / 42)
+20:12:39 complete paths 7677, partial paths 1720000 (to-do list 20 / 42)
+20:12:39 complete paths 7700, partial paths 1727514 (to-do list 18 / 42)
+20:12:40 complete paths 7725, partial paths 1730000 (to-do list 17 / 42)
+20:12:40 complete paths 7800, partial paths 1733442 (to-do list 17 / 42)
+20:12:40 complete paths 7900, partial paths 1735544 (to-do list 10 / 42)
+20:12:40 complete paths 7959, partial paths 1740000 (to-do list 25 / 42)
+20:12:41 complete paths 8000, partial paths 1741961 (to-do list 18 / 42)
+20:12:41 complete paths 8012, partial paths 1750000 (to-do list 24 / 42)
+20:12:42 complete paths 8021, partial paths 1760000 (to-do list 17 / 42)
+20:12:43 complete paths 8024, partial paths 1770000 (to-do list 19 / 42)
+20:12:43 complete paths 8030, partial paths 1780000 (to-do list 24 / 42)
+20:12:44 complete paths 8039, partial paths 1790000 (to-do list 21 / 42)
+20:12:45 complete paths 8100, partial paths 1799907 (to-do list 15 / 42)
+20:12:45 complete paths 8103, partial paths 1800000 (to-do list 14 / 42)
+20:12:45 complete paths 8200, partial paths 1804666 (to-do list 18 / 42)
+20:12:46 complete paths 8289, partial paths 1810000 (to-do list 22 / 42)
+20:12:46 complete paths 8300, partial paths 1811403 (to-do list 17 / 42)
+20:12:46 complete paths 8362, partial paths 1820000 (to-do list 17 / 42)
+20:12:47 complete paths 8400, partial paths 1822909 (to-do list 14 / 42)
+20:12:47 complete paths 8500, partial paths 1829313 (to-do list 12 / 42)
+20:12:47 complete paths 8504, partial paths 1830000 (to-do list 21 / 42)
+20:12:48 complete paths 8600, partial paths 1834461 (to-do list 20 / 42)
+20:12:48 complete paths 8694, partial paths 1840000 (to-do list 24 / 42)
+20:12:48 complete paths 8700, partial paths 1840903 (to-do list 20 / 42)
+20:12:49 complete paths 8761, partial paths 1850000 (to-do list 20 / 42)
+20:12:49 complete paths 8800, partial paths 1858960 (to-do list 23 / 42)
+20:12:50 complete paths 8829, partial paths 1860000 (to-do list 18 / 42)
+20:12:50 complete paths 8847, partial paths 1870000 (to-do list 20 / 42)
+20:12:51 complete paths 8900, partial paths 1875989 (to-do list 14 / 42)
+20:12:51 complete paths 8969, partial paths 1880000 (to-do list 20 / 42)
+20:12:51 complete paths 9000, partial paths 1880368 (to-do list 20 / 42)
+20:12:52 complete paths 9033, partial paths 1890000 (to-do list 20 / 42)
+20:12:53 complete paths 9062, partial paths 1900000 (to-do list 24 / 42)
+20:12:53 complete paths 9100, partial paths 1901921 (to-do list 18 / 42)
+20:12:53 complete paths 9141, partial paths 1910000 (to-do list 21 / 42)
+20:12:54 complete paths 9150, partial paths 1920000 (to-do list 21 / 42)
+20:12:55 complete paths 9200, partial paths 1927762 (to-do list 14 / 42)
+20:12:55 complete paths 9289, partial paths 1930000 (to-do list 17 / 42)
+20:12:55 complete paths 9300, partial paths 1930233 (to-do list 18 / 42)
+20:12:56 complete paths 9400, partial paths 1939190 (to-do list 18 / 42)
+20:12:56 complete paths 9417, partial paths 1940000 (to-do list 18 / 42)
+20:12:56 complete paths 9500, partial paths 1942969 (to-do list 17 / 42)
+20:12:56 complete paths 9590, partial paths 1950000 (to-do list 15 / 42)
+20:12:57 complete paths 9600, partial paths 1954400 (to-do list 16 / 42)
+20:12:57 complete paths 9614, partial paths 1960000 (to-do list 19 / 42)
+20:12:58 complete paths 9622, partial paths 1970000 (to-do list 19 / 42)
+20:12:59 complete paths 9698, partial paths 1980000 (to-do list 22 / 42)
+20:12:59 complete paths 9698, partial paths 1990000 (to-do list 22 / 42)
+20:12:59 complete paths 9700, partial paths 1990035 (to-do list 20 / 42)
+20:13:00 complete paths 9765, partial paths 2000000 (to-do list 21 / 42)
+20:13:01 complete paths 9800, partial paths 2008255 (to-do list 18 / 42)
+20:13:01 complete paths 9803, partial paths 2010000 (to-do list 13 / 42)
+20:13:02 complete paths 9869, partial paths 2020000 (to-do list 22 / 42)
+20:13:02 complete paths 9881, partial paths 2030000 (to-do list 16 / 42)
+20:13:03 complete paths 9900, partial paths 2037775 (to-do list 14 / 42)
+20:13:03 complete paths 9935, partial paths 2040000 (to-do list 15 / 42)
+20:13:04 complete paths 9940, partial paths 2050000 (to-do list 15 / 42)
+20:13:04 complete paths 10000, partial paths 2052133 (to-do list 20 / 42)
+20:13:05 complete paths 10007, partial paths 2060000 (to-do list 15 / 42)
+20:13:05 complete paths 10071, partial paths 2070000 (to-do list 21 / 42)
+20:13:06 complete paths 10077, partial paths 2080000 (to-do list 19 / 42)
+20:13:07 complete paths 10100, partial paths 2087975 (to-do list 17 / 42)
+20:13:07 complete paths 10138, partial paths 2090000 (to-do list 16 / 42)
+20:13:08 complete paths 10141, partial paths 2100000 (to-do list 24 / 42)
+20:13:08 complete paths 10158, partial paths 2110000 (to-do list 19 / 42)
+20:13:09 complete paths 10160, partial paths 2120000 (to-do list 20 / 42)
+20:13:10 complete paths 10200, partial paths 2123688 (to-do list 17 / 42)
+20:13:10 complete paths 10273, partial paths 2130000 (to-do list 20 / 42)
+20:13:11 complete paths 10287, partial paths 2140000 (to-do list 19 / 42)
+20:13:11 complete paths 10287, partial paths 2150000 (to-do list 17 / 42)
+20:13:12 complete paths 10287, partial paths 2160000 (to-do list 17 / 42)
+20:13:13 complete paths 10287, partial paths 2170000 (to-do list 15 / 42)
+20:13:14 complete paths 10300, partial paths 2176973 (to-do list 18 / 42)
+20:13:14 complete paths 10323, partial paths 2180000 (to-do list 24 / 42)
+20:13:15 complete paths 10378, partial paths 2190000 (to-do list 24 / 42)
+20:13:15 complete paths 10400, partial paths 2191748 (to-do list 17 / 42)
+20:13:15 complete paths 10500, partial paths 2197586 (to-do list 18 / 42)
+20:13:15 complete paths 10551, partial paths 2200000 (to-do list 21 / 42)
+20:13:16 complete paths 10551, partial paths 2210000 (to-do list 14 / 42)
+20:13:17 complete paths 10551, partial paths 2220000 (to-do list 14 / 42)
+20:13:18 complete paths 10551, partial paths 2230000 (to-do list 15 / 42)
+20:13:18 complete paths 10555, partial paths 2240000 (to-do list 19 / 42)
+20:13:19 complete paths 10570, partial paths 2250000 (to-do list 23 / 42)
+20:13:20 complete paths 10570, partial paths 2260000 (to-do list 17 / 42)
+20:13:21 complete paths 10570, partial paths 2270000 (to-do list 21 / 42)
+20:13:21 complete paths 10570, partial paths 2280000 (to-do list 21 / 42)
+20:13:22 complete paths 10570, partial paths 2290000 (to-do list 17 / 42)
+20:13:23 complete paths 10570, partial paths 2300000 (to-do list 23 / 42)
+20:13:24 complete paths 10575, partial paths 2310000 (to-do list 13 / 42)
+20:13:24 complete paths 10600, partial paths 2313723 (to-do list 18 / 42)
+20:13:24 complete paths 10700, partial paths 2317121 (to-do list 17 / 42)
+20:13:24 complete paths 10764, partial paths 2320000 (to-do list 16 / 42)
+20:13:25 complete paths 10800, partial paths 2322475 (to-do list 17 / 42)
+20:13:25 complete paths 10900, partial paths 2328837 (to-do list 16 / 42)
+20:13:25 complete paths 10939, partial paths 2330000 (to-do list 17 / 42)
+20:13:26 complete paths 11000, partial paths 2334591 (to-do list 14 / 42)
+20:13:26 complete paths 11010, partial paths 2340000 (to-do list 15 / 42)
+20:13:27 complete paths 11010, partial paths 2350000 (to-do list 14 / 42)
+20:13:28 complete paths 11010, partial paths 2360000 (to-do list 19 / 42)
+20:13:28 complete paths 11015, partial paths 2370000 (to-do list 13 / 42)
+20:13:29 complete paths 11029, partial paths 2380000 (to-do list 14 / 42)
+20:13:30 complete paths 11100, partial paths 2387844 (to-do list 15 / 42)
+20:13:30 complete paths 11147, partial paths 2390000 (to-do list 13 / 42)
+20:13:31 complete paths 11165, partial paths 2400000 (to-do list 9 / 42)
+20:13:31 complete paths 11175, partial paths 2410000 (to-do list 19 / 42)
+20:13:32 complete paths 11184, partial paths 2420000 (to-do list 19 / 42)
+20:13:33 complete paths 11184, partial paths 2430000 (to-do list 22 / 42)
+20:13:34 complete paths 11184, partial paths 2440000 (to-do list 19 / 42)
+20:13:34 complete paths 11184, partial paths 2450000 (to-do list 17 / 42)
+20:13:35 complete paths 11184, partial paths 2460000 (to-do list 16 / 42)
+20:13:36 complete paths 11184, partial paths 2470000 (to-do list 20 / 42)
+20:13:36 complete paths 11200, partial paths 2472107 (to-do list 15 / 42)
+20:13:37 complete paths 11211, partial paths 2480000 (to-do list 18 / 42)
+20:13:37 complete paths 11211, partial paths 2490000 (to-do list 20 / 42)
+20:13:38 complete paths 11232, partial paths 2500000 (to-do list 14 / 42)
+20:13:38 complete paths 11300, partial paths 2503408 (to-do list 14 / 42)
+20:13:39 complete paths 11340, partial paths 2510000 (to-do list 19 / 42)
+20:13:40 complete paths 11349, partial paths 2520000 (to-do list 15 / 42)
+20:13:40 complete paths 11400, partial paths 2529257 (to-do list 9 / 42)
+20:13:40 complete paths 11448, partial paths 2530000 (to-do list 10 / 42)
+20:13:41 complete paths 11500, partial paths 2531715 (to-do list 14 / 42)
+20:13:41 complete paths 11580, partial paths 2540000 (to-do list 13 / 42)
+20:13:41 complete paths 11600, partial paths 2540666 (to-do list 12 / 42)
+20:13:42 complete paths 11700, partial paths 2544450 (to-do list 10 / 42)
+20:13:42 complete paths 11718, partial paths 2550000 (to-do list 21 / 42)
+20:13:43 complete paths 11733, partial paths 2560000 (to-do list 19 / 42)
+20:13:44 complete paths 11733, partial paths 2570000 (to-do list 16 / 42)
+20:13:44 complete paths 11745, partial paths 2580000 (to-do list 21 / 42)
+20:13:45 complete paths 11751, partial paths 2590000 (to-do list 14 / 42)
+20:13:46 complete paths 11781, partial paths 2600000 (to-do list 14 / 42)
+20:13:46 complete paths 11800, partial paths 2601962 (to-do list 15 / 42)
+20:13:47 complete paths 11900, partial paths 2608491 (to-do list 14 / 42)
+20:13:47 complete paths 11911, partial paths 2610000 (to-do list 20 / 42)
+20:13:48 complete paths 11970, partial paths 2620000 (to-do list 12 / 42)
+20:13:48 complete paths 12000, partial paths 2625593 (to-do list 13 / 42)
+20:13:48 complete paths 12037, partial paths 2630000 (to-do list 10 / 42)
+20:13:49 complete paths 12046, partial paths 2640000 (to-do list 14 / 42)
+20:13:50 complete paths 12100, partial paths 2649273 (to-do list 8 / 42)
+20:13:50 complete paths 12148, partial paths 2650000 (to-do list 11 / 42)
+20:13:51 complete paths 12163, partial paths 2660000 (to-do list 16 / 42)
+20:13:51 complete paths 12200, partial paths 2660703 (to-do list 10 / 42)
+20:13:51 complete paths 12300, partial paths 2666910 (to-do list 8 / 42)
+20:13:51 complete paths 12312, partial paths 2670000 (to-do list 15 / 42)
+20:13:52 complete paths 12312, partial paths 2680000 (to-do list 15 / 42)
+20:13:53 complete paths 12331, partial paths 2690000 (to-do list 16 / 42)
+20:13:54 complete paths 12331, partial paths 2700000 (to-do list 21 / 42)
+20:13:54 complete paths 12331, partial paths 2710000 (to-do list 11 / 42)
+20:13:55 complete paths 12400, partial paths 2717946 (to-do list 14 / 42)
+20:13:55 complete paths 12439, partial paths 2720000 (to-do list 18 / 42)
+20:13:56 complete paths 12450, partial paths 2730000 (to-do list 13 / 42)
+20:13:56 complete paths 12500, partial paths 2732409 (to-do list 13 / 42)
+20:13:57 complete paths 12600, partial paths 2736657 (to-do list 16 / 42)
+20:13:57 complete paths 12656, partial paths 2740000 (to-do list 14 / 42)
+20:13:57 complete paths 12700, partial paths 2743262 (to-do list 15 / 42)
+20:13:58 complete paths 12800, partial paths 2748155 (to-do list 14 / 42)
+20:13:58 complete paths 12819, partial paths 2750000 (to-do list 14 / 42)
+20:13:58 complete paths 12900, partial paths 2754270 (to-do list 14 / 42)
+20:13:59 complete paths 12992, partial paths 2760000 (to-do list 20 / 42)
+20:13:59 complete paths 13000, partial paths 2767946 (to-do list 9 / 42)
+20:13:59 complete paths 13006, partial paths 2770000 (to-do list 18 / 42)
+20:14:00 complete paths 13011, partial paths 2780000 (to-do list 13 / 42)
+20:14:00 complete paths 13100, partial paths 2783371 (to-do list 10 / 42)
+20:14:01 complete paths 13133, partial paths 2790000 (to-do list 17 / 42)
+20:14:02 complete paths 13145, partial paths 2800000 (to-do list 18 / 42)
+20:14:02 complete paths 13152, partial paths 2810000 (to-do list 18 / 42)
+20:14:03 complete paths 13152, partial paths 2820000 (to-do list 15 / 42)
+20:14:04 complete paths 13152, partial paths 2830000 (to-do list 20 / 42)
+20:14:05 complete paths 13152, partial paths 2840000 (to-do list 13 / 42)
+20:14:06 complete paths 13152, partial paths 2850000 (to-do list 17 / 42)
+20:14:06 complete paths 13152, partial paths 2860000 (to-do list 9 / 42)
+20:14:07 complete paths 13160, partial paths 2870000 (to-do list 20 / 42)
+20:14:08 complete paths 13186, partial paths 2880000 (to-do list 17 / 42)
+20:14:09 complete paths 13190, partial paths 2890000 (to-do list 15 / 42)
+20:14:09 complete paths 13190, partial paths 2900000 (to-do list 13 / 42)
+20:14:10 complete paths 13190, partial paths 2910000 (to-do list 11 / 42)
+20:14:11 complete paths 13190, partial paths 2920000 (to-do list 15 / 42)
+20:14:12 complete paths 13190, partial paths 2930000 (to-do list 16 / 42)
+20:14:12 complete paths 13192, partial paths 2940000 (to-do list 16 / 42)
+20:14:12 complete paths 13200, partial paths 2940330 (to-do list 14 / 42)
+20:14:13 complete paths 13300, partial paths 2945225 (to-do list 14 / 42)
+20:14:13 complete paths 13364, partial paths 2950000 (to-do list 10 / 42)
+20:14:13 complete paths 13400, partial paths 2953536 (to-do list 16 / 42)
+20:14:14 complete paths 13500, partial paths 2956644 (to-do list 11 / 42)
+20:14:14 complete paths 13520, partial paths 2960000 (to-do list 14 / 42)
+20:14:15 complete paths 13566, partial paths 2970000 (to-do list 12 / 42)
+20:14:16 complete paths 13566, partial paths 2980000 (to-do list 16 / 42)
+20:14:16 complete paths 13566, partial paths 2990000 (to-do list 12 / 42)
+20:14:17 complete paths 13566, partial paths 3000000 (to-do list 10 / 42)
+20:14:18 complete paths 13566, partial paths 3010000 (to-do list 17 / 42)
+20:14:19 complete paths 13600, partial paths 3017247 (to-do list 9 / 42)
+20:14:19 complete paths 13620, partial paths 3020000 (to-do list 21 / 42)
+20:14:19 complete paths 13656, partial paths 3030000 (to-do list 13 / 42)
+20:14:20 complete paths 13700, partial paths 3039626 (to-do list 15 / 42)
+20:14:20 complete paths 13703, partial paths 3040000 (to-do list 18 / 42)
+20:14:21 complete paths 13800, partial paths 3042759 (to-do list 11 / 42)
+20:14:21 complete paths 13868, partial paths 3050000 (to-do list 13 / 42)
+20:14:22 complete paths 13868, partial paths 3060000 (to-do list 14 / 42)
+20:14:23 complete paths 13868, partial paths 3070000 (to-do list 11 / 42)
+20:14:23 complete paths 13868, partial paths 3080000 (to-do list 10 / 42)
+20:14:24 complete paths 13868, partial paths 3090000 (to-do list 15 / 42)
+20:14:25 complete paths 13868, partial paths 3100000 (to-do list 14 / 42)
+20:14:26 complete paths 13868, partial paths 3110000 (to-do list 10 / 42)
+20:14:26 complete paths 13868, partial paths 3120000 (to-do list 15 / 42)
+20:14:27 complete paths 13868, partial paths 3130000 (to-do list 14 / 42)
+20:14:28 complete paths 13900, partial paths 3139223 (to-do list 12 / 42)
+20:14:28 complete paths 13921, partial paths 3140000 (to-do list 15 / 42)
+20:14:28 complete paths 14000, partial paths 3142721 (to-do list 8 / 42)
+20:14:29 complete paths 14100, partial paths 3148561 (to-do list 9 / 42)
+20:14:29 complete paths 14107, partial paths 3150000 (to-do list 12 / 42)
+20:14:29 complete paths 14200, partial paths 3154841 (to-do list 12 / 42)
+20:14:30 complete paths 14289, partial paths 3160000 (to-do list 20 / 42)
+20:14:30 complete paths 14294, partial paths 3170000 (to-do list 14 / 42)
+20:14:31 complete paths 14300, partial paths 3176579 (to-do list 9 / 42)
+20:14:31 complete paths 14308, partial paths 3180000 (to-do list 18 / 42)
+20:14:32 complete paths 14328, partial paths 3190000 (to-do list 13 / 42)
+20:14:33 complete paths 14328, partial paths 3200000 (to-do list 11 / 42)
+20:14:33 complete paths 14400, partial paths 3202537 (to-do list 6 / 42)
+20:14:34 complete paths 14436, partial paths 3210000 (to-do list 10 / 42)
+20:14:34 complete paths 14500, partial paths 3215518 (to-do list 14 / 42)
+20:14:34 complete paths 14600, partial paths 3219403 (to-do list 10 / 42)
+20:14:34 complete paths 14626, partial paths 3220000 (to-do list 15 / 42)
+20:14:35 complete paths 14700, partial paths 3224765 (to-do list 12 / 42)
+20:14:35 complete paths 14783, partial paths 3230000 (to-do list 16 / 42)
+20:14:35 complete paths 14800, partial paths 3230846 (to-do list 10 / 42)
+20:14:36 complete paths 14900, partial paths 3236844 (to-do list 9 / 42)
+20:14:36 complete paths 14989, partial paths 3240000 (to-do list 14 / 42)
+20:14:36 complete paths 15000, partial paths 3240260 (to-do list 11 / 42)
+20:14:37 complete paths 15026, partial paths 3250000 (to-do list 13 / 42)
+20:14:38 complete paths 15044, partial paths 3260000 (to-do list 11 / 42)
+20:14:39 complete paths 15100, partial paths 3268636 (to-do list 9 / 42)
+20:14:39 complete paths 15138, partial paths 3270000 (to-do list 10 / 42)
+20:14:39 complete paths 15200, partial paths 3274425 (to-do list 10 / 42)
+20:14:39 complete paths 15247, partial paths 3280000 (to-do list 10 / 42)
+20:14:40 complete paths 15247, partial paths 3290000 (to-do list 13 / 42)
+20:14:41 complete paths 15247, partial paths 3300000 (to-do list 12 / 42)
+20:14:42 complete paths 15247, partial paths 3310000 (to-do list 17 / 42)
+20:14:43 complete paths 15247, partial paths 3320000 (to-do list 6 / 42)
+20:14:43 complete paths 15247, partial paths 3330000 (to-do list 10 / 42)
+20:14:44 complete paths 15252, partial paths 3340000 (to-do list 10 / 42)
+20:14:45 complete paths 15266, partial paths 3350000 (to-do list 17 / 42)
+20:14:46 complete paths 15300, partial paths 3358194 (to-do list 14 / 42)
+20:14:46 complete paths 15327, partial paths 3360000 (to-do list 16 / 42)
+20:14:47 complete paths 15333, partial paths 3370000 (to-do list 13 / 42)
+20:14:47 complete paths 15400, partial paths 3378706 (to-do list 10 / 42)
+20:14:47 complete paths 15401, partial paths 3380000 (to-do list 16 / 42)
+20:14:48 complete paths 15431, partial paths 3390000 (to-do list 18 / 42)
+20:14:49 complete paths 15484, partial paths 3400000 (to-do list 15 / 42)
+20:14:50 complete paths 15484, partial paths 3410000 (to-do list 13 / 42)
+20:14:50 complete paths 15500, partial paths 3417591 (to-do list 11 / 42)
+20:14:51 complete paths 15567, partial paths 3420000 (to-do list 14 / 42)
+20:14:51 complete paths 15600, partial paths 3423792 (to-do list 7 / 42)
+20:14:51 complete paths 15636, partial paths 3430000 (to-do list 12 / 42)
+20:14:52 complete paths 15645, partial paths 3440000 (to-do list 11 / 42)
+20:14:53 complete paths 15657, partial paths 3450000 (to-do list 16 / 42)
+20:14:54 complete paths 15696, partial paths 3460000 (to-do list 10 / 42)
+20:14:54 complete paths 15700, partial paths 3460238 (to-do list 12 / 42)
+20:14:54 complete paths 15800, partial paths 3466224 (to-do list 10 / 42)
+20:14:55 complete paths 15809, partial paths 3470000 (to-do list 14 / 42)
+20:14:56 complete paths 15827, partial paths 3480000 (to-do list 11 / 42)
+20:14:56 complete paths 15851, partial paths 3490000 (to-do list 10 / 42)
+20:14:57 complete paths 15851, partial paths 3500000 (to-do list 17 / 42)
+20:14:58 complete paths 15869, partial paths 3510000 (to-do list 12 / 42)
+20:14:59 complete paths 15872, partial paths 3520000 (to-do list 12 / 42)
+20:14:59 complete paths 15900, partial paths 3523273 (to-do list 8 / 42)
+20:14:59 complete paths 16000, partial paths 3527736 (to-do list 9 / 42)
+20:15:00 complete paths 16066, partial paths 3530000 (to-do list 16 / 42)
+20:15:00 complete paths 16100, partial paths 3532816 (to-do list 12 / 42)
+20:15:00 complete paths 16128, partial paths 3540000 (to-do list 8 / 42)
+20:15:01 complete paths 16182, partial paths 3550000 (to-do list 13 / 42)
+20:15:02 complete paths 16182, partial paths 3560000 (to-do list 10 / 42)
+20:15:02 complete paths 16182, partial paths 3562796 (to-do list 0 / 42)
+20:15:03 renumbering path 100 / 16182
+20:15:03 renumbering path 200 / 16182
+20:15:04 renumbering path 300 / 16182
+20:15:04 renumbering path 400 / 16182
+20:15:04 renumbering path 500 / 16182
+20:15:05 renumbering path 600 / 16182
+20:15:05 renumbering path 700 / 16182
+20:15:06 renumbering path 800 / 16182
+20:15:06 renumbering path 900 / 16182
+20:15:07 renumbering path 1000 / 16182
+20:15:07 renumbering path 1100 / 16182
+20:15:08 renumbering path 1200 / 16182
+20:15:08 renumbering path 1300 / 16182
+20:15:09 renumbering path 1400 / 16182
+20:15:09 renumbering path 1500 / 16182
+20:15:10 renumbering path 1600 / 16182
+20:15:10 renumbering path 1700 / 16182
+20:15:10 renumbering path 1800 / 16182
+20:15:11 renumbering path 1900 / 16182
+20:15:11 renumbering path 2000 / 16182
+20:15:12 renumbering path 2100 / 16182
+20:15:12 renumbering path 2200 / 16182
+20:15:13 renumbering path 2300 / 16182
+20:15:13 renumbering path 2400 / 16182
+20:15:14 renumbering path 2500 / 16182
+20:15:14 renumbering path 2600 / 16182
+20:15:15 renumbering path 2700 / 16182
+20:15:15 renumbering path 2800 / 16182
+20:15:15 renumbering path 2900 / 16182
+20:15:16 renumbering path 3000 / 16182
+20:15:16 renumbering path 3100 / 16182
+20:15:17 renumbering path 3200 / 16182
+20:15:17 renumbering path 3300 / 16182
+20:15:18 renumbering path 3400 / 16182
+20:15:18 renumbering path 3500 / 16182
+20:15:19 renumbering path 3600 / 16182
+20:15:19 renumbering path 3700 / 16182
+20:15:20 renumbering path 3800 / 16182
+20:15:20 renumbering path 3900 / 16182
+20:15:20 renumbering path 4000 / 16182
+20:15:21 renumbering path 4100 / 16182
+20:15:21 renumbering path 4200 / 16182
+20:15:22 renumbering path 4300 / 16182
+20:15:22 renumbering path 4400 / 16182
+20:15:23 renumbering path 4500 / 16182
+20:15:23 renumbering path 4600 / 16182
+20:15:24 renumbering path 4700 / 16182
+20:15:24 renumbering path 4800 / 16182
+20:15:25 renumbering path 4900 / 16182
+20:15:25 renumbering path 5000 / 16182
+20:15:26 renumbering path 5100 / 16182
+20:15:26 renumbering path 5200 / 16182
+20:15:26 renumbering path 5300 / 16182
+20:15:27 renumbering path 5400 / 16182
+20:15:27 renumbering path 5500 / 16182
+20:15:28 renumbering path 5600 / 16182
+20:15:28 renumbering path 5700 / 16182
+20:15:29 renumbering path 5800 / 16182
+20:15:29 renumbering path 5900 / 16182
+20:15:30 renumbering path 6000 / 16182
+20:15:30 renumbering path 6100 / 16182
+20:15:31 renumbering path 6200 / 16182
+20:15:31 renumbering path 6300 / 16182
+20:15:31 renumbering path 6400 / 16182
+20:15:32 renumbering path 6500 / 16182
+20:15:32 renumbering path 6600 / 16182
+20:15:33 renumbering path 6700 / 16182
+20:15:33 renumbering path 6800 / 16182
+20:15:34 renumbering path 6900 / 16182
+20:15:34 renumbering path 7000 / 16182
+20:15:35 renumbering path 7100 / 16182
+20:15:35 renumbering path 7200 / 16182
+20:15:36 renumbering path 7300 / 16182
+20:15:36 renumbering path 7400 / 16182
+20:15:37 renumbering path 7500 / 16182
+20:15:37 renumbering path 7600 / 16182
+20:15:38 renumbering path 7700 / 16182
+20:15:38 renumbering path 7800 / 16182
+20:15:38 renumbering path 7900 / 16182
+20:15:39 renumbering path 8000 / 16182
+20:15:39 renumbering path 8100 / 16182
+20:15:40 renumbering path 8200 / 16182
+20:15:40 renumbering path 8300 / 16182
+20:15:41 renumbering path 8400 / 16182
+20:15:41 renumbering path 8500 / 16182
+20:15:42 renumbering path 8600 / 16182
+20:15:42 renumbering path 8700 / 16182
+20:15:43 renumbering path 8800 / 16182
+20:15:43 renumbering path 8900 / 16182
+20:15:44 renumbering path 9000 / 16182
+20:15:44 renumbering path 9100 / 16182
+20:15:45 renumbering path 9200 / 16182
+20:15:45 renumbering path 9300 / 16182
+20:15:45 renumbering path 9400 / 16182
+20:15:46 renumbering path 9500 / 16182
+20:15:46 renumbering path 9600 / 16182
+20:15:47 renumbering path 9700 / 16182
+20:15:47 renumbering path 9800 / 16182
+20:15:48 renumbering path 9900 / 16182
+20:15:48 renumbering path 10000 / 16182
+20:15:49 renumbering path 10100 / 16182
+20:15:49 renumbering path 10200 / 16182
+20:15:50 renumbering path 10300 / 16182
+20:15:50 renumbering path 10400 / 16182
+20:15:50 renumbering path 10500 / 16182
+20:15:51 renumbering path 10600 / 16182
+20:15:51 renumbering path 10700 / 16182
+20:15:52 renumbering path 10800 / 16182
+20:15:52 renumbering path 10900 / 16182
+20:15:53 renumbering path 11000 / 16182
+20:15:53 renumbering path 11100 / 16182
+20:15:54 renumbering path 11200 / 16182
+20:15:54 renumbering path 11300 / 16182
+20:15:55 renumbering path 11400 / 16182
+20:15:55 renumbering path 11500 / 16182
+20:15:56 renumbering path 11600 / 16182
+20:15:56 renumbering path 11700 / 16182
+20:15:56 renumbering path 11800 / 16182
+20:15:57 renumbering path 11900 / 16182
+20:15:57 renumbering path 12000 / 16182
+20:15:58 renumbering path 12100 / 16182
+20:15:58 renumbering path 12200 / 16182
+20:15:59 renumbering path 12300 / 16182
+20:15:59 renumbering path 12400 / 16182
+20:16:00 renumbering path 12500 / 16182
+20:16:00 renumbering path 12600 / 16182
+20:16:01 renumbering path 12700 / 16182
+20:16:01 renumbering path 12800 / 16182
+20:16:02 renumbering path 12900 / 16182
+20:16:02 renumbering path 13000 / 16182
+20:16:03 renumbering path 13100 / 16182
+20:16:03 renumbering path 13200 / 16182
+20:16:03 renumbering path 13300 / 16182
+20:16:04 renumbering path 13400 / 16182
+20:16:04 renumbering path 13500 / 16182
+20:16:05 renumbering path 13600 / 16182
+20:16:05 renumbering path 13700 / 16182
+20:16:06 renumbering path 13800 / 16182
+20:16:06 renumbering path 13900 / 16182
+20:16:07 renumbering path 14000 / 16182
+20:16:07 renumbering path 14100 / 16182
+20:16:08 renumbering path 14200 / 16182
+20:16:08 renumbering path 14300 / 16182
+20:16:09 renumbering path 14400 / 16182
+20:16:09 renumbering path 14500 / 16182
+20:16:09 renumbering path 14600 / 16182
+20:16:10 renumbering path 14700 / 16182
+20:16:10 renumbering path 14800 / 16182
+20:16:11 renumbering path 14900 / 16182
+20:16:11 renumbering path 15000 / 16182
+20:16:12 renumbering path 15100 / 16182
+20:16:12 renumbering path 15200 / 16182
+20:16:13 renumbering path 15300 / 16182
+20:16:13 renumbering path 15400 / 16182
+20:16:13 renumbering path 15500 / 16182
+20:16:14 renumbering path 15600 / 16182
+20:16:14 renumbering path 15700 / 16182
+20:16:15 renumbering path 15800 / 16182
+20:16:15 renumbering path 15900 / 16182
+20:16:15 renumbering path 16000 / 16182
+20:16:16 renumbering path 16100 / 16182
+20:16:16 computing generic regional paths for region ENG of brit0
+generating regional paths for region WAL of brit0
+20:16:17 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:16:17 complete paths 0, partial paths 2 (to-do list 0 / 1)
+20:16:17 computing generic regional paths for region WAL of brit0

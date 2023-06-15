@@ -1,0 +1,63 @@
+generating macro-paths for frreg
+20:09:27 complete paths 0, partial paths 13 (to-do list 12 / 12)
+20:09:27 complete paths 1, partial paths 205 (to-do list 18 / 25)
+20:09:27 complete paths 100, partial paths 2738 (to-do list 17 / 25)
+20:09:27 complete paths 200, partial paths 4646 (to-do list 15 / 25)
+20:09:28 complete paths 300, partial paths 8217 (to-do list 15 / 25)
+20:09:28 complete paths 316, partial paths 10000 (to-do list 15 / 25)
+20:09:28 complete paths 400, partial paths 12800 (to-do list 12 / 25)
+20:09:28 complete paths 500, partial paths 15917 (to-do list 8 / 25)
+20:09:29 complete paths 600, partial paths 19079 (to-do list 9 / 25)
+20:09:29 complete paths 644, partial paths 20000 (to-do list 7 / 25)
+20:09:29 complete paths 700, partial paths 21295 (to-do list 6 / 25)
+20:09:29 complete paths 800, partial paths 22909 (to-do list 9 / 25)
+20:09:29 complete paths 894, partial paths 26476 (to-do list 0 / 25)
+20:09:29 renumbering path 100 / 894
+20:09:30 renumbering path 200 / 894
+20:09:30 renumbering path 300 / 894
+20:09:30 renumbering path 400 / 894
+20:09:30 renumbering path 500 / 894
+20:09:30 renumbering path 600 / 894
+20:09:30 renumbering path 700 / 894
+20:09:30 renumbering path 800 / 894
+generating regional paths for all regions of frreg
+generating regional paths for region HDF of frreg
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region HDF of frreg
+generating regional paths for region NOR of frreg
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region NOR of frreg
+generating regional paths for region BRE of frreg
+20:09:30 computing generic regional paths for region BRE of frreg
+generating regional paths for region PDL of frreg
+20:09:30 computing generic regional paths for region PDL of frreg
+generating regional paths for region NAQ of frreg
+20:09:30 complete paths 0, partial paths 4 (to-do list 3 / 3)
+20:09:30 complete paths 1, partial paths 5 (to-do list 3 / 4)
+20:09:30 complete paths 6, partial paths 9 (to-do list 0 / 4)
+20:09:30 computing generic regional paths for region NAQ of frreg
+generating regional paths for region OCC of frreg
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region OCC of frreg
+generating regional paths for region PAC of frreg
+20:09:30 computing generic regional paths for region PAC of frreg
+generating regional paths for region ARA of frreg
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region ARA of frreg
+generating regional paths for region CVL of frreg
+20:09:30 computing generic regional paths for region CVL of frreg
+generating regional paths for region IDF of frreg
+20:09:30 computing generic regional paths for region IDF of frreg
+generating regional paths for region BFC of frreg
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region BFC of frreg
+generating regional paths for region GES of frreg
+20:09:30 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:09:30 complete paths 2, partial paths 2 (to-do list 0 / 1)
+20:09:30 complete paths 2, partial paths 2 (to-do list 0 / 1)
+20:09:30 computing generic regional paths for region GES of frreg

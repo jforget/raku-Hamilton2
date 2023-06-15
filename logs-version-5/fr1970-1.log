@@ -1,0 +1,245 @@
+generating macro-paths for fr1970
+20:09:31 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:09:31 complete paths 2, partial paths 77 (to-do list 21 / 24)
+20:09:32 complete paths 100, partial paths 3763 (to-do list 18 / 24)
+20:09:32 complete paths 200, partial paths 7691 (to-do list 18 / 24)
+20:09:32 complete paths 220, partial paths 10000 (to-do list 13 / 24)
+20:09:33 complete paths 300, partial paths 12770 (to-do list 14 / 24)
+20:09:33 complete paths 400, partial paths 16758 (to-do list 17 / 24)
+20:09:33 complete paths 500, partial paths 18723 (to-do list 13 / 24)
+20:09:33 complete paths 558, partial paths 20000 (to-do list 17 / 24)
+20:09:33 complete paths 600, partial paths 20717 (to-do list 14 / 24)
+20:09:34 complete paths 700, partial paths 22906 (to-do list 15 / 24)
+20:09:34 complete paths 800, partial paths 26734 (to-do list 15 / 24)
+20:09:34 complete paths 864, partial paths 30000 (to-do list 11 / 24)
+20:09:35 complete paths 890, partial paths 40000 (to-do list 17 / 24)
+20:09:36 complete paths 900, partial paths 46726 (to-do list 9 / 24)
+20:09:36 complete paths 900, partial paths 50000 (to-do list 16 / 24)
+20:09:37 complete paths 900, partial paths 60000 (to-do list 18 / 24)
+20:09:37 complete paths 900, partial paths 70000 (to-do list 17 / 24)
+20:09:38 complete paths 972, partial paths 80000 (to-do list 16 / 24)
+20:09:38 complete paths 1000, partial paths 81572 (to-do list 15 / 24)
+20:09:39 complete paths 1034, partial paths 90000 (to-do list 12 / 24)
+20:09:40 complete paths 1058, partial paths 100000 (to-do list 17 / 24)
+20:09:40 complete paths 1100, partial paths 107332 (to-do list 20 / 24)
+20:09:41 complete paths 1192, partial paths 110000 (to-do list 21 / 24)
+20:09:41 complete paths 1200, partial paths 112128 (to-do list 15 / 24)
+20:09:42 complete paths 1216, partial paths 120000 (to-do list 13 / 24)
+20:09:42 complete paths 1248, partial paths 130000 (to-do list 15 / 24)
+20:09:43 complete paths 1248, partial paths 140000 (to-do list 10 / 24)
+20:09:44 complete paths 1300, partial paths 146837 (to-do list 8 / 24)
+20:09:44 complete paths 1400, partial paths 148063 (to-do list 13 / 24)
+20:09:44 complete paths 1436, partial paths 150000 (to-do list 9 / 24)
+20:09:44 complete paths 1500, partial paths 150479 (to-do list 6 / 24)
+20:09:45 complete paths 1600, partial paths 157724 (to-do list 11 / 24)
+20:09:45 complete paths 1682, partial paths 160000 (to-do list 11 / 24)
+20:09:46 complete paths 1700, partial paths 169975 (to-do list 18 / 24)
+20:09:46 complete paths 1702, partial paths 170000 (to-do list 17 / 24)
+20:09:47 complete paths 1748, partial paths 180000 (to-do list 15 / 24)
+20:09:47 complete paths 1800, partial paths 181418 (to-do list 11 / 24)
+20:09:47 complete paths 1838, partial paths 190000 (to-do list 16 / 24)
+20:09:48 complete paths 1854, partial paths 200000 (to-do list 13 / 24)
+20:09:49 complete paths 1854, partial paths 210000 (to-do list 16 / 24)
+20:09:50 complete paths 1854, partial paths 220000 (to-do list 13 / 24)
+20:09:50 complete paths 1900, partial paths 225038 (to-do list 7 / 24)
+20:09:51 complete paths 2000, partial paths 228107 (to-do list 9 / 24)
+20:09:51 complete paths 2024, partial paths 230000 (to-do list 10 / 24)
+20:09:51 complete paths 2100, partial paths 231247 (to-do list 8 / 24)
+20:09:51 complete paths 2200, partial paths 232813 (to-do list 13 / 24)
+20:09:51 complete paths 2300, partial paths 236691 (to-do list 12 / 24)
+20:09:52 complete paths 2400, partial paths 238692 (to-do list 12 / 24)
+20:09:52 complete paths 2430, partial paths 240000 (to-do list 12 / 24)
+20:09:52 complete paths 2500, partial paths 241464 (to-do list 15 / 24)
+20:09:53 complete paths 2554, partial paths 250000 (to-do list 15 / 24)
+20:09:53 complete paths 2564, partial paths 260000 (to-do list 12 / 24)
+20:09:54 complete paths 2600, partial paths 265609 (to-do list 15 / 24)
+20:09:54 complete paths 2678, partial paths 270000 (to-do list 11 / 24)
+20:09:55 complete paths 2700, partial paths 277169 (to-do list 8 / 24)
+20:09:55 complete paths 2706, partial paths 280000 (to-do list 15 / 24)
+20:09:56 complete paths 2724, partial paths 290000 (to-do list 11 / 24)
+20:09:56 complete paths 2800, partial paths 291249 (to-do list 9 / 24)
+20:09:57 complete paths 2842, partial paths 300000 (to-do list 10 / 24)
+20:09:58 complete paths 2854, partial paths 310000 (to-do list 15 / 24)
+20:09:58 complete paths 2870, partial paths 320000 (to-do list 8 / 24)
+20:09:58 complete paths 2900, partial paths 321078 (to-do list 14 / 24)
+20:09:59 complete paths 2942, partial paths 330000 (to-do list 13 / 24)
+20:10:00 complete paths 2942, partial paths 340000 (to-do list 10 / 24)
+20:10:01 complete paths 2942, partial paths 350000 (to-do list 12 / 24)
+20:10:02 complete paths 2942, partial paths 360000 (to-do list 8 / 24)
+20:10:02 complete paths 3000, partial paths 364462 (to-do list 10 / 24)
+20:10:02 complete paths 3050, partial paths 370000 (to-do list 7 / 24)
+20:10:03 complete paths 3074, partial paths 380000 (to-do list 10 / 24)
+20:10:04 complete paths 3100, partial paths 388485 (to-do list 8 / 24)
+20:10:04 complete paths 3102, partial paths 390000 (to-do list 10 / 24)
+20:10:05 complete paths 3102, partial paths 400000 (to-do list 12 / 24)
+20:10:06 complete paths 3102, partial paths 410000 (to-do list 15 / 24)
+20:10:07 complete paths 3102, partial paths 420000 (to-do list 9 / 24)
+20:10:07 complete paths 3178, partial paths 430000 (to-do list 11 / 24)
+20:10:08 complete paths 3200, partial paths 431628 (to-do list 9 / 24)
+20:10:08 complete paths 3300, partial paths 432667 (to-do list 6 / 24)
+20:10:08 complete paths 3400, partial paths 434052 (to-do list 7 / 24)
+20:10:08 complete paths 3500, partial paths 434885 (to-do list 4 / 24)
+20:10:08 complete paths 3600, partial paths 437840 (to-do list 12 / 24)
+20:10:08 complete paths 3636, partial paths 440000 (to-do list 5 / 24)
+20:10:09 complete paths 3700, partial paths 443042 (to-do list 6 / 24)
+20:10:09 complete paths 3800, partial paths 445216 (to-do list 5 / 24)
+20:10:09 complete paths 3900, partial paths 445851 (to-do list 9 / 24)
+20:10:09 complete paths 3982, partial paths 448223 (to-do list 0 / 24)
+20:10:09 renumbering path 100 / 3982
+20:10:09 renumbering path 200 / 3982
+20:10:10 renumbering path 300 / 3982
+20:10:10 renumbering path 400 / 3982
+20:10:10 renumbering path 500 / 3982
+20:10:10 renumbering path 600 / 3982
+20:10:10 renumbering path 700 / 3982
+20:10:10 renumbering path 800 / 3982
+20:10:10 renumbering path 900 / 3982
+20:10:10 renumbering path 1000 / 3982
+20:10:10 renumbering path 1100 / 3982
+20:10:10 renumbering path 1200 / 3982
+20:10:11 renumbering path 1300 / 3982
+20:10:11 renumbering path 1400 / 3982
+20:10:11 renumbering path 1500 / 3982
+20:10:11 renumbering path 1600 / 3982
+20:10:11 renumbering path 1700 / 3982
+20:10:11 renumbering path 1800 / 3982
+20:10:11 renumbering path 1900 / 3982
+20:10:11 renumbering path 2000 / 3982
+20:10:11 renumbering path 2100 / 3982
+20:10:11 renumbering path 2200 / 3982
+20:10:11 renumbering path 2300 / 3982
+20:10:12 renumbering path 2400 / 3982
+20:10:12 renumbering path 2500 / 3982
+20:10:12 renumbering path 2600 / 3982
+20:10:12 renumbering path 2700 / 3982
+20:10:12 renumbering path 2800 / 3982
+20:10:12 renumbering path 2900 / 3982
+20:10:12 renumbering path 3000 / 3982
+20:10:12 renumbering path 3100 / 3982
+20:10:12 renumbering path 3200 / 3982
+20:10:13 renumbering path 3300 / 3982
+20:10:13 renumbering path 3400 / 3982
+20:10:13 renumbering path 3500 / 3982
+20:10:13 renumbering path 3600 / 3982
+20:10:13 renumbering path 3700 / 3982
+20:10:13 renumbering path 3800 / 3982
+20:10:13 renumbering path 3900 / 3982
+generating regional paths for all regions of fr1970
+generating regional paths for region NPC of fr1970
+20:10:13 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:13 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:13 computing generic regional paths for region NPC of fr1970
+generating regional paths for region PIC of fr1970
+20:10:13 complete paths 0, partial paths 4 (to-do list 3 / 3)
+20:10:13 complete paths 1, partial paths 5 (to-do list 3 / 4)
+20:10:13 complete paths 6, partial paths 9 (to-do list 0 / 4)
+20:10:13 computing generic regional paths for region PIC of fr1970
+generating regional paths for region HNO of fr1970
+20:10:13 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:13 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:13 computing generic regional paths for region HNO of fr1970
+generating regional paths for region BNO of fr1970
+20:10:13 complete paths 0, partial paths 4 (to-do list 3 / 3)
+20:10:13 complete paths 1, partial paths 5 (to-do list 3 / 4)
+20:10:13 complete paths 6, partial paths 9 (to-do list 0 / 4)
+20:10:13 computing generic regional paths for region BNO of fr1970
+generating regional paths for region BRE of fr1970
+20:10:14 complete paths 0, partial paths 5 (to-do list 4 / 4)
+20:10:14 complete paths 1, partial paths 8 (to-do list 5 / 6)
+20:10:14 complete paths 12, partial paths 30 (to-do list 0 / 6)
+20:10:14 computing generic regional paths for region BRE of fr1970
+generating regional paths for region PDL of fr1970
+20:10:14 complete paths 0, partial paths 6 (to-do list 5 / 5)
+20:10:14 complete paths 1, partial paths 15 (to-do list 5 / 8)
+20:10:14 complete paths 8, partial paths 53 (to-do list 0 / 8)
+20:10:14 computing generic regional paths for region PDL of fr1970
+generating regional paths for region PCH of fr1970
+20:10:14 complete paths 0, partial paths 5 (to-do list 4 / 4)
+20:10:14 complete paths 1, partial paths 8 (to-do list 5 / 6)
+20:10:14 complete paths 12, partial paths 30 (to-do list 0 / 6)
+20:10:14 computing generic regional paths for region PCH of fr1970
+generating regional paths for region LIM of fr1970
+20:10:14 complete paths 0, partial paths 4 (to-do list 3 / 3)
+20:10:14 complete paths 1, partial paths 5 (to-do list 3 / 4)
+20:10:14 complete paths 6, partial paths 9 (to-do list 0 / 4)
+20:10:14 computing generic regional paths for region LIM of fr1970
+generating regional paths for region AQU of fr1970
+20:10:14 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:14 complete paths 2, partial paths 6 (to-do list 2 / 3)
+20:10:14 complete paths 8, partial paths 8 (to-do list 0 / 3)
+20:10:14 computing generic regional paths for region AQU of fr1970
+generating regional paths for region MPY of fr1970
+20:10:14 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:14 complete paths 2, partial paths 18 (to-do list 4 / 7)
+20:10:14 complete paths 6, partial paths 52 (to-do list 0 / 7)
+20:10:14 computing generic regional paths for region MPY of fr1970
+generating regional paths for region LRO of fr1970
+20:10:14 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:14 complete paths 2, partial paths 4 (to-do list 0 / 1)
+20:10:14 complete paths 2, partial paths 4 (to-do list 0 / 1)
+20:10:14 computing generic regional paths for region LRO of fr1970
+generating regional paths for region PAC of fr1970
+20:10:14 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:14 complete paths 2, partial paths 13 (to-do list 2 / 5)
+20:10:14 complete paths 6, partial paths 18 (to-do list 0 / 5)
+20:10:14 computing generic regional paths for region PAC of fr1970
+generating regional paths for region RAL of fr1970
+20:10:14 complete paths 0, partial paths 9 (to-do list 8 / 8)
+20:10:14 complete paths 1, partial paths 20 (to-do list 13 / 14)
+20:10:14 complete paths 58, partial paths 772 (to-do list 0 / 14)
+20:10:14 computing generic regional paths for region RAL of fr1970
+generating regional paths for region AUV of fr1970
+20:10:14 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:14 complete paths 2, partial paths 4 (to-do list 1 / 2)
+20:10:14 complete paths 4, partial paths 4 (to-do list 0 / 2)
+20:10:14 computing generic regional paths for region AUV of fr1970
+generating regional paths for region CEN of fr1970
+20:10:14 complete paths 0, partial paths 7 (to-do list 6 / 6)
+20:10:14 complete paths 1, partial paths 14 (to-do list 9 / 10)
+20:10:14 complete paths 28, partial paths 188 (to-do list 0 / 10)
+20:10:14 computing generic regional paths for region CEN of fr1970
+generating regional paths for region IDF of fr1970
+20:10:14 complete paths 0, partial paths 9 (to-do list 8 / 8)
+20:10:14 complete paths 1, partial paths 33 (to-do list 15 / 20)
+20:10:14 complete paths 100, partial paths 596 (to-do list 13 / 20)
+20:10:14 complete paths 200, partial paths 1230 (to-do list 9 / 20)
+20:10:15 complete paths 300, partial paths 1852 (to-do list 5 / 20)
+20:10:15 complete paths 400, partial paths 2403 (to-do list 9 / 20)
+20:10:15 complete paths 500, partial paths 2841 (to-do list 7 / 20)
+20:10:15 complete paths 600, partial paths 3299 (to-do list 6 / 20)
+20:10:15 complete paths 700, partial paths 3704 (to-do list 7 / 20)
+20:10:15 complete paths 800, partial paths 4012 (to-do list 1 / 20)
+20:10:15 complete paths 800, partial paths 4014 (to-do list 0 / 20)
+20:10:15 renumbering path 100 / 800
+20:10:15 renumbering path 200 / 800
+20:10:15 renumbering path 300 / 800
+20:10:15 renumbering path 400 / 800
+20:10:15 renumbering path 500 / 800
+20:10:15 renumbering path 600 / 800
+20:10:16 renumbering path 700 / 800
+20:10:16 renumbering path 800 / 800
+20:10:16 computing generic regional paths for region IDF of fr1970
+generating regional paths for region BOU of fr1970
+20:10:16 complete paths 0, partial paths 5 (to-do list 4 / 4)
+20:10:16 complete paths 1, partial paths 8 (to-do list 5 / 6)
+20:10:16 complete paths 12, partial paths 30 (to-do list 0 / 6)
+20:10:16 computing generic regional paths for region BOU of fr1970
+generating regional paths for region FCO of fr1970
+20:10:16 complete paths 0, partial paths 5 (to-do list 4 / 4)
+20:10:16 complete paths 1, partial paths 8 (to-do list 5 / 6)
+20:10:16 complete paths 12, partial paths 30 (to-do list 0 / 6)
+20:10:16 computing generic regional paths for region FCO of fr1970
+generating regional paths for region CHA of fr1970
+20:10:16 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:16 complete paths 2, partial paths 4 (to-do list 1 / 2)
+20:10:16 complete paths 4, partial paths 4 (to-do list 0 / 2)
+20:10:16 computing generic regional paths for region CHA of fr1970
+generating regional paths for region LOR of fr1970
+20:10:16 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:16 complete paths 2, partial paths 4 (to-do list 1 / 2)
+20:10:16 complete paths 4, partial paths 4 (to-do list 0 / 2)
+20:10:16 computing generic regional paths for region LOR of fr1970
+generating regional paths for region ALS of fr1970
+20:10:16 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:16 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:10:16 computing generic regional paths for region ALS of fr1970

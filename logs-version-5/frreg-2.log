@@ -1,0 +1,10 @@
+20:33:58 Fruitless macro-paths: 0
+20:33:59 Fruitless macro-paths: 790
+BRE → NOR → PDL, CVL → ARA → NAQ, CVL → BFC → IDF, GES → HDF → IDF, GES → HDF → NOR, HDF → GES → IDF, HDF → NOR → IDF, IDF → HDF → NOR
+20:33:59 macro number 21 / 894, generic paths 0, specific paths 0, partial paths 1 (to-do list 1 / 1)
+20:33:59 macro number 21 / 894, generic paths 1, specific paths 1, partial paths 13 (to-do list 3 / 3)
+20:34:06 macro number 425 / 894, generic paths 100, specific paths 100, partial paths 775 (to-do list 2 / 4)
+20:34:09 macro number 447 / 894, generic paths 134, specific paths 134, partial paths 1000 (to-do list 1 / 4)
+20:34:15 macro number 788 / 894, generic paths 200, specific paths 200, partial paths 1636 (to-do list 2 / 4)
+20:34:16 macro number 865 / 894, generic paths 210, specific paths 210, partial paths 1728 (to-do list 0 / 4)
+20:34:16 the end

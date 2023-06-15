@@ -1,0 +1,107 @@
+generating macro-paths for fr2015
+20:10:17 complete paths 0, partial paths 13 (to-do list 12 / 12)
+20:10:17 complete paths 1, partial paths 205 (to-do list 18 / 25)
+20:10:18 complete paths 100, partial paths 2738 (to-do list 17 / 25)
+20:10:18 complete paths 200, partial paths 4646 (to-do list 15 / 25)
+20:10:18 complete paths 300, partial paths 8217 (to-do list 15 / 25)
+20:10:18 complete paths 316, partial paths 10000 (to-do list 15 / 25)
+20:10:19 complete paths 400, partial paths 12800 (to-do list 12 / 25)
+20:10:19 complete paths 500, partial paths 15917 (to-do list 8 / 25)
+20:10:19 complete paths 600, partial paths 19079 (to-do list 9 / 25)
+20:10:19 complete paths 644, partial paths 20000 (to-do list 7 / 25)
+20:10:19 complete paths 700, partial paths 21295 (to-do list 6 / 25)
+20:10:20 complete paths 800, partial paths 22909 (to-do list 9 / 25)
+20:10:20 complete paths 894, partial paths 26476 (to-do list 0 / 25)
+20:10:20 renumbering path 100 / 894
+20:10:20 renumbering path 200 / 894
+20:10:20 renumbering path 300 / 894
+20:10:20 renumbering path 400 / 894
+20:10:20 renumbering path 500 / 894
+20:10:20 renumbering path 600 / 894
+20:10:20 renumbering path 700 / 894
+20:10:20 renumbering path 800 / 894
+generating regional paths for all regions of fr2015
+generating regional paths for region HDF of fr2015
+20:10:21 complete paths 0, partial paths 6 (to-do list 5 / 5)
+20:10:21 complete paths 1, partial paths 11 (to-do list 7 / 8)
+20:10:21 complete paths 20, partial paths 81 (to-do list 0 / 8)
+20:10:21 computing generic regional paths for region HDF of fr2015
+generating regional paths for region NOR of fr2015
+20:10:21 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:21 complete paths 2, partial paths 6 (to-do list 2 / 3)
+20:10:21 complete paths 8, partial paths 8 (to-do list 0 / 3)
+20:10:21 computing generic regional paths for region NOR of fr2015
+generating regional paths for region BRE of fr2015
+20:10:21 complete paths 0, partial paths 5 (to-do list 4 / 4)
+20:10:21 complete paths 1, partial paths 8 (to-do list 5 / 6)
+20:10:21 complete paths 12, partial paths 30 (to-do list 0 / 6)
+20:10:21 computing generic regional paths for region BRE of fr2015
+generating regional paths for region PDL of fr2015
+20:10:21 complete paths 0, partial paths 6 (to-do list 5 / 5)
+20:10:21 complete paths 1, partial paths 15 (to-do list 5 / 8)
+20:10:21 complete paths 8, partial paths 53 (to-do list 0 / 8)
+20:10:21 computing generic regional paths for region PDL of fr2015
+generating regional paths for region NAQ of fr2015
+20:10:21 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:21 complete paths 2, partial paths 21 (to-do list 10 / 11)
+20:10:21 complete paths 100, partial paths 973 (to-do list 4 / 11)
+20:10:21 complete paths 120, partial paths 1070 (to-do list 0 / 11)
+20:10:21 renumbering path 100 / 120
+20:10:21 computing generic regional paths for region NAQ of fr2015
+generating regional paths for region OCC of fr2015
+20:10:21 complete paths 0, partial paths 14 (to-do list 13 / 13)
+20:10:21 complete paths 1, partial paths 276 (to-do list 19 / 27)
+20:10:22 complete paths 99, partial paths 10000 (to-do list 17 / 27)
+20:10:22 complete paths 100, partial paths 10764 (to-do list 18 / 27)
+20:10:23 complete paths 158, partial paths 20000 (to-do list 10 / 27)
+20:10:23 complete paths 182, partial paths 25523 (to-do list 0 / 27)
+20:10:23 renumbering path 100 / 182
+20:10:23 computing generic regional paths for region OCC of fr2015
+generating regional paths for region PAC of fr2015
+20:10:23 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:10:23 complete paths 2, partial paths 13 (to-do list 2 / 5)
+20:10:23 complete paths 6, partial paths 18 (to-do list 0 / 5)
+20:10:23 computing generic regional paths for region PAC of fr2015
+generating regional paths for region ARA of fr2015
+20:10:24 complete paths 0, partial paths 13 (to-do list 12 / 12)
+20:10:24 complete paths 1, partial paths 40 (to-do list 20 / 22)
+20:10:24 complete paths 100, partial paths 8118 (to-do list 5 / 23)
+20:10:24 complete paths 106, partial paths 9130 (to-do list 0 / 23)
+20:10:24 renumbering path 100 / 106
+20:10:24 computing generic regional paths for region ARA of fr2015
+generating regional paths for region CVL of fr2015
+20:10:24 complete paths 0, partial paths 7 (to-do list 6 / 6)
+20:10:24 complete paths 1, partial paths 14 (to-do list 9 / 10)
+20:10:25 complete paths 28, partial paths 188 (to-do list 0 / 10)
+20:10:25 computing generic regional paths for region CVL of fr2015
+generating regional paths for region IDF of fr2015
+20:10:25 complete paths 0, partial paths 9 (to-do list 8 / 8)
+20:10:25 complete paths 1, partial paths 33 (to-do list 15 / 20)
+20:10:25 complete paths 100, partial paths 596 (to-do list 13 / 20)
+20:10:25 complete paths 200, partial paths 1230 (to-do list 9 / 20)
+20:10:25 complete paths 300, partial paths 1852 (to-do list 5 / 20)
+20:10:25 complete paths 400, partial paths 2403 (to-do list 9 / 20)
+20:10:25 complete paths 500, partial paths 2841 (to-do list 7 / 20)
+20:10:25 complete paths 600, partial paths 3299 (to-do list 6 / 20)
+20:10:25 complete paths 700, partial paths 3704 (to-do list 7 / 20)
+20:10:25 complete paths 800, partial paths 4012 (to-do list 1 / 20)
+20:10:25 complete paths 800, partial paths 4014 (to-do list 0 / 20)
+20:10:25 renumbering path 100 / 800
+20:10:25 renumbering path 200 / 800
+20:10:26 renumbering path 300 / 800
+20:10:26 renumbering path 400 / 800
+20:10:26 renumbering path 500 / 800
+20:10:26 renumbering path 600 / 800
+20:10:26 renumbering path 700 / 800
+20:10:26 renumbering path 800 / 800
+20:10:26 computing generic regional paths for region IDF of fr2015
+generating regional paths for region BFC of fr2015
+20:10:26 complete paths 0, partial paths 9 (to-do list 8 / 8)
+20:10:26 complete paths 1, partial paths 20 (to-do list 13 / 14)
+20:10:26 complete paths 76, partial paths 828 (to-do list 0 / 14)
+20:10:26 computing generic regional paths for region BFC of fr2015
+generating regional paths for region GES of fr2015
+20:10:26 complete paths 0, partial paths 11 (to-do list 10 / 10)
+20:10:26 complete paths 1, partial paths 47 (to-do list 16 / 19)
+20:10:27 complete paths 80, partial paths 3100 (to-do list 0 / 19)
+20:10:27 computing generic regional paths for region GES of fr2015

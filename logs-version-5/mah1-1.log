@@ -1,0 +1,160 @@
+generating macro-paths for mah1
+20:30:35 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:30:35 complete paths 2, partial paths 3 (to-do list 0 / 1)
+20:30:35 complete paths 2, partial paths 3 (to-do list 0 / 1)
+generating regional paths for all regions of mah1
+generating regional paths for region HIM of mah1
+20:30:35 complete paths 0, partial paths 2 (to-do list 1 / 1)
+20:30:35 complete paths 2, partial paths 3 (to-do list 0 / 1)
+20:30:35 complete paths 2, partial paths 3 (to-do list 0 / 1)
+20:30:35 computing generic regional paths for region HIM of mah1
+generating regional paths for region NOR of mah1
+20:30:35 complete paths 0, partial paths 19 (to-do list 18 / 18)
+20:30:35 complete paths 1, partial paths 503 (to-do list 27 / 35)
+20:30:36 complete paths 3, partial paths 10000 (to-do list 25 / 36)
+20:30:36 complete paths 42, partial paths 20000 (to-do list 29 / 36)
+20:30:37 complete paths 100, partial paths 28953 (to-do list 22 / 36)
+20:30:37 complete paths 106, partial paths 30000 (to-do list 23 / 36)
+20:30:38 complete paths 130, partial paths 40000 (to-do list 26 / 36)
+20:30:38 complete paths 148, partial paths 50000 (to-do list 22 / 36)
+20:30:39 complete paths 200, partial paths 59981 (to-do list 19 / 36)
+20:30:39 complete paths 200, partial paths 60000 (to-do list 19 / 36)
+20:30:40 complete paths 206, partial paths 70000 (to-do list 25 / 36)
+20:30:41 complete paths 300, partial paths 79891 (to-do list 20 / 36)
+20:30:41 complete paths 301, partial paths 80000 (to-do list 23 / 36)
+20:30:41 complete paths 400, partial paths 89452 (to-do list 22 / 36)
+20:30:41 complete paths 411, partial paths 90000 (to-do list 27 / 36)
+20:30:42 complete paths 465, partial paths 100000 (to-do list 21 / 36)
+20:30:43 complete paths 465, partial paths 110000 (to-do list 20 / 36)
+20:30:43 complete paths 500, partial paths 115540 (to-do list 20 / 36)
+20:30:44 complete paths 515, partial paths 120000 (to-do list 23 / 36)
+20:30:44 complete paths 515, partial paths 130000 (to-do list 20 / 36)
+20:30:45 complete paths 518, partial paths 140000 (to-do list 19 / 36)
+20:30:46 complete paths 558, partial paths 150000 (to-do list 16 / 36)
+20:30:46 complete paths 600, partial paths 152276 (to-do list 19 / 36)
+20:30:46 complete paths 626, partial paths 160000 (to-do list 20 / 36)
+20:30:47 complete paths 632, partial paths 170000 (to-do list 21 / 36)
+20:30:48 complete paths 680, partial paths 180000 (to-do list 21 / 36)
+20:30:49 complete paths 680, partial paths 190000 (to-do list 23 / 36)
+20:30:49 complete paths 700, partial paths 192270 (to-do list 18 / 36)
+20:30:49 complete paths 728, partial paths 200000 (to-do list 20 / 36)
+20:30:50 complete paths 800, partial paths 209533 (to-do list 14 / 36)
+20:30:50 complete paths 808, partial paths 210000 (to-do list 14 / 36)
+20:30:51 complete paths 855, partial paths 220000 (to-do list 18 / 36)
+20:30:51 complete paths 863, partial paths 230000 (to-do list 20 / 36)
+20:30:52 complete paths 900, partial paths 232944 (to-do list 16 / 36)
+20:30:52 complete paths 983, partial paths 240000 (to-do list 19 / 36)
+20:30:52 complete paths 1000, partial paths 241599 (to-do list 15 / 36)
+20:30:53 complete paths 1031, partial paths 250000 (to-do list 17 / 36)
+20:30:53 complete paths 1034, partial paths 260000 (to-do list 13 / 36)
+20:30:54 complete paths 1100, partial paths 268732 (to-do list 13 / 36)
+20:30:54 complete paths 1108, partial paths 270000 (to-do list 14 / 36)
+20:30:55 complete paths 1112, partial paths 280000 (to-do list 18 / 36)
+20:30:56 complete paths 1113, partial paths 290000 (to-do list 19 / 36)
+20:30:56 complete paths 1118, partial paths 300000 (to-do list 15 / 36)
+20:30:57 complete paths 1121, partial paths 310000 (to-do list 11 / 36)
+20:30:58 complete paths 1162, partial paths 320000 (to-do list 11 / 36)
+20:30:58 complete paths 1200, partial paths 329101 (to-do list 14 / 36)
+20:30:58 complete paths 1207, partial paths 330000 (to-do list 15 / 36)
+20:30:59 complete paths 1210, partial paths 340000 (to-do list 14 / 36)
+20:31:00 complete paths 1216, partial paths 350000 (to-do list 16 / 36)
+20:31:00 complete paths 1216, partial paths 360000 (to-do list 12 / 36)
+20:31:01 complete paths 1219, partial paths 370000 (to-do list 14 / 36)
+20:31:02 complete paths 1219, partial paths 380000 (to-do list 12 / 36)
+20:31:02 complete paths 1300, partial paths 389176 (to-do list 11 / 36)
+20:31:03 complete paths 1318, partial paths 390000 (to-do list 10 / 36)
+20:31:03 complete paths 1400, partial paths 399490 (to-do list 11 / 36)
+20:31:03 complete paths 1430, partial paths 400000 (to-do list 5 / 36)
+20:31:04 complete paths 1468, partial paths 410000 (to-do list 10 / 36)
+20:31:04 complete paths 1500, partial paths 413385 (to-do list 7 / 36)
+20:31:05 complete paths 1521, partial paths 420000 (to-do list 9 / 36)
+20:31:05 complete paths 1578, partial paths 429386 (to-do list 0 / 36)
+20:31:06 renumbering path 100 / 1578
+20:31:07 renumbering path 200 / 1578
+20:31:08 renumbering path 300 / 1578
+20:31:08 renumbering path 400 / 1578
+20:31:09 renumbering path 500 / 1578
+20:31:10 renumbering path 600 / 1578
+20:31:10 renumbering path 700 / 1578
+20:31:11 renumbering path 800 / 1578
+20:31:12 renumbering path 900 / 1578
+20:31:13 renumbering path 1000 / 1578
+20:31:13 renumbering path 1100 / 1578
+20:31:14 renumbering path 1200 / 1578
+20:31:15 renumbering path 1300 / 1578
+20:31:16 renumbering path 1400 / 1578
+20:31:16 renumbering path 1500 / 1578
+20:31:17 computing generic regional paths for region NOR of mah1
+generating regional paths for region SUD of mah1
+20:31:19 complete paths 0, partial paths 13 (to-do list 12 / 12)
+20:31:19 complete paths 1, partial paths 35 (to-do list 24 / 25)
+20:31:19 complete paths 100, partial paths 1153 (to-do list 17 / 25)
+20:31:19 complete paths 200, partial paths 3049 (to-do list 18 / 25)
+20:31:19 complete paths 300, partial paths 4300 (to-do list 19 / 25)
+20:31:19 complete paths 400, partial paths 4813 (to-do list 17 / 25)
+20:31:19 complete paths 500, partial paths 5898 (to-do list 17 / 25)
+20:31:19 complete paths 600, partial paths 8054 (to-do list 18 / 25)
+20:31:20 complete paths 700, partial paths 9283 (to-do list 14 / 25)
+20:31:20 complete paths 772, partial paths 10000 (to-do list 13 / 25)
+20:31:20 complete paths 800, partial paths 10726 (to-do list 12 / 25)
+20:31:20 complete paths 900, partial paths 11940 (to-do list 13 / 25)
+20:31:20 complete paths 1000, partial paths 14484 (to-do list 12 / 25)
+20:31:20 complete paths 1100, partial paths 15333 (to-do list 11 / 25)
+20:31:20 complete paths 1200, partial paths 17012 (to-do list 14 / 25)
+20:31:20 complete paths 1300, partial paths 18394 (to-do list 15 / 25)
+20:31:21 complete paths 1358, partial paths 20000 (to-do list 15 / 25)
+20:31:21 complete paths 1400, partial paths 20939 (to-do list 16 / 25)
+20:31:21 complete paths 1500, partial paths 22414 (to-do list 16 / 25)
+20:31:21 complete paths 1600, partial paths 23612 (to-do list 13 / 25)
+20:31:21 complete paths 1700, partial paths 24687 (to-do list 10 / 25)
+20:31:21 complete paths 1800, partial paths 27211 (to-do list 9 / 25)
+20:31:21 complete paths 1900, partial paths 28327 (to-do list 10 / 25)
+20:31:21 complete paths 2000, partial paths 29277 (to-do list 7 / 25)
+20:31:22 complete paths 2044, partial paths 30000 (to-do list 15 / 25)
+20:31:22 complete paths 2100, partial paths 30563 (to-do list 8 / 25)
+20:31:22 complete paths 2200, partial paths 32322 (to-do list 9 / 25)
+20:31:22 complete paths 2300, partial paths 33054 (to-do list 9 / 25)
+20:31:22 complete paths 2400, partial paths 34696 (to-do list 7 / 25)
+20:31:22 complete paths 2500, partial paths 35729 (to-do list 8 / 25)
+20:31:22 complete paths 2600, partial paths 36799 (to-do list 6 / 25)
+20:31:22 complete paths 2700, partial paths 38233 (to-do list 9 / 25)
+20:31:23 complete paths 2800, partial paths 39651 (to-do list 9 / 25)
+20:31:23 complete paths 2840, partial paths 40000 (to-do list 5 / 25)
+20:31:23 complete paths 2900, partial paths 41127 (to-do list 7 / 25)
+20:31:23 complete paths 3000, partial paths 42029 (to-do list 6 / 25)
+20:31:23 complete paths 3088, partial paths 43592 (to-do list 0 / 25)
+20:31:24 renumbering path 100 / 3088
+20:31:25 renumbering path 200 / 3088
+20:31:25 renumbering path 300 / 3088
+20:31:26 renumbering path 400 / 3088
+20:31:27 renumbering path 500 / 3088
+20:31:28 renumbering path 600 / 3088
+20:31:28 renumbering path 700 / 3088
+20:31:29 renumbering path 800 / 3088
+20:31:30 renumbering path 900 / 3088
+20:31:31 renumbering path 1000 / 3088
+20:31:32 renumbering path 1100 / 3088
+20:31:32 renumbering path 1200 / 3088
+20:31:33 renumbering path 1300 / 3088
+20:31:34 renumbering path 1400 / 3088
+20:31:35 renumbering path 1500 / 3088
+20:31:35 renumbering path 1600 / 3088
+20:31:36 renumbering path 1700 / 3088
+20:31:37 renumbering path 1800 / 3088
+20:31:38 renumbering path 1900 / 3088
+20:31:38 renumbering path 2000 / 3088
+20:31:39 renumbering path 2100 / 3088
+20:31:40 renumbering path 2200 / 3088
+20:31:41 renumbering path 2300 / 3088
+20:31:42 renumbering path 2400 / 3088
+20:31:42 renumbering path 2500 / 3088
+20:31:43 renumbering path 2600 / 3088
+20:31:44 renumbering path 2700 / 3088
+20:31:45 renumbering path 2800 / 3088
+20:31:45 renumbering path 2900 / 3088
+20:31:46 renumbering path 3000 / 3088
+20:31:47 computing generic regional paths for region SUD of mah1
+generating regional paths for region CEY of mah1
+20:31:48 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:31:48 complete paths 2, partial paths 1 (to-do list 0 / 1)
+20:31:48 computing generic regional paths for region CEY of mah1
