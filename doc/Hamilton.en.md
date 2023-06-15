@@ -1851,7 +1851,9 @@ This column is useless in the search algorithms, but it will give fine
 results in the web pages and in the log files.
 
 The column  `fruitless` is also added  to the `Borders` table  and the
-`Big_Borders` view.
+`Big_Borders`  view. It  is also  added to  the `Small_Borders`  view,
+since the borders  between small areas inherit  the `fruitless` values
+from the borders between the corresponding big areas.
 
 Feeding the New Columns
 -----------------------
@@ -1887,6 +1889,10 @@ updated by  contatenating `',  IDF →  NOR'` to  the existing  value of
 still  flagged   as  not   fruitless  will   be  updated   by  filling
 `fruitless_reason` with  `'IDF →  NOR'` and  `fruitless` with  1. Same
 thing with `NOR → IDF`.
+
+And there is a fifth `update`  statement. Once all borders between big
+areas are processed, the  generation programme extends the `fruitless`
+values to the borders between small areas.
 
 Filling the `fruitless`  column requires that all  macro-paths and all
 regional paths are generated. Since the `gener1.raku` programme allows

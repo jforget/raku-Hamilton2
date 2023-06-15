@@ -208,6 +208,17 @@ sub MAIN (
       $upd-fruitless-b1.execute($map, $border<upper_to>, $border<upper_from>);
     }
   }
+  $dbh.prepare(q:to/SQL/).execute($map);
+  update Borders as A
+  set    fruitless = 1
+  where  A.map = ?
+  and    1 = (select B.fruitless
+              from   Big_Borders B
+              where  B.map       = A.map
+              and    B.from_code = A.upper_from
+              and    B.to_code   = A.upper_to
+              )
+  SQL
   my $counting = $dbh.prepare(q:to/SQL/);
   select count(*) as nb
   from   Macro_Paths

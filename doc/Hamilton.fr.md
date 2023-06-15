@@ -1920,7 +1920,10 @@ Inutile pour  les algorithmes de  recherche, mais cela fait  beau dans
 les pages web et dans les fichiers log.
 
 Dans la table `Borders` et la vue `Big_Borders`, on ajoute une colonne
-`fruitless` semblable à celle de `Paths`.
+`fruitless` semblable à  celle de `Paths`. La  colonne `fruitless` est
+également  ajoutée  à la  vue  `Small_Borders`,  les frontières  entre
+départements héritant du  champ `fruitless` de la  frontière entre les
+régions correspondantes.
 
 Alimentation des nouvelles colonnes
 -----------------------------------
@@ -1959,6 +1962,10 @@ valeur courante de cette colonne.  Si un macro-chemin n'est pas marqué
 comme stérile, le  programme mettra à jour  `fruitless_reason` avec la
 chaîne `'IDF → NOR'`  et la colonne `fruitless` à 1.  Idem pour `NOR →
 IDF`.
+
+Et à l'issue de  la boucle contenant ces quatres mises à  jour, il y a
+une cinquième mise  à jour, reportant la valeur  de `fruitless` depuis
+les frontières entre régions vers les frontières entre départements.
 
 Pour  alimenter le  champ `fruitless`  dans la  table `Borders`  et la
 table `Paths`, il  est nécessaire d'avoir créé  tous les macro-chemins

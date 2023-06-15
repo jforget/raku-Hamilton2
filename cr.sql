@@ -88,8 +88,8 @@ create view Big_Borders (map, from_code, to_code, long, lat, fruitless)
             from         Borders
             where        level = 1;
 
-create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color)
-         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color
+create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless)
+         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless
             from           Borders
             where          level = 2;
 
