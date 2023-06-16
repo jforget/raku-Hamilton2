@@ -2655,6 +2655,29 @@ l'affichage  des pages  des  cartes. Les  frontières  stériles et  les
 triplets stériles sont affichés dans un seul sens, c'est-à-dire que si
 l'on affiche `A → B`, on n'affichera pas `B → A`.
 
+Conclusions pour la cinquième variante
+--------------------------------------
+
+Il y a quelques changements  de durée pour le programme `gener1.raku`,
+certains dans  le sens du ralentissement,  les autres dans le  sens de
+l'accélération,  mais  je  pense  que  ces  changements  ne  sont  pas
+significatifs.
+
+De même, les changements pour `gener2.raku` ne sont pas significatifs
+pour la plupart des cartes. Il n'y a que pour `frreg` et `fr1970` que
+ces différences méritent d'être examinées.
+
+La  cinquième  variante  avait  pour  but de  diminuer  le  nombre  de
+macro-chemins traités pour  `fr1970`. Cela a été le cas,  le nombre de
+chemins avec  `fruitless` à `0` est  passé de 174 à  42. Néanmoins, le
+temps de traitement est resté le même, 8 minutes et demie environ.
+
+Pour la carte `frreg`, le gain  est très net (en valeur relative, mais
+assez peu notable en valeur absolue). Dans la quatrième version, aucun
+macro-chemin  n'avait  été  déclaré  `fruitless`.  Dans  la  cinquième
+version, 790  macro-chemins sur  894 sont  déclarés `fruitless`  et le
+temps de traitement est ainsi passé de 57 secondes à 18 secondes.
+
 LICENCE
 =======
 

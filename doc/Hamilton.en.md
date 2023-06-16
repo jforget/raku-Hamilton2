@@ -2552,6 +2552,28 @@ triples are displayed  in one direction only, that is,  if the webpage
 displays the fruitless part `A → B`, it will not display the part `B →
 A`.
 
+Conlusions for the Fifth Variant
+--------------------------------
+
+For `gener1.raku`,  there are some processing  time changes, sometimes
+accelerating, sometimes slowing, but they are not significant.
+
+Likewise, for  `gener2.raku`, most  of the  time, the  processing time
+changes are not significant. Only for `fr1970` and `frreg` the changes
+deserve an analysis.
+
+The  fifth variant  aimed at  reducing the  number of  macro-paths for
+`fr1970`. It worked, the number  of macro-paths with `fruitless` equal
+to `0` went down from 174 to  42. Yet, the processing time was more or
+less the same, about 8 minutes and half.
+
+For `frreg`, the reduction of processing time was very significant (in
+relative values; in absolute value,  it was not really noticeable). In
+the fourth version,  no macro-path was flagged  with `fruitless` equal
+to `1`. In the fifth version,  790 macro-paths out of 894 were flagged
+as `fruitless` and the processing time fell down from 57 seconds to 18
+seconds.
+
 License
 =======
 
