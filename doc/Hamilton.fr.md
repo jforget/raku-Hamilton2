@@ -2678,9 +2678,72 @@ macro-chemin  n'avait  été  déclaré  `fruitless`.  Dans  la  cinquième
 version, 790  macro-chemins sur  894 sont  déclarés `fruitless`  et le
 temps de traitement est ainsi passé de 57 secondes à 18 secondes.
 
+En  revanche, pour  la  carte `fr2015`,  l'explosion combinatoire  est
+toujours là, mais on le savait déjà.
+
+Revenons à la carte `fr1970`.  Il reste 42 macro-chemins pour lesquels
+`fruitless` est à `0` et  pourtant, seuls 2 macro-chemins donnent lieu
+à un chemin complet. Pourquoi ?
+
+![Basse-Normandie, Bretagne et Pays de la Loire](BNO-BRE-PDL.png)
+
+On sait  que les deux  extrémités d'un chemin complet  sont forcéments
+dans    les    régions    `NPC`    (Nord-Pas-de-Calais)    et    `PAC`
+(Provence-Alpes-Côte-d'Azur). Une conséquence est  que la région `BRE`
+(Bretagne)  est une  région de  passage,  pas une  extrémité. Donc  le
+macro-chemin contient soit `BNO → BRE →  PDL`, soit `PDL → BRE → BNO`.
+Pour simplifier la discussion, nous considérons seulement le sens `BNO
+→ BRE →  PDL`. Nous avonc donc 21 macro-chemins  avec `fruitless = 0`,
+dont un  seul a donné  lieu à des chemins  complets. En étendant  à la
+région suivante, les macro-chemins contiennent soit `BNO → BRE → PDL →
+CEN` soit `BNO → BRE → PDL → PCH`.
+
+Maintenant, examinons  comment remplacer  les régions par  des chemins
+régionaux.  La  région `BNO`  peut  être  remplacée par  deux  chemins
+régionaux, tous deux aboutissant en `50`. Le morceau `BNO → BRE → PDL`
+donne donc  `xxx → yyy →  50 →→ BRE →  PDL`. Ensuite, il n'y  a pas le
+choix, la substitution de `BRE` donne `xxx → yyy → 50 → 35 → 22 → 29 →
+56 →→ PDL`. Partant de `56`,  les seuls chemins régionaux possibles de
+`PDL` sont `44 →  85 → 49 → 72 → 53`  et `44 → 85 → 49 →  53 → 72`. Le
+premier ne permet pas d'enchaîner vers  `PCH` ni vers `CEN`. Le second
+permet  d'enchaîner   vers  `CEN`  mais   pas  vers  `PCH`.   Donc  un
+macro-chemin contenant  `%BNO → BRE →  PDL → CEN%` pourra  générer des
+chemins complets, mais  un macro-chemin contenant `%BNO → BRE  → PDL →
+PCH%` ne pourra pas. Or il y a 370 macro-chemins contenant `%BNO → BRE
+→  PDL  →  CEN%`,  dont  un   seul  avec  `fruitless  =  0`,  et  1380
+macro-chemins  contenant `%BNO  →  BRE  → PDL  →  PCH%`  dont 20  avec
+`fruitless = 0`.
+
+Est-il possible  d'éliminer ces macro-chemins reliant  `PDL` à `PCH` ?
+Pour ce  faire, il faudrait  écrire une première requête  listant tous
+les extraits possibles avec 4 régions  et 3 flèches, avec une jointure :
+
+   Big_Borders → Big_Borders → Big_Borders
+
+une seconde  requête listant  tous les  extraits avec  4 régions  et 3
+flèches  pouvant, éventuellement,  donner  lieu à  un chemin  complet.
+Cette seconde requête serait basée sur une jointure :
+
+  Exit_Borders (sens inverse) → Region_Paths → Small_Borders → Region_Paths → Exit_Borders
+
+et faire la  différence (en SQLite : `except`). Mais  cela paraît bien
+compliqué pour le résultat obtenu.  Néanmoins, cela fait remarquer que
+la  cinquième version,  basée  sur  la notion  de  « point de  contact
+unique », aurait pu s'affranchir de  ce concept et simplement comparer
+les  extraits de  macro-chemins avec  trois régions  et deux  flèches,
+obtenus par une jointure :
+
+   Big_Borders → Big_Borders
+
+avec les extraits obtenus par la jointure :
+
+  Exit_Borders (sens inverse) → Region_Paths → Exit_Borders
+
+
+
 LICENCE
 =======
 
-Texte diffusé sous la licence CC-BY-SA : Creative Commons, Attribution
-- Partage dans les Mêmes Conditions (CC BY-SA).
+Texte diffusé sous la licence CC-BY-SA : Creative Commons, Attribution -
+Partage dans les Mêmes Conditions (CC BY-SA).
 

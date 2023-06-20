@@ -2574,6 +2574,67 @@ to `1`. In the fifth version,  790 macro-paths out of 894 were flagged
 as `fruitless` and the processing time fell down from 57 seconds to 18
 seconds.
 
+As for map `fr2015`, the combinatory explosion is still there, but we
+already knew that.
+
+Back to map `fr1970`. Among all macro-paths, 42 remain with `fruitless
+= 0`, but only 2 of them give full paths. Why?
+
+![Lower-Normandy, Britanny and Pays de la Loire](BNO-BRE-PDL.png)
+
+We know that the beginning and the end of a full path belong to region
+`PAC`      (Provence-Alpes-Côte-d'Azur)      and     region      `NPC`
+(Nord-Pas-de-Calais).  Therefore Britanny  (`BRE`)  is a  pass-through
+region, not a begin or end region. Any macro-path contains either `BNO
+→ BRE →  PDL`, or `PDL →  BRE → BNO`. To keep  the discussion shorter,
+let us  consider only `BNO  → BRE →  PDL`, which gives  21 macro-paths
+with  `fruitless =  0`, and  only  a single  macro-path yielding  full
+paths. Extending  this path part to  the next region will  give either
+`BNO → BRE → PDL → CEN` or `BNO → BRE → PDL → PCH`.
+
+Now, let us examine how each region  can be replaced by a region path.
+Region `BNO` can be replaced by  two region paths, both of them ending
+in `50`. Therefore, the  part `BNO → BRE → PDL` gives `xxx  → yyy → 50
+→→ BRE → PDL`. Then we have  no choice for `BRE`, which gives the part
+`xxx → yyy  → 50 → 35 → 22  → 29 → 56 →→ PDL`.  Starting from `56`, we
+have only two region paths in `PDL`: `44 →  85 → 49 → 72 → 53` and `44
+→ 85  → 49 →  53 → 72`.  The first one can  link to neither  `PCH` nor
+`CEN`. The second one can link  to `CEN` but not `PCH`. The conclusion
+is that a macro-path containing `%BNO →  BRE → PDL → CEN%` can produce
+full paths,  but a  macro-path containing  `%BNO → BRE  → PDL  → PCH%`
+cannot. The database  stores 370 macro-paths containing `%BNO  → BRE →
+PDL → CEN%`, only one of which  having `fruitless = 0`. It stores also
+1380 macro-paths  containing `%BNO →  BRE → PDL  → PCH%`, 20  on which
+having `fruitless = 0`.
+
+Is it possible to flag these  macro-paths linking `PDL` to `PCH`? Yes,
+but  this  would  require  a  first  request  generating  all  partial
+macro-paths with 4 regions and 3  arrows. This first request would use
+a join:
+
+   Big_Borders → Big_Borders → Big_Borders
+
+We would  need a second request  generating all extracts in  which the
+middle regions can be replaced by region paths. This request would use
+a join:
+
+  Exit_Borders (backward) → Region_Paths → Small_Borders → Region_Paths → Exit_Borders
+
+And the programme  would extract the difference  (`except` in SQLite).
+This seems to be much work for  a small gain. Yet, this shows that the
+fifth version  could have  been more general  by ignoring  the "single
+point  of contact"  property.  We would  build  all possible  extracts
+containing 3 regions and 2 arrows with a request using this join:
+
+   Big_Borders → Big_Borders
+
+We would then build extract with a request usging this join:
+
+  Exit_Borders (backward) → Region_Paths → Exit_Borders
+
+And we would extract the difference to flag macro-paths with `fruitless = 1`.
+
+
 License
 =======
 
