@@ -107,7 +107,7 @@ our sub draw(@areas, @borders, :$path = '') {
     my Int $x = conv-x($area<long>.Num);
     my Int $y = conv-y($area<lat >.Num);
     #say join ' ', $area<code>, $area<long>, $area<lat>, $x, $y;
-    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>);
+    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>);
   }
 
   return $image.png(), $imagemap;
@@ -139,7 +139,7 @@ sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-t
   }
 }
 
-sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url) {
+sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, Str $name is copy) {
   my ($dx, $dy) = ( 2.5 × $txt.chars,  5);
   my Int $radius   =  5 × $txt.chars;
   if $radius < 10 {
@@ -151,11 +151,12 @@ sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url) {
   $img.ellipse(      $x, $y, $diameter, $diameter, $color);
   $img.setThickness(1);
   $img.string(gdSmallFont, $x - $dx, $y - $dy, $txt, $ink);
+  $name ~~ s:g/\'/\&\#039;/;
   if $url eq '' {
-    return '';
+    return "<area shape='circle' coords='$x,$y,$radius' title='$name' />\n";
   }
   else {
-    return "<area shape='circle' coords='$x,$y,$radius' href='$url' />\n";
+    return "<area shape='circle' coords='$x,$y,$radius' href='$url' title='$name' />\n";
   }
 }
 
