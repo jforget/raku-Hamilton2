@@ -2638,6 +2638,58 @@ But for the moment, I will  not implement this adaptation. It does not
 bring much  and it would  be better  to find a  new way to  reduce the
 combinatory explosion, which still rages on `fr2015`.
 
+Hamilton's Icosian Game
+=======================
+
+As most of us know, a path that uses all edges of a graph is called an
+"Eulerian path". That refers to the  anecdote of Euler wondering if it
+was possible to visit the town  of Königsberg, while crossing once and
+only once each one of the seven main bridges on river Pregel.
+
+But why, at the same time, are paths visiting once and only once every
+node  called "Hamiltonian  paths"?  You  can find  the  answer on  the
+Internet, but I found it in a paper-printed book in French,
+[tome 2 of Mathematical Recreations by Édouard Lucas](https://gallica.bnf.fr/ark:/12148/bpt6k39443/)
+This book is available in electronic form on the website of
+[Bibliothèque nationale de France](https://www.bnf.fr/).
+All the discussion below comes from the
+[chapter on the icosian game](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
+and the 
+[end notes](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f243.item).
+
+Hamilton is  the mathematician who invented  quaternions, an extension
+of the concept  of complex numbers. Starting from complex  number _a +
+bi_ with _i²  = -1_, he invented new  numbers _a + bi + cj  + dk_ with
+_i² = -1_, _j²  = -1_ and _k² = -1_. According  to Lucas' endnotes, he
+tried other methods to extend the  complex numbers, one of which using
+the isometric  transformations of the  dodecahedron. A side  effect of
+this work is a game, played  on a wooden dodecahedron. At each vertex,
+a short  nail is protruding  from the wooden dodecahedron.  The player
+ties a string on a first nail,  draws this string along an edge, loops
+around the nail at the end of the edge, draws the string along another
+edge, loops around  the next nail and so on,  visiting all nails until
+he comes back to the starting nail. You have recognised the concept of
+Hamiltonian cycle, which can be extended to the concept of Hamiltonian
+path.
+
+The game  is a  purely topological  one. So  we do  not need  a wooden
+dodecahedron, we can play on a
+[flat drawing](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f218.item)
+which shows a graph similar to  the graph of dodecahedron vertices and
+edges.  Since a  dodecahedron has  20  vertices, and  since the  latin
+alphabet  contains 20  consonants,  Lucas tagged  each  vertex with  a
+consonant and then
+[developped this naming](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f216.item),
+by  using  the name  of  a  famous city  whose  initial  was the  said
+consonant.
+
+I took Lucas' notation  for the Small Areas of a  new `ico` graph. The
+Icosian game does  not provide a second level which  would give me the
+Big Areas. So I  decided to group all 20 cities in  a single Big Area.
+This allows me to test the special case of a graph containing a single
+Big Area.  This special case  was accounted for in  the specifications
+and hopefully in the code, but never tested until now.
+
 License
 =======
 

@@ -2744,6 +2744,58 @@ n'apporte pas  grand-chose et il  serait plus bénéfique de  trouver un
 nouveau  moyen pour  réduire l'explosion  combinatoire qui  continue à
 sévir sur `fr2015`.
 
+Le Jeu icosien d'Hamilton
+=========================
+
+On sait que les chemins passant par toutes les arêtes d'un graphe sont
+appelés « eulériens » et que cela  fait référence à l'anecdote d'Euler
+cherchant s'il  était possible  de visiter la  ville de  Königsberg en
+passant une  seule fois sur  chacun des  sept ponts principaux  sur le
+fleuve Pregel.
+
+Mais  pourquoi  les graphes  passant  par  tous les  sommets  sont-ils
+appelés « hamiltoniens » ? Il  est possible de trouver  la réponse sur
+Internet.  Je  l'ai trouvée  ailleurs,  dans  un  livre dont  j'ai  un
+exemplaire papier. Ce livre, c'est le
+[tome 2 des Récréations mathématiques d'Édouard Lucas](https://gallica.bnf.fr/ark:/12148/bpt6k39443/)
+disponible en version électronique sur le site Internet de la
+[Bibliothèque nationale de France](https://www.bnf.fr/).
+Tout ce qui suit est tiré du
+[chapitre sur le jeu icosien](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
+et des
+[notes de fin de volume](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f243.item).
+
+Hamilton est l'inventeur  des quaternions, une extension  de la notion
+de nombre complexe. En partant des nombres complexes _a + bi_ avec _i²
+= -1_, il a inventé de nouveaux nombres _a  + bi + cj + dk_ avec _i² =
+-1_, _j²  = -1_ et _k²  = -1_. D'après les  notes de fin de  volume de
+Lucas,  il  aurait  ensuite   essayé  d'autres  façons  d'étendre  les
+complexes, dont  une qui repose  sur les isométries du  dodécaèdre. Un
+effet  secondaire de  cette étude  est  un jeu,  qui se  joue sur  les
+sommets d'un dodécaèdre  en bois. Sur chacun des sommets,  un clou est
+planté. Le  jeu consiste à  attacher une  ficelle sur l'un  des clous,
+puis à la tendre  le long d'une arête, à faire une  boucle sur le clou
+d'arrivée, puis à la tendre le  long d'une nouvelle arête, à faire une
+nouvelle boucle  et ainsi de suite,  en visitant tous les  clous et en
+revenant au clou de départ. Vous avez ainsi reconnu la notion de cycle
+hamiltonien, qui peut s'étendre à la notion de chemin hamiltonien.
+
+Il s'agit d'un jeu purement topologique. On peut donc le jouer sur une
+[figure plane](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f218.item)
+qui donne un graphe équivalent à  celui des sommets et des arêtes d'un
+dodécaèdre.  Comme  un  dodécaèdre  possède 20  sommets  et  que  dans
+l'alphabet latin, il y a 20 consonnes, Lucas désigne chaque sommet par
+une consonne puis il
+[étend cette désignation](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f216.item),
+en prenant une ville célèbre avec cette consonne comme initiale.
+
+J'ai repris les  mêmes notations que Lucas. Le jeu  icosien ne prévoit
+pas de double niveau pour le graphe. J'ai donc considéré que le graphe
+que j'utiliserai  n'a qu'une  seule région,  laquelle contient  les 20
+villes. Cela  me permettra de  tester le cas  d'un graphe à  une seule
+région, cas  prévu dans les  spécifications et la  programmation, mais
+pour l'instant pas encore testé.
+
 LICENCE
 =======
 
