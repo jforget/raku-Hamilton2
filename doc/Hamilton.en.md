@@ -2634,6 +2634,9 @@ We would then build extract with a request usging this join:
 
 And we would extract the difference to flag macro-paths with `fruitless = 1`.
 
+But for the moment, I will  not implement this adaptation. It does not
+bring much  and it would  be better  to find a  new way to  reduce the
+combinatory explosion, which still rages on `fr2015`.
 
 License
 =======

@@ -2,7 +2,7 @@
 #
 #     Génération graphique d'une carte (macro, complète ou régionale)
 #     Graphical generation of a map (macro, full or regional)
-#     Copyright (C) 2022 Jean Forget
+#     Copyright (C) 2022, 2023 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -58,6 +58,7 @@ our sub draw(@areas, @borders, :$path = '') {
   my $scale-distance;
   my $top-scale;
   loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
+    # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
     $top-scale =  conv-y($lat-min + $scale-distance / 111);
     last if conv-y($lat-min) - $top-scale < $lg-max;
   }
@@ -67,6 +68,8 @@ our sub draw(@areas, @borders, :$path = '') {
   $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
 
   my $left-scale;
+  # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
+  # but for a degree of longitude, the length is shorter, because of latitude
   my $length-of-one-degree = 111 × cos(pi / 180 × ($lat-max + $lat-min) / 2);
   loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
     $left-scale =  conv-x($long-max - $scale-distance / $length-of-one-degree);
@@ -178,7 +181,7 @@ This module is used by most modules called by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, Jean Forget, all rights reserved
+Copyright 2022, 2023, Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

@@ -2,7 +2,7 @@
 #
 #     Génération de la liste des messages pour une carte ou pour une région
 #     Generating the messages list for a map or a region
-#     Copyright (C) 2022 Jean Forget
+#     Copyright (C) 2022, 2023 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -64,7 +64,7 @@ modules called by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, Jean Forget, all rights reserved
+Copyright 2022, 2023, Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

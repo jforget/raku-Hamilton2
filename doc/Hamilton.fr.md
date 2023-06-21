@@ -2726,7 +2726,7 @@ Cette seconde requête serait basée sur une jointure :
 
   Exit_Borders (sens inverse) → Region_Paths → Small_Borders → Region_Paths → Exit_Borders
 
-et faire la  différence (en SQLite : `except`). Mais  cela paraît bien
+Et finalement, il faudrait faire la  différence (en SQLite : `except`).  Cela paraît bien
 compliqué pour le résultat obtenu.  Néanmoins, cela fait remarquer que
 la  cinquième version,  basée  sur  la notion  de  « point de  contact
 unique », aurait pu s'affranchir de  ce concept et simplement comparer
@@ -2739,7 +2739,10 @@ avec les extraits obtenus par la jointure :
 
   Exit_Borders (sens inverse) → Region_Paths → Exit_Borders
 
-
+Mais pour  l'instant, je ne mets  pas en œuvre cette  adaptation. Elle
+n'apporte pas  grand-chose et il  serait plus bénéfique de  trouver un
+nouveau  moyen pour  réduire l'explosion  combinatoire qui  continue à
+sévir sur `fr2015`.
 
 LICENCE
 =======
