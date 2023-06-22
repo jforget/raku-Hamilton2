@@ -2787,7 +2787,11 @@ dodécaèdre.  Comme  un  dodécaèdre  possède 20  sommets  et  que  dans
 l'alphabet latin, il y a 20 consonnes, Lucas désigne chaque sommet par
 une consonne puis il
 [étend cette désignation](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f216.item),
-en prenant une ville célèbre avec cette consonne comme initiale.
+en prenant une ville célèbre avec cette consonne comme initiale. Cette
+correspondance entre le dodécaèdre et  les villes est arbitraire et ne
+correspond pas à  la position géographique des villes.  Ainsi, on peut
+constater que le  chemin le plus court entre Naples  et Rome passe par
+Stockholm.
 
 J'ai repris les  mêmes notations que Lucas. Le jeu  icosien ne prévoit
 pas de double niveau pour le graphe. J'ai donc considéré que le graphe

@@ -2681,7 +2681,10 @@ alphabet  contains 20  consonants,  Lucas tagged  each  vertex with  a
 consonant and then
 [developped this naming](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f216.item),
 by  using  the name  of  a  famous city  whose  initial  was the  said
-consonant.
+consonant. The association between the  dodecahedron and the cities is
+purely arbitrary  and does not  respect the geographical  positions of
+the cities. For example, you can  see that the shortest path from Rome
+to Naples crosses Stockholm.
 
 I took Lucas' notation  for the Small Areas of a  new `ico` graph. The
 Icosian game does  not provide a second level which  would give me the
