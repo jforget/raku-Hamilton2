@@ -36,6 +36,7 @@ our sub draw(@areas, @borders, :$path = '') {
   my Num $lat-max  = max map { $_<lat>  }, @areas;
   my Int $char-max = max map { $_<code>.chars }, @areas;
   if $char-max == 1 {
+    # If $char-max is 1, it reflects the widths of the strings, but not their heights which is a bit more.
     $char-max = 2;
   }
   my Int $margin   = 6 × $char-max;
@@ -51,9 +52,11 @@ our sub draw(@areas, @borders, :$path = '') {
       $lat-max  = $lat-m  if $lat-m  > $lat-max;
     }
   }
+  my Num $delta-long = 1e-3 max ($long-max - $long-min); # 1e-3 to prevent a division by zero if $long-max == $long-min
+  my Num $delta-lat  = 1e-3 max ( $lat-max -  $lat-min);
 
-  sub conv-x(Num $long) { return ($margin + ($long - $long-min) / ($long-max - $long-min) × ($width  - 2 × $margin)).Int };
-  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / ($lat-max  -  $lat-min) × ($height - 2 × $margin)).Int };
+  sub conv-x(Num $long) { return ($margin + ($long - $long-min) / $delta-long × ($width  - 2 × $margin)).Int };
+  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / $delta-lat  × ($height - 2 × $margin)).Int };
 
   my $scale-distance;
   my $top-scale;
@@ -98,7 +101,8 @@ our sub draw(@areas, @borders, :$path = '') {
     my Int $thickness = 1;
     my Str $sub-path1 = "{$border<code_f>} → {$border<code_t>}";
     my Str $sub-path2 = "{$border<code_t>} → {$border<code_f>}";
-    if $path.contains($sub-path1) or $path.contains($sub-path2) {
+    if   $path.contains(" $sub-path1 ") or $path.starts-with($sub-path1) or $path.ends-with($sub-path1)
+      or $path.contains(" $sub-path2 ") or $path.starts-with($sub-path2) or $path.ends-with($sub-path2) {
       $thickness = 3;
     }
 
@@ -146,6 +150,7 @@ sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, St
   my ($dx, $dy) = ( 2.5 × $txt.chars,  5);
   my Int $radius   =  5 × $txt.chars;
   if $radius < 10 {
+    # If $radius is 5, it reflects the half-width of the one-char string, but not its half-height which is a bit more.
     $radius = 10;
   }
   my Int $diameter =  2 × $radius;

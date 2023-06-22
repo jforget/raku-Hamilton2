@@ -347,9 +347,21 @@ sub MAIN (
           my Str $new-path = $old-path; $new-path ~~ s/'→' \s* $old-reg \s* / $reg-path<path>/;
                                         $new-path ~~ s/'* → '//;
           my      %new-rel = %old-rel;  %new-rel{$old-reg} = $reg-path<num>;
+          my Str $from-area;
+          my Str $to-area;
           $new-path ~~ / ^ $<from>=(\S+) .* \s $<to>=(\S+) $/;
+          if $<from> {
+            # Path is a multi-area full path "(XX,nn,nn) → (YY,nn,nn) → (ZZ,nn,nn)"
+            $from-area = $<from>.Str;
+            $to-area   = $<to>.Str;
+          }
+          else {
+            # Path is a single-area full path with no arrow "(XX,nn,nn)"
+            $from-area = $new-path;
+            $to-area   = $new-path;
+          }
           ++$full-path-number;
-          my $result = $sth-check-cyclic.execute($map, $<from>.Str, $<to>.Str).row;
+          my $result = $sth-check-cyclic.execute($map, $from-area, $to-area).row;
           my Int $cyclic;
           if $result eq 'X' {
             $cyclic = 1;
@@ -357,7 +369,7 @@ sub MAIN (
           else {
             $cyclic = 0;
           }
-          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $<from>.Str, $<to>.Str, $cyclic, $macro-path<num>, $first-num, %old<paths_nb> × $reg-path<paths_nb>);
+          $sto-path.execute($map, 3, '', $full-path-number, $new-path, $from-area, $to-area, $cyclic, $macro-path<num>, $first-num, %old<paths_nb> × $reg-path<paths_nb>);
           $first-num += %old<paths_nb> × $reg-path<paths_nb>;
 
           # Computing the coefficients and range for the path relations

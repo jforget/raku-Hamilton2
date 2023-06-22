@@ -57,9 +57,12 @@ for $fh.lines -> Str $line {
       $sto-area.execute('ico', 1, $region, $name, 0, 0, $colour, '');
     }
     when 'B' {
-      my ($rayonx, $anglex) = $color-or-coord.split(/ \s* ',' \s* /);
-      my Num $long = $rayonx.Num × cos( $anglex.Num × pi / 5 + pi / 2) + 1e-8;
-      my Num $lat  = $rayonx.Num × sin( $anglex.Num × pi / 5 + pi / 2) + 1e-8;
+      my ($radius, $angle) = $color-or-coord.split(/ \s* ',' \s* /);
+
+      # + 1e-8 so that SQLite will store this as a float, not an int.
+      my Num $long = $radius.Num × cos( $angle.Num × pi / 5 + pi / 2) + 1e-8;
+      my Num $lat  = $radius.Num × sin( $angle.Num × pi / 5 + pi / 2) + 1e-8;
+
       $sto-area.execute('ico' , 2, $code, $name, $long, $lat, $colour, $region);
 
       for $borders.split(/ \s* ',' \s*/) -> $neighbour {
@@ -91,12 +94,8 @@ for %borders.kv -> $from, $hashto {
       say "problem with $from → $to";
     }
     elsif $from le $to {
-      my $color = 'Black';
-      if $border<from> eq $border<to> {
-        $color = $border<colour>;
-      }
-      $sto-border.execute('ico', 2, $from, $to  , $border<from>, $border<to  >, 0, 0, $color);
-      $sto-border.execute('ico', 2, $to  , $from, $border<to  >, $border<from>, 0, 0, $color);
+      $sto-border.execute('ico', 2, $from, $to  , $border<from>, $border<to  >, 0, 0, $border<colour>);
+      $sto-border.execute('ico', 2, $to  , $from, $border<to  >, $border<from>, 0, 0, $border<colour>);
     }
   }
 }

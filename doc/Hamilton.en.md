@@ -1117,6 +1117,12 @@ the same thing  happens with latitudes. In this  case, the coordinates
 adjustment triggers two divisions zero-on-zero. By adding neighbouring
 Y1970-regions, the divisions by zero are avoided.
 
+Actually, I had a division-by-zero once. When I added the Icosian game
+to the  list of test  data, when working  on version 5,  the macro-map
+would display a single Big Area, so the min-to-max difference was zero
+for  both longitudes  and  latitudes. Therefore,  I  added a  positive
+number, yet a very small one, to the min-to-max differences.
+
 ### About the average longitude and the average latitude
 
 Giving to a big  area a longitude and a latitude  equal to the average
@@ -2684,7 +2690,7 @@ by  using  the name  of  a  famous city  whose  initial  was the  said
 consonant. The association between the  dodecahedron and the cities is
 purely arbitrary  and does not  respect the geographical  positions of
 the cities. For example, you can  see that the shortest path from Rome
-to Naples crosses Stockholm.
+to Naples is through Stockholm.
 
 I took Lucas' notation  for the Small Areas of a  new `ico` graph. The
 Icosian game does  not provide a second level which  would give me the
@@ -2692,6 +2698,11 @@ Big Areas. So I  decided to group all 20 cities in  a single Big Area.
 This allows me to test the special case of a graph containing a single
 Big Area.  This special case  was accounted for in  the specifications
 and hopefully in the code, but never tested until now.
+
+There are errors  that I will not  fix. For example, the  maps show an
+horizontal  scale and  a  vertical scale.  The  scales are  completely
+irrelevant for the `ico`  map. But I do not think  worthwhile to add a
+special case that would remove these scales when dealing with map `ico`.
 
 License
 =======

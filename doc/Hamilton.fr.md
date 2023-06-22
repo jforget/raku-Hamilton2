@@ -1152,6 +1152,13 @@ l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
 zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
 sont évitées.
 
+En fait, il  y a un cas de  figure où j'ai quand même  eu une division
+par zéro. Lorsque j'ai ajouté le jeu  icosien à la liste des graphes à
+tester, à l'occasion de la cinquième version, la macro-carte contenait
+une seule région,  donc l'écart min-max sur les longitudes  et sur les
+latitudes était égal  à zéro. J'ai donc été obligé  d'ajouter un terme
+positif, néanmoins très bas, pour éviter cette division par zéro.
+
 ### Faire la moyenne des longitudes et latitudes pour situer une région
 
 Attribuer  à une  région une  latitude et  une longitude  égales à  la
@@ -1632,8 +1639,8 @@ ne pourront donner aucun chemin  doublement hamiltonien. Le blocage se
 produit en fait dès la  génération des chemins hamiltoniens régionaux.
 Par exemple, prenons l'Afrique dans la carte de
 [War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-Ce  continent a  6  zones,  dont deux  impasses,  «_South Africa_»  et
-«_Madagascar_», toutes deux reliées au point d'articulation «_Sudan_».
+Ce  continent a  6  zones,  dont deux  impasses,  « South Africa »  et
+« Madagascar », toutes deux reliées au point d'articulation « Sudan ».
 S'il existait  un chemin  hamiltonien régional  dans ce  continent, il
 commencerait  en Afrique  du Sud  et se  terminerait à  Madagascar, ou
 l'inverse. Donc  le point d'articulation  du Soudan devrait être  à la
@@ -2799,6 +2806,13 @@ que j'utiliserai  n'a qu'une  seule région,  laquelle contient  les 20
 villes. Cela  me permettra de  tester le cas  d'un graphe à  une seule
 région, cas  prévu dans les  spécifications et la  programmation, mais
 pour l'instant pas encore testé.
+
+Je corrigerai  certaines erreurs,  mais pas  toutes. Par  exemple, les
+cartes affichent une échelle horizontale  des distances et une échelle
+verticale. Ces deux échelles n'ont aucune signification dans le cas de
+la carte  `ico`. Il faudrait donc  ne plus les afficher.  J'estime que
+cela ne  vaut pas le  coup de prévoir un  cas particulier pour  ne pas
+afficher ces échelles.
 
 LICENCE
 =======
