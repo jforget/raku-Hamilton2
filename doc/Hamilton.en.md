@@ -2699,10 +2699,23 @@ This allows me to test the special case of a graph containing a single
 Big Area.  This special case  was accounted for in  the specifications
 and hopefully in the code, but never tested until now.
 
-There are errors  that I will not  fix. For example, the  maps show an
+There are errors  that I did not  fix. For example, the  maps show an
 horizontal  scale and  a  vertical scale.  The  scales are  completely
 irrelevant for the `ico`  map. But I do not think  worthwhile to add a
 special case that would remove these scales when dealing with map `ico`.
+
+There  are 120  isometries  for  the dodecahedron.  You  can move  the
+dodecahedron so any one of the 20 nodes can be brought to the position
+initially occupied by node `B`. Then with a rotation around axis `BT`,
+you can bring any neighbour to the position initially occupied by node
+`C`. Then something  you cannot do with a wooden  dodecahedron or (for
+role-playing  gamers)  with  a  D12, you  can  turn  the  dodecahedron
+inside-out like a sock. That gives 20 × 3 × 2 = 120 isometries.
+
+There are 3240 regional paths and 3240 full paths. Yet, because of the
+isometries, there are only 3240 /  120 = 27 really different paths. We
+can define 27 canonical paths beginning with  `'B → C → D%'`, apply an
+isometry and obtain any path among the 3240 possible paths.
 
 License
 =======

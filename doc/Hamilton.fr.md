@@ -2803,16 +2803,31 @@ Stockholm.
 J'ai repris les  mêmes notations que Lucas. Le jeu  icosien ne prévoit
 pas de double niveau pour le graphe. J'ai donc considéré que le graphe
 que j'utiliserai  n'a qu'une  seule région,  laquelle contient  les 20
-villes. Cela  me permettra de  tester le cas  d'un graphe à  une seule
+villes.  Cela m'a  permis de  tester le  cas d'un  graphe à  une seule
 région, cas  prévu dans les  spécifications et la  programmation, mais
 pour l'instant pas encore testé.
 
-Je corrigerai  certaines erreurs,  mais pas  toutes. Par  exemple, les
+J'ai  corrigé certaines  erreurs, mais  pas toutes.  Par exemple,  les
 cartes affichent une échelle horizontale  des distances et une échelle
 verticale. Ces deux échelles n'ont aucune signification dans le cas de
 la carte  `ico`. Il faudrait donc  ne plus les afficher.  J'estime que
 cela ne  vaut pas le  coup de prévoir un  cas particulier pour  ne pas
 afficher ces échelles.
+
+Il y a  120 isométries pour le dodécaèdre. Chacun  des 20 sommets peut
+être amené à la position initialement  occupée par le sommet `B`. Puis
+avec une rotation autour de l'axe  `BT`, on peut amener l'un des trois
+sommets voisins à la position  initialement occupée par le sommet `C`.
+Enfin, quelque chose  qui ne peut pas être fait  avec un dodécaèdre en
+bois ou,  si vous  êtes rôliste, avec  un dé à  12 faces,  vous pouvez
+retourner le  dodécaèdre « comme une  chaussette ». Cela fait  donc un
+total de 20 × 3 × 2 = 120 isométries.
+
+Il y  a 3240 chemins  régionaux et  3240 chemins complets.  Or, compte
+tenu  des isométries,  il y  a  en réalité  3240  / 120  = 27  chemins
+différents. On peut définir 27 chemins canoniques commençant par `'B →
+C →  D%'` puis appliquer  l'une des 120  isométries, ce qui  permet de
+retrouver tous les 3240 chemins.
 
 LICENCE
 =======
