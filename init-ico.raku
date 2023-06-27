@@ -13,19 +13,19 @@ use lib 'lib';
 use DBIish;
 use db-conf-sql;
 
+sub MAIN (
+      Str  :$map   = 'ico'         #= The code of the map
+    , Str  :$fname = 'icosian.txt' #= The path of the file containing the graph description
+    ) {
 
-my Str $fname = 'icosian.txt';
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
 # No this is not a Bobby Tables problem. All table names are controlled by the programme,
 # they do not come from an external source.
 for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
-  $dbh.execute("delete from $table where map = 'ico';");
+  $dbh.execute("delete from $table where map = ?;", $map);
 }
 
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('ico', 'Icosian game', 0, 0, 0, '');
-SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
 insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths, exterior)
@@ -52,9 +52,12 @@ for $fh.lines -> Str $line {
   $color-or-coord //= '';
   given $lvl {
     when 'A' {
+      $dbh.execute(q:to/SQL/, $map, $name);
+      insert into Maps values (?, ?, 0, 0, 0, '');
+      SQL
       $region = ~ $code;
       $colour = ~ $color-or-coord;
-      $sto-area.execute('ico', 1, $region, $name, 0, 0, $colour, '');
+      $sto-area.execute($map, 1, $region, $name, 0, 0, $colour, '');
     }
     when 'B' {
       my ($radius, $angle) = $color-or-coord.split(/ \s* ',' \s* /);
@@ -63,7 +66,7 @@ for $fh.lines -> Str $line {
       my Num $long = $radius.Num × cos( $angle.Num × pi / 5 + pi / 2) + 1e-8;
       my Num $lat  = $radius.Num × sin( $angle.Num × pi / 5 + pi / 2) + 1e-8;
 
-      $sto-area.execute('ico' , 2, $code, $name, $long, $lat, $colour, $region);
+      $sto-area.execute($map , 2, $code, $name, $long, $lat, $colour, $region);
 
       for $borders.split(/ \s* ',' \s*/) -> $neighbour {
         %borders{$code}{$neighbour}<counter>++;
@@ -78,13 +81,13 @@ for $fh.lines -> Str $line {
 }
 $fh.close;
 
-$dbh.execute(q:to/SQL/);
+$dbh.execute(q:to/SQL/, $map);
 update Areas
 set (long, lat) = (select avg(Small_Areas.long), avg(Small_Areas.lat)
                    from   Small_Areas
                    where  Small_Areas.map   = Areas.map
                      and  Small_Areas.upper = Areas.code)
-where map   = 'ico'
+where map   = ?
   and level = 1
 SQL
 
@@ -94,8 +97,8 @@ for %borders.kv -> $from, $hashto {
       say "problem with $from → $to";
     }
     elsif $from le $to {
-      $sto-border.execute('ico', 2, $from, $to  , $border<from>, $border<to  >, 0, 0, $border<colour>);
-      $sto-border.execute('ico', 2, $to  , $from, $border<to  >, $border<from>, 0, 0, $border<colour>);
+      $sto-border.execute($map, 2, $from, $to  , $border<from>, $border<to  >, 0, 0, $border<colour>);
+      $sto-border.execute($map, 2, $to  , $from, $border<to  >, $border<from>, 0, 0, $border<colour>);
     }
   }
 }
@@ -103,7 +106,9 @@ for %borders.kv -> $from, $hashto {
 # No level 1 borders, since there is only one big area.
 # No exterior small areas, since there is only one big area
 
-$sto-mesg.execute('ico', DateTime.now.Str, 'INIT');
+$sto-mesg.execute($map, DateTime.now.Str, 'INIT');
+
+}
 
 
 =begin POD
@@ -123,11 +128,17 @@ C<Maps>, C<Regions> and C<Borders>.
 =head1 USAGE
 
   sqlite3 Hamilton.db < cr.sql
-  raku init-ico.raku
+  raku init-ico.raku --map=ico --fname=icosian.txt
 
 =head2 Parameters
 
-None.
+=head2 map
+
+The code of the map, e.g. C<ico>
+
+=head2 fname
+
+The path of the file containing the description of the map
 
 =head2 Database Configuration
 

@@ -1,0 +1,21 @@
+A  ; ICO ;  Icosian game with λ rotation  ; Blue  ;
+B  ; B   ;  Bruxelles     ; 1 , 4 ; C, G, Z
+B  ; C   ;  Canton        ; 1 , 2 ; B, D, P
+B  ; D   ;  Delhi         ; 1 , 0 ; C, F, M
+B  ; F   ;  Francfort     ; 1 , 8 ; D, G, K
+B  ; G   ;  Genève        ; 1 , 6 ; B, F, H
+B  ; H   ;  Hambourg      ; 2 , 6 ; G, J, X
+B  ; J   ;  Jeddo         ; 3 , 7 ; H, K, V
+B  ; K   ;  Kaschmir      ; 2 , 8 ; F, J, L
+B  ; L   ;  London        ; 3 , 9 ; K, M, T
+B  ; M   ;  Moscou        ; 2 , 0 ; D, L, N
+B  ; N   ;  Naples        ; 3 , 1 ; M, P, S
+B  ; P   ;  Paris         ; 2 , 2 ; C, N, Q
+B  ; Q   ;  Québec        ; 3 , 3 ; P, R, Z
+B  ; R   ;  Rome          ; 4 , 3 ; Q, S, W
+B  ; S   ;  Stockholm     ; 4 , 1 ; N, R, T
+B  ; T   ;  Tobolsk       ; 4 , 9 ; L, S, V
+B  ; V   ;  Vienne        ; 4 , 7 ; J, T, W
+B  ; W   ;  Washington    ; 4 , 5 ; R, V, X
+B  ; X   ;  Xérès         ; 3 , 5 ; H, W, Z
+B  ; Z   ;  Zanzibar      ; 2 , 4 ; B, Q, X
