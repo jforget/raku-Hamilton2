@@ -2619,12 +2619,13 @@ macro-paths with 4 regions and 3  arrows. This first request would use
 a join:
 
    Big_Borders → Big_Borders → Big_Borders
+   Big_Borders ⟗ Big_Borders ⟗ Big_Borders
 
 We would  need a second request  generating all extracts in  which the
 middle regions can be replaced by region paths. This request would use
 a join:
 
-  Exit_Borders (backward) → Region_Paths → Small_Borders → Region_Paths → Exit_Borders
+  Exit_Borders (backward) ⟗ Region_Paths ⟗ Small_Borders ⟗ Region_Paths ⟗ Exit_Borders
 
 And the programme  would extract the difference  (`except` in SQLite).
 This seems to be much work for  a small gain. Yet, this shows that the
@@ -2633,10 +2634,11 @@ point  of contact"  property.  We would  build  all possible  extracts
 containing 3 regions and 2 arrows with a request using this join:
 
    Big_Borders → Big_Borders
+   Big_Borders ⟗ Big_Borders
 
 We would then build extract with a request usging this join:
 
-  Exit_Borders (backward) → Region_Paths → Exit_Borders
+  Exit_Borders (backward) ⟗ Region_Paths ⟗ Exit_Borders
 
 And we would extract the difference to flag macro-paths with `fruitless = 1`.
 

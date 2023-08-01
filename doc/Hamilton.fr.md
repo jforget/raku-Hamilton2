@@ -2725,13 +2725,13 @@ Est-il possible  d'éliminer ces macro-chemins reliant  `PDL` à `PCH` ?
 Pour ce  faire, il faudrait  écrire une première requête  listant tous
 les extraits possibles avec 4 régions  et 3 flèches, avec une jointure :
 
-   Big_Borders → Big_Borders → Big_Borders
+   Big_Borders ⟗ Big_Borders ⟗ Big_Borders
 
 une seconde  requête listant  tous les  extraits avec  4 régions  et 3
 flèches  pouvant, éventuellement,  donner  lieu à  un chemin  complet.
 Cette seconde requête serait basée sur une jointure :
 
-  Exit_Borders (sens inverse) → Region_Paths → Small_Borders → Region_Paths → Exit_Borders
+  Exit_Borders (sens inverse) ⟗ Region_Paths ⟗ Small_Borders ⟗ Region_Paths ⟗ Exit_Borders
 
 Et finalement, il faudrait faire la  différence (en SQLite : `except`).  Cela paraît bien
 compliqué pour le résultat obtenu.  Néanmoins, cela fait remarquer que
@@ -2740,11 +2740,11 @@ unique », aurait pu s'affranchir de  ce concept et simplement comparer
 les  extraits de  macro-chemins avec  trois régions  et deux  flèches,
 obtenus par une jointure :
 
-   Big_Borders → Big_Borders
+   Big_Borders ⟗ Big_Borders
 
 avec les extraits obtenus par la jointure :
 
-  Exit_Borders (sens inverse) → Region_Paths → Exit_Borders
+  Exit_Borders (sens inverse) ⟗ Region_Paths ⟗ Exit_Borders
 
 Mais pour  l'instant, je ne mets  pas en œuvre cette  adaptation. Elle
 n'apporte pas  grand-chose et il  serait plus bénéfique de  trouver un
@@ -2826,7 +2826,7 @@ total de 20 × 3 × 2 = 120 isométries.
 Il y  a 3240 chemins  régionaux et  3240 chemins complets.  Or, compte
 tenu  des isométries,  il y  a  en réalité  3240  / 120  = 27  chemins
 différents. On peut définir 27 chemins canoniques commençant par `'B →
-C →  D%'` puis appliquer  l'une des 120  isométries, ce qui  permet de
+C → D%'` puis  appliquer  l'une des 120  isométries, ce qui  permet de
 retrouver tous les 3240 chemins.
 
 LICENCE
