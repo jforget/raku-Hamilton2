@@ -2694,7 +2694,7 @@ Revenons à la carte `fr1970`.  Il reste 42 macro-chemins pour lesquels
 
 ![Basse-Normandie, Bretagne et Pays de la Loire](BNO-BRE-PDL.png)
 
-On sait  que les deux  extrémités d'un chemin complet  sont forcéments
+On sait  que les deux  extrémités d'un chemin complet  sont forcément
 dans    les    régions    `NPC`    (Nord-Pas-de-Calais)    et    `PAC`
 (Provence-Alpes-Côte-d'Azur). Une conséquence est  que la région `BRE`
 (Bretagne)  est une  région de  passage,  pas une  extrémité. Donc  le
@@ -2772,7 +2772,7 @@ Tout ce qui suit est tiré du
 et des
 [notes de fin de volume](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f243.item).
 
-Hamilton est l'inventeur  des quaternions, une extension  de la notion
+Sir William Rowan Hamilton est l'inventeur  des quaternions, une extension  de la notion
 de nombre complexe. En partant des nombres complexes _a + bi_ avec _i²
 = -1_, il a inventé de nouveaux nombres _a  + bi + cj + dk_ avec _i² =
 -1_, _j²  = -1_ et _k²  = -1_. D'après les  notes de fin de  volume de
@@ -2828,6 +2828,28 @@ tenu  des isométries,  il y  a  en réalité  3240  / 120  = 27  chemins
 différents. On peut définir 27 chemins canoniques commençant par `'B →
 C → D%'` puis  appliquer  l'une des 120  isométries, ce qui  permet de
 retrouver tous les 3240 chemins.
+
+Pour générer les 120 isométries, Édouard Lucas (ou Hamilton ?) propose
+trois  isométries basiques,  une  rotation  pentagonale, une  rotation
+triangulaire et une symétrie. Toutes les isométries du dodécaèdre sont
+des compositions de ces trois isométries basiques.
+
+La rotation pentagonale  est appelée λ (lambda). Elle  fait pivoter le
+pentagone `BCDFG` sur lui-même.
+
+![Rotation λ](rotation-lambda.png)
+
+La rotation triangulaire est appelée κ  (kappa). Son axe est la droite
+`CV` et elle amène `B` en `D`, `D` en `P` et `P` en `B`.
+
+![Rotation κ](rotation-kappa.png)
+
+Selon les termes de Lucas, la  symétrie ɩ (iota) échange `B` avec `C`.
+C'est une symétrie par rapport au plan contenant `F`, `K`, `Q` et `R`.
+
+![Symétrie ɩ](symetrie-iota.png)
+
+
 
 LICENCE
 =======

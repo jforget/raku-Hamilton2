@@ -2665,7 +2665,7 @@ All the discussion below comes from the
 and the 
 [end notes](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f243.item).
 
-Hamilton is  the mathematician who invented  quaternions, an extension
+Sir William Rowan Hamilton is  the mathematician who invented  quaternions, an extension
 of the concept  of complex numbers. Starting from complex  number _a +
 bi_ with _i²  = -1_, he invented new  numbers _a + bi + cj  + dk_ with
 _i² = -1_, _j²  = -1_ and _k² = -1_. According  to Lucas' endnotes, he
@@ -2718,6 +2718,28 @@ There are 3240 regional paths and 3240 full paths. Yet, because of the
 isometries, there are only 3240 /  120 = 27 really different paths. We
 can define 27 canonical paths beginning with  `'B → C → D%'`, apply an
 isometry and obtain any path among the 3240 possible paths.
+
+To generate  the 120 isometries,  Lucas (or is it  Hamilton?) suggests
+the use of three basic isometries, a pentagonal rotation, a triangular
+rotation and a mirror symmetry. All isometries of the dodecahedron are
+combinations of these three basic isometries.
+
+The pentagonal  rotation is named  λ (lambda). It rotates  the `BCDFG`
+pentagon on itself.
+
+![Rotation λ](rotation-lambda.png)
+
+The  triangular   rotation  is  named   κ  (kappa).  It   rotates  the
+dodecahedron around the `CV` axis, so that `B` ends at `D`'s position,
+`D` ends at `P` and `P` ends at `B`.
+
+![Rotation κ](rotation-kappa.png)
+
+According to  Lucas' text, symmetry  ɩ (iota)  swaps `B` with  `C`. In
+other words, it is a symmetry  over the plane containing `F`, `K`, `Q`
+and `R`.
+
+![Symétrie ɩ](symetrie-iota.png)
 
 License
 =======
