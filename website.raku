@@ -87,21 +87,24 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
   my @areas   = access-sql::list-big-areas($map);
   my @borders = access-sql::list-big-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-map/$map/$area<code>";
+    $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
   }
   my @messages = access-sql::list-messages($map);
 
   my @list-paths  = list-numbers(%map<nb_macro>, 0);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
-  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
 
-  return macro-map::render($lng, $map, %map, @areas, @borders
-                          , messages    => @messages
-                          , macro-links => @macro-links
-                          , full-links  => @full-links
-                          );
+  return macro-map::render($lng, $map, %map
+                         , areas        => @areas
+                         , borders      => @borders
+                         , messages     => @messages
+                         , macro-links  => @macro-links
+                         , full-links   => @full-links
+                         , query-string => $query-string
+                         );
 }
 
 get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
@@ -125,20 +128,21 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
       $area<url> = '';
     }
     else {
-      $area<url> = "/$lng/region-map/$map/$area<upper>";
+      $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
     }
   }
 
   my @list-paths  = list-numbers(%region<nb_paths>, 0);
-  my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+  my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my @messages = access-sql::list-regional-messages($map, $region);
   return region-map::render($lng, $map, %map
-                          , region     => %region
-                          , areas      => @areas
-                          , borders    => @borders
-                          , messages   => @messages
-                          , path-links => @path-links
+                          , region       => %region
+                          , areas        => @areas
+                          , borders      => @borders
+                          , messages     => @messages
+                          , path-links   => @path-links
+                          , query-string => $query-string
                           );
 }
 
@@ -155,19 +159,19 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @areas   = access-sql::list-big-areas($map);
   my @borders = access-sql::list-big-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-map/$map/$area<code>";
+    $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
   }
   my %path     = access-sql::read-path($map, 1, '', $num);
   my @messages = access-sql::list-messages($map);
 
   my @list-paths = list-numbers(%map<nb_macro>, $num);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
 
   my @full-interval = access-sql::full-path-interval($map, $num);
   my @full-links = ();
   if @full-interval[0] != 0 {
     my @nums = list-numbers(@full-interval[1], @full-interval[0] - 1).grep({ $_ ≥ @full-interval[0] });
-    @full-links = @nums.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) });
+    @full-links = @nums.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) });
   }
 
   return macro-path::render($lng, $map, %map
@@ -202,19 +206,19 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
       $area<url> = '';
     }
     else {
-      $area<url> = "/$lng/region-map/$map/$area<upper>";
+      $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
     }
   }
   my %path     = access-sql::read-path($map, 2, $region, $num);
   my @messages = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_paths>, $num);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my @full-numbers = access-sql::path-relations($map, $region, $num);
   my @full-links;
   for @full-numbers.kv -> $i, $num {
-    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num");
+    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
   }
   my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
 
@@ -244,12 +248,12 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @areas   = access-sql::list-small-areas($map);
   my @borders = access-sql::list-small-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
+    $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
   }
   my %path       = access-sql::read-specific-path($map, $num);
   my @messages   = access-sql::list-messages($map);
   my @list-paths = list-numbers(%map<nb_full>, $num);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
   return full-path::render($lng, $map, %map
                           , areas    => @areas
                           , borders  => @borders
@@ -281,14 +285,14 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = '';
     }
     else {
-      $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num";
+      $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
     }
   }
   my %specific-path = access-sql::read-specific-path($map, $num);
   my @messages      = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_paths>, $num);
-  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_" ) } );
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
   my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
@@ -296,8 +300,8 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
   my @rel = relations-for-full-path-in-region($map, $region, $num);
   my $rel1 = @rel[0];
   my $rel2 = @rel[1];
-  my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]" ) } );
-  my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]" ) } );
+  my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+  my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
 
   return region-with-full-path::render(lang           => $lng
                                      , mapcode        => $map

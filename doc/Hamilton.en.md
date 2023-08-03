@@ -1049,6 +1049,12 @@ http://localhost:3000/en/region-path/fr2015/HDF/1
 * A regional map with a (truncated) full path. URL
 http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
 
+For each page, you can add parameters `h` and `w` to tweak the heights
+and widths of the drawings. For example, if we want to display the map
+in a 500 by 700 pixel rectangle:
+
+  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
+
 A Few Remarks
 -------------
 

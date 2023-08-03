@@ -1079,6 +1079,13 @@ http://localhost:3000/fr/region-path/fr2015/HDF/3
 * L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
 http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
 
+Pour chacune  de ces pages,  il est possible d'ajouter  des paramètres
+`h` et  `w` pour ajuster les  dimensions des graphiques : `h`  pour la
+hauteur et  `w` pour  la largeur (_width_  en anglais).  Exemple, pour
+avoir un rectangle de 500 pixels sur 700 :
+
+  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
+
 Quelques remarques
 ------------------
 

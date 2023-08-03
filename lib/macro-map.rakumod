@@ -15,13 +15,13 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-links, :@full-links) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-links, :@full-links, Str :$query-string) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
-  $at.at('a.full-map').attr(href => "/$lang/full-map/$mapcode");
+  $at.at('a.full-map').attr(href => "/$lang/full-map/$mapcode$query-string");
   $at('map')».content($imagemap);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 
@@ -53,16 +53,17 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-
 
 }
 
-our sub render(Str $lang, Str $map, %map, @areas, @borders, :@messages, :@macro-links, :@full-links) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :@macro-links, :@full-links, Str :$query-string) {
   my &filling = anti-template :source("html/macro-map.$lang.html".IO.slurp), &fill;
-  return filling( lang     => $lang
-                , mapcode  => $map
-                , map      => %map
-                , areas    => @areas
-                , borders  => @borders
-                , messages => @messages
-                , macro-links => @macro-links
-                , full-links  => @full-links
+  return filling( lang         => $lang
+                , mapcode      => $map
+                , map          => %map
+                , areas        => @areas
+                , borders      => @borders
+                , messages     => @messages
+                , macro-links  => @macro-links
+                , full-links   => @full-links
+                , query-string => $query-string
                 );
 }
 
