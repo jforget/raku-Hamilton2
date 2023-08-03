@@ -12,15 +12,16 @@ unit package map-gd;
 
 use GD:from<Perl5>;
 use List::Util;
+use PostCocoon::Url;
 use db-conf-sql;
 
-our sub draw(@areas, @borders, :$path = '') {
-  my Int $height    =  picture-height;
-  my Int $width     =  picture-width;
+our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
+  my $height = height-from-query($query-string) || picture-height;
+  my $width  =  width-from-query($query-string) || picture-width;
   my Int $dim-scale =  20;
-  my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
-  my Int $lg-max = ($width / 2).Int;
+  my Int $lg-max    = ($width / 2).Int;
 
+  my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
   my $white  = $image.colorAllocate(255, 255, 255);
   my $black  = $image.colorAllocate(  0,   0,   0);
   my %color;
@@ -166,6 +167,22 @@ sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, St
   else {
     return "<area shape='circle' coords='$x,$y,$radius' href='$url' title='$name' />\n";
   }
+}
+
+sub param-from-query(Str $query-string is copy, Str $key) {
+  if $query-string.substr(0, 1) eq '?' {
+    $query-string .= substr(1);
+  }
+  my %param = parse-query-string(url-decode($query-string));
+  return %param{$key} // '';
+}
+
+sub width-from-query(Str $query-string) {
+  param-from-query($query-string, 'w');
+}
+
+sub height-from-query(Str $query-string) {
+  param-from-query($query-string, 'h');
 }
 
 =begin POD

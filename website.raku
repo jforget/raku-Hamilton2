@@ -46,6 +46,8 @@ get '/:ln/list/' => sub ($lng_parm) {
 get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   my Str $lng    = ~ $lng_parm;
   my Str $map    = ~ $map_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -53,26 +55,31 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   my @areas   = access-sql::list-small-areas(  $map);
   my @borders = access-sql::list-small-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-map/$map/$area<upper>";
+    $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
   }
   my @messages = access-sql::list-messages($map);
 
   my @list-paths  = list-numbers(%map<nb_macro>, 0);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
-  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_" ) } );
+  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
 
-  return full-map::render($lng, $map, %map, @areas, @borders
-                        , messages    => @messages
-                        , macro-links => @macro-links
-                        , full-links  => @full-links
+  return full-map::render($lng, $map, %map
+                        , areas        => @areas
+                        , borders      => @borders
+                        , messages     => @messages
+                        , macro-links  => @macro-links
+                        , full-links   => @full-links
+                        , query-string => $query-string
                         );
 }
 
 get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
   my Str $lng    = ~ $lng_parm;
   my Str $map    = ~ $map_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -100,6 +107,8 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
 get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
   my Str $lng    = ~ $lng_parm;
   my Str $map    = ~ $map_parm;
+  my Str $query-string = query-string;
+
   my Str $region = ~ $reg_parm;
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
@@ -137,6 +146,8 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my Str $lng    = ~ $lng_parm;
   my Str $map    = ~ $map_parm;
   my Int $num    = + $num_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -174,6 +185,8 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   my Str $map    = ~ $map_parm;
   my Str $region = ~ $region_parm;
   my Int $num    = + $num_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -222,6 +235,8 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my Str $lng    = ~ $lng_parm;
   my Str $map    = ~ $map_parm;
   my Int $num    = + $num_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -249,6 +264,8 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
   my Str $map    = ~ $map_parm;
   my Str $region = ~ $region_parm;
   my Int $num    = + $num_parm;
+  my Str $query-string = query-string;
+
   if $lng !~~ /^ @languages $/ {
     return slurp('html/unknown-language.html');
   }
@@ -349,6 +366,16 @@ sub relations-for-full-path-in-region(Str $map, Str $area, Int $sf-num) {
     }
   }
   return (@list1, @list2);
+}
+
+sub query-string {
+  my $uri = request.uri;
+  if  $uri.index('?') {
+    return $uri.substr($uri.index('?'));
+  }
+  else {
+    return '';
+  }
 }
 
 =begin POD
