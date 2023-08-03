@@ -2849,6 +2849,7 @@ C'est une symétrie par rapport au plan contenant `F`, `K`, `Q` et `R`.
 
 ![Symétrie ɩ](symetrie-iota.png)
 
+![Symétrie ɩ](symetrie-iota.webp)
 
 
 LICENCE
