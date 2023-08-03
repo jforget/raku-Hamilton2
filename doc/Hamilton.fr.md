@@ -2835,7 +2835,7 @@ triangulaire et une symétrie. Toutes les isométries du dodécaèdre sont
 des compositions de ces trois isométries basiques.
 
 La rotation pentagonale  est appelée λ (lambda). Elle  fait pivoter le
-pentagone `BCDFG` sur lui-même.
+pentagone `BCDFG` sur lui-même autour de son centre.
 
 ![Rotation λ](rotation-lambda.webp)
 

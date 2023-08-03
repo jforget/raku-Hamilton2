@@ -2725,7 +2725,7 @@ rotation and a mirror symmetry. All isometries of the dodecahedron are
 combinations of these three basic isometries.
 
 The pentagonal  rotation is named  λ (lambda). It rotates  the `BCDFG`
-pentagon on itself.
+pentagon around its centre.
 
 ![Rotation λ](rotation-lambda.webp)
 
