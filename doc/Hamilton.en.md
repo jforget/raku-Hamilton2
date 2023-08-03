@@ -2727,19 +2727,19 @@ combinations of these three basic isometries.
 The pentagonal  rotation is named  λ (lambda). It rotates  the `BCDFG`
 pentagon on itself.
 
-![Rotation λ](rotation-lambda.png)
+![Rotation λ](rotation-lambda.webp)
 
 The  triangular   rotation  is  named   κ  (kappa).  It   rotates  the
 dodecahedron around the `CV` axis, so that `B` ends at `D`'s position,
 `D` ends at `P` and `P` ends at `B`.
 
-![Rotation κ](rotation-kappa.png)
+![Rotation κ](rotation-kappa.webp)
 
 According to  Lucas' text, symmetry  ɩ (iota)  swaps `B` with  `C`. In
 other words, it is a symmetry  over the plane containing `F`, `K`, `Q`
 and `R`.
 
-![Symétrie ɩ](symetrie-iota.png)
+![Symétrie ɩ](symetrie-iota.webp)
 
 License
 =======

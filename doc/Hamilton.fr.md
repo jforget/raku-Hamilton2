@@ -2837,17 +2837,15 @@ des compositions de ces trois isométries basiques.
 La rotation pentagonale  est appelée λ (lambda). Elle  fait pivoter le
 pentagone `BCDFG` sur lui-même.
 
-![Rotation λ](rotation-lambda.png)
+![Rotation λ](rotation-lambda.webp)
 
 La rotation triangulaire est appelée κ  (kappa). Son axe est la droite
 `CV` et elle amène `B` en `D`, `D` en `P` et `P` en `B`.
 
-![Rotation κ](rotation-kappa.png)
+![Rotation κ](rotation-kappa.webp)
 
 Selon les termes de Lucas, la  symétrie ɩ (iota) échange `B` avec `C`.
 C'est une symétrie par rapport au plan contenant `F`, `K`, `Q` et `R`.
-
-![Symétrie ɩ](symetrie-iota.png)
 
 ![Symétrie ɩ](symetrie-iota.webp)
 
