@@ -175,12 +175,13 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   }
 
   return macro-path::render($lng, $map, %map
-                           , areas    => @areas
-                           , borders  => @borders
-                           , path     => %path
-                           , messages => @messages
-                           , macro-links => @macro-links
-                           , full-links  => @full-links
+                           , areas          => @areas
+                           , borders        => @borders
+                           , path           => %path
+                           , messages       => @messages
+                           , macro-links    => @macro-links
+                           , full-links     => @full-links
+                           , query-string   => $query-string
                            );
 }
 
@@ -232,6 +233,7 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , messages => @messages
                            , rpath-links    => @links
                            , fpath-links    => @full-links[@indices]
+                           , query-string   => $query-string
                            );
 }
 
@@ -260,6 +262,7 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
                           , path     => %path
                           , messages => @messages
                           , links    => @links
+                          , query-string => $query-string
                           );
 }
 
@@ -314,6 +317,7 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      , rpath-links    => @links
                                      , fpath-links1   => @links1
                                      , fpath-links2   => @links2
+                                     , query-string   => $query-string
                                      );
 }
 

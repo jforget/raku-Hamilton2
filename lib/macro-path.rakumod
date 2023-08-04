@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links, Str :$query-string) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -27,10 +27,10 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
-  $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode");
-  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode");
+  $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
@@ -54,17 +54,18 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   }
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links, Str :$query-string) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
-  return filling( lang     => $lang
-                , mapcode  => $map
-                , map      => %map
-                , areas    => @areas
-                , borders  => @borders
-                , messages => @messages
-                , path     => %path
-                , macro-links => @macro-links
-                , full-links  => @full-links
+  return filling( lang           => $lang
+                , mapcode        => $map
+                , map            => %map
+                , areas          => @areas
+                , borders        => @borders
+                , messages       => @messages
+                , path           => %path
+                , macro-links    => @macro-links
+                , full-links     => @full-links
+                , query-string   => $query-string
                 );
 }
 

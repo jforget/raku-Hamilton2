@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@links) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@links, Str :$query-string) {
   my Int $path-number  = %path<num>;
   my Int $macro-number = %path<macro_num>;
   $at('title')».content(%map<name>);
@@ -29,11 +29,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
-  $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode");
-  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode");
-  $at.at('a.macro-path').attr(href => "/$lang/macro-path/$mapcode/$macro-number");
+  $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode$query-string");
+  $at.at('a.macro-path').attr(href => "/$lang/macro-path/$mapcode/$macro-number$query-string");
   $at('map')».content($imagemap);
   $at.at('span.path-number').content($path-number.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
@@ -41,7 +41,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   $at.at('p.list-of-paths').content($links);
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@links) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@links, Str :$query-string) {
   my &filling = anti-template :source("html/full-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $map
@@ -51,6 +51,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , messages => @messages
                 , path     => %path
                 , links    => @links
+                , query-string => $query-string
                 );
 }
 

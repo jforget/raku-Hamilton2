@@ -30,7 +30,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('p.list-of-region-paths')».remove;
   }
   else {
-    my $links = join ' ', @path-links.map( { "<a href='{$_<link>}$query-string'>{$_<txt>}</a>" } );
+    my $links = join ' ', @path-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
     $at.at('p.list-of-region-paths').content($links);
     $at.at('p.empty-list-of-region-paths')».remove;
   }

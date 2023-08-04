@@ -15,20 +15,24 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
-      , :%path
-      , :@rpath-links
-      , :@fpath-links1
-      , :@fpath-links2) {
+sub fill($at, :$lang, :$mapcode, :%map, :%region
+      ,     :@areas
+      ,     :@borders
+      ,     :@messages
+      ,     :%path
+      ,     :@rpath-links
+      ,     :@fpath-links1
+      ,     :@fpath-links2
+      , Str :$query-string) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode");
-  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode");
-  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>");
-  $at.at('a.full-path'  ).attr(href => "/$lang/full-path/$mapcode/%path<num>");
-  $at.at('a.macro-path' ).attr(href => "/$lang/macro-path/$mapcode/%path<macro_num>");
-  $at.at('a.region-path').attr(href => "/$lang/region-path/$mapcode/%region<code>/%path<num>");
+  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
+  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.full-path'  ).attr(href => "/$lang/full-path/$mapcode/%path<num>$query-string");
+  $at.at('a.macro-path' ).attr(href => "/$lang/macro-path/$mapcode/%path<macro_num>$query-string");
+  $at.at('a.region-path').attr(href => "/$lang/region-path/$mapcode/%region<code>/%path<num>$query-string");
 
   $at.at('span.region-name')».content(%region<name>);
   $at.at('span.path-number').content(%path<num>.Str);
@@ -40,7 +44,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 
@@ -59,7 +63,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
-our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links1, :@fpath-links2) {
+our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links1, :@fpath-links2, :$query-string) {
   my &filling = anti-template :source("html/region-with-full-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
                 , mapcode        => $mapcode
@@ -72,6 +76,7 @@ our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :
                 , rpath-links    => @rpath-links
                 , fpath-links1   => @fpath-links1
                 , fpath-links2   => @fpath-links2
+                , query-string   => $query-string
                 );
 }
 
