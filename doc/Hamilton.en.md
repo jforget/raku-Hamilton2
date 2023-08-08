@@ -2747,6 +2747,66 @@ and `R`.
 
 ![Symétrie ɩ](symetrie-iota.webp)
 
+Mathematical and Epistemological Interlude
+------------------------------------------
+
+Isometries  are  mathematical  functions,  so  I  should  use  Euler's
+functional notation  `y =  f(x)` or  in this case,  for example,  `Z =
+λ(H)`. But I will not do this. Here is the reason why.
+
+We  live in  a world  where  the Second  Law of  Thermodynamics is  in
+effect, which  differentiates the  future from the  past and  gives an
+arrow  to Time.  On an  other topic,  my mother  language and  all the
+foreign  languages I  have  learned are  written  left-to-right. As  a
+consequence,  nearly  all  the  time   diagrams  and  nearly  all  the
+chronological charts I  have seen are drawn with the  past on the left
+and the future on the right.  Very rarely, I see a chronological chart
+drawn as a spiral  or a time diagram where the  time axis is vertical.
+But I have  never seen a diagram or chart  drawn horizontally with the
+past on the right and the future on the left.
+
+When  we cascade  isometries,  for  example λ  and  _then_ ɩ,  Euler's
+functional notation would give:
+
+```
+Z = λ(H)
+P = ɩ(Z)
+  = ɩ(λ(H))
+```
+
+One consequence  of this is  that the  syntax for the  circle operator
+(combination of two functions) for λ and _then_ ɩ is "ɩ o λ", although
+λ is the first function and ɩ is the second one. So, with both "ɩ o λ"
+and "ɩ(λ(H))", the chronological order must be read right-to-left, the
+opposite of the conventions and usages  in the part of the world where
+I live.
+
+Some mathematicians  will explain  that the  universe of  the abstract
+mathematical concepts does  not obey the second  law of thermodynamics
+and  that it  does  not  contain the  concept  of  time, that  nothing
+_happens_, eveything _permanently exists_. But for pupils and students
+learning  mathematics, it  is very  useful to  build mental  images of
+these mathematical concepts and  to imagine that these representations
+evolve while the time flows.
+
+And then, when switching from mathematics to computer programming, the
+notion of time  flow is reintroduced by necessity, because  of the way
+the computers work.
+
+In  computer  programming,  one  of the  benefits  of  object-oriented
+programming is  to reinstall  the left-to-right representation  of the
+flow of  time, when  invoking several methods  sequentially. Supposing
+that the nodes  `B` to `Z` are  instances of an object  class and that
+isometries `λ`, `κ` and `ɩ` are  methods from this class, invoking `λ`
+and _then_ `ɩ` to node `H` would give:
+
+```
+resultat = H.λ.ɩ;
+assert( resultat == P);
+```
+
+So I will use this notation in the following documentation.
+
 License
 =======
 

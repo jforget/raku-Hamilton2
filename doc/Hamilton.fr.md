@@ -2856,6 +2856,69 @@ C'est une symétrie par rapport au plan contenant `F`, `K`, `Q` et `R`.
 
 ![Symétrie ɩ](symetrie-iota.webp)
 
+Intermède mathématique et épistémologique
+-----------------------------------------
+
+Les  isométries  sont des  fonctions  au  sens mathématique,  donc  je
+devrais  utiliser la  notation  d'Euler `y  = f(x)`  ou,  dans le  cas
+présent,  par exemple,  `Z =  λ(H)`. Mais  je ne  le ferai  pas. Voici
+pourquoi.
+
+Nous vivons dans  un monde où règne, entre autres,  le second principe
+de  la thermodynamique,  qui permet  de faire  la différence  entre le
+passé  et  le  futur  et  qui  permet  ainsi  d'attribuer  un  sens  à
+l'écoulement du  temps. D'autre part,  ma langue maternelle  et toutes
+les  langues  étrangères que  j'ai  apprises  s'écrivent de  gauche  à
+droite. En conséquence, la  quasi-totalité des diagrammes temporels et
+des frises  chronologiques que j'ai  rencontrés sont dessinés  avec le
+passé à  gauche et  le futur à  droite. De temps  en temps,  une frise
+chronologique  apparaît  sour  la  forme d'une  spirale,  ou  bien  un
+diagramme temporel  présente un  axe du temps  vertical. Mais  je n'ai
+jamais vu un diagramme temporel ou une frise chronologique où le temps
+est  représenté par  un déplacement  horizontal de  la droite  vers la
+gauche.
+
+Lorsque l'on enchaîne des isométries, par exemple λ puis ɩ, cela donne
+ceci avec la notation fonctionnelle d'Euler :
+
+```
+Z = λ(H)
+P = ɩ(Z)
+  = ɩ(λ(H))
+```
+
+Ce  qui fait  que  la  composition des  isométries  λ  puis ɩ  s'écrit
+« ɩ o λ »  (iota rond  lambda), alors  que l'ordre  chronologique fait
+intervenir λ _avant_  ɩ. Donc, avec « ɩ o λ »  comme avec « ɩ(λ(H)) »,
+l'ordre chronologique  se lit  de droite  à gauche,  contrairement aux
+habitudes  et aux  conventions en  usage dans  la partie  du monde  où
+j'habite.
+
+Certains mathématiciens  expliqueront que dans l'univers  abstrait des
+concepts  mathématiques,  le  second principe  de  la  thermodynamique
+n'intervient pas et que la notion  de temps n'existe pas. Certes, mais
+lors de l'apprentissage des mathématiques, les élèves et les étudiants
+ont  besoin de  se construire  des images  mentales pour  les concepts
+mathématiques rencontrés et il  est naturel d'utiliser l'écoulement du
+temps dans ces images mentales.
+
+Et ensuite,  lorsque l'on passe  des mathématiques à  la programmation
+informatique, la  notion de  temps est nécessairement  réintroduite, à
+cause du fonctionnement séquentiel des calculateurs.
+
+En informatique, l'un des bénéfices de la programmation orientée objet
+est de rétablir  la représentation gauche → droite  de l'écoulement du
+temps, lorsque l'on enchaîne des  appels de méthodes. En supposant que
+les points  `B` à  `Z` soient  des instances d'une  classe et  que les
+isométries  `λ`, `κ`  et  `ɩ`  soient des  méthodes sur cette  classe,
+l'application de λ _puis_ ɩ au point H donnerait :
+
+```
+resultat = H.λ.ɩ;
+assert( resultat == P);
+```
+
+J'utiliserai donc cette notation dans la suite de cette documentation.
 
 LICENCE
 =======
