@@ -2807,6 +2807,77 @@ assert( resultat == P);
 
 So I will use this notation in the following documentation.
 
+Implementation
+--------------
+
+I use the OO notation in the documentation, but not in the programmes.
+Although isometries  are mathematical functions, I  will not implement
+them as  programming functions. An isometry  will be a string  such as
+`λɩ` and we  will have a programming function named  `→` which is used
+in this way:
+
+```
+my Str $resul1 = 'M' → 'λɩ';
+my Str $resul2 = 'M' → 'λ' → 'ɩ';
+if $resul1 eq $resul2 {
+  say "it works!";
+}
+else {
+  say "there is a problem somewhere: $resul1 vs $resul2";
+}
+```
+
+Yet, I need some additional data  for each isometry. Until this point,
+I have implemented everything as SQL  tables, I will continue with the
+dodecahedron  isometries. So  we  have an  `Isometry`  table with  the
+following fields.
+
+* `isometry` is  the record key. It  is a string with  only chars `λ`,
+`κ`  and `ɩ`,  describing  how  the isometry  derives  from the  basic
+isometries. Of course,  the string is read  left-to-right according to
+the usual  representation of the  flow of  time. One exception  is the
+identity isometry. For the identity, the key is `Id`.
+
+* `transform`.  This  field  shows  how  the  `B`  to  `Z`  codes  are
+transformed by the isometry. This transformation is computed with:
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  $transform);
+```
+
+For example, with rotation `λ`, the transformation is computed with:
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  "GBCDFKLMNPQZXWRSTVJH");
+```
+
+* `length` is the number of basic isometries used to build the current
+isometry. This is zero for `Id`,  this is the length of the `isometry`
+field for the other isometries.
+
+* `recipr` is the key of the reciprocal isometry.
+
+* `invol` is a  boolean showing whether the isometry  is involutive or
+not. An involution is a function  equal to its reciprocal. This is the
+case with symmetries.
+
+Another new table  is `Isom_Path`, storing the  way dodecahedron paths
+derive from  canonical paths (that  is, paths starting  with `B →  C →
+D`). The table has three fields:
+
+* `canonical_num`: the key from the canonical Regional Path.
+
+* `num`: the key from the actual Regional Path
+
+* `isometry`:  the `isometry`  field of  the isometry  that turns  the
+canonical path into the actual path.
+
+Note: there is  no need to store  the other key fields  of the `Paths`
+table: `map`, `level` and `area`.  Their values are constant: `"ico"`,
+`2` and `"ICO"`.
+
 License
 =======
 

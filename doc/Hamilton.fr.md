@@ -2915,10 +2915,84 @@ l'application de λ _puis_ ɩ au point H donnerait :
 
 ```
 resultat = H.λ.ɩ;
-assert( resultat == P);
+assert( resultat == P );
 ```
 
 J'utiliserai donc cette notation dans la suite de cette documentation.
+
+Implémentation
+--------------
+
+J'utilise la notation  orientée objet dans la  documentation, mais pas
+dans les programmes.  Bien que les isométries soient  des fonctions au
+sens mathématique, je  ne les implémenterai pas avec  des fonctions au
+sens programmation.  Une isométrie sera  identifiée par une  chaîne de
+caractères telle  que `"λɩ"`  et nous  disposerons d'une  fonction (au
+sens programmation) infixe nommée `"→"` et s'utilisant ainsi :
+
+```
+my Str $resul1 = 'M' → 'λɩ';
+my Str $resul2 = 'M' → 'λ' → 'ɩ';
+if $resul1 eq $resul2 {
+  say "ça marche !";
+}
+else {
+  say "il y a un bug quelque part : $resul1 contre $resul2";
+}
+```
+
+Néanmoins, j'ai  besoin de quelques informations  supplémentaires pour
+chaque  isométrie,  je  ne  peux  pas me  contenter  d'une  chaîne  de
+caractères. Jusque-là,  j'ai tout implémenté  avec des tables  SQL, je
+vais continuer avec les isométries du dodécaèdre.
+
+Nous avons donc une table `Isometry` avec les champs suivants.
+
+* `isometry`  est la  clé  de l'enregistrement.  C'est  une chaîne  de
+caractères  constituée  uniquement des  caractères  `λ`,  `κ` et  `ɩ`,
+décrivant  comment   l'isométrie  est  obtenue  à   partir  des  trois
+isométries de  base. Évidemment, la  chaîne des isométries de  base se
+lit   de   gauche   à   droite,  pour   refléter   la   représentation
+conventionnelle  de   l'écoulement  du  temps.  Une   exception,  avec
+l'identité. Pour l'identité, la clé est `Id`.
+
+* `transform`.  Ce champ  montre  comment  les codes  `B`  à `Z`  sont
+transformés par l'isométrie. La transformation est calculée par :
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  $transform);
+```
+
+Par exemple, pour la rotation `λ`, la transformation est calculée avec :
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  "GBCDFKLMNPQZXWRSTVJH");
+```
+
+* `length` nombre  d'isométries basiques pour  construire l'isométrie.
+C'est zéro  pour `Id`,  c'est la  longueur de la  clé pour  les autres
+isométries.
+
+* `recipr` clé de l'isométrie inverse (ou réciproque).
+
+* `invol`  indicateur indiquant  si  l'isométrie  est une  involution,
+c'est-à-dire si l'isométrie est  égale à l'isométrie réciproque. C'est
+le cas pour l'identité et pour les symétries.
+
+Il y  a une autre nouvelle  table, `Isom_Path`, destinée à  stocker la
+relation entre  les chemins du  dodécaèdre et les  chemins canoniques,
+notamment à savoir  par quelle isométrie un chemin  normal dérive d'un
+chemin canonique  (commençant par  `B →  C →  D%`). La  table comporte
+trois champs :
+
+* `canonical_num` : la clé du chemin régional canonique.
+
+* `num` : la clé du chemin régional réel.
+
+* `isometry`: le champ `isometry` de  l'isométrie qui permet de passer
+du cemin régional canonique au chemin régional réel.
 
 LICENCE
 =======
