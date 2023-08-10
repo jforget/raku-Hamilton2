@@ -5,7 +5,7 @@ But
 
 Le but de ce projet est de trouver des chemins doublement hamiltoniens
 dans une carte administrative. Dans un graphe connexe, un
-[Hamiltonian path](https://mathworld.wolfram.com/HamiltonianPath.html)
+[chemin hamiltonien](https://mathworld.wolfram.com/HamiltonianPath.html)
 est un chemin qui passe une fois  et une seule par chacun des sommets.
 Mais  qu'est-ce  un  chemin  _doublement_ hamiltonien  ?  Prenons  par
 exemple  la  France  continentale.  Nous  enlevons  la  Corse  et  les

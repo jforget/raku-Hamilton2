@@ -2829,7 +2829,7 @@ else {
 
 Yet, I need some additional data  for each isometry. Until this point,
 I have implemented everything as SQL  tables, I will continue with the
-dodecahedron  isometries. So  we  have an  `Isometry`  table with  the
+dodecahedron isometries.  So we  have an  `Isometries` table  with the
 following fields.
 
 * `isometry` is  the record key. It  is a string with  only chars `λ`,
@@ -2877,6 +2877,61 @@ canonical path into the actual path.
 Note: there is  no need to store  the other key fields  of the `Paths`
 table: `map`, `level` and `area`.  Their values are constant: `"ico"`,
 `2` and `"ICO"`.
+
+To feed  the isometry table, for  each isometry, we want  the shortest
+string of  basic isometries.  As is  written in  _Mastering Algorithms
+with Perl_, which I
+[mentionned previsously](#user-content-fifo-or-lifo),
+we  need to  use  a  FIFO structure.  So  building  the isometries  is
+achieved with the following process.
+
+1. The  programme initialises  the `Isometries` table  with hard-coded
+values for `Id`, `λ`, `κ` and `ɩ`.
+
+2. The `to-do` list is initialised with isometries `λ`, `κ` and `ɩ`.
+
+3. Begin a loop on `to-do`.
+
+4. Inner loop on the basic isometries `λ`, `κ` and `ɩ`.
+
+5. The programme catenates the isometry from the `to-do` list with the basic isometry.
+
+6. The programme computes the `transform` field for the new isometry.
+
+7. The programme checks if the `Isometries` table already contains an isometry with the same `transform` value.
+
+8. Upon failure of this search, the programme stores the new isometry into the table and at the end of the `to-do` list.
+
+9. End of iteration for both loops. If the `to-do` list is empty, end of the loop.
+
+To fill the field `recipr` (and also the field `invol`), the programme
+computes the  field `transform` for  the reciprocal isometry  and uses
+this value to extract the reciprocal  isometry from the table. But how
+is this `transfom` value computed?
+
+Let us consider rotation `λ`. Transforming a node or a path is done with:
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  "GBCDFKLMNPQZXWRSTVJH");
+```
+
+For the reciprocal rotation, we would just do:
+
+```
+        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
+                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+```
+
+So the `transform` field for the reciprocal of rotation `λ` is computed with:
+
+```
+        $resul  =       "BCDFGHJKLMNPQRSTVWXZ";
+        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
+                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+```
+
+Filling table `Isom_Path` is a small matter of programming.
 
 License
 =======

@@ -2946,7 +2946,7 @@ chaque  isométrie,  je  ne  peux  pas me  contenter  d'une  chaîne  de
 caractères. Jusque-là,  j'ai tout implémenté  avec des tables  SQL, je
 vais continuer avec les isométries du dodécaèdre.
 
-Nous avons donc une table `Isometry` avec les champs suivants.
+Nous avons donc une table `Isometries` avec les champs suivants.
 
 * `isometry`  est la  clé  de l'enregistrement.  C'est  une chaîne  de
 caractères  constituée  uniquement des  caractères  `λ`,  `κ` et  `ɩ`,
@@ -2992,7 +2992,68 @@ trois champs :
 * `num` : la clé du chemin régional réel.
 
 * `isometry`: le champ `isometry` de  l'isométrie qui permet de passer
-du cemin régional canonique au chemin régional réel.
+du chemin régional canonique au chemin régional réel.
+
+Note : il n'y a pas besoin de stocker les autres champs faisant partie
+de la  clé de la table  `Paths`. Les valeurs sont  connues et fixées :
+`map = "ico"`, `level = 2` et `area = "ICO"`.
+
+Pour  alimenter   la  table   des  isométries,  nous   recherchons  la
+décomposition en isométries  basiques la plus courte.  Ainsi qu'il est
+marqué dans _Mastering Algorithms with Perl_, comme
+[indiqué ci-dessus](#user-content-file-fifo-ou-pile-lifo-),
+cela incite à  utiliser une file FIFO. La recherche  des isométries se
+fait par le processus itératif suivant.
+
+1. Le  programme initialise la  table avec l'isométrie de  longueur 0,
+`Id` et avec les isométries de longueur 1, `λ`, `κ` et `ɩ`.
+
+2. La liste `to-do` est alimentée avec les isométries `λ`, `κ` et `ɩ`.
+
+3. Début de la boucle sur la liste `to-do`
+
+4. Boucle sur les trois isométries basiques de longueur 1,
+
+5. Le programme concatène l'isométrie extraite de la liste avec l'isométrie basique,
+
+6. Le programme génère le champ `transform` pour la nouvelle isométrie,
+
+7. Le programme vérifie s'il existe déjà dans la base de données une isométrie avec la même valeur du champ `transform`,
+
+8. Si la recherche a échoué, on stocke la nouvelle isométrie dans la table des isométries et en fin de la liste `to-do`.
+
+9. Fin d'itération pour les deux boucles. Si la liste `to-do` est vide, le programme quitte la boucle.
+
+Pour  alimenter  le  champ  `recipr`  (et,  accessoirement,  le  champ
+`invol`),  le programme  cherche le  champ `transform`  de l'isométrie
+réciproque  et l'utilise  pour  retrouver l'isométrie  en table.  Mais
+comment calcule-t-on cette valeur de `transform` ?
+
+Prenons, par exemple, la rotation `λ`. La transformation d'un point ou
+d'un chemin est calculée avec :
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  "GBCDFKLMNPQZXWRSTVJH");
+```
+
+Pour la rotation réciproque, il suffit de faire :
+
+```
+        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
+                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+```
+
+Donc le champ `transform` de l'isométrie inverse de `λ` se calcule avec :
+
+```
+        $resul  =       "BCDFGHJKLMNPQRSTVWXZ";
+        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
+                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+```
+
+Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
+problème.
 
 LICENCE
 =======
