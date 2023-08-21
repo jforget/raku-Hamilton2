@@ -65,11 +65,24 @@ create table Messages (map        TEXT
                     );
 
 create table Exit_Borders (map       TEXT
-                        , from_code  TEXT
-                        , upper_from TEXT
-                        , upper_to   TEXT
-                        , spoc       INTEGER
-                        );
+                         , from_code  TEXT
+                         , upper_from TEXT
+                         , upper_to   TEXT
+                         , spoc       INTEGER
+                         );
+
+create table Isometries   (isometry   TEXT
+                         , transform  TEXT
+                         , length     INTEGER
+                         , recipr     TEXT
+                         , invol      INTEGER
+                         );
+
+create table Isom_Path    (canonical_num INTEGER
+                         , num        INTEGER
+                         , isometry   TEXT
+                         , recipr     TEXT
+                         );
 
 
 

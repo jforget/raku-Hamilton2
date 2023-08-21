@@ -2874,6 +2874,9 @@ D`). The table has three fields:
 * `isometry`:  the `isometry`  field of  the isometry  that turns  the
 canonical path into the actual path.
 
+* `recipr`: the `isometry` field of the isometry that turns the actual
+path into the canonical path.
+
 Note: there is  no need to store  the other key fields  of the `Paths`
 table: `map`, `level` and `area`.  Their values are constant: `"ico"`,
 `2` and `"ICO"`.
@@ -2881,7 +2884,7 @@ table: `map`, `level` and `area`.  Their values are constant: `"ico"`,
 To feed  the isometry table, for  each isometry, we want  the shortest
 string of  basic isometries.  As is  written in  _Mastering Algorithms
 with Perl_, which I
-[mentionned previsously](#user-content-fifo-or-lifo),
+[mentionned previously](#user-content-fifo-or-lifo),
 we  need to  use  a  FIFO structure.  So  building  the isometries  is
 achieved with the following process.
 

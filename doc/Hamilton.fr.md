@@ -2991,8 +2991,11 @@ trois champs :
 
 * `num` : la clé du chemin régional réel.
 
-* `isometry`: le champ `isometry` de  l'isométrie qui permet de passer
+* `isometry` : le champ `isometry` de l'isométrie qui permet de passer
 du chemin régional canonique au chemin régional réel.
+
+* `recipr` : le champ  `isometry` de l'isométrie qui  permet de passer
+du chemin régional réel au chemin régional canonique.
 
 Note : il n'y a pas besoin de stocker les autres champs faisant partie
 de la  clé de la table  `Paths`. Les valeurs sont  connues et fixées :
@@ -3012,7 +3015,7 @@ fait par le processus itératif suivant.
 
 3. Début de la boucle sur la liste `to-do`
 
-4. Boucle sur les trois isométries basiques de longueur 1,
+4. Boucle interne sur les trois isométries basiques de longueur 1,
 
 5. Le programme concatène l'isométrie extraite de la liste avec l'isométrie basique,
 
