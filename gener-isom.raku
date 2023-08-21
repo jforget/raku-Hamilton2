@@ -20,7 +20,7 @@ $dbh.execute('delete from Isometries');
 $dbh.execute('delete from Isom_Path');
 
 my $sto-isom = $dbh.prepare(q:to/SQL/);
-insert into Isometries (isometry, transform, length, recipr, invol)
+insert into Isometries (isometry, transform, length, recipr, involution)
        values          (?,        ?,         ?,      ?,      ?)
 SQL
 
@@ -49,6 +49,16 @@ multi sub infix:<→> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
   return $resul;
 }
 
+my Str $back-lambda = $before; $back-lambda .= trans($after-lambda => $before);
+my Str $back-kappa  = $before; $back-kappa  .= trans($after-kappa  => $before);
+my Str $back-iota   = $before; $back-iota   .= trans($after-iota   => $before);
+
+# we already know that iota is an involution, we check the programme agrees with that
+if $back-iota ne $after-iota {
+  say "problem with iota reciprocal: $back-iota ≠ $after-iota";
+  exit(1);
+}
+
 my %seen = $before       => 'Id'
          , $after-lambda => 'λ'
          , $after-kappa  => 'κ'
@@ -56,10 +66,10 @@ my %seen = $before       => 'Id'
          ;
 my @to-do = < λ κ ɩ >;
 
-$sto-isom.execute('Id', $before      , 0, '', 0);
-$sto-isom.execute('λ' , $after-lambda, 1, '', 0);
-$sto-isom.execute('κ' , $after-kappa , 1, '', 0);
-$sto-isom.execute('ɩ' , $after-iota  , 1, '', 0);
+$sto-isom.execute('Id', $before      , 0, 'Id', 1);
+$sto-isom.execute('λ' , $after-lambda, 1, $back-lambda, -1);
+$sto-isom.execute('κ' , $after-kappa , 1, $back-kappa , -1);
+$sto-isom.execute('ɩ' , $after-iota  , 1, 'ɩ',  1);
 
 while @to-do.elems > 0 {
   my Str $old-isom = @to-do.shift;
@@ -72,11 +82,37 @@ while @to-do.elems > 0 {
     }
     else {
       %seen{$new-trans} = $new-isom;
-      $sto-isom.execute($new-isom, $new-trans, $new-isom.chars, '', 0);
+      my Str $recipr = '';
+      my Int $involution;
+      my Str $backward = $before;
+      $backward .= trans($new-trans => $before);
+      if $backward eq $new-trans {
+        $backward   = $new-isom;
+        $involution = 1;
+      }
+      elsif %seen{$backward} {
+        $backward   = %seen{$backward};
+        $involution = 0;
+      }
+      else {
+        $involution = -1;
+      }
+
+      $sto-isom.execute($new-isom, $new-trans, $new-isom.chars, $backward, $involution);
       @to-do.push($new-isom);
     }
   }
 }
+
+$dbh.execute(q:to/SQL/);
+update Isometries as A
+   set involution = 0
+     , recipr     = (select B.isometry
+                    from    Isometries B
+                    where   B.transform = A.recipr
+                    )
+where A.involution = -1
+SQL
 
 =begin POD
 

@@ -75,7 +75,7 @@ create table Isometries   (isometry   TEXT
                          , transform  TEXT
                          , length     INTEGER
                          , recipr     TEXT
-                         , invol      INTEGER
+                         , involution INTEGER
                          );
 
 create table Isom_Path    (canonical_num INTEGER

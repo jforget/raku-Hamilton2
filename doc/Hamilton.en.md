@@ -2859,7 +2859,7 @@ field for the other isometries.
 
 * `recipr` is the key of the reciprocal isometry.
 
-* `invol` is a  boolean showing whether the isometry  is involutive or
+* `involution` is a boolean showing whether the isometry is involutive or
 not. An involution is a function  equal to its reciprocal. This is the
 case with symmetries.
 
@@ -2907,7 +2907,7 @@ values for `Id`, `λ`, `κ` and `ɩ`.
 
 9. End of iteration for both loops. If the `to-do` list is empty, end of the loop.
 
-To fill the field `recipr` (and also the field `invol`), the programme
+To fill the field `recipr` (and also the field `involution`), the programme
 computes the  field `transform` for  the reciprocal isometry  and uses
 this value to extract the reciprocal  isometry from the table. But how
 is this `transfom` value computed?
@@ -2922,17 +2922,43 @@ Let us consider rotation `λ`. Transforming a node or a path is done with:
 For the reciprocal rotation, we would just do:
 
 ```
-        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
-                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+        $backward .= trans("GBCDFKLMNPQZXWRSTVJH"
+                       =>  "BCDFGHJKLMNPQRSTVWXZ");
 ```
 
 So the `transform` field for the reciprocal of rotation `λ` is computed with:
 
 ```
-        $resul  =       "BCDFGHJKLMNPQRSTVWXZ";
-        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
-                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+        $back-lambda  =       "BCDFGHJKLMNPQRSTVWXZ";
+        $back-lambda .= trans("GBCDFKLMNPQZXWRSTVJH"
+                          =>  "BCDFGHJKLMNPQRSTVWXZ");
 ```
+
+If the  value of `back-transform` calculated  in this way is  equal to
+the value  of `transform` for  the currently processed  isometry, that
+means that the isometry is its  own reciprocal, in other words this is
+an involution.  The programme feeds  the column `involution`  with `1`
+and stores the isometry.
+
+If the value of `back-transform` can be found as the `transform` field
+of an  already created isometry, the  new isometry is stored  into the
+database with the code of the previous isometry in the `recipr` field.
+
+If the `back-transform` value cannot be  found in the database for the
+already  existing isometries,  the  new isometry  is  stored into  the
+database  with  the `involution`  field  temporarily  filled with  the
+out-of-bounds value  `-1` and with  the `recipr` field  containing the
+value of `back-transform`. Then, after all isometries are created, the
+programme will  mop up the isometries  with `involution = -1`  to give
+them  the  actual  code  of  the reciprocal  isometry  (and  set  back
+`involution` to zero).
+
+Of course, I could have added  an `update` statement each time I store
+an  isometry whose  reciprocal is  known, to  fill the  missing fields
+`involution` and `recipr` in this already known isometry. But I prefer
+update all those  44 isometries in one single  `update` statement than
+running an  `update` statement 44 times  to update a single  record at
+each iteration.
 
 Filling table `Isom_Path` is a small matter of programming.
 

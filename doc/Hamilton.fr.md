@@ -2977,7 +2977,7 @@ isométries.
 
 * `recipr` clé de l'isométrie inverse (ou réciproque).
 
-* `invol`  indicateur indiquant  si  l'isométrie  est une  involution,
+* `involution` indicateur indiquant si l'isométrie est une involution,
 c'est-à-dire si l'isométrie est  égale à l'isométrie réciproque. C'est
 le cas pour l'identité et pour les symétries.
 
@@ -3028,7 +3028,7 @@ fait par le processus itératif suivant.
 9. Fin d'itération pour les deux boucles. Si la liste `to-do` est vide, le programme quitte la boucle.
 
 Pour  alimenter  le  champ  `recipr`  (et,  accessoirement,  le  champ
-`invol`),  le programme  cherche le  champ `transform`  de l'isométrie
+`involution`), le programme cherche le champ `transform` de l'isométrie
 réciproque  et l'utilise  pour  retrouver l'isométrie  en table.  Mais
 comment calcule-t-on cette valeur de `transform` ?
 
@@ -3043,17 +3043,44 @@ d'un chemin est calculée avec :
 Pour la rotation réciproque, il suffit de faire :
 
 ```
-        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
-                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+        $backward .= trans("GBCDFKLMNPQZXWRSTVJH"
+                       =>  "BCDFGHJKLMNPQRSTVWXZ");
 ```
 
 Donc le champ `transform` de l'isométrie inverse de `λ` se calcule avec :
 
 ```
-        $resul  =       "BCDFGHJKLMNPQRSTVWXZ";
-        $resul .= trans("GBCDFKLMNPQZXWRSTVJH"
-                    =>  "BCDFGHJKLMNPQRSTVWXZ");
+        $back-lambda  =       "BCDFGHJKLMNPQRSTVWXZ";
+        $back-lambda .= trans("GBCDFKLMNPQZXWRSTVJH"
+                          =>  "BCDFGHJKLMNPQRSTVWXZ");
 ```
+
+Si  la  valeur  `back-transform`  ainsi trouvée  correspond  au  champ
+`transform` de  l'isométrie en  cours de  création, cela  signifie que
+l'isométrie  est sa  propre réciproque,  c'est-à-dire qu'elle  est une
+involution.  Le programme  alimente  le champ  `involution`  à `1`  et
+stocke l'isométrie en base de données.
+
+Si la valeur `back-transform` calculée correspond au champ `transform`
+d'une  isométrie  déjà  existante,  alors la  nouvelle  isométrie  est
+stockée avec le  code de cette isométrie dans le  champ `recipr` de la
+base de données.
+
+Si la  valeur `back-transform`  calculée ne  correspond à  aucun champ
+`transform` pour les isométries existantes, alors l'isométrie en cours
+de  traitement  est   stockée  en  base  de  données   avec  le  champ
+`involution` provisoirement à `-1` et le champ `recipr` provisoirement
+égal à  la valeur de  `back-transform`. Lorsque toutes  les isométries
+auront été  créées, le programme  fera le ménage parmi  les isométries
+avec  `involution =  -1`  pour  leur attribuer  le  véritable code  de
+l'isométrie réciproque (et remettre `involution` à zéro).
+
+Certes, j'aurais pu  coder un ordre SQL `update` chaque  fois que l'on
+crée une isométrie  dont on connaît déjà la réciproque,  pour mettre à
+jour  les champs  `involution`  et `recipr`  de  cette isométrie  déjà
+connue. Mais  c'est plus intéressant  de faire une  mise à jour  de 44
+enregistrements en un seul ordre `update` que de le faire en 44 ordres
+`update`.
 
 Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
 problème.
