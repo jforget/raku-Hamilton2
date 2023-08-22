@@ -18,9 +18,8 @@ my $dbh = DBIish.connect('SQLite', database => dbname());
 
 
 our sub list-maps {
-  my $sth = $dbh.prepare("select map, name, nb_macro, nb_full from Maps");
+  my $sth  = $dbh.prepare("select map, name, nb_macro, nb_full from Maps");
   my @maps = $sth.execute().allrows;
-  #say @maps;
   return @maps;
 }
 
@@ -172,11 +171,19 @@ our sub read-specific-path(Str $map, Int $num) {
     and num  = ?
   SQL
 
+  my $sth2 = $dbh.prepare(q:to/SQL/);
+  select 'X'
+  from   Small_Borders
+  where  map       = ?
+    and  from_code = ?
+    and  to_code   = ?
+  SQL
+
   my %val = $sth.execute($map, $num, $num).row(:hash);
 
   # expanding the path string
-  my Str $path = %val<path>;
-  my @words = $path.comb( / \w+ / );
+  my Str $path    = %val<path>;
+  my     @words   = $path.comb( / \w+ / );
   my Str @t-area  = @words[0, 3 ... *];
   my Int @t-first = @words[1, 4 ... *].map({ +$_ });
   my Int @t-coef  = @words[2, 5 ... *].map({ +$_ }).reverse;
@@ -190,8 +197,15 @@ our sub read-specific-path(Str $map, Int $num) {
     $path ~~ s/ '(' .*? ')' /@reg-val[0]<path>/;
   }
 
-  %val<num> = $num;
-  %val<path> = $path;
+  %val<num>       = $num;
+  %val<path>      = $path;
+  %val<from_code> = $path.match(/^ \w+ /).Str;
+  %val<to_code>   = $path.match(/ \w+ $/).Str;
+
+  my $cyclic = $sth2.execute($map, %val<from_code>, %val<to_code>).row;
+  if $cyclic[0] // '' eq 'X' {
+    %val<cyclic> = 1;
+  }
   return %val;
 }
 
