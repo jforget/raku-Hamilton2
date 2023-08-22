@@ -114,6 +114,34 @@ update Isometries as A
 where A.involution = -1
 SQL
 
+my $sth-canonical-paths = $dbh.execute(q:to/SQL/);
+select   num, path
+from     Region_Paths
+where    map = 'ico'
+and      path like 'B → C → D → %'
+order by num
+SQL
+my @canonical-paths = $sth-canonical-paths.allrows(:array-of-hash);
+
+my $sth-actual = $dbh.prepare(q:to/SQL/);
+select   num
+from     Region_Paths
+where    map  = 'ico'
+and      path = ?
+SQL
+
+my $sth-isometries = $dbh.execute(q:to/SQL/);
+select   isometry, transform, recipr
+from     Isometries
+SQL
+
+for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
+  for @canonical-paths -> $canon-rec {
+    my @actual-path = $sth-actual.execute($canon-rec<path> → $isometry-rec<isometry>).row();
+    $sto-path.execute($canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
+  }
+}
+
 =begin POD
 
 =encoding utf8
