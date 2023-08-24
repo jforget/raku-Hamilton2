@@ -23,6 +23,7 @@ use macro-path;
 use region-map;
 use region-path;
 use region-with-full-path;
+use deriv-ico-path;
 
 my @languages = ( 'en', 'fr' );
 
@@ -319,6 +320,61 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      , fpath-links2   => @links2
                                      , query-string   => $query-string
                                      );
+}
+
+get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = 'ico';
+  my Str $region = 'ICO';
+  my Int $num    = + $num_parm;
+  my Str $query-string = query-string;
+
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my %region  = access-sql::read-region($map, $region);
+
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+  @areas.append(@neighbours);
+  for @areas -> $area {
+    if $area<upper> eq $region {
+      $area<url> = '';
+    }
+    else {
+      $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
+    }
+  }
+  my %deriv-path  = access-sql::read-deriv($num);
+  my %actual-path = access-sql::read-path($map, 2, $region, $num);
+  my %canon-path  = access-sql::read-path($map, 2, $region, %deriv-path<canonical_num>);
+  my @messages    = access-sql::list-regional-messages($map, $region);
+
+  my @list-paths = list-numbers(%region<nb_paths>, $num);
+  my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+
+  my @full-numbers = access-sql::path-relations($map, $region, $num);
+  my @full-links;
+  for @full-numbers.kv -> $i, $num {
+    push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
+  }
+  my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
+
+  return deriv-ico-path::render(lang           => $lng
+                              , mapcode        => $map
+                              , map            => %map
+                              , region         => %region
+                              , areas          => @areas
+                              , borders        => @borders
+                              , deriv          => %deriv-path
+                              , canon-path     => %canon-path
+                              , actual-path    => %actual-path
+                              , messages       => @messages
+                              , rpath-links    => @links
+                              , query-string   => $query-string
+                              );
 }
 
 baile();

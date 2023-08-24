@@ -292,6 +292,12 @@ our sub find-related-path(Str $map, Int $full-num, Int $region-num) {
   return $sth.execute($map, $full-num.Str, $region-num.Str).row(:hash);
 }
 
+our sub read-deriv(Int $num) {
+  my $sth = $dbh.prepare("select * from Isom_Path where num = ?");
+  my %val = $sth.execute($num).row(:hash);
+  return %val;
+}
+
 =begin POD
 
 =encoding utf8
