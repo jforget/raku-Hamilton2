@@ -16,8 +16,10 @@ use access-sql;
 
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
+$dbh.execute("begin transaction");
 $dbh.execute('delete from Isometries');
 $dbh.execute('delete from Isom_Path');
+$dbh.execute("commit");
 
 my $sto-isom = $dbh.prepare(q:to/SQL/);
 insert into Isometries (isometry, transform, length, recipr, involution)
@@ -33,11 +35,11 @@ my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
 my Str $after-kappa  = "PCBZQRWXHGFDMLKJVTSN";
 my Str $after-iota   = "CBGFDMLKJHXZQRWVTSNP";
 
-multi sub infix:<→> (Str $string, Str $isom where * eq 'Id') {
+multi sub infix:<↣> (Str $string, Str $isom where * eq 'Id') {
   return $string;
 }
 
-multi sub infix:<→> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
+multi sub infix:<↣> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
   my Str $resul = $string;
   for $isom.comb -> $iso {
     given $iso {
@@ -66,6 +68,7 @@ my %seen = $before       => 'Id'
          ;
 my @to-do = < λ κ ɩ >;
 
+$dbh.execute("begin transaction");
 $sto-isom.execute('Id', $before      , 0, 'Id', 1);
 $sto-isom.execute('λ' , $after-lambda, 1, $back-lambda, -1);
 $sto-isom.execute('κ' , $after-kappa , 1, $back-kappa , -1);
@@ -75,7 +78,7 @@ while @to-do.elems > 0 {
   my Str $old-isom = @to-do.shift;
   for < λ κ ɩ > -> Str $next-isom {
     my Str $new-isom  = $old-isom ~ $next-isom;
-    my Str $new-trans = $before → $new-isom;
+    my Str $new-trans = $before ↣ $new-isom;
     # say join ' ', $new-trans, $new-isom;
     if %seen{$new-trans} {
       say join(' ', $new-trans, "duplicate", $new-isom, %seen{$new-trans});
@@ -114,6 +117,9 @@ update Isometries as A
 where A.involution = -1
 SQL
 
+$dbh.execute("commit");
+$dbh.execute("begin transaction");
+
 my $sth-canonical-paths = $dbh.execute(q:to/SQL/);
 select   num, path
 from     Region_Paths
@@ -137,10 +143,11 @@ SQL
 
 for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
   for @canonical-paths -> $canon-rec {
-    my @actual-path = $sth-actual.execute($canon-rec<path> → $isometry-rec<isometry>).row();
+    my @actual-path = $sth-actual.execute($canon-rec<path> ↣ $isometry-rec<isometry>).row();
     $sto-path.execute($canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
   }
 }
+$dbh.execute("commit");
 
 =begin POD
 

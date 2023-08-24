@@ -2813,12 +2813,12 @@ Implementation
 I use the OO notation in the documentation, but not in the programmes.
 Although isometries  are mathematical functions, I  will not implement
 them as  programming functions. An isometry  will be a string  such as
-`λɩ` and we  will have a programming function named  `→` which is used
+`λɩ` and we  will have a programming function named  `↣` which is used
 in this way:
 
 ```
-my Str $resul1 = 'M' → 'λɩ';
-my Str $resul2 = 'M' → 'λ' → 'ɩ';
+my Str $resul1 = 'M' ↣ 'λɩ';
+my Str $resul2 = 'M' ↣ 'λ' ↣ 'ɩ';
 if $resul1 eq $resul2 {
   say "it works!";
 }
@@ -2826,6 +2826,13 @@ else {
   say "there is a problem somewhere: $resul1 vs $resul2";
 }
 ```
+
+Remark.  The  char  I  use  for  this  operation  is  `U+21A3  =  "↣"`
+(rightwards arrow  with tail) instead of  `U+2192` (rightwards arrow),
+because recent  versions of  Raku use  `U+2192` in  their syntax  as a
+short  version of  `->`. On  the  other hand,  the strings  describing
+Hamiltonian  paths still  use `U+2192  = "→"`,  there is  no confusion
+problem with the Raku syntax.
 
 Yet, I need some additional data  for each isometry. Until this point,
 I have implemented everything as SQL  tables, I will continue with the

@@ -1,6 +1,7 @@
 ; -*- encoding: utf-8; indent-tabs-mode: nil -*-
 (progn
-(defun md-arrow      () (interactive) (insert "→"))
+(defun md-arrow      () (interactive) (insert "→"))  ; U+2192 rightwards arrow
+(defun md-arrow2     () (interactive) (insert "↣"))  ; U+21A3 rightwards arrow with tail
 (defun md-iota       () (interactive) (insert "ɩ"))
 (defun md-kappa      () (interactive) (insert "κ"))
 (defun md-lambda     () (interactive) (insert "λ"))
@@ -9,6 +10,7 @@
 (defun md-guillemets () (interactive) (insert "«  »") (forward-char -2))
 (defun md-programme  () (interactive) (insert "\n```\n\n```\n") (forward-line -2))
   (define-key global-map "\C-c-"      'md-arrow)
+  (define-key global-map "\C-c\C-c-"  'md-arrow2)
   (define-key global-map "\C-ci"      'md-iota)
   (define-key global-map "\C-cj"      'md-join)
   (define-key global-map "\C-ck"      'md-kappa)

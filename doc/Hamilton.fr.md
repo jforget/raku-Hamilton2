@@ -2928,11 +2928,11 @@ dans les programmes.  Bien que les isométries soient  des fonctions au
 sens mathématique, je  ne les implémenterai pas avec  des fonctions au
 sens programmation.  Une isométrie sera  identifiée par une  chaîne de
 caractères telle  que `"λɩ"`  et nous  disposerons d'une  fonction (au
-sens programmation) infixe nommée `"→"` et s'utilisant ainsi :
+sens programmation) infixe nommée `"↣"` et s'utilisant ainsi :
 
 ```
-my Str $resul1 = 'M' → 'λɩ';
-my Str $resul2 = 'M' → 'λ' → 'ɩ';
+my Str $resul1 = 'M' ↣ 'λɩ';
+my Str $resul2 = 'M' ↣ 'λ' ↣ 'ɩ';
 if $resul1 eq $resul2 {
   say "ça marche !";
 }
@@ -2940,6 +2940,13 @@ else {
   say "il y a un bug quelque part : $resul1 contre $resul2";
 }
 ```
+
+Remarque. Le caractère utilisé pour cette opération est `U+21A3 = "↣"`
+(rightwards arrow with  tail) au lieu de  `U+2192` (rightwards arrow),
+parce que  les récentes  versions de Raku  utilisent `U+2192`  dans la
+syntaxe en  tant que  raccourci pour `->`.  Les chaînes  de caractères
+décrivant un chemin continuent à utiliser `U+2192 = "→"`, cela ne pose
+pas de problème de confusion avec la syntaxe Raku.
 
 Néanmoins, j'ai  besoin de quelques informations  supplémentaires pour
 chaque  isométrie,  je  ne  peux  pas me  contenter  d'une  chaîne  de
