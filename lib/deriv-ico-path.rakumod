@@ -49,14 +49,15 @@ sub fill($at, :$lang
         ,     :@rpath-links
         ,     :@fpath-links
         , Str :$query-string) {
-  my $step = $at.at('ol li.step');
+  my $step = $at.at('ol li.step1');
 
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
-  $at.at('a.macro-map' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
-  $at.at('a.region-map').attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
+  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.region-path').attr(href => "/$lang/region-path/ico/ICO/%actual-path<num>$query-string");
 
   $at.at('h2.path  span.region-name')».content(%region<name>);
   $at.at('h2.path  span.path-number').content(%actual-path<num>.Str);
@@ -80,33 +81,44 @@ sub fill($at, :$lang
   my     @step-areas   = @areas;
   my     @step-borders = @borders;
   my @list-isom = <Id>;
-  if %deriv<isometry> ne 'Id' {
+  if %deriv<isometry> eq 'Id' {
+    $at.at('p.yesderiv1')».remove;
+    $at.at('p.yesderiv2')».remove;
+    $at.at('ol.deriv1').content('');
+    $at.at('ol.deriv2').content('');
+    $at.at('ol.deriv1')».remove;
+    $at.at('ol.deriv2')».remove;
+  }
+  else {
+    $at.at('p.noderiv')».remove;
     push @list-isom, |%deriv<isometry>.comb;
-  }
-  for @list-isom -> Str $isom {
-    for @step-areas <-> $area {
-      $area<code> = $area<code> ↣ $isom;
-    }
-    for @step-borders <-> $border {
-      $border<code_f> = $border<code_f> ↣ $isom;
-      $border<code_t> = $border<code_t> ↣ $isom;
-    }
-    $step-path = $step-path ↣ $isom;
-    my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string);
-    $step.at('span.isom').content($isom);
-    $step.at('span.path').content($step-path);
-    $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
-    $step-list ~= "$step\n";
-  }
-  if %deriv<isometry> ne 'Id' {
-    @list-isom =  %deriv<recipr>.comb;
     for @list-isom -> Str $isom {
       for @step-areas <-> $area {
-	$area<code> = $area<code> ↣ $isom;
+        $area<code> = $area<code> ↣ $isom;
       }
       for @step-borders <-> $border {
-	$border<code_f> = $border<code_f> ↣ $isom;
-	$border<code_t> = $border<code_t> ↣ $isom;
+        $border<code_f> = $border<code_f> ↣ $isom;
+        $border<code_t> = $border<code_t> ↣ $isom;
+      }
+      $step-path = $step-path ↣ $isom;
+      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string);
+      $step.at('span.isom').content($isom);
+      $step.at('span.path').content($step-path);
+      $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
+      $step-list ~= "$step\n";
+    }
+    $at.at('ol.deriv1').content($step-list);
+
+    $step-list = '';
+    @list-isom = <Id>;
+    push @list-isom,  | %deriv<recipr>.comb;
+    for @list-isom -> Str $isom {
+      for @step-areas <-> $area {
+        $area<code> = $area<code> ↣ $isom;
+      }
+      for @step-borders <-> $border {
+        $border<code_f> = $border<code_f> ↣ $isom;
+        $border<code_t> = $border<code_t> ↣ $isom;
       }
       my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string);
       $step.at('span.isom').content($isom);
@@ -114,8 +126,8 @@ sub fill($at, :$lang
       $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
       $step-list ~= "$step\n";
     }
+    $at.at('ol.deriv2').content($step-list);
   }
-  $at.at('ol').content($step-list);
 
   my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-region-paths').content($links);
