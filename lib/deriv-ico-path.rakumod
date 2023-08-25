@@ -46,18 +46,19 @@ sub fill($at, :$lang
         ,     :%deriv
         ,     :%actual-path
         ,     :%canon-path
-        ,     :@rpath-links
-        ,     :@fpath-links
+        ,     :@cpath-links
+        ,     :@ipath-links
         , Str :$query-string) {
   my $step = $at.at('ol li.step1');
 
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
-  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
-  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
-  $at.at('a.region-path').attr(href => "/$lang/region-path/ico/ICO/%actual-path<num>$query-string");
+  $at.at('a.full-map'      ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map'     ).attr(href => "/$lang/macro-map/$mapcode$query-string");
+  $at.at('a.region-map'    ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.region-path'   ).attr(href => "/$lang/region-path/ico/ICO/%actual-path<num>$query-string");
+  $at.at('a.canonical-path').attr(href => "/$lang/region-path/ico/ICO/%canon-path<num>$query-string");
 
   $at.at('h2.path  span.region-name')».content(%region<name>);
   $at.at('h2.path  span.path-number').content(%actual-path<num>.Str);
@@ -129,17 +130,11 @@ sub fill($at, :$lang
     $at.at('ol.deriv2').content($step-list);
   }
 
-  my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-  $at.at('p.list-of-region-paths').content($links);
+  my $links = join ' ', @ipath-links.map( { "<a href='$_$query-string'>{$_}</a>" } );
+  $at.at('span.same-isom').content($links);
 
-  if @fpath-links.elems eq 0 {
-    $at.at('p.list-of-full-paths')».remove;
-  }
-  else {
-    $links = join ' ', @fpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-full-paths').content($links);
-    $at.at('p.empty-list-of-full-paths')».remove;
-  }
+  $links = join ' ', @cpath-links.map( { "<a href='$_$query-string'>{$_}</a>" } );
+  $at.at('span.same-canon').content($links);
 
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
@@ -154,7 +149,7 @@ our sub render(Str :$lang
              ,     :%canon-path
              ,     :%actual-path
              ,     :@messages
-             ,     :@rpath-links
+             ,     :@ipath-links
              ,     :@cpath-links
              , Str :$query-string) {
   my &filling = anti-template :source("html/deriv-ico-path.$lang.html".IO.slurp), &fill;
@@ -168,7 +163,8 @@ our sub render(Str :$lang
                 , deriv          => %deriv
                 , canon-path     => %canon-path
                 , actual-path    => %actual-path
-                , rpath-links    => @rpath-links
+                , ipath-links    => @ipath-links
+                , cpath-links    => @cpath-links
                 , query-string   => $query-string
                 );
 }

@@ -361,6 +361,8 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
     push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
   }
   my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
+  my @ipaths = access-sql::list-ico-paths-for-isom($num);
+  my @cpaths = access-sql::list-ico-paths-for-canon($num);
 
   return deriv-ico-path::render(lang           => $lng
                               , mapcode        => $map
@@ -372,7 +374,8 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
                               , canon-path     => %canon-path
                               , actual-path    => %actual-path
                               , messages       => @messages
-                              , rpath-links    => @links
+                              , ipath-links    => @ipaths
+                              , cpath-links    => @cpaths
                               , query-string   => $query-string
                               );
 }

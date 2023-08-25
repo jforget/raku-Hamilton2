@@ -292,6 +292,32 @@ our sub find-related-path(Str $map, Int $full-num, Int $region-num) {
   return $sth.execute($map, $full-num.Str, $region-num.Str).row(:hash);
 }
 
+our sub list-ico-paths-for-canon(Int $num) {
+  my $sth = $dbh.prepare(q:to/EOF/);
+  select num
+  from   Isom_Path
+  where  canonical_num = (select canonical_num
+                          from   Isom_Path
+                          where  num = ?
+                         )
+  order by num
+  EOF
+  return $sth.execute($num).allrows.flat;
+}
+
+our sub list-ico-paths-for-isom(Int $num) {
+  my $sth = $dbh.prepare(q:to/EOF/);
+  select num
+  from   Isom_Path
+  where  isometry = (select isometry
+                     from   Isom_Path
+                     where  num = ?
+                    )
+  order by num
+  EOF
+  return $sth.execute($num).allrows.flat;
+}
+
 our sub read-deriv(Int $num) {
   my $sth = $dbh.prepare("select * from Isom_Path where num = ?");
   my %val = $sth.execute($num).row(:hash);
