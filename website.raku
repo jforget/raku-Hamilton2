@@ -66,12 +66,18 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
 
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
+
   return full-map::render($lng, $map, %map
                         , areas        => @areas
                         , borders      => @borders
                         , messages     => @messages
                         , macro-links  => @macro-links
                         , full-links   => @full-links
+                        , ico-links    => @ico-links
                         , query-string => $query-string
                         );
 }
@@ -98,12 +104,18 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
 
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
+
   return macro-map::render($lng, $map, %map
                          , areas        => @areas
                          , borders      => @borders
                          , messages     => @messages
                          , macro-links  => @macro-links
                          , full-links   => @full-links
+                         , ico-links    => @ico-links
                          , query-string => $query-string
                          );
 }
@@ -135,6 +147,10 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
 
   my @list-paths  = list-numbers(%region<nb_paths>, 0);
   my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
 
   my @messages = access-sql::list-regional-messages($map, $region);
   return region-map::render($lng, $map, %map
@@ -143,6 +159,7 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
                           , borders      => @borders
                           , messages     => @messages
                           , path-links   => @path-links
+                          , ico-links    => @ico-links
                           , query-string => $query-string
                           );
 }
@@ -175,6 +192,12 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
     @full-links = @nums.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) });
   }
 
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
+
+
   return macro-path::render($lng, $map, %map
                            , areas          => @areas
                            , borders        => @borders
@@ -182,6 +205,7 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
                            , messages       => @messages
                            , macro-links    => @macro-links
                            , full-links     => @full-links
+                           , ico-links      => @ico-links
                            , query-string   => $query-string
                            );
 }
@@ -257,12 +281,17 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @messages   = access-sql::list-messages($map);
   my @list-paths = list-numbers(%map<nb_full>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
   return full-path::render($lng, $map, %map
                           , areas    => @areas
                           , borders  => @borders
                           , path     => %path
                           , messages => @messages
                           , links    => @links
+                          , ico-links    => @ico-links
                           , query-string => $query-string
                           );
 }
@@ -361,8 +390,8 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
     push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
   }
   my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
-  my @ipaths = access-sql::list-ico-paths-for-isom($num);
-  my @cpaths = access-sql::list-ico-paths-for-canon($num);
+  my @ipaths = access-sql::list-ico-paths-same-isom($num);
+  my @cpaths = access-sql::list-ico-paths-same-canon($num);
 
   return deriv-ico-path::render(lang           => $lng
                               , mapcode        => $map

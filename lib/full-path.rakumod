@@ -15,7 +15,10 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@links, Str :$query-string) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
+      ,     :@links
+      ,     :@ico-links
+      , Str :$query-string) {
   my Int $path-number  = %path<num>;
   my Int $macro-number = %path<macro_num>;
   $at('title')».content(%map<name>);
@@ -39,9 +42,19 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
   my $links = join ' ', @links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-paths').content($links);
+  if @ico-links.elems == 0 {
+    $at.at('div.ico')».content('');
+  }
+  else {
+    $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/ico/ICO/$_$query-string'>{$_}</a>" } );
+    $at.at('p.list-of-ico-paths').content($links);
+  }
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@links, Str :$query-string) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
+             ,     :@links
+             ,     :@ico-links
+             , Str :$query-string) {
   my &filling = anti-template :source("html/full-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
                 , mapcode  => $map
@@ -51,6 +64,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , messages => @messages
                 , path     => %path
                 , links    => @links
+                , ico-links    => @ico-links
                 , query-string => $query-string
                 );
 }

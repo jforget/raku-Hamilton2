@@ -15,7 +15,11 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links, Str :$query-string) {
+sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
+        ,     :@macro-links
+        ,     :@full-links
+        ,     :@ico-links
+        , Str :$query-string) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -52,9 +56,21 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path, 
     $at('p.fruitless-path'          )».remove;
     $at('p.empty-list-of-full-paths')».remove;
   }
+
+  if @ico-links.elems == 0 {
+    $at.at('div.ico')».content('');
+  }
+  else {
+    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/ico/ICO/$_$query-string'>{$_}</a>" } );
+    $at.at('p.list-of-ico-paths').content($links);
+  }
 }
 
-our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path, :@macro-links, :@full-links, Str :$query-string) {
+our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
+            ,     :@macro-links
+            ,     :@full-links
+            ,     :@ico-links
+            , Str :$query-string) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
                 , mapcode        => $map
@@ -65,6 +81,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , path           => %path
                 , macro-links    => @macro-links
                 , full-links     => @full-links
+                , ico-links      => @ico-links
                 , query-string   => $query-string
                 );
 }
