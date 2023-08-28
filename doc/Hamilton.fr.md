@@ -2254,6 +2254,14 @@ vue `Generic_Region_Paths`.
 Lister les chemins complets spécifiques pour un chemin régional spécifique
 --------------------------------------------------------------------------
 
+Remarque :  il y  a un  bug dans  l'implémentation de  cette fonction.
+Donc, si vous ne souhaitez pas débuguer  à ma place mon code, ce n'est
+peut-être pas la peine de vous  casser la tête à comprendre comment je
+pense que cela devrait fonctionner. Vous pouvez aller directement
+[à la conclusion](#user-content-conclusions-pour-la-quatrième-variante).
+Si vous souhaitez débuguer _mon_ code en revanche, je ne vais pas vous
+décourager. J'irai même jusqu'à vous remercier pour vos patchs.
+
 Les chemins  régionaux spécifiques sont  conservés en table,  mais pas
 les chemins complets spécifiques, qui sont générés à la demande. Quant
 à  la table  `Path_Relations`,  elle concerne  uniquement les  chemins

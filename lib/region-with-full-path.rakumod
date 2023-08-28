@@ -51,13 +51,16 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region
   my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-region-paths').content($links);
 
-  if @fpath-links1.elems > 0 {
-    $links = join ' ', @fpath-links1.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('span.full-paths-1').content($links);
-  }
-  if @fpath-links2.elems > 0 {
-    $links = join ' ', @fpath-links2.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('span.full-paths-2').content($links);
+  my $bug-with-full-path-links-is-fixed = 0; # to avoid buggy code
+  if $bug-with-full-path-links-is-fixed {
+    if @fpath-links1.elems > 0 {
+      $links = join ' ', @fpath-links1.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+      $at.at('span.full-paths-1').content($links);
+    }
+    if @fpath-links2.elems > 0 {
+      $links = join ' ', @fpath-links2.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+      $at.at('span.full-paths-2').content($links);
+    }
   }
 
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
