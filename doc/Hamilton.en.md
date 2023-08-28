@@ -2172,7 +2172,7 @@ Remark: there is a bug in  the implementation of the feature described
 below. If you do not intend to debug my code, you can skip
 [to the conclusion](#user-content-conclusions-for-the-fourth-variant).
 If you really  want to debug _my_  code, I will not mind.  I will even
-thank you for your patches.
+thank you for your patches or your pull requests.
 
 The specific  regional paths are stored  in the database, but  not the
 specific full  paths, which are  generated only when required.  As for
@@ -2411,8 +2411,8 @@ That is, actually, the formula `n = first_num + coef2 × num_s2g`.
 The result of  the list of keys `num` for  the generated specific full
 paths.
 
-Conlusions for the Fourth Variant
----------------------------------
+Conclusions for the Fourth Variant
+----------------------------------
 
 As before,  the running  time for `gener1.raku`  has not  changed much
 from a variant to the next. A limited slow-down for some maps, nothing
