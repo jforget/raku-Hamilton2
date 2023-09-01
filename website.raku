@@ -61,7 +61,10 @@ get '/:ln/full-map/:map' => sub ($lng_parm, $map_parm) {
   my @messages = access-sql::list-messages($map);
 
   my @list-paths  = list-numbers(%map<nb_macro>, 0);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
+  my @macro-links = @list-paths.map( { %( txt  => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
@@ -99,7 +102,10 @@ get '/:ln/macro-map/:map' => sub ($lng_parm, $map_parm) {
   my @messages = access-sql::list-messages($map);
 
   my @list-paths  = list-numbers(%map<nb_macro>, 0);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
@@ -183,7 +189,10 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my @messages = access-sql::list-messages($map);
 
   my @list-paths = list-numbers(%map<nb_macro>, $num);
-  my @macro-links = @list-paths.map( { %( txt => $_, link => "/$lng/macro-path/$map/$_$query-string" ) } );
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
 
   my @full-interval = access-sql::full-path-interval($map, $num);
   my @full-links = ();

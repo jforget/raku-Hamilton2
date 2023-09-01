@@ -38,6 +38,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
+  for @macro-links <-> $macro {
+    if $macro<bold> {
+      $macro<txt> = "<b>{$macro<txt>}</b>";
+    }
+  }
   my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-paths').content($links);
 

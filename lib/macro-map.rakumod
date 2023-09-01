@@ -41,6 +41,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages
     $at.at('p.list-of-macro-paths')».remove;
   }
   else {
+    for @macro-links <-> $macro {
+      if $macro<bold> {
+        $macro<txt> = "<b>{$macro<txt>}</b>";
+      }
+    }
     my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
     $at.at('p.list-of-macro-paths').content($links);
     $at.at('p.empty-list-of-macro-paths')».remove;

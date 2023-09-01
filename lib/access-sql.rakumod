@@ -334,6 +334,18 @@ our sub read-deriv(Int $num) {
   return %val;
 }
 
+our sub bold-macro-path(Str $map, Int $num) {
+  my $result = $dbh.execute(q:to/SQL/, $map, $num).row;
+  select 1
+  where  exists (select 'X'
+                 from   Full_Paths
+                 where  map       = ?
+                 and    macro_num = ?
+                 )
+  SQL
+  return $result[0] // 0;
+}
+
 =begin POD
 
 =encoding utf8
