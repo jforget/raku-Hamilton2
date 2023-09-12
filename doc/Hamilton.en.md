@@ -1629,11 +1629,6 @@ dead end 1 --- articulation 1            articulation 2 --- dead end 2
 with  no  edge  between area  A  and  area  B.  How can  you  find  an
 Hamiltonian path in this graph?
 
-Lastly, I have no map of
-[Risk](https://boardgamegeek.com/boardgame/181/risk)
-so I  did not  study it.  But if  I can find  this map,  I may  try to
-extract doubly Hamiltonian paths from it.
-
 Conclusion
 ----------
 

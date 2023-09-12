@@ -1690,11 +1690,6 @@ impasse 1 --- articulation 1            articulation 2 --- impasse 2
 sans  frontière entre  la zone  A et  la zone  B. Comment  voulez-vous
 générer un chemin hamiltonien avec cela ?
 
-Finalement, je n'ai pas fait la carte de
-[Risk](https://boardgamegeek.com/boardgame/181/risk)
-parce que je ne l'avais pas à ma disposition. Mais je n'exclus
-pas de m'y intéresser à l'avenir.
-
 Conclusion
 ----------
 
