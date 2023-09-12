@@ -1592,7 +1592,10 @@ Africa" and  "Madagascar", both linked to  articulation point "Sudan".
 If there were  an Hamiltonian path within Africa, it  would start from
 South Africa and  stop at Madagascar or the other  way. In both cases,
 the Sudan articulation point would be  both in the second place and in
-the next-to-last place. Awkward, isn't it?
+the next-to-last place. Awkward, isn't it? Actually, I later added the
+_War on Terror_ map to  the database, with a South-Africa-less variant
+and a Madagascar-less variant. In  both cases, my programmes generated
+doubly-Hamiltonian paths.
 
 The situation is worse in
 [History of the World](https://boardgamegeek.com/image/384589/history-world),

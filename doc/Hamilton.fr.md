@@ -1652,6 +1652,11 @@ S'il existait  un chemin  hamiltonien régional  dans ce  continent, il
 commencerait  en Afrique  du Sud  et se  terminerait à  Madagascar, ou
 l'inverse. Donc  le point d'articulation  du Soudan devrait être  à la
 fois en deuxième position et en avant-dernière position. Gênant, non ?
+En fait,  ultérieurement, j'ai quand même  ajouté la carte de  _War on
+Terror_ à la base de données,  avec une variante sans l'Afrique du Sud
+et  un  autre  variante  sans  Madagascar.  Dans  les  deux  cas,  mes
+programmes ont trouvé des chemins doublement hamiltoniens.
+
 
 Dans
 [History of the World](https://boardgamegeek.com/image/384589/history-world),
