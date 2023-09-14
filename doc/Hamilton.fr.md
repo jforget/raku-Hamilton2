@@ -381,6 +381,9 @@ Les autres informations sont :
 Initialisation
 ==============
 
+Départements français
+---------------------
+
 Pour  des  raisons  de  copyright,   je  ne  livre  pas  de  programme
 d'initialisation pour  les jeux comme Risk  ou War on Terror.  Le seul
 programme  d'initialisation concerne  les  régions  françaises et  les
@@ -455,6 +458,87 @@ De même,  le programme  alimente les enregistrements  `fr1970`+`1`, et
 enregistrements `fr1970`+`2` de `Borders` qui se trouvent à cheval sur
 deux régions.  Il alimente également les  enregistrements `fr2015`+`1`
 et `frreg`+`1` à partir des enregistrements `fr2015`+`2` de `Borders`.
+
+Autres cartes
+-------------
+
+Pour  les jeux  que je  possède, j'utilise  un triple-décimètre  et je
+repère  chaque zone  avec  ses  coordonnées X-Y  par  rapport au  coin
+inférieur gauche  de la carte.  Pour les jeux  que je ne  possède pas,
+mais qui  sont décrits dans Internet,  je charge une copie  d'écran de
+cette carte,  je l'affiche avec  the Gimp,  je promène mon  curseur de
+zone en  zone et  je note  pour chacune  les coordonnées  pixels. Pour
+calculer  la  longitude réelle,  je  choisis  deux points  écartés  en
+largeur et je  cherche dans Internet la longitude de  ces deux points.
+Par exemple,  pour Britannia, je  choisis le  point le plus  à l'ouest
+pour les  Cornouailles, près de Penzance  et le point le  plus à l'est
+pour le  Kent, près de Margate.  Avec les deux longitudes  et les deux
+coordonnées X, je compose une fonction de conversion.
+
+```
+my $lon-Cor = -5.68;  # Cornwall 5°40' W
+my $x-Cor   = 13;
+my $lon-Ken =  1.41;  # Kent  1°25' E
+my $x-Ken   = 41;
+my $a-lon   = ($lon-Cor - $lon-Ken) / ($x-Cor - $x-Ken);
+my $b-lon   = $lon-Ken - $a-lon × $x-Ken;
+sub conv-lon(Num $x --> Num) { return $a-lon × $x + $b-lon }
+```
+
+Je fais de  même avec les coordonnées  Y et les latitudes.  Je ne suis
+pas  obligé  de  prendre  les  mêmes  points.  En  l'occurrence,  j'ai
+réutilisé la zone `COR` (Cornouailles)  mais j'ai remplacé le Kent par
+la zone `ORK` (Orcades) tout au nord.
+
+Le résultat est très approximatif. Prenons par exemple la carte de
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+J'ai adopté le  Cap Horn et le Cap Nord  pour étalonner les latitudes.
+Malgré cela, les zones du continent antarctique se retrouvent avec une
+latitude entre 53°S  et 62°S. Certes, il y a  déjà une distorsion dans
+le  dessin de  la carte.  Mais si  l'on suppose  que la  carte est  en
+projection de Mercator, l'utilisation d'une fonction telle que  :
+
+```
+sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
+```
+
+ne  respecte  pas  la  distribution des  latitudes  en  projection  de
+Mercator.
+
+Cas particuliers
+----------------
+
+Pour la [carte d'opération navale] (https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+de  _Operation Mercury_,  les  bords ne  respectent pas  l'orientation
+habituelle ouest  → est  et nord  → sud.  Les fonctions  de conversion
+prennent alors la forme :
+
+```
+sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
+sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
+```
+
+Le calcul  des coefficients  `$lon0`, `$x-lon`,  `$y-lon` et  de leurs
+équivalents pour  la latitude n'est  pas beaucoup plus  mystérieux que
+dans le  cas des cartes  orientées correctement ouest  → est +  nord →
+sud. Il  faut prendre  trois points  de référence au  lieu de  deux et
+résoudre  ainsi  trois  équations  à trois  inconnues.  Ce  n'est  pas
+mystérieux, mais les formules sont nettement plus compliquées.
+
+Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
+inappropriée. C'est le cas avec le dodécaèdre du jeu icosien, c'est le
+cas également pour certains jeux comme
+[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
+où la  carte représente un vaisseau  spatial en plein vol  et long de,
+disons, une  centaine de mètres. Dans  ce deuxième cas, je  prends les
+coordonnées X-Y en  centimètres et je les utilise  telles quelles dans
+les champs  longitude et latitude.  Enfin, presque telles  quelles. En
+effet, si l'on stocke dans une  base SQLite un nombre flottant dont la
+partie fractionnaire  est nulle, lors des  lectures ultérieures SQLite
+fournira des valeurs  entières, donc incompatibles avec  le type `Num`
+de  Raku.  Donc  le   programme  d'initialisation  ajoute  une  partie
+fractionnaire artificielle pour que  SQLite fournisse effectivement du
+`Num`.
 
 Extraction des chemins hamiltoniens
 ===================================

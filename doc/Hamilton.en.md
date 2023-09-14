@@ -369,6 +369,9 @@ Other data are:
 Initialisation
 ==============
 
+French Maps
+-----------
+
 For copyright  reasons, I  do not provide  initialisation programmes
 for  the  maps of  Risk,  War  on Terror  and  other  games. The  only
 initialisation  programme is the  programme dealing  with French
@@ -442,6 +445,84 @@ duplicates region-wise  and store the  result in the  `Borders` table.
 And  it creates  in  the  same way  the  `Borders`  records with  keys
 `fr2015`+`1`  and `frreg`+`1`  by extracting  all departments  borders
 `fr2015`+`2` lying between two different regions.
+
+Other Maps
+----------
+
+For the games I own, I take a 30-cm rule and I compile the list of X-Y
+coordinates, respective  to the lower-left  angle. For the games  I do
+not own, but which are described  on Internet, I load a graphical file
+displaying the map,  I open it with  the Gimp, I point  to the various
+areas with my mouse and for each one, I write the pixel coordinates in
+a text file. To compute the real longitude, I choose two points on the
+map, I search  the Internet to find the real  longitudes. For example,
+for the  Britannia maps, I  choose the western-most point  in Cornwall
+(near Penzance)  and the  eastern-most point  in Kent  (near Margate).
+With both longitudes  and both X coordinates and I  write a conversion
+function
+
+```
+my $lon-Cor = -5.68;  # Cornwall 5°40' W
+my $x-Cor   = 13;
+my $lon-Ken =  1.41;  # Kent  1°25' E
+my $x-Ken   = 41;
+my $a-lon   = ($lon-Cor - $lon-Ken) / ($x-Cor - $x-Ken);
+my $b-lon   = $lon-Ken - $a-lon × $x-Ken;
+sub conv-lon(Num $x --> Num) { return $a-lon × $x + $b-lon }
+```
+
+I do the same thing with Y  coordinates and latitudes. I can reuse the
+same points if they have very  different latitudes, or I can use other
+points.  For  example,  with  Britannia, I  reused  Cornwall  for  the
+Southern-most  latitude and  I  chosed Orkneys  for the  Northern-most
+latitude.
+
+The result can be very approximate. For example, see the map of
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+I used  Cape Horn and North  Cape to generate the  latitude conversion
+function. Despite of this choice, the four Antarctic areas end up with
+latitudes between 53°S  and 61°S. Of course, the  original map already
+has some  distortion. But suppose we  use a perfectly drawn  map using
+the Mercator projection, the use of a function such as:
+
+```
+sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
+```
+
+will not reproduce the variation of latitudes as given by the Mercator
+projection.
+
+Special Cases
+-------------
+
+For the [naval operation map] (https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+of _Operation Mercury_, the mapedges are  not oriented west → east and
+north → south as usual. So the conversion functions look like:
+
+```
+sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
+sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
+```
+
+Computing the  values of coefficients `$lon0`,  `$x-lon`, `$y-lon` and
+similar for the latitudes is not much more mysterious than in the case
+of properly oriented maps. You have  to choose three points instead of
+two  and  solve  three  equations   with  three  unkowns.  It  is  not
+mysterious, but the formulas are much more cumbersome.
+
+In some  cases, the concept  of longitude and latitude  is irrelevant.
+This is  the case with the  dodecahedron of the Icosian  game, this is
+the case with some games such as
+[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
+in which the mapboard represents  a spacecraft roaming the outer space
+and, say, about  100-m long. In this case, I  took the X-Y centimetric
+coordinates as-is  to fill  the longitude  and latitude  fields. Well,
+nearly  as-is. The  reason  is  that when  you  store floating  values
+without a fractional part in SQLite,  when you read these values back,
+SQLite gives you integer values,  incompatible with Raku's `Num` type.
+Therefore, the  initialisation programme adds a  small fractional part
+so that  when you  read the  values afterwards,  SQLite will  give you
+floating numbers compatible with Raku's `Num`.
 
 Extracting Hamiltonian Paths
 ============================
