@@ -507,22 +507,27 @@ sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $
 Computing the  values of coefficients `$lon0`,  `$x-lon`, `$y-lon` and
 similar for the latitudes is not much more mysterious than in the case
 of properly oriented maps. You have  to choose three points instead of
-two  and  solve  three  equations   with  three  unkowns.  It  is  not
-mysterious, but the formulas are much more cumbersome.
+two  and  solve   three  equations  with  three   unkowns,  first  for
+longitudes, then for latitudes. It is not mysterious, but the formulas
+are much more cumbersome.
 
 In some  cases, the concept  of longitude and latitude  is irrelevant.
 This is  the case with the  dodecahedron of the Icosian  game, this is
 the case with some games such as
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 in which the mapboard represents  a spacecraft roaming the outer space
-and, say, about  100-m long. In this case, I  took the X-Y centimetric
+and, say, about 100-m long (or maybe 50  m, or 200 m, I have no way to
+get  a precise  value).  In  this case,  I  took  the X-Y  centimetric
 coordinates as-is  to fill  the longitude  and latitude  fields. Well,
 nearly  as-is. The  reason  is  that when  you  store floating  values
 without a fractional part in SQLite,  when you read these values back,
 SQLite gives you integer values,  incompatible with Raku's `Num` type.
 Therefore, the  initialisation programme adds a  small fractional part
 so that  when you  read the  values afterwards,  SQLite will  give you
-floating numbers compatible with Raku's `Num`.
+floating  numbers compatible  with Raku's  `Num`. When  displaying the
+graphs, there will be a  kilometer-scale. This scale is irrelevant for
+the dodecahedron, it is misleading  for the _Znutar_ spaceship of _The
+Awful Green Things From Outer Space_.
 
 Extracting Hamiltonian Paths
 ============================

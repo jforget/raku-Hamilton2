@@ -508,7 +508,7 @@ Mercator.
 Cas particuliers
 ----------------
 
-Pour la [carte d'opération navale] (https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+Pour la [carte d'opération navale](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
 de  _Operation Mercury_,  les  bords ne  respectent pas  l'orientation
 habituelle ouest  → est  et nord  → sud.  Les fonctions  de conversion
 prennent alors la forme :
@@ -522,23 +522,29 @@ Le calcul  des coefficients  `$lon0`, `$x-lon`,  `$y-lon` et  de leurs
 équivalents pour  la latitude n'est  pas beaucoup plus  mystérieux que
 dans le  cas des cartes  orientées correctement ouest  → est +  nord →
 sud. Il  faut prendre  trois points  de référence au  lieu de  deux et
-résoudre  ainsi  trois  équations  à trois  inconnues.  Ce  n'est  pas
-mystérieux, mais les formules sont nettement plus compliquées.
+résoudre ainsi trois  équations à trois inconnues  pour les longitudes
+puis pour  les latitudes. Ce  n'est pas mystérieux, mais  les formules
+sont nettement plus compliquées.
 
 Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
 inappropriée. C'est le cas avec le dodécaèdre du jeu icosien, c'est le
 cas également pour certains jeux comme
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 où la  carte représente un vaisseau  spatial en plein vol  et long de,
-disons, une  centaine de mètres. Dans  ce deuxième cas, je  prends les
-coordonnées X-Y en  centimètres et je les utilise  telles quelles dans
-les champs  longitude et latitude.  Enfin, presque telles  quelles. En
-effet, si l'on stocke dans une  base SQLite un nombre flottant dont la
-partie fractionnaire  est nulle, lors des  lectures ultérieures SQLite
-fournira des valeurs  entières, donc incompatibles avec  le type `Num`
-de  Raku.  Donc  le   programme  d'initialisation  ajoute  une  partie
-fractionnaire artificielle pour que  SQLite fournisse effectivement du
-`Num`.
+disons, une centaine  de mètres (à mois  que ce soit 50  mètres ou 200
+mètres, je n'ai pas moyen de  me rendre compte). Dans ce deuxième cas,
+je prends les coordonnées X-Y en  centimètres et je les utilise telles
+quelles dans les  champs longitude et latitude.  Enfin, presque telles
+quelles.  En effet,  si l'on  stocke dans  une base  SQLite un  nombre
+flottant dont  la partie  fractionnaire est  nulle, lors  des lectures
+ultérieures SQLite  fournira des valeurs entières,  donc incompatibles
+avec le type `Num` de  Raku. Donc le programme d'initialisation ajoute
+une  partie  fractionnaire  artificielle  pour  que  SQLite  fournisse
+effectivement du `Num`. L'affichage des graphes comportera une échelle
+comme  s'il  s'agissait  d'une  carte  géographique  terrestre.  Cette
+échelle  n'a  pas  de  signification  pour  le  dodécaèdre,  elle  est
+fallacieuse pour le vaisseau _Znutar_  de _The Awful Green Things From
+Outer Space_.
 
 Extraction des chemins hamiltoniens
 ===================================
