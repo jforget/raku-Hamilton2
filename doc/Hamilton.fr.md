@@ -3190,6 +3190,148 @@ enregistrements en un seul ordre `update` que de le faire en 44 ordres
 Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
 problème.
 
+Statistiques
+============
+
+Et une nouvelle fonctionnalité, les statistiques !
+
+Je décris ci-dessous les statistiques  sur les chemins régionaux, mais
+les définitions s'étendent aux macro-chemins. En revanche, compte tenu
+de  la  façon   dont  les  chemins  complets   sont  implémentés,  les
+statistiques ne s'appliquent pas aux chemins complets.
+
+Commençons par un  exemple stupide. Dans combien  de chemins régionaux
+le  département  `XXX`  apparaît-il ?   Par  exemple,  dans  la  carte
+`fr2015`,  dans combien  de chemins  régionaux de  la région  `IDF` le
+département `78`  apparaît-il ? Éh bien  il y a 800  chemins régionaux
+pour  la région  `IDF`, donc  le  département `78`  apparaît dans  800
+chemins régionaux. De  même, la région `NAQ` a  182 chemins régionaux,
+donc le  département `33` apparaît  dans 182 chemins  régionaux. C'est
+une conséquence directe de la définition des chemins hamiltoniens.
+
+Deux autres exemples sont moins stupides. Combien de chemins régionaux
+ont le département `XXX` comme extrémité (début ou fin) ? Dans combien
+de chemins régionaux  la frontière `XXX → YYY` (ou  son inverse `YYY →
+XXX`)  apparaît-elle ?  Ce  sont  ces  deux  statistiques  qui  seront
+calculées et stockées dans les tables `Areas` et `Borders`.
+
+Pour calculer le nombre de chemins régionaux commençant ou aboutissant
+en `78`  pour la région `IDF`  de la carte `fr2015`,  la première idée
+serait de coder :
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like '78 → %'
+                    or  P.path  like '% → 78')
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+ou bien, en évitant les répétitions de valeurs « en dur »,
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like A.code || ' → %'
+                    or  P.path  like '% → ' || A.code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+mais  la  formule n'est  pas  généralisable  aux  cas des  régions  ne
+contenant qu'un seul  département (cas fréquent de  la carte `frreg`).
+Il faudrait alors écrire :
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like A.code || ' → %'
+                    or  P.path  like '% → ' || A.code
+                    or  P.path  = A.code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+En fait, il y a plus simple. Il suffit d'écrire :
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    A.code in (P.from_code,  P.to_code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+Cette formule convient aussi bien aux régions avec plusieurs départements
+qu'à celles avec un seul département.
+
+Pour les frontières, la première idée consiste à écrire :
+
+```
+update Borders as B
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                  or    P.path like '%' || B.to_code   || ' → ' || B.from_code || '%')
+                )
+
+where  map        = 'fr2015'
+and    level      = 2
+and    from_code  = '78'
+and    to_code    = '95'
+```
+
+Souvenons-nous que  si pour  chaque chemin  hamiltonien dans  la table
+`Paths`, il existe le chemin « à  rebrousse-poil ». Donc il y a autant
+de chemins `%95 →  78%` que de chemins `%78 →  95%`. Nous pouvons donc
+simplifier l'ordre SQL ainsi :
+
+```
+update Borders as B
+set nb_paths = 2 * (select count(*)
+                    from   Paths as P
+                    where  P.map  = A.map
+                    and    P.level = 2
+                    and    P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    )
+
+where  map        = 'fr2015'
+and    level      = 2
+and    from_code  = '78'
+and    to_code    = '95'
+```
+
+Et le cas des régions avec un  seul département ? Éh bien il n'y a pas
+de frontière  interne dans  ces régions,  donc pas  d'enregistrement à
+mettre à jour.
+
+Le seul inconvénient  de cet ordre SQL est que  cela fait réapparaître
+l'étoile en tant  qu'opérateur de multiplication, alors  que Raku nous
+permettait d'utilise la croix de Saint-André `×`.
+
 LICENCE
 =======
 

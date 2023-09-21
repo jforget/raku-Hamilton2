@@ -2758,7 +2758,7 @@ This book is available in electronic form on the website of
 [Bibliothèque nationale de France](https://www.bnf.fr/).
 All the discussion below comes from the
 [chapter on the icosian game](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
-and the 
+and the
 [end notes](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f243.item).
 
 Sir William Rowan Hamilton is  the mathematician who invented  quaternions, an extension
@@ -3058,6 +3058,147 @@ running an  `update` statement 44 times  to update a single  record at
 each iteration.
 
 Filling table `Isom_Path` is a small matter of programming.
+
+Statistics
+==========
+
+A new feature has crept in, statistics!
+
+Below, I describe  statistics for regional paths,  yet the definitions
+can  extend to  macro-paths.  But, with  the way  the  full paths  are
+implemented, no statistics will be computed for full paths.
+
+Let us  begin with a stupid  example. In how many  regional paths does
+department  `XXX` appear?  For  example, in  map  `fr2015` and  region
+`IDF`,  in how  many Hamiltonian  paths does  department `78`  appear?
+Well,  region  `IDF` has  800  Hamiltonian  regional paths,  therefore
+department `78`  appear in  800 Hamiltonian regional  paths. Likewise,
+region `NAQ` has 182  Hamiltonian regional paths, therefore department
+`33`  appears in  182 Hamiltonian  regional  paths. This  is a  direct
+consequence of the definition of Hamiltonian paths.
+
+Two  other  examples  are  smarter  and  more  interesting.  How  many
+Hamiltonian regional paths have `XXX` at one extremity (begin or end)?
+In how many Hamiltonian regional paths does the border `XXX → YYY` (or
+its opposite  `YYY → XXX`)  appear? These two statistics  are computed
+and stored in tables `Areas` and `Borders`.
+
+Let us take the example of map `fr2015`, big area `IDF` and small area `78`.
+Computing the number of regional paths starting from `78` or stopping at `78`
+would be:
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like '78 → %'
+                    or  P.path  like '% → 78')
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+or, if we want to avoid hard-coded values as much as possible:
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like A.code || ' → %'
+                    or  P.path  like '% → ' || A.code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+But this formula does not work when a big area contains a single small
+area, as with several areas of  map `frreg`. To allow for this special
+casse, we would code:
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path  like A.code || ' → %'
+                    or  P.path  like '% → ' || A.code
+                    or  P.path  = A.code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+Actually, there is a simpler SQL statement. Just write:
+
+```
+update Areas as A
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    A.code in (P.from_code,  P.to_code)
+                )
+where  map   = 'fr2015'
+and    level = 2
+and    code  = '78'
+```
+
+This formula  is correct for  big areas  with several small  areas and
+also for big areas containing a single small area.
+
+For the borders statistics, the first idea it coding:
+
+```
+update Borders as B
+set nb_paths = (select count(*)
+                from   Paths as P
+                where  P.map  = A.map
+                and    P.level = 2
+                and    (P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                  or    P.path like '%' || B.to_code   || ' → ' || B.from_code || '%')
+                )
+
+where  map        = 'fr2015'
+and    level      = 2
+and    from_code  = '78'
+and    to_code    = '95'
+```
+
+Remember that  for each  Hamiltonian path in  table `Paths`,  there is
+another Hamiltonian path, which is  the backward version of the first.
+So there are as many `%95 → 78%` paths as there are `%78 → 95%` paths.
+So we can write:
+
+```
+update Borders as B
+set nb_paths = 2 * (select count(*)
+                    from   Paths as P
+                    where  P.map  = A.map
+                    and    P.level = 2
+                    and    P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    )
+
+where  map        = 'fr2015'
+and    level      = 2
+and    from_code  = '78'
+and    to_code    = '95'
+```
+
+What about big  areas containing a single small area?  These big areas
+have no internal border, therefore no record to update.
+
+The  only  drawback  is  that   it  reintroduces  the  ugly  star  for
+multiplication purposes, while we were glad that Raku would accept the
+proper Saint-Andrew cross `×`.
+
 
 License
 =======
