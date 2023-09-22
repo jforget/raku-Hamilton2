@@ -3180,7 +3180,7 @@ For the borders statistics, the first idea it coding:
 update Borders as B
 set nb_paths = (select count(*)
                 from   Paths as P
-                where  P.map   = A.map
+                where  P.map   = B.map
                 and    P.level = 2
                 and    (P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
                   or    P.path like '%' || B.to_code   || ' → ' || B.from_code || '%')
@@ -3200,7 +3200,7 @@ So we can write:
 update Borders as B
 set nb_paths = 2 * (select count(*)
                     from   Paths as P
-                    where  P.map   = A.map
+                    where  P.map   = B.map
                     and    P.level = 2
                     and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
                     )

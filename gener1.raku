@@ -44,6 +44,58 @@ where  map       = ?
   and  to_code   = ?
 SQL
 
+my $upd-stat-big-a = $dbh.prepare(q:to/SQL/);
+update Areas as A
+set nb_macro_paths = (select count(*)
+                      from   Paths as P
+                      where  P.map   = A.map
+                      and    P.level = 1
+                      and    A.code  in (P.from_code, P.to_code)
+                      )
+where  map   = ?
+and    level = 1
+SQL
+
+my $upd-stat-small-a = $dbh.prepare(q:to/SQL/);
+update Areas as A
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    P.area  = A.upper
+                       and    A.code  in (P.from_code, P.to_code)
+                       )
+where  map   = ?
+and    level = 2
+and    upper = ?
+SQL
+
+my $upd-stat-big-b = $dbh.prepare(q:to/SQL/);
+update Borders as B
+set nb_paths = 2 * (select count(*)
+                    from   Paths as P
+                    where  P.map   = B.map
+                    and    P.level = 1
+                    and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    )
+where  map        = ?
+and    level      = 1
+SQL
+
+my $upd-stat-small-b = $dbh.prepare(q:to/SQL/);
+update Borders as B
+set nb_paths = 2 * (select count(*)
+                    from   Paths as P
+                    where  P.map   = B.map
+                    and    P.level = 2
+                    and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    )
+where  map        = ?
+and    level      = 2
+and    upper_from = ?
+and    upper_to   = upper_from
+SQL
+
 sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
@@ -79,6 +131,8 @@ sub MAIN (
     my $nb = generate($map, 1, '', 'MAC');
     $dbh.execute("begin transaction");
     $dbh.execute("update Maps set nb_macro = ? where map = ?", $nb, $map);
+    $upd-stat-big-a.execute($map);
+    $upd-stat-big-b.execute($map);
     $dbh.execute("commit");
   }
   if ! $macro && $regions eq '' {
@@ -88,6 +142,8 @@ sub MAIN (
       my $nb = generate($map, 2, $region<code>, 'REG');
       $dbh.execute("begin transaction");
       $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
+      $upd-stat-small-a.execute($map, $region<code>);
+      $upd-stat-small-b.execute($map, $region<code>);
       $dbh.execute("commit");
       generic-paths($map, $region<code>);
     }
@@ -98,6 +154,8 @@ sub MAIN (
       my $nb = generate($map, 2, $region, 'REG');
       $dbh.execute("begin transaction");
       $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
+      $upd-stat-small-a.execute($map, $region);
+      $upd-stat-small-b.execute($map, $region);
       $dbh.execute("commit");
       generic-paths($map, $region<code>);
     }
