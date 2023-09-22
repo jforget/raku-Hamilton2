@@ -193,7 +193,8 @@ Les autres informations sont :
 * `long` et `lat`, une longitude et une latitude approximatives,
 * `color`, la couleur qui sera utilisée pour l'affichage des cartes,
 * `upper`, pour les départements, le code de la région d'appartenance,
-* `nb_paths` pour les régions, le nombre de chemins régionaux (micro-chemins).
+* `nb_region_paths`,
+* `nb_macro_paths`,
 * `exterior` montrant si le département est relié à une autre région
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
@@ -205,6 +206,17 @@ le  problème  des chemins  doublement  hamiltoniens  soit purement  un
 problème de graphe  sans aucun rapport avec la  géométrie, les graphes
 seront  visualisés de  telle  façon que  l'on  puisse reconnaître  les
 cartes géographiques.
+
+Le champ `nb_region_paths` a  deux significations différentes pour les
+régions et pour  les départements. Pour les  régions, c'est simplement
+le nombre  de chemins  régionaux générés dans  cette région.  Pour les
+départements,  c'est  le nombre  de  chemins  régionaux commençant  ou
+aboutissant à ce département.
+
+Le champ  `nb_macro_path` a, pour  les régions, la  même signification
+que  `nb_region_paths`  pour  les  départements. C'est  le  nombre  de
+macro-chemins commençant ou aboutissant à cette région. Le champ reste
+à zéro pour les départements.
 
 Le champ `exterior` n'a de signification que pour les départements. Il
 vaut `1`  si le département a  au moins une frontière  commune avec un
@@ -230,7 +242,8 @@ Autres champs :
 * `long`, une longitude facultative,
 * `lat`, une latitude facultative,
 * `color`,
-* `fruitless`.
+* `fruitless`,
+* `nb_paths`.
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
 dans  la représentation  graphique,  l'arête sera  représentée par  un
@@ -255,6 +268,13 @@ couleur sera forcément le noir.
 
 Pour  une  frontière  donnée,  il  y  aura  deux  enregistrements,  en
 intervertissant `from_code` et `to_code`.
+
+Pour une frontière de niveau 1, le champ `nb_paths` contient le nombre
+de  macro-chemins  qui  utilisent  cette frontière  (ou  la  frontière
+inverse). Pour une  frontière de niveau 2, c'est le  nombre de chemins
+régionaux contenant cette  frontière ou son inverse. Le  champ reste à
+zéro  si  la  frontière  relie   deux  départements  de  deux  régions
+différents.
 
 Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
@@ -3221,13 +3241,13 @@ serait de coder :
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like '78 → %'
-                    or  P.path  like '% → 78')
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like '78 → %'
+                           or  P.path like '% → 78')
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3237,13 +3257,13 @@ ou bien, en évitant les répétitions de valeurs « en dur »,
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like A.code || ' → %'
-                    or  P.path  like '% → ' || A.code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like A.code || ' → %'
+                           or  P.path like '% → ' || A.code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3255,14 +3275,14 @@ Il faudrait alors écrire :
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like A.code || ' → %'
-                    or  P.path  like '% → ' || A.code
-                    or  P.path  = A.code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like A.code || ' → %'
+                           or  P.path like '% → ' || A.code
+                           or  P.path = A.code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3272,12 +3292,12 @@ En fait, il y a plus simple. Il suffit d'écrire :
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    A.code in (P.from_code,  P.to_code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    A.code  in (P.from_code, P.to_code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3292,12 +3312,11 @@ Pour les frontières, la première idée consiste à écrire :
 update Borders as B
 set nb_paths = (select count(*)
                 from   Paths as P
-                where  P.map  = A.map
+                where  P.map   = A.map
                 and    P.level = 2
                 and    (P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
                   or    P.path like '%' || B.to_code   || ' → ' || B.from_code || '%')
                 )
-
 where  map        = 'fr2015'
 and    level      = 2
 and    from_code  = '78'
@@ -3313,11 +3332,10 @@ simplifier l'ordre SQL ainsi :
 update Borders as B
 set nb_paths = 2 * (select count(*)
                     from   Paths as P
-                    where  P.map  = A.map
+                    where  P.map   = A.map
                     and    P.level = 2
                     and    P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
                     )
-
 where  map        = 'fr2015'
 and    level      = 2
 and    from_code  = '78'

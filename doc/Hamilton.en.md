@@ -184,7 +184,8 @@ Other fields are:
 * `long` and `lat`, approximate longitude and latitude of the area,
 * `color` the color used when drawing the map,
 * `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
-* `nb_paths` for regions, the number of regional paths (zero for departments),
+* `nb_macro_paths`,
+* `nb_region_paths`,
 * `exterior` showing whether the department is linked with another region.
 
 Two views are defined on this table, `Big_Areas` which filters `level`
@@ -196,6 +197,17 @@ current problem of Hamiltonian paths is strictly a math graph problem,
 with no geometry  involved, the math graphs will be  displayed in such
 fashion that  the geographical  map associated can  be guessed  at and
 recognised.
+
+The  `nb_region_paths`  field  has  two different  meanings,  one  for
+regions and  the other  for departments.  For a  region, it  holds the
+total  number  of Hamiltonian  regional  paths  generated within  this
+region. For a department, it is  the number of regional paths starting
+from or stopping at this department.
+
+For  regions,  the `nb_macro_paths`  field  has  the same  meaning  as
+`nb_region_paths`  for departments,  it is  the number  of Hamiltonian
+macro-paths starting from or stopping at this region. For departments,
+this field is zero.
 
 The  `exterior`  field  is  significant only  for  departments  (small
 areas). If `1`, that means that  the department shares a border with a
@@ -221,7 +233,8 @@ Other fields:
 * `long`, an optional longitude,
 * `lat`, an optional latitude,
 * `color`,
-* `fruitless`.
+* `fruitless`,
+* `nb_paths`.
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -244,6 +257,13 @@ And of course, the borders with `level` 1 will be black.
 
 For a  given edge or border,  there will be two  `Borders` records, by
 switching `from_code` with `to_code`.
+
+For  a level-1  border, the  `nb_paths` field  contains the  number of
+Hamiltonian macro-paths using this border (or the reverse border). For
+a  level-2  border, this  field  contains  the number  of  Hamiltonian
+regional  paths containing  this border  or its  reverse. For  level-2
+borders  between departments  from  different regions,  this field  is
+zero.
 
 As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 `Small_Borders`.
@@ -3089,13 +3109,13 @@ would be:
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like '78 → %'
-                    or  P.path  like '% → 78')
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like '78 → %'
+                           or  P.path like '% → 78')
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3105,13 +3125,13 @@ or, if we want to avoid hard-coded values as much as possible:
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like A.code || ' → %'
-                    or  P.path  like '% → ' || A.code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like A.code || ' → %'
+                           or  P.path like '% → ' || A.code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3123,14 +3143,14 @@ casse, we would code:
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    (P.path  like A.code || ' → %'
-                    or  P.path  like '% → ' || A.code
-                    or  P.path  = A.code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    (P.path like A.code || ' → %'
+                           or  P.path like '% → ' || A.code
+                           or  P.path = A.code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3140,12 +3160,12 @@ Actually, there is a simpler SQL statement. Just write:
 
 ```
 update Areas as A
-set nb_paths = (select count(*)
-                from   Paths as P
-                where  P.map  = A.map
-                and    P.level = 2
-                and    A.code in (P.from_code,  P.to_code)
-                )
+set nb_region_paths = (select count(*)
+                       from   Paths as P
+                       where  P.map   = A.map
+                       and    P.level = 2
+                       and    A.code  in (P.from_code, P.to_code)
+                       )
 where  map   = 'fr2015'
 and    level = 2
 and    code  = '78'
@@ -3160,12 +3180,11 @@ For the borders statistics, the first idea it coding:
 update Borders as B
 set nb_paths = (select count(*)
                 from   Paths as P
-                where  P.map  = A.map
+                where  P.map   = A.map
                 and    P.level = 2
                 and    (P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
                   or    P.path like '%' || B.to_code   || ' → ' || B.from_code || '%')
                 )
-
 where  map        = 'fr2015'
 and    level      = 2
 and    from_code  = '78'
@@ -3181,11 +3200,10 @@ So we can write:
 update Borders as B
 set nb_paths = 2 * (select count(*)
                     from   Paths as P
-                    where  P.map  = A.map
+                    where  P.map   = A.map
                     and    P.level = 2
-                    and    P.path like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
                     )
-
 where  map        = 'fr2015'
 and    level      = 2
 and    from_code  = '78'
@@ -3198,7 +3216,6 @@ have no internal border, therefore no record to update.
 The  only  drawback  is  that   it  reintroduces  the  ugly  star  for
 multiplication purposes, while we were glad that Raku would accept the
 proper Saint-Andrew cross `×`.
-
 
 License
 =======

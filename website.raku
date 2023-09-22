@@ -151,7 +151,7 @@ get '/:ln/region-map/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
     }
   }
 
-  my @list-paths  = list-numbers(%region<nb_paths>, 0);
+  my @list-paths = list-numbers(%region<nb_region_paths>, 0);
   my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
   my @ico-links  = ();
   if $map eq 'ico' {
@@ -247,7 +247,7 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   my %path     = access-sql::read-path($map, 2, $region, $num);
   my @messages = access-sql::list-regional-messages($map, $region);
 
-  my @list-paths = list-numbers(%region<nb_paths>, $num);
+  my @list-paths = list-numbers(%region<nb_region_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my @full-numbers = access-sql::path-relations($map, $region, $num);
@@ -333,7 +333,7 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
   my %specific-path = access-sql::read-specific-path($map, $num);
   my @messages      = access-sql::list-regional-messages($map, $region);
 
-  my @list-paths = list-numbers(%region<nb_paths>, $num);
+  my @list-paths = list-numbers(%region<nb_region_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
@@ -390,7 +390,7 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
   my %canon-path  = access-sql::read-path($map, 2, $region, %deriv-path<canonical_num>);
   my @messages    = access-sql::list-regional-messages($map, $region);
 
-  my @list-paths = list-numbers(%region<nb_paths>, $num);
+  my @list-paths = list-numbers(%region<nb_region_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
   my @full-numbers = access-sql::path-relations($map, $region, $num);

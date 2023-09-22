@@ -36,13 +36,13 @@ insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015',
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
-insert into Areas (map, level, code, name, long, lat, color, upper, nb_paths, exterior)
-       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,        0)
+insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_region_paths, exterior)
+       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,               0)
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
-insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless)
-       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0)
+insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0)
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);

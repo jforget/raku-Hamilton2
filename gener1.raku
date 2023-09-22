@@ -87,7 +87,7 @@ sub MAIN (
       say "generating regional paths for region $region<code> of $map";
       my $nb = generate($map, 2, $region<code>, 'REG');
       $dbh.execute("begin transaction");
-      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
+      $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
       $dbh.execute("commit");
       generic-paths($map, $region<code>);
     }
@@ -97,7 +97,7 @@ sub MAIN (
       say "generating regional paths for region $region of $map";
       my $nb = generate($map, 2, $region, 'REG');
       $dbh.execute("begin transaction");
-      $dbh.execute("update Areas set nb_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
+      $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", $nb, $map, $region);
       $dbh.execute("commit");
       generic-paths($map, $region<code>);
     }

@@ -14,8 +14,9 @@ create table Areas (map      TEXT
                   , lat      NUMERIC
                   , color    TEXT
                   , upper    TEXT
-                  , nb_paths INTEGER
-                  , exterior INTEGER
+                  , nb_macro_paths  INTEGER
+                  , nb_region_paths INTEGER
+                  , exterior        INTEGER
                   );
 
 create table Borders (map       TEXT
@@ -28,6 +29,7 @@ create table Borders (map       TEXT
                    , lat        NUMERIC
                    , color      TEXT
                    , fruitless  INTEGER
+                   , nb_paths   INTEGER
                    );
 
 create table Paths   (map       TEXT
@@ -86,23 +88,23 @@ create table Isom_Path    (canonical_num INTEGER
 
 
 
-create view Big_Areas (map, code, name, long, lat, color, nb_paths)
-         as select     map, code, name, long, lat, color, nb_paths
+create view Big_Areas (map, code, name, long, lat, color, nb_region_paths, nb_macro_paths)
+         as select     map, code, name, long, lat, color, nb_region_paths, nb_macro_paths
             from       Areas
             where      level = 1;
 
-create view Small_Areas (map, code, name, long, lat, color, upper, exterior)
-         as select       map, code, name, long, lat, color, upper, exterior
+create view Small_Areas (map, code, name, long, lat, color, upper, nb_region_paths, exterior)
+         as select       map, code, name, long, lat, color, upper, nb_region_paths, exterior
             from         Areas
             where        level = 2;
 
-create view Big_Borders (map, from_code, to_code, long, lat, fruitless)
-         as select       map, from_code, to_code, long, lat, fruitless
+create view Big_Borders (map, from_code, to_code, long, lat, fruitless, nb_paths)
+         as select       map, from_code, to_code, long, lat, fruitless, nb_paths
             from         Borders
             where        level = 1;
 
-create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless)
-         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless
+create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths)
+         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths
             from           Borders
             where          level = 2;
 
