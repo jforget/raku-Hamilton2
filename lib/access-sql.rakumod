@@ -116,6 +116,7 @@ our sub list-borders-for-region(Str $map, Str $region) {
        , T.long long_t, T.lat lat_t
        , B.long long_m, B.lat lat_m
        , B.fruitless fruitless
+       , B.nb_paths  nb_paths
   from Small_Borders B
   join Small_Areas F
     on  F.map  = B.map

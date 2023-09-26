@@ -22,6 +22,7 @@ use macro-map;
 use macro-path;
 use region-map;
 use region-path;
+use region-stat;
 use region-with-full-path;
 use deriv-ico-path;
 
@@ -416,6 +417,50 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
                               , cpath-links    => @cpaths
                               , query-string   => $query-string
                               );
+}
+
+get '/:ln/region-stat/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Str $query-string = query-string;
+
+  my Str $region = ~ $reg_parm;
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map        = access-sql::read-map($map);
+  my %region     = access-sql::read-region(            $map, $region);
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+
+  @areas.append(@neighbours);
+  for @areas -> $area {
+    if $area<upper> eq $region {
+      $area<url> = '';
+    }
+    else {
+      $area<url> = "/$lng/region-stat/$map/$area<upper>$query-string";
+    }
+  }
+
+  my @list-paths = list-numbers(%region<nb_region_paths>, 0);
+  my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
+
+  my @messages = access-sql::list-regional-messages($map, $region);
+  return region-stat::render($lng, $map, %map
+                            , region       => %region
+                            , areas        => @areas
+                            , borders      => @borders
+                            , messages     => @messages
+                            , path-links   => @path-links
+                            , ico-links    => @ico-links
+                            , query-string => $query-string
+                            );
 }
 
 baile();
