@@ -84,6 +84,7 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
   $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
 
+  my Str $imagemap = '';
 
   for @borders -> $border {
     my Int $xf = conv-x($border<long_f>.Num);
@@ -107,10 +108,9 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
       $thickness = 3;
     }
 
-    draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>);
+    $imagemap ~= draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>, $border<name> // '');
   }
 
-  my Str $imagemap = '';
   for @areas -> $area {
     my Int $x = conv-x($area<long>.Num);
     my Int $y = conv-y($area<lat >.Num);
@@ -121,7 +121,17 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   return $image.png(), $imagemap;
 }
 
-sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-to, Int $y-to, $color, Str $color-name, Int $thickness, Int $fruitless) {
+sub draw-border($img, Int $x-from, Int $y-from
+                    , Int $x-mid is copy
+                    , Int $y-mid is copy
+                    , Int $x-to
+                    , Int $y-to
+                    , $color
+                    , Str $color-name
+                    , Int $thickness
+                    , Int $fruitless
+                    , Str $name) {
+  my $title-text = '';
   my $style;
   if $fruitless {
     $img.setStyle($color, $color, gdTransparent, gdTransparent);
@@ -136,6 +146,8 @@ sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-t
     if $color-name eq 'Black' {
       $img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
     }
+    $x-mid = (($x-from + $x-to) / 2).Int;
+    $y-mid = (($y-from + $y-to) / 2).Int;
   }
   else {
     $img.line($x-from, $y-from, $x-mid, $y-mid, $style);
@@ -145,6 +157,20 @@ sub draw-border($img, Int $x-from, Int $y-from, Int $x-mid, Int $y-mid, Int $x-t
       $img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
     }
   }
+  if $name ne '' {
+    $img.filledRectangle( $x-mid - 2 × $thickness
+                        , $y-mid - 2 × $thickness
+                        , $x-mid + 2 × $thickness
+                        , $y-mid + 2 × $thickness
+                        , $color);
+    $title-text = "<area coords='{$x-mid - 2 × $thickness}"
+                             ~ ",{$y-mid - 2 × $thickness}"
+                             ~ ",{$x-mid + 2 × $thickness}"
+                             ~ ",{$y-mid + 2 × $thickness}"
+                             ~ "' title='$name'>\n";
+
+  }
+  return $title-text;
 }
 
 sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, Str $name is copy) {

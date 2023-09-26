@@ -81,6 +81,25 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     }
   }
 
+  @colour-scheme = ();
+  for %edge-histo.keys.sort( { $^a <=> $^b }) -> $nb {
+    @colour-scheme.push( %( min => $nb, max => $nb, nb => %edge-histo{$nb}<nodes>.elems ) );
+  }
+  while @colour-scheme.elems > $colour-max {
+    my Int $nb-min = 999_999_999;
+    my Int $idx-min;
+    loop (my $i = 0; $i < @colour-scheme.elems - 1; $i++) {
+      my $nb = @colour-scheme[$i]<nb> + @colour-scheme[$i + 1]<nb>;
+      if $nb < $nb-min {
+        $nb-min  = $nb;
+        $idx-min = $i;
+      }
+    }
+    @colour-scheme[$idx-min]<max>  = @colour-scheme[$idx-min + 1]<max>;
+    @colour-scheme[$idx-min]<nb > += @colour-scheme[$idx-min + 1]<nb >;
+    splice(@colour-scheme, $idx-min + 1, 1);
+  }
+
   $list = '';
   my $edge-line = $at.at('table.edge-table tr.edge-line');
   $at('table.edge-table tr.edge-line')».remove;
@@ -91,9 +110,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   }
   $at.at('table.edge-table').append-content($list);
 
-  for @areas -> $area {
-    if $area<upper> ne %region<code> {
-      $area<color> = 'Black';
+  for @borders -> $border {
+    if $border<color> ne 'Black' {
+      my $i = @colour-scheme.first( { $_<min> ≤ $border<nb_paths> ≤ $_<max> }, :k);
+      $border<color> = @colours[$i];
+      $border<name > = $border<nb_paths>.Str;
     }
   }
 
