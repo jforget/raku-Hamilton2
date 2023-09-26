@@ -23,6 +23,10 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at('h1'   )».content(%map<name>);
   $at('span.region-name')».content(%region<name>);
 
+  my @colour-scheme;
+  my $colour-max = 4;
+  my @colours = <Yellow Green Blue Red>;
+
   my %node-histo;
   for @areas -> $area {
     if $area<upper> eq %region<code> {
@@ -33,6 +37,23 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
 
   my Str $list = '';
   my $node-line = $at.at('table.node-table tr.node-line');
+  for %node-histo.keys.sort( { $^a <=> $^b }) -> $nb {
+    @colour-scheme.push( %( min => $nb, max => $nb, nb => %node-histo{$nb}<nodes>.elems ) );
+  }
+  while @colour-scheme.elems > $colour-max {
+    my Int $nb-min = 999_999_999;
+    my Int $idx-min;
+    loop (my $i = 0; $i < @colour-scheme.elems - 1; $i++) {
+      my $nb = @colour-scheme[$i]<nb> + @colour-scheme[$i + 1]<nb>;
+      if $nb < $nb-min {
+        $nb-min  = $nb;
+        $idx-min = $i;
+      }
+    }
+    @colour-scheme[$idx-min]<max>  = @colour-scheme[$idx-min + 1]<max>;
+    @colour-scheme[$idx-min]<nb > += @colour-scheme[$idx-min + 1]<nb >;
+    splice(@colour-scheme, $idx-min + 1, 1);
+  }
   $at('table.node-table tr.node-line')».remove;
   for %node-histo.keys.sort( { $^a <=> $^b }) -> $nb {
     $node-line.at('td.node-nb'  ).content($nb);
@@ -44,6 +65,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   for @areas -> $area {
     if $area<upper> ne %region<code> {
       $area<color> = 'Black';
+    }
+    else {
+      $area<name> ~= ": $area<nb_region_paths>";
+      my $i = @colour-scheme.first( { $_<min> ≤ $area<nb_region_paths> ≤ $_<max> }, :k);
+      $area<color> = @colours[$i];
     }
   }
 
