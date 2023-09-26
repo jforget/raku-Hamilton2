@@ -108,7 +108,7 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
       $thickness = 3;
     }
 
-    $imagemap ~= draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>, $border<name> // '');
+    $imagemap ~= draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>, $border<name> // '', $black);
   }
 
   for @areas -> $area {
@@ -121,16 +121,18 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   return $image.png(), $imagemap;
 }
 
-sub draw-border($img, Int $x-from, Int $y-from
+sub draw-border($img, Int $x-from
+                    , Int $y-from
                     , Int $x-mid is copy
                     , Int $y-mid is copy
                     , Int $x-to
                     , Int $y-to
-                    , $color
+                    ,     $color
                     , Str $color-name
                     , Int $thickness
                     , Int $fruitless
-                    , Str $name) {
+                    , Str $name
+                    ,     $ink) {
   my $title-text = '';
   my $style;
   if $fruitless {
@@ -158,15 +160,12 @@ sub draw-border($img, Int $x-from, Int $y-from
     }
   }
   if $name ne '' {
-    $img.filledRectangle( $x-mid - 2 × $thickness
-                        , $y-mid - 2 × $thickness
-                        , $x-mid + 2 × $thickness
-                        , $y-mid + 2 × $thickness
-                        , $color);
-    $title-text = "<area coords='{$x-mid - 2 × $thickness}"
-                             ~ ",{$y-mid - 2 × $thickness}"
-                             ~ ",{$x-mid + 2 × $thickness}"
-                             ~ ",{$y-mid + 2 × $thickness}"
+    my ($dx, $dy) = ( 2.5 × $name.chars,  5);
+    $img.string(gdSmallFont, $x-mid - $dx, $y-mid - $dy, $name, $ink);
+    $title-text = "<area coords='{$x-mid - $dx}"
+                             ~ ",{$y-mid - $dy}"
+                             ~ ",{$x-mid + $dx}"
+                             ~ ",{$y-mid + $dy}"
                              ~ "' title='$name'>\n";
 
   }

@@ -23,6 +23,12 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at('h1'   )».content(%map<name>);
   $at('span.region-name')».content(%region<name>);
 
+  my Int $nb-areas = @areas.grep( { $_<upper> eq %region<code> } ).elems;
+  $at.at('span.path-number')».content(%region<nb_region_paths>.Str);
+  $at.at('span.node-number')».content($nb-areas.Str);
+  $at.at('span.edge-number')».content((%region<nb_region_paths> × ($nb-areas - 1)).Str);
+  $at.at('span.start-stop-number')».content(2 × %region<nb_region_paths>.Str);
+
   my @colour-scheme;
   my $colour-max = 4;
   my @colours = <Yellow Green Blue Red>;
