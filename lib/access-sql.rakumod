@@ -74,6 +74,7 @@ our sub list-big-borders(Str $map) {
        , T.long long_t, T.lat lat_t
        , B.long long_m, B.lat lat_m
        , B.fruitless fruitless
+       , B.nb_paths  nb_paths
   from Big_Borders B
   join Big_Areas F
     on  F.map  = B.map

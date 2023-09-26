@@ -20,6 +20,7 @@ use full-map;
 use full-path;
 use macro-map;
 use macro-path;
+use macro-stat;
 use region-map;
 use region-path;
 use region-stat;
@@ -461,6 +462,47 @@ get '/:ln/region-stat/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
                             , ico-links    => @ico-links
                             , query-string => $query-string
                             );
+}
+
+get '/:ln/macro-stat/:map' => sub ($lng_parm, $map_parm) {
+  my Str $lng    = ~ $lng_parm;
+  my Str $map    = ~ $map_parm;
+  my Str $query-string = query-string;
+
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-big-areas($map);
+  my @borders = access-sql::list-big-borders($map);
+  for @areas -> $area {
+    $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
+  }
+  my @messages = access-sql::list-messages($map);
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
+
+  @list-paths    = list-numbers(%map<nb_full>, 0);
+  my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+
+  my @ico-links  = ();
+  if $map eq 'ico' {
+    @ico-links = access-sql::list-ico-paths-for-isom('Id');
+  }
+
+  return macro-stat::render($lng, $map, %map
+                          , areas        => @areas
+                          , borders      => @borders
+                          , messages     => @messages
+                          , macro-links  => @macro-links
+                          , full-links   => @full-links
+                          , ico-links    => @ico-links
+                          , query-string => $query-string
+                          );
 }
 
 baile();
