@@ -28,7 +28,8 @@ sub fill($at, :$lang
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map').attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 
   my Int $nb-areas = @areas.elems;

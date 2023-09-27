@@ -33,6 +33,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region
   $at.at('a.full-path'  ).attr(href => "/$lang/full-path/$mapcode/%path<num>$query-string");
   $at.at('a.macro-path' ).attr(href => "/$lang/macro-path/$mapcode/%path<macro_num>$query-string");
   $at.at('a.region-path').attr(href => "/$lang/region-path/$mapcode/%region<code>/%path<num>$query-string");
+  $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
 
   $at.at('span.region-name')».content(%region<name>);
   $at.at('span.path-number').content(%path<num>.Str);

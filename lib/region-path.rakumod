@@ -19,9 +19,11 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
-  $at.at('a.macro-map' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
-  $at.at('a.region-map').attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
+  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
+  $at.at('a.macro-stat' ).attr(href => "/$lang/macro-stat/$mapcode$query-string");
+  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+  $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
   if $mapcode eq 'ico' {
     $at.at('a.path-derivation').attr(href => "/$lang/deriv-ico-path/%path<num>$query-string");
   }
