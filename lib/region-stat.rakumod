@@ -27,7 +27,13 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at.at('span.path-number')».content(%region<nb_region_paths>.Str);
   $at.at('span.node-number')».content($nb-areas.Str);
   $at.at('span.edge-number')».content((%region<nb_region_paths> × ($nb-areas - 1)).Str);
-  $at.at('span.start-stop-number')».content(2 × %region<nb_region_paths>.Str);
+  if $nb-areas == 1 {
+    # only one area, only one Hamiltonian regional path in which the beginning and the end are located on the same node
+    $at.at('span.start-stop-number')».content('1');
+  }
+  else {
+    $at.at('span.start-stop-number')».content(2 × %region<nb_region_paths>.Str);
+  }
 
   my @colour-scheme;
   my $colour-max = 4;

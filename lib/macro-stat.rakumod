@@ -35,7 +35,13 @@ sub fill($at, :$lang
   $at.at('span.path-number')».content(%map<nb_macro>.Str);
   $at.at('span.node-number')».content($nb-areas.Str);
   $at.at('span.edge-number')».content((%map<nb_macro> × ($nb-areas - 1)).Str);
-  $at.at('span.start-stop-number')».content(2 × %map<nb_macro>.Str);
+  if $nb-areas == 1 {
+    # only one area, only one Hamiltonian macro-path in which the beginning and the end are located on the same node
+    $at.at('span.start-stop-number')».content('1');
+  }
+  else {
+    $at.at('span.start-stop-number')».content(2 × %map<nb_macro>.Str);
+  }
 
   my @colour-scheme;
   my $colour-max = 4;
