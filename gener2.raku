@@ -22,8 +22,8 @@ insert into Messages (map, dh, errcode, area, nb, data)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, generic_num, first_num, paths_nb, fruitless, fruitless_reason)
-       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?,         0,           ?,         ?,        0,         '')
+insert into Paths (map, level, area, num, path, from_code, to_code, cyclic, macro_num, generic_num, first_num, paths_nb, fruitless, fruitless_reason, nb_full_paths)
+       values     (?,   ?,     ?,    ?,   ?,    ?,         ?,       ?,      ?,         0,           ?,         ?,        0,         '',               0)
 SQL
 
 my $sto-relation = $dbh.prepare(q:to/SQL/);
@@ -119,6 +119,32 @@ where  map       = ?
   and  level     = 2
   and  from_code = ?
   and  to_code   = ?
+SQL
+
+my $upd-stat-big-a = $dbh.prepare(q:to/SQL/);
+update Areas as A
+set nb_macro_paths_1 = (select count(*)
+                        from   Paths as P
+                        where  P.map   = A.map
+                        and    P.level = 1
+                        and    A.code  in (P.from_code, P.to_code)
+                        and    P.nb_full_paths != 0
+                        )
+where  map   = ?
+and    level = 1
+SQL
+
+my $upd-stat-big-b = $dbh.prepare(q:to/SQL/);
+update Borders as B
+set nb_paths_1 = 2 * (select count(*)
+                      from   Paths as P
+                      where  P.map   = B.map
+                      and    P.level = 1
+                      and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                      and    P.nb_full_paths != 0
+                      )
+where  map        = ?
+and    level      = 1
 SQL
 
 sub MAIN (
@@ -400,6 +426,24 @@ sub MAIN (
   $dbh.execute("commit");
   $to-do-nb = 0;
   aff-stat();
+
+  # Counting the number of specific full paths for each macro-path
+  $dbh.execute("begin transaction");
+  
+  $dbh.execute(q:to/SQL/, $map);
+  update  Paths as M
+  set     nb_full_paths = ( select coalesce(sum(F.paths_nb), 0)
+                            from   Full_Paths as F
+                            where  F.map       = M.map
+                            and    F.macro_num = M.num
+                          )
+  where   M.map       = ?
+  and     M.level     = 1
+  and     M.fruitless = 0
+  SQL
+  $upd-stat-big-a.execute($map);
+  $upd-stat-big-b.execute($map);
+  $dbh.execute("commit");
 
   # Last step, the report
   $dbh.execute("begin transaction");

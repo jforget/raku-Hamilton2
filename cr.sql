@@ -14,9 +14,10 @@ create table Areas (map      TEXT
                   , lat      NUMERIC
                   , color    TEXT
                   , upper    TEXT
-                  , nb_macro_paths  INTEGER
-                  , nb_region_paths INTEGER
-                  , exterior        INTEGER
+                  , nb_macro_paths   INTEGER
+                  , nb_macro_paths_1 INTEGER
+                  , nb_region_paths  INTEGER
+                  , exterior         INTEGER
                   );
 
 create table Borders (map       TEXT
@@ -30,6 +31,7 @@ create table Borders (map       TEXT
                    , color      TEXT
                    , fruitless  INTEGER
                    , nb_paths   INTEGER
+                   , nb_paths_1 INTEGER
                    );
 
 create table Paths   (map       TEXT
@@ -43,6 +45,7 @@ create table Paths   (map       TEXT
                    , macro_num         INTEGER
                    , fruitless         INTEGER
                    , fruitless_reason  TEXT
+                   , nb_full_paths     INTEGER
                    , generic_num       INTEGER
                    , first_num         INTEGER
                    , paths_nb          INTEGER
@@ -88,8 +91,8 @@ create table Isom_Path    (canonical_num INTEGER
 
 
 
-create view Big_Areas (map, code, name, long, lat, color, nb_region_paths, nb_macro_paths)
-         as select     map, code, name, long, lat, color, nb_region_paths, nb_macro_paths
+create view Big_Areas (map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1)
+         as select     map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1
             from       Areas
             where      level = 1;
 
@@ -98,8 +101,8 @@ create view Small_Areas (map, code, name, long, lat, color, upper, nb_region_pat
             from         Areas
             where        level = 2;
 
-create view Big_Borders (map, from_code, to_code, long, lat, fruitless, nb_paths)
-         as select       map, from_code, to_code, long, lat, fruitless, nb_paths
+create view Big_Borders (map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1)
+         as select       map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1
             from         Borders
             where        level = 1;
 
@@ -116,8 +119,8 @@ create view Borders_With_Star (map, level, from_code, to_code, upper_from, upper
                   from   Areas
                   where level = 2;
 
-create view Macro_Paths   (map, num, path, from_code, to_code, fruitless, fruitless_reason)
-         as select         map, num, path, from_code, to_code, fruitless, fruitless_reason
+create view Macro_Paths   (map, num, path, from_code, to_code, fruitless, fruitless_reason, nb_full_paths)
+         as select         map, num, path, from_code, to_code, fruitless, fruitless_reason, nb_full_paths
             from           Paths
             where          level = 1;
 
