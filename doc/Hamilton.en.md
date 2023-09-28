@@ -3103,9 +3103,20 @@ In how many Hamiltonian regional paths does the border `XXX → YYY` (or
 its opposite  `YYY → XXX`)  appear? These two statistics  are computed
 and stored in tables `Areas` and `Borders`.
 
-Let us take the example of map `fr2015`, big area `IDF` and small area `78`.
-Computing the number of regional paths starting from `78` or stopping at `78`
-would be:
+These statistics are usually more interesting than the first statistic
+mentionned,  but  in some  special  cases  these statistics  can  give
+uninteresting results.  For example,  if no Hamiltonian  regional path
+has been generated for the big  area (unconnected graph, three or more
+dead-ends,  other   reason),  then  the  statistics   will  give  zero
+everywhere.  If the  big area  contains one  or two  small areas,  the
+statistics will not  give interesting results. And in the  case of the
+icosian game's dodecahedron,  all nodes are equivalent  to each other,
+all edges are equivalent to each  other, so the statistics will give a
+constant value for the nodes and another constant value for the edges.
+
+Let us take the example of map `fr2015`, big area `IDF` and small area
+`78`. Computing  the number  of regional paths  starting from  `78` or
+stopping at `78` would be:
 
 ```
 update Areas as A
@@ -3216,6 +3227,91 @@ have no internal border, therefore no record to update.
 The  only  drawback  is  that   it  reintroduces  the  ugly  star  for
 multiplication purposes, while we were glad that Raku would accept the
 proper Saint-Andrew cross `×`.
+
+Displaying The Statistics
+-------------------------
+
+The statistics are displayed with an histogram. Suppose the big area
+contains the following small areas:
+
+| Code | nb_paths |
+|:----:|---------:|
+| AAA  |   23     |
+| BBB  |   45     |
+| CCC  |   98     |
+| DDD  |   23     |
+| EEE  |   64     |
+| FFF  |   98     |
+
+This will generate this histogram:
+
+| nb_paths | nb | Codes    |
+|---------:|---:|:---------|
+|    23    |  2 | AAA, DDD |
+|    45    |  1 | BBB      |
+|    64    |  1 | EEE      |
+|    98    |  2 | CCC, FFF |
+
+And this  table (without column  _nb_) is displayed in  the statistics
+webpage. In addition, the map  is displayed with a rainbow-like colour
+scheme. Blue represents  the small areas with a  low statistical value
+and red represents the small areas with a high statistical value.
+
+Since the  number of  lines in  the histogram can  be higher  than the
+number of  colours available for the  map, we must merge  lines in the
+table to display  the corresponding small areas with  the same colour.
+Merging  is done  in  a  way similar  to  Huffman  encoding, with  the
+constraint that  only successive  lines can merge.  At each  step, the
+programme examines all pairs of successive lines and computes how many
+small  areas  the resulting  line  would  contain. And  the  programme
+chooses  the merge  with the  fewer  small areas.  Then the  programme
+loops,  unless the  table  contains as  many lines  as  the number  of
+available colours.  The map can be  generated with 8 colours,  but for
+the  example, suppose  that  only  2 colours  are  available. We  have
+initially 4 lines, therefore we must execute two merges.
+
+Initial Table :
+
+| nb_paths | nb |
+|---------:|---:|
+|    23    |  2 |
+|    45    |  1 |
+|    64    |  1 |
+|    98    |  2 |
+
+First step, merging the two lines with "1": 
+
+| nb_paths | nb |
+|:--------:|---:|
+|    23    |  2 |
+|  45..64  |  2 |
+|    98    |  2 |
+
+Second step, merging two lines with "2":
+
+| nb_paths | nb |
+|:--------:|---:|
+|  23..64  |  4 |
+|    98    |  2 |
+
+The map will be generated with
+
+| nb_paths | colour | codes              |
+|:--------:|:------:|:-------------------|
+|  23..64  |  blue  | AAA, BBB, DDD, EEE |
+|    98    |  red   | CCC, FFF           |
+
+Actually, a better grouping exists. We could have:
+
+| nb_paths | nb | colour | codes         |
+|:--------:|---:|:------:|:--------------|
+|  23..45  |  3 |  blue  | AAA, BBB, DDD |
+|  64..98  |  3 |  red   | CCC, EEE, FFF |
+
+But we will keep the current algorithm.
+
+The same  processing building an  histogram and then merging  lines is
+executed for the statistics on the borders.
 
 License
 =======

@@ -114,6 +114,17 @@ discussions d'humain à humain (cette documentation), mais pas pour les
 discussions  d'humain à  ordinateur.  En d'autres  termes, ce  concept
 n'est pas implémenté dans les programmes traitant les graphes.
 
+Dans ce même
+[lexique](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
+je constate que pour un graphe non orientés, une suite de sommets tels
+que  chacun est  relié  au  suivant par  une  arête devrait  s'appeler
+_chaîne_,  alors   que  j'utilise   le  terme  _chemin_   qui  devrait
+s'appliquer  aux graphes  orientés.  Néanmoins, je  conserve le  terme
+_chemin_, à cause de l'omniprésence en programmation du terme _chaîne_
+pour désigner autre chose, et un  peu aussi parce que les chemins tels
+que je les  implémente sont orientés, même s'ils  sont construits dans
+des graphes non orientés.
+
 Une  frontière intérieure  est une  frontière entre  deux départements
 appartenant  à  la  même  région. Une  frontière  extérieure  est  une
 frontière  entre   deux  départements   appartenant  à   deux  régions
@@ -213,7 +224,7 @@ le nombre  de chemins  régionaux générés dans  cette région.  Pour les
 départements,  c'est  le nombre  de  chemins  régionaux commençant  ou
 aboutissant à ce département.
 
-Le champ  `nb_macro_path` a, pour  les régions, la  même signification
+Le champ `nb_macro_paths`  a, pour les régions,  la même signification
 que  `nb_region_paths`  pour  les  départements. C'est  le  nombre  de
 macro-chemins commençant ou aboutissant à cette région. Le champ reste
 à zéro pour les départements.
@@ -3235,6 +3246,17 @@ de chemins régionaux  la frontière `XXX → YYY` (ou  son inverse `YYY →
 XXX`)  apparaît-elle ?  Ce  sont  ces  deux  statistiques  qui  seront
 calculées et stockées dans les tables `Areas` et `Borders`.
 
+Ces statistiques sont  en général plus intéressantes  que la première,
+mais  dans  certains cas  particuliers,  elles  donnent des  résultats
+inintéressants.  Par  exemple, si  aucun  chemin  hamiltonien n'a  été
+généré  pour une  région  (le graphe  n'est pas  connexe,  il a  trois
+impasses, ou autre raison), alors les statistiques sont toutes à zéro.
+Lorsque  la  région  ne  contient   qu'un  département  ou  deux,  les
+statistiques ne sont  pas très intéressantes non plus. Et  dans le cas
+du dodécaèdre du jeu icosien,  tous les sommets sont équivalents entre
+eux  et toutes  les  arêtes  sont équivalentes  entre  elles, donc  la
+statistique est uniforme sur les sommets, ainsi que sur les arêtes.
+
 Pour calculer le nombre de chemins régionaux commençant ou aboutissant
 en `78`  pour la région `IDF`  de la carte `fr2015`,  la première idée
 serait de coder :
@@ -3349,6 +3371,93 @@ mettre à jour.
 Le seul inconvénient  de cet ordre SQL est que  cela fait réapparaître
 l'étoile en tant  qu'opérateur de multiplication, alors  que Raku nous
 permettait d'utilise la croix de Saint-André `×`.
+
+Affichage des statistiques
+--------------------------
+
+L'affichage  se  fait  en  construisant  un  histogramme  des  valeurs
+statistiques. Prenons l'exemple d'une région contenant :
+
+| Code | nb_paths |
+|:----:|---------:|
+| AAA  |   23     |
+| BBB  |   45     |
+| CCC  |   98     |
+| DDD  |   23     |
+| EEE  |   64     |
+| FFF  |   98     |
+
+La construction de l'histogramme donne :
+
+| nb_paths | nb | Codes    |
+|---------:|---:|:---------|
+|    23    |  2 | AAA, DDD |
+|    45    |  1 | BBB      |
+|    64    |  1 | EEE      |
+|    98    |  2 | CCC, FFF |
+
+C'est ce tableau  (sans la colonne _nb_) qui est  affiché dans la page
+de statistiques.  De plus, la  carte est  affichée avec un  dégradé de
+couleurs imitant l'arc-en-ciel. Le bleu correspond à la statistique la
+plus basse, le rouge à la statistique la plus haute.
+
+Comme le nombre de lignes de  l'histogramme peut dépasser le nombre de
+couleurs disponibles, il faut regrouper certaines lignes pour afficher
+les départements correspondants avec  la même couleur. Le regroupement
+se fait  de façon analogue au  codage de Huffman, sachant  que l'on ne
+peut  regrouper  que  des  lignes consécutives.  À  chaque  étape,  le
+programme examine combien les  différents regroupements de deux lignes
+consécutives contiendraient  de départements. Et le  programme choisit
+le  regroupement  contenant  le  moins de  départements.  Ensuite,  le
+programme boucle, sauf  si le nombre de lignes du  tableau est égal au
+nombre de  couleurs disponibles.  La carte  peut contenir  8 couleurs,
+mais  supposons  pour l'explication  qu'il  n'y  a que  deux  couleurs
+disponibles. Le regroupement fait passer de quatre lignes à deux, donc
+en deux itérations.
+
+Tableau initial :
+
+| nb_paths | nb |
+|---------:|---:|
+|    23    |  2 |
+|    45    |  1 |
+|    64    |  1 |
+|    98    |  2 |
+
+Première itération, regroupement des deux lignes à 1 :
+
+| nb_paths | nb |
+|:--------:|---:|
+|    23    |  2 |
+|  45..64  |  2 |
+|    98    |  2 |
+
+Seconde itération, regroupement de deux lignes à 2 :
+
+| nb_paths | nb |
+|:--------:|---:|
+|  23..64  |  4 |
+|    98    |  2 |
+
+La carte sera générée avec
+
+| nb_paths | couleur | codes              |
+|:--------:|:-------:|:-------------------|
+|  23..64  |  bleu   | AAA, BBB, DDD, EEE |
+|    98    |  rouge  | CCC, FFF           |
+
+Certes, la distribution n'est pas la plus homogène possible. On aurait
+pu avoir :
+
+| nb_paths | nb | couleur | codes         |
+|:--------:|---:|:-------:|:--------------|
+|  23..45  |  3 |  bleu   | AAA, BBB, DDD |
+|  64..98  |  3 |  rouge  | CCC, EEE, FFF |
+
+Mais on se contentera de l'algorithme tel qu'il est.
+
+Le même principe  de constitution d'un histogramme et  de réduction du
+nombre de lignes s'applique aux statistiques sur les frontières.
 
 LICENCE
 =======
