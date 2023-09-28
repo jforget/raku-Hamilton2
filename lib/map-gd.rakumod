@@ -25,11 +25,16 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   my $white  = $image.colorAllocate(255, 255, 255);
   my $black  = $image.colorAllocate(  0,   0,   0);
   my %color;
-  %color<Black > = $black;
-  %color<Red   > = $image.colorAllocate(255,   0,   0);
-  %color<Green > = $image.colorAllocate(  0, 191,   0);
-  %color<Blue  > = $image.colorAllocate(  0,   0, 255);
-  %color<Yellow> = $image.colorAllocate(223, 150,  23);
+  %color<Black     > = $black;
+  %color<Blue      > = $image.colorAllocate(  0,   0, 255);
+  %color<Cyan      > = $image.colorAllocate(  0, 255, 255);
+  %color<Green     > = $image.colorAllocate(  0, 191,   0);
+  %color<Chartreuse> = $image.colorAllocate(127, 255,   0);
+  %color<Yellow    > = $image.colorAllocate(223, 150,  23); # darkish, poor contrast with Orange
+  %color<Yellow1   > = $image.colorAllocate(255, 255,   0); # light, good contrast with Orange
+  %color<Orange    > = $image.colorAllocate(255, 127,   0);
+  %color<Pink      > = $image.colorAllocate(255,  79,   0);
+  %color<Red       > = $image.colorAllocate(255,   0,   0);
 
   my Num $long-min = min map { $_<long> }, @areas;
   my Num $long-max = max map { $_<long> }, @areas;

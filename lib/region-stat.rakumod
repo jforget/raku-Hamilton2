@@ -36,8 +36,8 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   }
 
   my @colour-scheme;
-  my $colour-max = 4;
-  my @colours = <Yellow Green Blue Red>;
+  my @colours    = <Blue Cyan Green Chartreuse Yellow1 Orange Pink Red>;
+  my $colour-max = @colours.elems;
 
   my %node-histo;
   for @areas -> $area {
