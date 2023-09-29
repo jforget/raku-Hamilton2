@@ -160,8 +160,8 @@ for %borders.kv -> $from, $hashto {
 
 # Level 1 borders, all in one go
 $dbh.execute(q:to/SQL/);
-insert into Borders (map, level, from_code , to_code , upper_from, upper_to, long, lat, color  , fruitless)
-     select distinct map, 1    , upper_from, upper_to, ''        , ''      , 0   , 0  , 'Black', 0
+insert into Borders (map, level, from_code , to_code , upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1)
+     select distinct map, 1    , upper_from, upper_to, ''        , ''      , 0   , 0  , 'Black', 0,         0,        0
      from   Small_Borders
      where  map in ('fr1970', 'fr2015')
        and  upper_from != upper_to
