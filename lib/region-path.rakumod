@@ -24,6 +24,12 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at.at('a.macro-stat' ).attr(href => "/$lang/macro-stat/$mapcode$query-string");
   $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
   $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
+  if %map<nb_full> != 0 {
+    $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
+  }
+  else {
+    $at.at('a.macro-stat1')».remove;
+  }
   if $mapcode eq 'ico' {
     $at.at('a.path-derivation').attr(href => "/$lang/deriv-ico-path/%path<num>$query-string");
   }

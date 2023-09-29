@@ -36,6 +36,12 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
   $at.at('a.full-map'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at.at('a.macro-stat').attr(href => "/$lang/macro-stat/$mapcode$query-string");
+  if %map<nb_full> != 0 {
+    $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
+  }
+  else {
+    $at.at('a.macro-stat1')».remove;
+  }
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
   $at.at('ul.messages').content(messages-list::render($lang, @messages));

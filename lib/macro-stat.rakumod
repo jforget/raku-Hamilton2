@@ -31,6 +31,12 @@ sub fill($at, :$lang
   $at.at('a.full-map' ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map').attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
+  if %map<nb_full> != 0 {
+    $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
+  }
+  else {
+    $at.at('a.macro-stat1')».remove;
+  }
 
   my Int $nb-areas = @areas.elems;
   $at.at('span.path-number')».content(%map<nb_macro>.Str);

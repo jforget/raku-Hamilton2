@@ -28,6 +28,12 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at.at('a.macro-stat' ).attr(href => "/$lang/macro-stat/$mapcode$query-string");
+  if %map<nb_full> != 0 {
+    $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
+  }
+  else {
+    $at.at('a.macro-stat1')».remove;
+  }
   $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
   $at('map')».content($imagemap);
 
