@@ -45,14 +45,22 @@ sub fill($at, :$lang
   }
 
   my @colour-scheme;
-  my @colours    = <Blue Cyan Green Chartreuse Yellow1 Orange Pink Red>;
-  my $colour-max = @colours.elems;
+  my @colours-full = <Blue Cyan Green Chartreuse Yellow1 Orange Pink Red>;
+  my @colours-part = <Blue Green Yellow Red>;
 
   my %node-histo;
   for @areas -> $area {
     %node-histo{$area<nb_macro_paths>}<nb>++;
     %node-histo{$area<nb_macro_paths>}<nodes>.push($area<code>);
   }
+  my @colours;
+  if %node-histo.keys.elems ≤ @colours-part.elems {
+    @colours = @colours-part;
+  }
+  else {
+    @colours = @colours-full;
+  }
+  my $colour-max = @colours.elems;
 
   my Str $list = '';
   my $node-line = $at.at('table.node-table tr.node-line');
@@ -94,6 +102,13 @@ sub fill($at, :$lang
       %edge-histo{$border<nb_paths>}<edges>.push("$border<code_f> → $border<code_t>");
     }
   }
+  if %edge-histo.keys.elems ≤ @colours-part.elems {
+    @colours = @colours-part;
+  }
+  else {
+    @colours = @colours-full;
+  }
+  $colour-max = @colours.elems;
 
   @colour-scheme = ();
   for %edge-histo.keys.sort( { $^a <=> $^b }) -> $nb {
