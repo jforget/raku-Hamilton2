@@ -204,8 +204,9 @@ Les autres informations sont :
 * `long` et `lat`, une longitude et une latitude approximatives,
 * `color`, la couleur qui sera utilisée pour l'affichage des cartes,
 * `upper`, pour les départements, le code de la région d'appartenance,
-* `nb_region_paths`,
 * `nb_macro_paths`,
+* `nb_macro_paths_1`,
+* `nb_region_paths`,
 * `exterior` montrant si le département est relié à une autre région
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
@@ -228,6 +229,11 @@ Le champ `nb_macro_paths`  a, pour les régions,  la même signification
 que  `nb_region_paths`  pour  les  départements. C'est  le  nombre  de
 macro-chemins commençant ou aboutissant à cette région. Le champ reste
 à zéro pour les départements.
+
+Le  champ   `nb_macro_paths_1`  compte  également   les  macro-chemins
+commençant ou aboutissant à cette  région, mais en comptant uniquement
+les macro-chemins qui ont permis la génération de chemins complets. Le
+champ reste à zéro pour les départements.
 
 Le champ `exterior` n'a de signification que pour les départements. Il
 vaut `1`  si le département a  au moins une frontière  commune avec un
@@ -254,7 +260,8 @@ Autres champs :
 * `lat`, une latitude facultative,
 * `color`,
 * `fruitless`,
-* `nb_paths`.
+* `nb_paths`,
+* `nb_paths_1`.
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
 dans  la représentation  graphique,  l'arête sera  représentée par  un
@@ -287,6 +294,11 @@ régionaux contenant cette  frontière ou son inverse. Le  champ reste à
 zéro  si  la  frontière  relie   deux  départements  de  deux  régions
 différents.
 
+Le  champ `nb_paths_1`  compte  également le  nombre de  macro-chemins
+utilisant cette frontière,  mais en se limitant  aux macro-chemins qui
+ont  généré des  chemins  complets. Ce  champ reste  à  zéro pour  les
+frontières de niveau 2.
+
 Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
 
@@ -315,6 +327,7 @@ Les autres champs sont :
 * `macro_num`, numéro éventuel du macro-chemin associé,
 * `fruitless`,
 * `fruitless_reason`,
+* `nb_full_paths`,
 * `generic_num`,
 * `first_num`,
 * `paths_nb`,
@@ -356,6 +369,13 @@ carte `frreg`), tout  comme les chemins à deux zones  et une frontière
 
 L'utilité des champs `fruitless` et `fruitless_reason` sera expliquée dans la
 [troisième version du logiciel](#user-content-troisième-tentative).
+
+Le  champ  `nb_full_paths` est  alimenté  pour  les macro-chemins.  Il
+contient le nombre de chemins complets dérivant de ce macro-chemin. Ce
+champ aurait  pu contenir  une valeur  significative pour  les chemins
+régionaux. Hélas, il n'y a pas de façon efficace de calculer la valeur
+à  stocker dans  ce champ.  Il restera  donc à  zéro pour  les chemins
+régionaux.
 
 Les   chemins  régionaux   génériques   (`level=4`)   et  les   champs
 `macro_num`, `first_num`, `paths_nb` et `num_s2g` sont décrits dans la
@@ -3458,6 +3478,19 @@ Mais on se contentera de l'algorithme tel qu'il est.
 
 Le même principe  de constitution d'un histogramme et  de réduction du
 nombre de lignes s'applique aux statistiques sur les frontières.
+
+Statistiques sur les macro-cartes
+---------------------------------
+
+Les statistiques sur  les macro-cartes reprennent les  mêmes idées que
+les  statistiques   sur  les   régions :  on   compte  le   nombre  de
+macro-chemins qui  passent par telle  ou telle macro-frontière  ou qui
+commence  ou  aboutit  à telle  ou  telle  région.  Mais  il y  a  une
+nouveauté. On  peut compter tous  les macro-chemins, ou  seulement les
+macro-chemins  qui  ont donné  lieu  à  un  chemin complet.  Ces  deux
+catégories de  statistiques sont stockées dans  des champs différents,
+avec ou sans suffixe `_1` et  elles sont affichées dans deux pages web
+différentes.
 
 LICENCE
 =======

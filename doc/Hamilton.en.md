@@ -185,6 +185,7 @@ Other fields are:
 * `color` the color used when drawing the map,
 * `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
 * `nb_macro_paths`,
+* `nb_macro_paths_1`,
 * `nb_region_paths`,
 * `exterior` showing whether the department is linked with another region.
 
@@ -208,6 +209,11 @@ For  regions,  the `nb_macro_paths`  field  has  the same  meaning  as
 `nb_region_paths`  for departments,  it is  the number  of Hamiltonian
 macro-paths starting from or stopping at this region. For departments,
 this field is zero.
+
+The `nb_macro_paths_1`  field also counts the  Hamiltonian macro-paths
+starting from or  stopping at this region, but in  this case, only the
+macro-paths which  generated full  Hamiltonian paths are  counted. For
+departments, this field is zero.
 
 The  `exterior`  field  is  significant only  for  departments  (small
 areas). If `1`, that means that  the department shares a border with a
@@ -234,7 +240,8 @@ Other fields:
 * `lat`, an optional latitude,
 * `color`,
 * `fruitless`,
-* `nb_paths`.
+* `nb_paths`,
+* `nb_paths_1`.
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -265,6 +272,11 @@ regional  paths containing  this border  or its  reverse. For  level-2
 borders  between departments  from  different regions,  this field  is
 zero.
 
+The  `nb_paths_1`  field  also  contains  the  number  of  Hamiltonian
+macro-paths  using  this  border,   but  only  the  macro-paths  which
+generated  full paths  are counted.  This  field is  zero for  level-2
+borders.
+
 As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 `Small_Borders`.
 
@@ -293,6 +305,7 @@ Other fields are:
 * `macro_num` the number of the associated macro path, if there is one,
 * `fruitless`,
 * `fruitless_reason`,
+* `nb_full_paths`,
 * `generic_num`,
 * `first_num`,
 * `paths_nb`,
@@ -333,6 +346,12 @@ and  1 border  are cyclic  (e.g.  the paths  for region  `NOR` of  map
 
 The use and meaning of `fruitless` and `fruitless_reason` will be explained in the
 [third version of the software](#user-content-third-attempt).
+
+The  field `nb_full_paths`  is  significant only  for macro-paths.  It
+contains the number  of full paths derived from  this macro-path. This
+field could contain  a significant value for regional  paths also, but
+there is no efficient way to compute  this value, so the field will be
+zero for regional paths.
 
 Generic   regional   paths  (`level=4`)   and   the   use  of   fields
 `generic_num`, `first_num`, `paths_nb` and  `num_s2g` are described in the
@@ -3312,6 +3331,19 @@ But we will keep the current algorithm.
 
 The same  processing building an  histogram and then merging  lines is
 executed for the statistics on the borders.
+
+Statistics on Macro-maps
+------------------------
+
+Statistics on macro-maps use the  same ideas as statistics on regional
+maps: we  count the number  of macro-paths  crossing this or  that big
+border, or  starting from or  stopping as this  or that big  area. But
+there is something new. We can  count all macro-paths, or we can count
+only the macro-paths which generated  full paths. These two categories
+are  stored in  different  database  fields, with  a  `_1` suffix  for
+macro-paths with full paths and  without this suffix when counting all
+macro-paths.  These  two categories  of  statistics  are displayed  in
+different webpages.
 
 License
 =======
