@@ -2,7 +2,7 @@
 #
 #     Génération graphique d'une carte (macro, complète ou régionale)
 #     Graphical generation of a map (macro, full or regional)
-#     Copyright (C) 2022, 2023 Jean Forget
+#     Copyright (C) 2022, 2023, 2024 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -233,7 +233,7 @@ This module is used by most modules called by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

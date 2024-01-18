@@ -236,7 +236,7 @@ Code of the region to which the extracted regional paths must be linked.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright (C) 2023, Jean Forget, all rights reserved
+Copyright (C) 2023, 2024 Jean Forget, all rights reserved
 
 This programme  is published  under the same  conditions as  Raku: the
 Artistic License version 2.0.
