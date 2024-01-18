@@ -12,6 +12,8 @@ Hamiltonian path  is an hamiltonian path  crossing each one of  the 94
 departments, with  the additional  constraint that when  narrowing the
 view on any single region, the partial path is still Hamiltonian.
 
+![Example with French departments and year 1970 regions](fr1970-1.png)
+
 Checking whether  an Eulerian path  exists in  a connected unoriented graph  is a
 well-known  problem. Checking  whether an  Hamiltonian path  exists is
 more  difficult,   it  is  even   an  NP-complete  problem.   With  94
@@ -3298,7 +3300,7 @@ Initial Table :
 |    64    |  1 |
 |    98    |  2 |
 
-First step, merging the two lines with "1": 
+First step, merging the two lines with "1":
 
 | nb_paths | nb |
 |:--------:|---:|
@@ -3344,6 +3346,58 @@ are  stored in  different  database  fields, with  a  `_1` suffix  for
 macro-paths with full paths and  without this suffix when counting all
 macro-paths.  These  two categories  of  statistics  are displayed  in
 different webpages.
+
+Todo
+====
+
+Here is the  list of to-do items, ordered  by decreasing desirability.
+But the  order of  implementation will be  different, because  it will
+depend on the ease of programming.
+
+1. Find  a way to  reduce the  combinatory explosion of  map `fr2015`.
+Very difficult to implement, unless I get some flash of inspiration.
+
+2. Fix  the computation of  relations between specific  regional paths
+and specific  full paths.  Very difficult to  implement, unless  I get
+some flash of inspiration.
+
+3. For maps with fewer than 50000 full paths (the parameter value can
+be changed), go back to the previous version for the content of field
+`path` of view `Full_Paths` (and table `Paths`): the content is the
+concatenation of specific regional paths instead of the concatenation
+of generic regional paths. A side benefit would be that for these
+maps, the contents of table `Path_Relations` would be accurate, even
+if not fixed (see previous point). The website will be able to deal
+with both full paths with a "specific" `path` column and full paths
+with a "generic" `path` column. Somewhat difficult to implement, but
+still possible.
+
+4. Upgrade Raku module `GD.pm`, by renaming is `GD.rakumod` and adding
+line thicknesses and  text display. This update seems easy,  but I may
+be mistaken.
+
+5. Similary, port Perl module `Graph.pm`  to Raku. This task will most
+certainly be a lengthy  one, but I do not know  the difficulty. I must
+understand some technical peculiarities of `Graph.pm`.
+
+6. In the pages showing the statistics, there is a map with colors and
+with  statistical values  and there  are two  tables with  statistical
+values but without  colors. The tables should contain  the same colors
+as the map. Easy to implement.
+
+7. Using either `Graph.rakumod` or `Graph.pm` with `Inline::Perl5.pm6`,
+create new webpages showing, for example, the diameter of such and such
+graph, or distances from a node within a graph. The notion of Hamiltonian
+path would be missing from these new webpages, but it does not matter.
+Rather easy to implement.
+
+8. While the Icosian game uses a dodecahedron and no other geometrical
+figure,  it would  be interesting  to add  graphs associated  with the
+other platonic solids. Easy to implement.
+
+9. Write a  programme which generates basic  graphs: _n_-point circle,
+_n_-spoke wheel, _n_-ray star, complete  graph with _n_ nodes. Easy to
+implement.
 
 License
 =======

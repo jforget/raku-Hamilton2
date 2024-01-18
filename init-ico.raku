@@ -33,7 +33,7 @@ SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
 insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1)
-       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,	  0)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0)
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);

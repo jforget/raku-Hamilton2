@@ -13,6 +13,8 @@ hamiltonien  entre les  94 départements  continentaux, tel  que chaque
 fois  que   le  chemin  traverse   une  région,  le  bout   de  chemin
 correspondant est lui aussi hamiltonien.
 
+![Exemple avec les départements français et les régions de 1970](fr1970-1.png)
+
 La question  de déterminer  s'il existe des  chemins eulériens  sur un
 graphe connexe non orienté est simple et  bien connue. La question  de déterminer
 s'il existe des chemins hamiltoniens est plus délicate, il s'agit même
@@ -292,7 +294,7 @@ de  macro-chemins  qui  utilisent  cette frontière  (ou  la  frontière
 inverse). Pour une  frontière de niveau 2, c'est le  nombre de chemins
 régionaux contenant cette  frontière ou son inverse. Le  champ reste à
 zéro  si  la  frontière  relie   deux  départements  de  deux  régions
-différents.
+différentes.
 
 Le  champ `nb_paths_1`  compte  également le  nombre de  macro-chemins
 utilisant cette frontière,  mais en se limitant  aux macro-chemins qui
@@ -3092,7 +3094,7 @@ else {
 
 Remarque. Le caractère utilisé pour cette opération est `U+21A3 = "↣"`
 (rightwards arrow with  tail) au lieu de  `U+2192` (rightwards arrow),
-parce que  les récentes  versions de Raku  utilisent `U+2192`  dans la
+parce que  les versions  récentes de Raku  utilisent `U+2192`  dans la
 syntaxe en  tant que  raccourci pour `->`.  Les chaînes  de caractères
 décrivant un chemin continuent à utiliser `U+2192 = "→"`, cela ne pose
 pas de problème de confusion avec la syntaxe Raku.
@@ -3141,7 +3143,7 @@ Il y  a une autre nouvelle  table, `Isom_Path`, destinée à  stocker la
 relation entre  les chemins du  dodécaèdre et les  chemins canoniques,
 notamment à savoir  par quelle isométrie un chemin  normal dérive d'un
 chemin canonique  (commençant par  `B →  C →  D%`). La  table comporte
-trois champs :
+quatre champs :
 
 * `canonical_num` : la clé du chemin régional canonique.
 
@@ -3491,6 +3493,60 @@ macro-chemins  qui  ont donné  lieu  à  un  chemin complet.  Ces  deux
 catégories de  statistiques sont stockées dans  des champs différents,
 avec ou sans suffixe `_1` et  elles sont affichées dans deux pages web
 différentes.
+
+RESTE À FAIRE
+=============
+
+Voici la liste  des points d'amélioration restants.  Ils sont énumérés
+par  ordre  décroissant  de  désirabilité, sans  tenir  compte  de  la
+facilité d'implémentation.
+
+1. Trouver un moyen de  réduire l'explosion combinatoire pour la carte
+`fr2015`. Réalisation  très difficile,  à moins  d'avoir un  éclair de
+génie.
+
+2. Corriger la détermination des relations entre les chemins régionaux
+spécifiques  et les  chemins  complets  spécifiques. Réalisation  très
+difficile, à moins d'avoir un éclair de génie.
+
+3.  Pour  les  cartes  comportant moins  de  50 000  chemins  complets
+spécifiques (seuil  paramétrable), revenir  à l'ancienne  version dans
+laquelle  les colonnes  `path` des  enregistrements `Full_Paths`  sont
+constitués par  la concaténation  de chemins régionaux  spécifiques et
+non  pas  par  des  chemins  régionaux  génériques.  Cela  permettrait
+d'obtenir pour ces cartes un contenu  fiable de la table des relations
+entres  chemins  régionaux et  chemins  complets.  Le site  web  devra
+traiter aussi bien des chemins  complets en version « spécifique » que
+des  chemins  complets  en version  « générique ».  Réalisation  assez
+difficile, mais possible.
+
+4.  Mettre  à jour  le  module  Raku  `GD.pm`,  déjà en  le  renommant
+`GD.rakumod`, pour y ajouter les  épaisseurs de trait et l'écriture de
+chaînes de caractères.  La réalisation semble facile, mais  je ne suis
+pas à l'abri de mauvaises surprises.
+
+5. De la même manière, porter  le module Perl `Graph.pm` vers Raku. La
+réalisation  sera longue  à coup  sûr, encore  faut-il que  j'arrive à
+comprendre les particularités techniques de `Graph.pm`.
+
+6. L'affichage des statistiques affiche une carte avec des couleurs et
+des  valeurs statistiques  et  deux tableaux  avec  les mêmes  valeurs
+statistiques, mais  sans les  couleurs. Il  faudrait que  les tableaux
+rappellent les couleurs de la carte. Réalisation facile.
+
+7. Avec  `Graph.rakumod`, ou  avec `Graph.pm`  et `Inline::Perl5.pm6`,
+créer de nouvelles pages web  affichant, par exemple, le diamètre d'un
+graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
+loin des problèmes de chemins  hamiltonien, mais tant pis. Réalisation
+assez facile.
+
+8. Au lieu de considérer seulement le dodécaèdre du jeu icosien, créer
+les graphes correspondant aux autres solides platoniciens. Réalisation
+facile.
+
+9. Disposer d'un programme créant  des graphes élémentaires : cercle à
+_n_ points, étoile  à _n_ rayons, roue à _n_  rayons, graphe complet à
+_n_ sommets. Réalisation facile.
 
 LICENCE
 =======
