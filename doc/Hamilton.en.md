@@ -1308,6 +1308,8 @@ region. Since the sea areas are all around Great Britain, the computed
 centre of  the region will  most certainly be  near the centre  of the
 map, well within the borders of England.
 
+![Britannia: regional map for the sea areas and macro-map](Britannia-mer.webp)
+
 In the  programmes which  load the Maharadjah  data and  the Britannia
 data into the database, I could have  coded a special case for the sea
 regions. I did not do it. I  am fine with a macro-map showing a glitch

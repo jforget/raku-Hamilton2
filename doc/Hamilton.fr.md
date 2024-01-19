@@ -1364,6 +1364,8 @@ parier que la latitude et la longitude attribuées à la région maritime
 placeront cette région au centre  de la carte, nettement à l'intérieur
 des frontières de l'Angleterre.
 
+![Britannia, carte régionale des zones maritimes et macro-carte](Britannia-mer.webp)
+
 Dans  le  programme  d'initialisation  de  la  base  de  données  pour
 Maharadjah et  dans celui pour  Britannia, j'aurais pu prévoir  un cas
 particulier pour la  région maritime. Je ne l'ai pas  fait. Cela ne me
