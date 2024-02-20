@@ -3398,24 +3398,19 @@ be mistaken.
 certainly be a lengthy  one, but I do not know  the difficulty. I must
 understand some technical peculiarities of `Graph.pm`.
 
-6. In the pages showing the statistics, there is a map with colors and
-with  statistical values  and there  are two  tables with  statistical
-values but without  colors. The tables should contain  the same colors
-as the map. Easy to implement.
-
-7. Using either `Graph.rakumod` or `Graph.pm` with `Inline::Perl5.pm6`,
+6. Using either `Graph.rakumod` or `Graph.pm` with `Inline::Perl5.pm6`,
 create new webpages showing, for example, the diameter of such and such
 graph, or distances from a node within a graph. The notion of Hamiltonian
 path would be missing from these new webpages, but it does not matter.
 Rather easy to implement.
 
-8. While the Icosian game uses a dodecahedron and no other geometrical
+7. While the Icosian game uses a dodecahedron and no other geometrical
 figure,  it would  be interesting  to add  graphs associated  with the
 other   platonic  solids.   The  keys   of  tables   `Isometries`  and
 `Isom_paths` will have to be updated, because the dodecahedron will no
 longer be the only map with isometries. Easy to implement.
 
-9. Write a  programme which generates basic  graphs: _n_-point circle,
+8. Write a  programme which generates basic  graphs: _n_-point circle,
 _n_-spoke wheel,  _n_-ray star,  complete graph  with _n_  nodes (yet,
 this last case might be boring: diameter  1, radius 1, every node is a
 central node,  every node can  be the  starting point or  the stopping

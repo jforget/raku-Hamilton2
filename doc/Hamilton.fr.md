@@ -3548,24 +3548,19 @@ pas à l'abri de mauvaises surprises.
 réalisation  sera longue  à coup  sûr, encore  faut-il que  j'arrive à
 comprendre les particularités techniques de `Graph.pm`.
 
-6. L'affichage des statistiques affiche une carte avec des couleurs et
-des  valeurs statistiques  et  deux tableaux  avec  les mêmes  valeurs
-statistiques, mais  sans les  couleurs. Il  faudrait que  les tableaux
-rappellent les couleurs de la carte. Réalisation facile.
-
-7. Avec  `Graph.rakumod`, ou  avec `Graph.pm`  et `Inline::Perl5.pm6`,
+6. Avec  `Graph.rakumod`, ou  avec `Graph.pm`  et `Inline::Perl5.pm6`,
 créer de nouvelles pages web  affichant, par exemple, le diamètre d'un
 graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
 loin des problèmes de chemins hamiltoniens, mais tant pis. Réalisation
 assez facile.
 
-8. Au lieu de considérer seulement le dodécaèdre du jeu icosien, créer
+7. Au lieu de considérer seulement le dodécaèdre du jeu icosien, créer
 les graphes  correspondant aux autres solides  platoniciens. Il faudra
 revoir la table des isométries et la table des relations entre chemins
 et isométries,  parce que le  dodécaèdre ne  sera plus la  seule carte
 avec des isométries. Réalisation facile.
 
-9. Disposer d'un programme créant  des graphes élémentaires : cercle à
+8. Disposer d'un programme créant  des graphes élémentaires : cercle à
 _n_ points, étoile  à _n_ rayons, roue à _n_  rayons, graphe complet à
 _n_ sommets (quoique  ce dernier soit assez barbant  à étudier : rayon
 1, diamètre  1, tous les  sommets sont  centraux, tous peuvent  être à

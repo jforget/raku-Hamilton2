@@ -31,6 +31,10 @@ sub picture-height is export {
   return 800;
 }
 
+sub sample-size is export {
+  return 10;
+}
+
 =begin POD
 
 =encoding utf8

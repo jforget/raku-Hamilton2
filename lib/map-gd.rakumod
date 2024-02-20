@@ -15,6 +15,32 @@ use List::Util;
 use PostCocoon::Url;
 use db-conf-sql;
 
+sub colors {
+  my %color = Black      => [  0,   0,   0]
+            , Blue       => [  0,   0, 255]
+            , Cyan       => [  0, 255, 255]
+            , Green      => [  0, 191,   0]
+            , Chartreuse => [127, 255,   0]
+            , Yellow     => [223, 150,  23] # darkish, poor contrast with Orange
+            , Yellow1    => [255, 255,   0] # light, good contrast with Orange
+            , Orange     => [255, 127,   0]
+            , Pink       => [255,  79,   0]
+            , Red        => [255,   0,   0];
+  return %color;
+}
+
+our sub palette-sample(@palette) {
+  my Int $size = sample-size;
+  my %samples;
+  my %color = colors();
+  for @palette -> $palette {
+    my $sample = GD::Image.new($size, $size);
+    $sample.colorAllocate(|%color{$palette});
+    %samples{$palette} = $sample.png;
+  }
+  return %samples;
+}
+
 our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   my $height = height-from-query($query-string) || picture-height;
   my $width  =  width-from-query($query-string) || picture-width;
@@ -24,17 +50,13 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
   my $white  = $image.colorAllocate(255, 255, 255);
   my $black  = $image.colorAllocate(  0,   0,   0);
-  my %color;
-  %color<Black     > = $black;
-  %color<Blue      > = $image.colorAllocate(  0,   0, 255);
-  %color<Cyan      > = $image.colorAllocate(  0, 255, 255);
-  %color<Green     > = $image.colorAllocate(  0, 191,   0);
-  %color<Chartreuse> = $image.colorAllocate(127, 255,   0);
-  %color<Yellow    > = $image.colorAllocate(223, 150,  23); # darkish, poor contrast with Orange
-  %color<Yellow1   > = $image.colorAllocate(255, 255,   0); # light, good contrast with Orange
-  %color<Orange    > = $image.colorAllocate(255, 127,   0);
-  %color<Pink      > = $image.colorAllocate(255,  79,   0);
-  %color<Red       > = $image.colorAllocate(255,   0,   0);
+  my %rgb = colors();
+  my %color = Black => $black; # $black is already allocated, do not allocate twice
+  for %rgb.keys -> $color {
+    if $color ne 'Black' {
+      %color{$color} = $image.colorAllocate(|%rgb{$color});
+    }
+  }
 
   my Num $long-min = min map { $_<long> }, @areas;
   my Num $long-max = max map { $_<long> }, @areas;

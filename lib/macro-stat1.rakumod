@@ -62,6 +62,7 @@ sub fill($at, :$lang
     @colours = @colours-full;
   }
   my $colour-max = @colours.elems;
+  my %palette    = map-gd::palette-sample(@colours);
 
   my Str $list = '';
   my $node-line = $at.at('table.node-table tr.node-line');
@@ -84,6 +85,9 @@ sub fill($at, :$lang
   }
   $at('table.node-table tr.node-line')».remove;
   for %node-histo.keys.sort( { $^a <=> $^b }) -> $nb {
+    my $i = @colour-scheme.first( { $_<min> ≤ $nb ≤ $_<max> }, :k);
+    my $mime-png = MIME::Base64.encode(%palette{@colours[$i]});
+    $node-line.at('td.node-col img').attr(src => "data:image/png;base64," ~ $mime-png);
     $node-line.at('td.node-nb'  ).content($nb);
     $node-line.at('td.node-list').content(%node-histo{$nb}<nodes>.join(', '));
     $list ~= "$node-line\n";
@@ -110,6 +114,7 @@ sub fill($at, :$lang
     @colours = @colours-full;
   }
   $colour-max = @colours.elems;
+  %palette    = map-gd::palette-sample(@colours);
 
   @colour-scheme = ();
   for %edge-histo.keys.sort( { $^a <=> $^b }) -> $nb {
@@ -134,6 +139,9 @@ sub fill($at, :$lang
   my $edge-line = $at.at('table.edge-table tr.edge-line');
   $at('table.edge-table tr.edge-line')».remove;
   for %edge-histo.keys.sort( { $^a <=> $^b }) -> $nb {
+    my $i = @colour-scheme.first( { $_<min> ≤ $nb ≤ $_<max> }, :k);
+    my $mime-png = MIME::Base64.encode(%palette{@colours[$i]});
+    $edge-line.at('td.edge-col img').attr(src => "data:image/png;base64," ~ $mime-png);
     $edge-line.at('td.edge-nb'  ).content($nb);
     $edge-line.at('td.edge-list').content(%edge-histo{$nb}<edges>.join(', '));
     $list ~= "$edge-line\n";
