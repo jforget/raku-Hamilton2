@@ -295,45 +295,48 @@ our sub find-related-path(Str $map, Int $full-num, Int $region-num) {
   return $sth.execute($map, $full-num.Str, $region-num.Str).row(:hash);
 }
 
-our sub list-ico-paths-same-canon(Int $num) {
+our sub list-ico-paths-same-canon(Str $map, Int $num) {
   my $sth = $dbh.prepare(q:to/EOF/);
   select num
   from   Isom_Path
   where  canonical_num = (select canonical_num
                           from   Isom_Path
-                          where  num = ?
+                          where  map = ?
+                          and    num = ?
                          )
   order by num
   EOF
-  return $sth.execute($num).allrows.flat;
+  return $sth.execute($map, $num).allrows.flat;
 }
 
-our sub list-ico-paths-same-isom(Int $num) {
+our sub list-ico-paths-same-isom(Str $map, Int $num) {
   my $sth = $dbh.prepare(q:to/EOF/);
   select num
   from   Isom_Path
   where  isometry = (select isometry
                      from   Isom_Path
-                     where  num = ?
+                     where  map = ?
+                     and    num = ?
                     )
   order by num
   EOF
-  return $sth.execute($num).allrows.flat;
+  return $sth.execute($map, $num).allrows.flat;
 }
 
-our sub list-ico-paths-for-isom(Str $isom) {
+our sub list-ico-paths-for-isom(Str $map, Str $isom) {
   my $sth = $dbh.prepare(q:to/EOF/);
   select num
   from   Isom_Path
-  where  isometry = ?
+  where  map      = ?
+  and    isometry = ?
   order by num
   EOF
-  return $sth.execute($isom).allrows.flat;
+  return $sth.execute($map, $isom).allrows.flat;
 }
 
-our sub read-deriv(Int $num) {
-  my $sth = $dbh.prepare("select * from Isom_Path where num = ?");
-  my %val = $sth.execute($num).row(:hash);
+our sub read-deriv(Str $map, Int $num) {
+  my $sth = $dbh.prepare("select * from Isom_Path where map = ? and num = ?");
+  my %val = $sth.execute($map, $num).row(:hash);
   return %val;
 }
 

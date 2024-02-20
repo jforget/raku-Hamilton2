@@ -76,17 +76,19 @@ create table Exit_Borders (map       TEXT
                          , spoc       INTEGER
                          );
 
-create table Isometries   (isometry   TEXT
+create table Isometries   (map        TEXT
+                         , isometry   TEXT
                          , transform  TEXT
                          , length     INTEGER
                          , recipr     TEXT
                          , involution INTEGER
                          );
 
-create table Isom_Path    (canonical_num INTEGER
-                         , num        INTEGER
-                         , isometry   TEXT
-                         , recipr     TEXT
+create table Isom_Path    (map           TEXT
+                         , canonical_num INTEGER
+                         , num           INTEGER
+                         , isometry      TEXT
+                         , recipr        TEXT
                          );
 
 

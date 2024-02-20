@@ -22,13 +22,13 @@ $dbh.execute('delete from Isom_Path');
 $dbh.execute("commit");
 
 my $sto-isom = $dbh.prepare(q:to/SQL/);
-insert into Isometries (isometry, transform, length, recipr, involution)
-       values          (?,        ?,         ?,      ?,      ?)
+insert into Isometries (map  , isometry, transform, length, recipr, involution)
+       values          ('ico', ?,        ?,         ?,      ?,      ?)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Isom_Path (canonical_num, num, isometry, recipr)
-       values         (?,             ?,   ?,        ?)
+insert into Isom_Path (map  , canonical_num, num, isometry, recipr)
+       values         ('ico', ?,             ?,   ?,        ?)
 SQL
 my Str $before       = "BCDFGHJKLMNPQRSTVWXZ";
 my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
@@ -111,8 +111,9 @@ $dbh.execute(q:to/SQL/);
 update Isometries as A
    set involution = 0
      , recipr     = (select B.isometry
-                    from    Isometries B
-                    where   B.transform = A.recipr
+                     from   Isometries B
+                     where  B.map       = A.map
+                     and    B.transform = A.recipr
                     )
 where A.involution = -1
 SQL
@@ -139,6 +140,7 @@ SQL
 my $sth-isometries = $dbh.execute(q:to/SQL/);
 select   isometry, transform, recipr
 from     Isometries
+where    map = 'ico'
 SQL
 
 for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
