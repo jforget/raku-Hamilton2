@@ -3029,7 +3029,7 @@ chronologique  apparaît  sour  la  forme d'une  spirale,  ou  bien  un
 diagramme temporel  présente un  axe du temps  vertical. Mais  je n'ai
 jamais vu un diagramme temporel ou une frise chronologique où le temps
 est  représenté par  un déplacement  horizontal de  la droite  vers la
-gauche.
+gauche <a href='#note'>(*)</a>.
 
 Lorsque l'on enchaîne des isométries, par exemple λ puis ɩ, cela donne
 ceci avec la notation fonctionnelle d'Euler :
@@ -3072,6 +3072,23 @@ assert( resultat == P );
 ```
 
 J'utiliserai donc cette notation dans la suite de cette documentation.
+
+<a name='note'>(*)</a>
+En fait, si, j'ai vu une frise chronologique avec le passé à droite et
+le  futur à  gauche.  Le  Louvre de  Lens  contient  une grande  salle
+rectangulaire, dans laquelle les œuvres  d'art sont disposées de façon
+chronologique.  Supposons que  l'on  entre dans  cette  salle du  côté
+« Antiquité » en regardant  vers l'extrémité « Époque contemporaine ».
+En tournant  la tête à gauche  et en levant  les yeux, on voit  que le
+haut du mur comporte  des indications chronologiques correspondant aux
+œuvres présentées.  Ces indications chronologiques font  apparaître un
+écoulement du temps de gauche à  droite. Et maintenant, si l'on tourne
+la tête à droite en levant les  yeux, on trouve en haut de l'autre mur
+les mêmes  indications chronologiques. Mais cette  fois-ci, elles font
+apparaître  un écoulement  du  temps  de droite  à  gauche. C'est  une
+exception compréhensible au principe que lorsque l'écoulement du temps
+est représenté sur une ligne  horizontale, il est représenté de gauche
+à droite.
 
 Implémentation
 --------------
@@ -3539,16 +3556,20 @@ rappellent les couleurs de la carte. Réalisation facile.
 7. Avec  `Graph.rakumod`, ou  avec `Graph.pm`  et `Inline::Perl5.pm6`,
 créer de nouvelles pages web  affichant, par exemple, le diamètre d'un
 graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
-loin des problèmes de chemins  hamiltonien, mais tant pis. Réalisation
+loin des problèmes de chemins hamiltoniens, mais tant pis. Réalisation
 assez facile.
 
 8. Au lieu de considérer seulement le dodécaèdre du jeu icosien, créer
-les graphes correspondant aux autres solides platoniciens. Réalisation
-facile.
+les graphes  correspondant aux autres solides  platoniciens. Il faudra
+revoir la table des isométries et la table des relations entre chemins
+et isométries,  parce que le  dodécaèdre ne  sera plus la  seule carte
+avec des isométries. Réalisation facile.
 
 9. Disposer d'un programme créant  des graphes élémentaires : cercle à
 _n_ points, étoile  à _n_ rayons, roue à _n_  rayons, graphe complet à
-_n_ sommets. Réalisation facile.
+_n_ sommets (quoique  ce dernier soit assez barbant  à étudier : rayon
+1, diamètre  1, tous les  sommets sont  centraux, tous peuvent  être à
+l'origine ou à la fin de chemins hamiltoniens). Réalisation facile.
 
 LICENCE
 =======

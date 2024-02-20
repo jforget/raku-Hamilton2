@@ -2896,7 +2896,7 @@ chronological charts I  have seen are drawn with the  past on the left
 and the future on the right.  Very rarely, I see a chronological chart
 drawn as a spiral  or a time diagram where the  time axis is vertical.
 But I have  never seen a diagram or chart  drawn horizontally with the
-past on the right and the future on the left.
+past on the right and the future on the left <a href='#note'>(*)</a>.
 
 When  we cascade  isometries,  for  example λ  and  _then_ ɩ,  Euler's
 functional notation would give:
@@ -2939,6 +2939,22 @@ assert( resultat == P);
 ```
 
 So I will use this notation in the following documentation.
+
+<a name='note'>(*)</a>
+Actually, I  _saw_ a chronological chart  in which the past  is on the
+right and  the future is  on the left. In  the Louvre Museum  in Lens,
+there is a long rectangular hall in which the art works are arrayed in
+chronological order. Let us suppose we enter at the "Antiques" end and
+we look toward the "contemporary" end. If we turn our head to the left
+and if  we look up, we  find on the wall  some chronological markings,
+relative to  the art works nearby. On this  wall, the markings  show a
+chronological order  from left to  right. If we  turn our head  to the
+right  and  if  we look  up  at  the  facing  wall, we  see  the  same
+chronological markings. But this time, they show a chronological order
+from right to left. This is an  exception to the general rule that any
+horizontally drawn chronological  chart is drawn with the  past on the
+left side and with the future on the right side, but this exception is
+justified and it does not void the general principle.
 
 Implementation
 --------------
@@ -3395,11 +3411,15 @@ Rather easy to implement.
 
 8. While the Icosian game uses a dodecahedron and no other geometrical
 figure,  it would  be interesting  to add  graphs associated  with the
-other platonic solids. Easy to implement.
+other   platonic  solids.   The  keys   of  tables   `Isometries`  and
+`Isom_paths` will have to be updated, because the dodecahedron will no
+longer be the only map with isometries. Easy to implement.
 
 9. Write a  programme which generates basic  graphs: _n_-point circle,
-_n_-spoke wheel, _n_-ray star, complete  graph with _n_ nodes. Easy to
-implement.
+_n_-spoke wheel,  _n_-ray star,  complete graph  with _n_  nodes (yet,
+this last case might be boring: diameter  1, radius 1, every node is a
+central node,  every node can  be the  starting point or  the stopping
+point of an Hamiltonian path). Easy to implement.
 
 License
 =======
