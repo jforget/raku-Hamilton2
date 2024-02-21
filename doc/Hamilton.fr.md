@@ -3268,6 +3268,52 @@ enregistrements en un seul ordre `update` que de le faire en 44 ordres
 Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
 problème.
 
+Graphes élémentaires
+====================
+
+Le progamme `init-elem.raku` permet de créer une série de graphes
+élémentaires, en fonction d'un nombre _n_ caractéristique :
+
+* le graphe linéaire P_n_ à _n_ sommets et _n_-1 arcs,
+
+* le  graphe circulaire  C_n_ à  _n_ sommets  et _n_ arcs (en  fait un
+  polygone à _n_ côtés),
+
+* le graphe en étoile S_n_ à _n_+1 sommets et _n_ arcs,
+
+* le graphe en  roue W_n_ à _n_+1  sommets et 2×_n_ arcs  (_n_ pour la
+jante et _n_ pour les rayons),
+
+* le graphe prisme PRS_n_ à  2×_n_ sommets et 3×_n_ arcs, représentant un
+[prisme  géométrique](https://mathcurve.com/polyedres/prisme/prisme.shtml)
+dont les  deux bases  sont des polygones  à _n_ côtés,
+
+* le  graphe  antiprisme  APR_n_  à   2×_n_  sommets  et  4×_n_  arcs,
+représentant un
+[antiprisme géométrique](https://mathcurve.com/polyedres/prisme/antiprisme.shtml)
+dont  les deux bases  sont des polygones à _n_ côtés,
+
+Voici les graphes obtenus pour _n_ valant 5 :
+
+![Graphes élémentaires pour n=5](Elementary-graphs.webp)
+
+Il  n'y  a pas  de  graphe  complet K_n_,  car  le  nombre de  chemins
+hamiltoniens obtenus  serait trop fort,  c'est la factorielle  de _n_.
+Habituellement,  le  graphe  linéaire  P_n_ est  représenté  avec  des
+sommets   alignés  horizontalement.   Ici,   il   est  représenté   en
+quasi-cercle, d'une  part pour  avoir du code  commun avec  les autres
+graphes élémentaires, d'autre part parce qu'on a déjà vu qu'il n'était
+pas souhaitable que l'écart entre le max et le min de la latitude soit
+égal à zéro (division 0 par 0).
+
+La génération de certains graphes élémentaires permet de retrouver des
+graphes connus. Ainsi, le graphe `W03` (roue à 3 rayons) est également
+le  graphe  `K04`  (graphe  complet  à  4  sommets)  ou  le  tétraèdre
+platonicien. Également, le graphe `PRS04` est  ni plus ni moins que le
+cube (ou hexaèdre) et l'antiprisme `APR03` est l'octaèdre.
+
+![Graphes élémentaire particuliers](Special-graphs.webp)
+
 Statistiques
 ============
 

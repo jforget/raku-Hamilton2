@@ -3124,6 +3124,55 @@ each iteration.
 
 Filling table `Isom_Path` is a small matter of programming.
 
+Elementary Graphs
+=================
+
+Programme `init-elem.raku` creates a few elemntary graphs, according
+to a number _n_:
+
+* linear graph P_n_, with _n_ nodes and _n_-1 edges,
+
+* circular graph C_n_, with _n_ nodes and _n_ edges, actually a
+_n_-sided polygon,
+
+* star graph S_n_, with _n_+1 nodes and _n_ edges,
+
+* wheel graph W_n_, with _n_+1 nodes and 2×_n_ edges (_n_ edges
+for the spokes and _n_ edges for the rim),
+
+* [prism graph](https://mathworld.wolfram.com/PrismGraph.html)
+PRS_n_, with 2×_n_ nodes and 3×_n_ edges, representing a 
+[geometrical prism](https://mathworld.wolfram.com/Prism.html)
+in which both bases are _n_-sided polygons,
+
+* [antiprism graph](https://mathworld.wolfram.com/AntiprismGraph.html)
+APR_n_, with 2×_n_ nodes and 4×_n_ edges, representing a
+[geometrical antiprism](https://mathworld.wolfram.com/Antiprism.html)
+in which both bases are _n_-sided polygons,
+
+Here are the graphs generated with _n_ = 5:
+
+![Elementary graphs for n=5](Elementary-graphs.webp)
+
+The  complete graph  K_n_  is  not generated,  because  the number  of
+Hamiltonian paths  in this  graph would  be huge,  this number  is the
+factorial  of  _n_. And  the  statistics  on  this graph  are  boring.
+Usually,  the  linear  graph  is drawn  with  all  nodes  horizontally
+aligned. Here,  I have drawn this  graph as an incomplete  circle. The
+first   reason  is   that   this  reduces   the   size  of   programme
+`init-elem.raku`, the code for P_n_  sharing many lines with the other
+graphs.  The  second reason  has  been  already described.  The  range
+between the max  latitude and the min latitude should  not be zero, to
+prevent a zero-by-zero division.
+
+Generating some graphs  allows us to find some  well-known graphs. For
+example, the `W03` wheel graph is  similar to the `K04` complete graph
+and to  the tetrahedron graph. Also,  graph `PRS04` is similar  to the
+geometrical  cube (aka  hexahedron) and  graph `APR03`  is similar  to
+octahedron.
+
+![Special elementary Graphs](Special-graphs.webp)
+
 Statistics
 ==========
 
