@@ -3274,21 +3274,21 @@ Graphes élémentaires
 Le progamme `init-elem.raku` permet de créer une série de graphes
 élémentaires, en fonction d'un nombre _n_ caractéristique :
 
-* le graphe linéaire P_n_ à _n_ sommets et _n_-1 arcs,
+* le graphe linéaire P _n_ à _n_ sommets et _n_-1 arcs,
 
-* le  graphe circulaire  C_n_ à  _n_ sommets  et _n_ arcs (en  fait un
+* le  graphe circulaire  C _n_ à  _n_ sommets  et _n_ arcs (en  fait un
   polygone à _n_ côtés),
 
-* le graphe en étoile S_n_ à _n_+1 sommets et _n_ arcs,
+* le graphe en étoile S _n_ à _n_+1 sommets et _n_ arcs,
 
-* le graphe en  roue W_n_ à _n_+1  sommets et 2×_n_ arcs  (_n_ pour la
+* le graphe en roue W _n_ à _n_+1 sommets et 2 × _n_ arcs (_n_ pour la
 jante et _n_ pour les rayons),
 
-* le graphe prisme PRS_n_ à  2×_n_ sommets et 3×_n_ arcs, représentant un
+* le graphe prisme PRS _n_ à 2 × _n_ sommets et 3 × _n_ arcs, représentant un
 [prisme  géométrique](https://mathcurve.com/polyedres/prisme/prisme.shtml)
 dont les  deux bases  sont des polygones  à _n_ côtés,
 
-* le  graphe  antiprisme  APR_n_  à   2×_n_  sommets  et  4×_n_  arcs,
+* le graphe  antiprisme APR _n_  à 2  × _n_ sommets  et 4 ×  _n_ arcs,
 représentant un
 [antiprisme géométrique](https://mathcurve.com/polyedres/prisme/antiprisme.shtml)
 dont  les deux bases  sont des polygones à _n_ côtés,
@@ -3297,9 +3297,9 @@ Voici les graphes obtenus pour _n_ valant 5 :
 
 ![Graphes élémentaires pour n=5](Elementary-graphs.webp)
 
-Il  n'y  a pas  de  graphe  complet K_n_,  car  le  nombre de  chemins
+Il  n'y a  pas de  graphe  complet K  _n_,  car le  nombre de  chemins
 hamiltoniens obtenus  serait trop fort,  c'est la factorielle  de _n_.
-Habituellement,  le  graphe  linéaire  P_n_ est  représenté  avec  des
+Habituellement,  le graphe  linéaire  P _n_  est  représenté avec  des
 sommets   alignés  horizontalement.   Ici,   il   est  représenté   en
 quasi-cercle, d'une  part pour  avoir du code  commun avec  les autres
 graphes élémentaires, d'autre part parce qu'on a déjà vu qu'il n'était
@@ -3611,12 +3611,6 @@ les graphes  correspondant aux autres solides  platoniciens. Il faudra
 revoir la table des isométries et la table des relations entre chemins
 et isométries,  parce que le  dodécaèdre ne  sera plus la  seule carte
 avec des isométries. Réalisation facile.
-
-8. Disposer d'un programme créant  des graphes élémentaires : cercle à
-_n_ points, étoile  à _n_ rayons, roue à _n_  rayons, graphe complet à
-_n_ sommets (quoique  ce dernier soit assez barbant  à étudier : rayon
-1, diamètre  1, tous les  sommets sont  centraux, tous peuvent  être à
-l'origine ou à la fin de chemins hamiltoniens). Réalisation facile.
 
 LICENCE
 =======

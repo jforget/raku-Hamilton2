@@ -3130,23 +3130,23 @@ Elementary Graphs
 Programme `init-elem.raku` creates a few elemntary graphs, according
 to a number _n_:
 
-* linear graph P_n_, with _n_ nodes and _n_-1 edges,
+* linear graph P _n_, with _n_ nodes and _n_-1 edges,
 
-* circular graph C_n_, with _n_ nodes and _n_ edges, actually a
+* circular  graph C  _n_, with  _n_ nodes  and _n_  edges, actually  a
 _n_-sided polygon,
 
-* star graph S_n_, with _n_+1 nodes and _n_ edges,
+* star graph S _n_, with _n_+1 nodes and _n_ edges,
 
-* wheel graph W_n_, with _n_+1 nodes and 2×_n_ edges (_n_ edges
-for the spokes and _n_ edges for the rim),
+* wheel graph W _n_, with _n_+1 nodes and 2 × _n_ edges (_n_ edges for
+the spokes and _n_ edges for the rim),
 
 * [prism graph](https://mathworld.wolfram.com/PrismGraph.html)
-PRS_n_, with 2×_n_ nodes and 3×_n_ edges, representing a 
+PRS _n_, with 2 × _n_ nodes and 3 × _n_ edges, representing a
 [geometrical prism](https://mathworld.wolfram.com/Prism.html)
 in which both bases are _n_-sided polygons,
 
 * [antiprism graph](https://mathworld.wolfram.com/AntiprismGraph.html)
-APR_n_, with 2×_n_ nodes and 4×_n_ edges, representing a
+APR _n_, with 2 × _n_ nodes and 4 × _n_ edges, representing a
 [geometrical antiprism](https://mathworld.wolfram.com/Antiprism.html)
 in which both bases are _n_-sided polygons,
 
@@ -3154,13 +3154,13 @@ Here are the graphs generated with _n_ = 5:
 
 ![Elementary graphs for n=5](Elementary-graphs.webp)
 
-The  complete graph  K_n_  is  not generated,  because  the number  of
+The  complete graph  K _n_  is not  generated, because  the number  of
 Hamiltonian paths  in this  graph would  be huge,  this number  is the
 factorial  of  _n_. And  the  statistics  on  this graph  are  boring.
-Usually,  the  linear  graph  is drawn  with  all  nodes  horizontally
+Usually, the linear  graph P _n_ is drawn with  all nodes horizontally
 aligned. Here,  I have drawn this  graph as an incomplete  circle. The
 first   reason  is   that   this  reduces   the   size  of   programme
-`init-elem.raku`, the code for P_n_  sharing many lines with the other
+`init-elem.raku`, the code for P _n_ sharing many lines with the other
 graphs.  The  second reason  has  been  already described.  The  range
 between the max  latitude and the min latitude should  not be zero, to
 prevent a zero-by-zero division.
@@ -3464,12 +3464,6 @@ figure,  it would  be interesting  to add  graphs associated  with the
 other   platonic  solids.   The  keys   of  tables   `Isometries`  and
 `Isom_paths` will have to be updated, because the dodecahedron will no
 longer be the only map with isometries. Easy to implement.
-
-8. Write a  programme which generates basic  graphs: _n_-point circle,
-_n_-spoke wheel,  _n_-ray star,  complete graph  with _n_  nodes (yet,
-this last case might be boring: diameter  1, radius 1, every node is a
-central node,  every node can  be the  starting point or  the stopping
-point of an Hamiltonian path). Easy to implement.
 
 License
 =======
