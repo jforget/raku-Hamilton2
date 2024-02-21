@@ -137,7 +137,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     }
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string, with_scale => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");

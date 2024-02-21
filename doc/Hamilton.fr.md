@@ -181,6 +181,9 @@ Les autres informations sont :
 [quatrième version du logiciel](#user-content-quatrième-tentative).
 * `fruitless_reason` champ décrit dans la
 [cinquième version du logiciel](#user-content-cinquième-version)
+* `with_scale`  indicateur spécifiant  si le  graphe correspond  à des
+points situés à la surface de la Terre, auquel cas les dessins devront
+afficher une échelle.
 
 Areas
 -----
@@ -219,7 +222,9 @@ La latitude et la longitude servent à l'affichage des cartes. Bien que
 le  problème  des chemins  doublement  hamiltoniens  soit purement  un
 problème de graphe  sans aucun rapport avec la  géométrie, les graphes
 seront  visualisés de  telle  façon que  l'on  puisse reconnaître  les
-cartes géographiques.
+cartes géographiques. Si `Maps.with_scale` est faux, cela signifie que
+la   latitude  et   la  longitude   sont  seulement   des  coordonnées
+cartésiennes pour dessiner le graphe et rien de plus.
 
 Le champ `nb_region_paths` a  deux significations différentes pour les
 régions et pour  les départements. Pour les  régions, c'est simplement
@@ -580,8 +585,9 @@ puis pour  les latitudes. Ce  n'est pas mystérieux, mais  les formules
 sont nettement plus compliquées.
 
 Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
-inappropriée. C'est le cas avec le dodécaèdre du jeu icosien, c'est le
-cas également pour certains jeux comme
+inappropriée. Dans  ce cas, le  champ `with_scale` de la  table `Maps`
+est positionné à  zéro (faux). C'est le cas avec  le dodécaèdre du jeu
+icosien, c'est le cas également pour certains jeux comme
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 où la  carte représente un vaisseau  spatial en plein vol  et long de,
 disons, une centaine  de mètres (à mois  que ce soit 50  mètres ou 200
@@ -593,9 +599,9 @@ flottant dont  la partie  fractionnaire est  nulle, lors  des lectures
 ultérieures SQLite  fournira des valeurs entières,  donc incompatibles
 avec le type `Num` de  Raku. Donc le programme d'initialisation ajoute
 une  partie  fractionnaire  artificielle  pour  que  SQLite  fournisse
-effectivement du `Num`. L'affichage des graphes comportera une échelle
-comme  s'il  s'agissait  d'une  carte  géographique  terrestre.  Cette
-échelle  n'a  pas  de  signification  pour  le  dodécaèdre,  elle  est
+effectivement  du `Num`.  L'affichage  des graphes  ne comportera  pas
+d'échelle  contrairement aux  cartes  géographiques terrestres.  Cette
+échelle n'aurait pas de signification  pour le dodécaèdre, elle serait
 fallacieuse pour le vaisseau _Znutar_  de _The Awful Green Things From
 Outer Space_.
 

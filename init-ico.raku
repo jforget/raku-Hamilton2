@@ -52,7 +52,7 @@ for $fh.lines -> Str $line {
   given $lvl {
     when 'A' {
       $dbh.execute(q:to/SQL/, $map, $name);
-      insert into Maps values (?, ?, 0, 0, 0, '');
+      insert into Maps values (?, ?, 0, 0, 0, '', 0);
       SQL
       $region = ~ $code;
       $colour = ~ $color-or-coord;

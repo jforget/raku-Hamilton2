@@ -47,7 +47,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string, with_scale => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 

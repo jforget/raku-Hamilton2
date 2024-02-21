@@ -161,6 +161,9 @@ Other fields are:
 [fourth version of the software](#user-content-fourth-attempt).
 * `fruitless_reason` field described in the
 [fifth version of the software](#user-content-fifth-version),
+* `with_scale` flag controlling the display  of a scale in the various
+pictures,  meaning  that the  graph  nodes  are locations  on  Earth's
+surface.
 
 Areas
 -----
@@ -199,7 +202,8 @@ The longitude and latitude will be used to draw the maps. Although the
 current problem of Hamiltonian paths is strictly a math graph problem,
 with no geometry  involved, the math graphs will be  displayed in such
 fashion that  the geographical  map associated can  be guessed  at and
-recognised.
+recognised. If `Maps.with_scale` is  false, the longitude and latitude
+are nothing more than numeric coordinates to generate the picture.
 
 The  `nb_region_paths`  field  has  two different  meanings,  one  for
 regions and  the other  for departments.  For a  region, it  holds the
@@ -552,9 +556,10 @@ two  and  solve   three  equations  with  three   unkowns,  first  for
 longitudes, then for latitudes. It is not mysterious, but the formulas
 are much more cumbersome.
 
-In some  cases, the concept  of longitude and latitude  is irrelevant.
-This is  the case with the  dodecahedron of the Icosian  game, this is
-the case with some games such as
+In some cases, the concept of longitude and latitude is irrelevant. In
+these  cases,  field `with_scale`  of  table  `Maps`  is set  to  zero
+(False). This is  the case with the dodecahedron of  the Icosian game,
+this is the case with some games such as
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 in which the mapboard represents  a spacecraft roaming the outer space
 and, say, about 100-m long (or maybe 50  m, or 200 m, I have no way to
@@ -566,9 +571,10 @@ SQLite gives you integer values,  incompatible with Raku's `Num` type.
 Therefore, the  initialisation programme adds a  small fractional part
 so that  when you  read the  values afterwards,  SQLite will  give you
 floating  numbers compatible  with Raku's  `Num`. When  displaying the
-graphs, there will be a  kilometer-scale. This scale is irrelevant for
-the dodecahedron, it is misleading  for the _Znutar_ spaceship of _The
-Awful Green Things From Outer Space_.
+graphs, the  kilometer-scale will not  be displayed. This  scale would
+have  been irrelevant  for the  dodecahedron  and it  would have  been
+misleading for the _Znutar_ spaceship  of _The Awful Green Things From
+Outer Space_.
 
 Extracting Hamiltonian Paths
 ============================

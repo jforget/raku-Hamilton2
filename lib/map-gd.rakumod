@@ -41,7 +41,7 @@ our sub palette-sample(@palette) {
   return %samples;
 }
 
-our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
+our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$with_scale = 1) {
   my $height = height-from-query($query-string) || picture-height;
   my $width  =  width-from-query($query-string) || picture-width;
   my Int $dim-scale =  20;
@@ -86,6 +86,7 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   sub conv-x(Num $long) { return ($margin + ($long - $long-min) / $delta-long × ($width  - 2 × $margin)).Int };
   sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / $delta-lat  × ($height - 2 × $margin)).Int };
 
+  if $with_scale {
   my $scale-distance;
   my $top-scale;
   loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
@@ -110,6 +111,7 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '') {
   $x-scale     = $left-scale - 6 × $scale-label.chars;
   $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
   $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
+  }
 
   my Str $imagemap = '';
 

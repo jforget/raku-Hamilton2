@@ -24,7 +24,7 @@ our sub list-maps {
 }
 
 our sub read-map(Str $map) {
-  my $sth = $dbh.prepare("select map, name, nb_macro, nb_full, fruitless_reason from Maps where map = ?");
+  my $sth = $dbh.prepare("select map, name, nb_macro, nb_full, fruitless_reason, with_scale from Maps where map = ?");
   my %val = $sth.execute($map).row(:hash);
   return %val;
 }

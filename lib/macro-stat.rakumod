@@ -158,7 +158,7 @@ sub fill($at, :$lang
     $border<color> = @colours[$i];
     $border<name > = $border<nb_paths>.Str;
   }
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string, with_scale => %map<with_scale>);
   $at('map')».content($imagemap);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
 

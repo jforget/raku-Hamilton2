@@ -73,7 +73,7 @@ sub fill($at, :$lang
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %actual-path<path>, query-string => $query-string);
+  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %actual-path<path>, query-string => $query-string, with_scale => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 
@@ -102,7 +102,7 @@ sub fill($at, :$lang
         $border<code_t> = $border<code_t> ↣ $isom;
       }
       $step-path = $step-path ↣ $isom;
-      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string);
+      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string, with_scale => %map<with_scale>);
       $step.at('span.isom').content($isom);
       $step.at('span.path').content($step-path);
       $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
@@ -121,7 +121,7 @@ sub fill($at, :$lang
         $border<code_f> = $border<code_f> ↣ $isom;
         $border<code_t> = $border<code_t> ↣ $isom;
       }
-      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string);
+      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string, with_scale => %map<with_scale>);
       $step.at('span.isom').content($isom);
       $step.at('span.path').content($step-path);
       $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
