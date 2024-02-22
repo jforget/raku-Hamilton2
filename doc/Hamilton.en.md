@@ -3124,6 +3124,44 @@ each iteration.
 
 Filling table `Isom_Path` is a small matter of programming.
 
+Other Platonic Solids
+---------------------
+
+Since I have created the dodecahedral  graph for the icosian game, why
+not  create graphs  for the  other platonic  solids? These  graphs are
+named PL _n_, where _n_ is the number of faces.
+
+Just  like the  20 nodes  of the  dodecahedral graph  are named  after
+cities  the initial  of  which is  a  consonant, the  6  nodes of  the
+octahedral graph are named after cities  the name of which begins with
+a vowel. In addition,  I have tried to set up these  cities in a place
+consistent with their real  geographical locations: Anchorage near the
+North pole, Ushuaia near the  South pole, Edmonton, Yaounde; Islamabad
+and Osaka roughly near the equator.
+
+For tetrahedron PL4, I took cities with initials A, B, C and D, set-up
+in a place consistent with their real geographical locations. For cube
+PL6, I have also tried to  follow the real geographical locations, but
+I did  not try to use  a definite alphabetical scheme.  The names span
+from  `B` for  Buenos  Aires to  `W` for  Wellington,  with many  gaps
+between letters. As  for icosahedron PL20, I have used  12 cities from
+`A`  for Amsterdam  to `L`  for London,  but without  adhering to  the
+geographical locations.
+
+Graphs  PL4, PL6  and PL8  show the  corresponding platonic  solids in
+oblique  projection.  On   the  other  hand,  graph   PL20  shows  the
+icosahedron  in  a   polar  projection,  like  graph   `ico`  for  the
+dodecahedron. Actually, I copied one of the graph drawings I found on the
+[Wolfram website](https://mathworld.wolfram.com/IcosahedralGraph.html).
+
+Running the regional paths  and macro-paths generation (`gener1.raku`)
+is  nearly instantaneous  for  PL4, PL6  and PL8.  But  for PL20,  the
+generation ran for 35 minutes, with  about 2 minutes to generate 75840
+regional paths  and about  33 minutes to  renumber these  75840 paths.
+Then the generation  of generic full paths,  `gener2.raku`, was nearly
+instantaneous, including for  PL20. We could have  guessed so, because
+these full graphs contains only one big area each.
+
 Elementary Graphs
 =================
 
@@ -3455,15 +3493,21 @@ understand some technical peculiarities of `Graph.pm`.
 
 6. Using either `Graph.rakumod` or `Graph.pm` with `Inline::Perl5.pm6`,
 create new webpages showing, for example, the diameter of such and such
-graph, or distances from a node within a graph. The notion of Hamiltonian
+graph, or distances of all nodes from a given node within a graph. The notion of Hamiltonian
 path would be missing from these new webpages, but it does not matter.
 Rather easy to implement.
 
-7. While the Icosian game uses a dodecahedron and no other geometrical
-figure,  it would  be interesting  to add  graphs associated  with the
-other   platonic  solids.   The  keys   of  tables   `Isometries`  and
-`Isom_paths` will have to be updated, because the dodecahedron will no
-longer be the only map with isometries. Easy to implement.
+7.  Some maps  show the  whole  Earth and  they include  links from  a
+western area to  an eastern area, across the  International Date Line.
+For example, Alaska  → Kamtchatka in
+[Risk](https://boardgamegeek.com/image/79615/risk)
+or Alaska  → Northern Russia in
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+In this  case, both nodes should  be displayed twice: basic  Alaska at
+longitude  170  W and  duplicate  Alaska  at  longitude 190  E,  basic
+Kamtchatka at  longitude 160 E  and duplicate Kamtchatka  at longitude
+200 W. The edge would be drawn twice, a first time from 170 W to 200 W
+and a second time from 190 E to 160 E. Rather easy to implement.
 
 License
 =======

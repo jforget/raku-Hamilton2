@@ -3268,6 +3268,48 @@ enregistrements en un seul ordre `update` que de le faire en 44 ordres
 Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
 problème.
 
+Autres solides platoniciens
+---------------------------
+
+Puisque  j'ai  créé le  graphe  pour  le  dodécaèdre du  jeu  icosien,
+pourquoi  ne  pas   ajouter  les  graphes  pour   les  autres  solides
+platoniciens ? Ces graphes sont nommés PL _n_, où _n_ est le nombre de
+faces.
+
+Comme les 20  sommets du dodécaèdre sont désignés par  des villes dont
+le nom commence  par une consonne, les 6 sommets  de l'octaèdre seront
+désignés par des villes dont le nom commence par une voyelle. De plus,
+j'ai tenté de respecter autant  que possible la disposition des villes
+sur le  globe, avec  Anchorage au  pôle nord, Ushuaia  au pôle  sud et
+Edmonton, Yaoundé,  Islamabad et Osaka au  voisinage très approximatif
+de l'équateur.
+
+Pour le tétraèdre PL4, j'ai pris des villes en A, B, C, D, disposées à
+peu près  comme sur le  globe terrestre. Pour  le cube PL6,  j'ai pris
+également  des villes  réparties  sur le  globe  terrestre, mais  sans
+choisir un motif  alphabétique particulier. Les noms vont  de `B` pour
+Buenos  Aires  jusqu'à  `W`  pour  Wellington,  avec  des  trous  dans
+l'alphabet. Et pour  l'icosèdre PL20, j'ai pris 12 villes  de `A` pour
+Amsterdam à `L`  pour London, mais sans chercher à  les disposer comme
+sur le globe terrestre.
+
+Les  graphes  PL4,  PL6  et  PL8  représentent  les  solides  associés
+(tétraèdre, cube  et octaèdre) en perspective  cavalière. En revanche,
+l'icosèdre est  représenté par  PL20 en  projection polaire,  comme le
+dodécaèdre. En fait, j'ai recopié  l'une des représentations du graphe
+que l'on voit sur le site
+[Wolfram](https://mathworld.wolfram.com/IcosahedralGraph.html).
+
+Résultat  des  courses :  la   génération  `gener1.raku`  des  chemins
+régionaux  et   macro-chemins  est  quasiment  immédiate,   sauf  pour
+l'icosaèdre PL20.  Pour ce dernier,  la génération a pris  35 minutes,
+dont  2 minutes  pour  la  génération à  proprement  parler des  75840
+chemins  régionaux   et  le  reste,   environ  33  minutes,   pour  la
+renumérotation  de ces  chemins.  La génération  des chemins  complets
+génériques  `gener2.raku` a  été,  quant à  elle,  immédiate pour  les
+quatres polyèdres. On  aurait pu s'en douter, compte tenu  du fait que
+chaque graphe ne comporte qu'une seule grande région.
+
 Graphes élémentaires
 ====================
 
@@ -3606,11 +3648,19 @@ graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
 loin des problèmes de chemins hamiltoniens, mais tant pis. Réalisation
 assez facile.
 
-7. Au lieu de considérer seulement le dodécaèdre du jeu icosien, créer
-les graphes  correspondant aux autres solides  platoniciens. Il faudra
-revoir la table des isométries et la table des relations entre chemins
-et isométries,  parce que le  dodécaèdre ne  sera plus la  seule carte
-avec des isométries. Réalisation facile.
+7. Certaines cartes  montrent la totalité du globe  terrestre et elles
+comportent  des liens  entre une  zone extrême-orientale  et une  zone
+extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
+[carte de Risk](https://boardgamegeek.com/image/79615/risk)
+ou Alaska → Northern Russia dans
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
+l'Alaska basique à  la longitude 170 W et l'Alaska  bis à la longitude
+190 E, le Kamtchatka basique à la longitude 160 E et le Kamtchatka bis
+à la longitude 200 W. De même, l'arête reliant ces zones sera affichée
+deux fois, une première  fois entre les longitudes 170 W  et 200 W, la
+seconde fois entre les longitudes 160 E et 190 E. Facile à réaliser.
+
 
 LICENCE
 =======

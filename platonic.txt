@@ -1,0 +1,36 @@
+A ; PL4  ; Tétraèdre    ; Blue    ;
+B ; A    ; Anchorage    ;  2 ,  3 ; B, C, D
+B ; B    ; Buenos Aires ;  0 ,  0 ; C, D, A
+B ; C    ; Canberra     ;  6 ,  1 ; D, A, B
+B ; D    ; Durban       ;  3 ,  0 ; A, B, C
+A ; PL8  ; Octaèdre     ; Blue    ;
+B ; A    ; Anchorage    ;  2 ,  5 ; E, Y, I, O
+B ; E    ; Edmonton     ;  2 ,  1 ; A, Y, U, O
+B ; Y    ; Yaoundé      ;  1 ,  0 ; A, I, U, E
+B ; I    ; Islamabad    ;  3 ,  0 ; A, O, U, Y
+B ; O    ; Osaka        ;  4 ,  1 ; A, E, U, I
+B ; U    ; Ushuaia      ;  3 , -4 ; E, Y, I, O
+A ; PL6  ; Cube         ; Blue    ;
+B ; B    ; Buenos Aires ;  0 ,  0 ; D, M, W
+B ; D    ; Durban       ;  4 ,  0 ; A, B, C
+B ; C    ; Canberra     ;  6 ,  1 ; D, O, W
+B ; W    ; Wellington   ;  2 ,  1 ; B, C, H
+B ; M    ; Montréal     ;  0 ,  4 ; A, B, H
+B ; A    ; Athènes      ;  4 ,  4 ; D, M, O
+B ; O    ; Osaka        ;  6 ,  5 ; A, C, H
+B ; H    ; Honolulu     ;  2 ,  5 ; M, O, W
+A ; PL20 ; Icosaèdre    ; Blue    ;
+B ; A    ; Amsterdam    ;  1 ,  1 ; E, H, J, K, L
+B ; B    ; Bruxelles    ;  0 , -2 ; D, E, G, I, L
+B ; C    ; Canberra     ; -2 ,  2 ; D, F, H, I, K
+B ; D    ; Dehli        ; -2 , -1 ; B, C, H, I, L
+B ; E    ; Edmonton     ;  2 , -1 ; A, B, G, J, L
+B ; F    ; Francfort    ;  0 ,  5 ; C, G, I, J, K
+B ; G    ; Genève       ;  4 , -3 ; B, E, F, I, J
+B ; H    ; Hambourg     ; -1 ,  1 ; A, C, D, K, L
+B ; I    ; Islamabad    ; -4 , -3 ; B, C, D, F, G
+B ; J    ; Jeddo        ;  2 ,  2 ; A, E, F, G, K
+B ; K    ; Kaschmir     ;  0 ,  3 ; A, C, F, H, J
+B ; L    ; London       ;  0 , -1 ; A, B, D, E, H
+X ; F    ; I            ; -4 ,  2 ;
+X ; F    ; G            ;  4 ,  2 ;
