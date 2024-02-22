@@ -21,7 +21,7 @@ sub MAIN (
   my Int $radius = 100;
   my Int $prism-radius = 30;
 
-  my @type = <P C W S PRS APR>;
+  my @type = <P C W S Y AY>;
   my %map;
   for @type -> Str $type {
     my $map = sprintf("%s%02d", $type, $nb);
@@ -61,8 +61,8 @@ sub MAIN (
       when 'C'   { $label = "Circle with $nb nodes"; }
       when 'W'   { $label = "Wheel with $nb spokes"; }
       when 'S'   { $label = "Star with $nb rays"; }
-      when 'PRS' { $label = "Prism with two {$nb}-sided faces"; }
-      when 'APR' { $label = "Antiprism with two {$nb}-sided faces"; }
+      when 'Y'   { $label = "Prism with two {$nb}-sided faces"; }
+      when 'AY'  { $label = "Antiprism with two {$nb}-sided faces"; }
     }
     $dbh.execute(q:to/SQL/, $map, $label);
     insert into Maps values (?, ?, 0, 0, 0, '', 0);
@@ -91,18 +91,18 @@ sub MAIN (
     my Str $code1 = sprintf("B%02d", $angle);
     $long = $prism-radius.Num × cos( $angle.Num × 2 × π / $nb + π / 2) + $ε;
     $lat  = $prism-radius.Num × sin( $angle.Num × 2 × π / $nb + π / 2) + $ε;
-    $sto-area.execute(%map<PRS>, 2, $code1, $code, $long, $lat, $colour, %map<PRS>);
-    %borders<PRS>{$code }{$code1}++;
-    %borders<PRS>{$code1}{$code }++;
+    $sto-area.execute(%map<Y>, 2, $code1, $code, $long, $lat, $colour, %map<Y>);
+    %borders<Y>{$code }{$code1}++;
+    %borders<Y>{$code1}{$code }++;
 
     $long = $prism-radius.Num × cos( ($angle.Num × 2 + 1) × π / $nb + π / 2) + $ε;
     $lat  = $prism-radius.Num × sin( ($angle.Num × 2 + 1) × π / $nb + π / 2) + $ε;
-    $sto-area.execute(%map<APR>, 2, $code1, $code, $long, $lat, $colour, %map<APR>);
-    %borders<APR>{$code }{$code1}++;
-    %borders<APR>{$code1}{$code }++;
+    $sto-area.execute(%map<AY>, 2, $code1, $code, $long, $lat, $colour, %map<AY>);
+    %borders<AY>{$code }{$code1}++;
+    %borders<AY>{$code1}{$code }++;
 
     $code1 = sprintf("A%02d", ($angle + 1) % $nb);
-    for <C W PRS APR> -> $type {
+    for <C W Y AY> -> $type {
       %borders{$type}{$code }{$code1}++;
       %borders{$type}{$code1}{$code }++;
     }
@@ -112,13 +112,13 @@ sub MAIN (
     }
     $code  = sprintf("B%02d", $angle);
     $code1 = sprintf("B%02d", ($angle + 1) % $nb);
-    %borders<PRS>{$code }{$code1}++;
-    %borders<PRS>{$code1}{$code }++;
-    %borders<APR>{$code }{$code1}++;
-    %borders<APR>{$code1}{$code }++;
+    %borders<Y>{$code }{$code1}++;
+    %borders<Y>{$code1}{$code }++;
+    %borders<AY>{$code }{$code1}++;
+    %borders<AY>{$code1}{$code }++;
     $code1 = sprintf("A%02d", ($angle + 1) % $nb);
-    %borders<APR>{$code }{$code1}++;
-    %borders<APR>{$code1}{$code }++;
+    %borders<AY>{$code }{$code1}++;
+    %borders<AY>{$code1}{$code }++;
   }
 
   for @type -> $type {

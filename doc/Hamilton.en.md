@@ -3179,14 +3179,16 @@ _n_-sided polygon,
 the spokes and _n_ edges for the rim),
 
 * [prism graph](https://mathworld.wolfram.com/PrismGraph.html)
-PRS _n_, with 2 × _n_ nodes and 3 × _n_ edges, representing a
+Y _n_, with 2 × _n_ nodes and 3 × _n_ edges, representing a
 [geometrical prism](https://mathworld.wolfram.com/Prism.html)
 in which both bases are _n_-sided polygons,
 
 * [antiprism graph](https://mathworld.wolfram.com/AntiprismGraph.html)
-APR _n_, with 2 × _n_ nodes and 4 × _n_ edges, representing a
+AY _n_, with 2 × _n_ nodes and 4 × _n_ edges, representing a
 [geometrical antiprism](https://mathworld.wolfram.com/Antiprism.html)
-in which both bases are _n_-sided polygons,
+in which  both bases are  _n_-sided polygons.  "AY" is not  a standard
+notation, it is a personal extension  to the "Y" standard notation for
+prism graphs.
 
 Here are the graphs generated with _n_ = 5:
 
@@ -3205,8 +3207,8 @@ prevent a zero-by-zero division.
 
 Generating some graphs  allows us to find some  well-known graphs. For
 example, the `W03` wheel graph is  similar to the `K04` complete graph
-and to  the tetrahedron graph. Also,  graph `PRS04` is similar  to the
-geometrical  cube (aka  hexahedron) and  graph `APR03`  is similar  to
+and to  the tetrahedron  graph. Also,  graph `Y04`  is similar  to the
+geometrical  cube (aka  hexahedron)  and graph  `AY03`  is similar  to
 octahedron.
 
 ![Special elementary Graphs](Special-graphs.webp)

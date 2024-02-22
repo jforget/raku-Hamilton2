@@ -3326,14 +3326,18 @@ Le progamme `init-elem.raku` permet de créer une série de graphes
 * le graphe en roue W _n_ à _n_+1 sommets et 2 × _n_ arcs (_n_ pour la
 jante et _n_ pour les rayons),
 
-* le graphe prisme PRS _n_ à 2 × _n_ sommets et 3 × _n_ arcs, représentant un
+* le graphe prisme Y _n_ à 2 × _n_ sommets et 3 × _n_ arcs, représentant un
 [prisme  géométrique](https://mathcurve.com/polyedres/prisme/prisme.shtml)
 dont les  deux bases  sont des polygones  à _n_ côtés,
 
-* le graphe  antiprisme APR _n_  à 2  × _n_ sommets  et 4 ×  _n_ arcs,
+* le graphe  antiprisme AY _n_  à 2  × _n_ sommets  et 4 ×  _n_ arcs,
 représentant un
 [antiprisme géométrique](https://mathcurve.com/polyedres/prisme/antiprisme.shtml)
-dont  les deux bases  sont des polygones à _n_ côtés,
+dont les deux bases sont des polygones à _n_ côtés. La notation « AY »
+n'est  pas  une  notation  standard. C'est  une  notation  personnelle
+destinée à rappeler la notation standard « Y » donnée sur le
+[site web de Wolfram](https://mathworld.wolfram.com/AntiprismGraph.html)
+pour les  graphes de prisme.
 
 Voici les graphes obtenus pour _n_ valant 5 :
 
@@ -3351,8 +3355,8 @@ pas souhaitable que l'écart entre le max et le min de la latitude soit
 La génération de certains graphes élémentaires permet de retrouver des
 graphes connus. Ainsi, le graphe `W03` (roue à 3 rayons) est également
 le  graphe  `K04`  (graphe  complet  à  4  sommets)  ou  le  tétraèdre
-platonicien. Également, le graphe `PRS04` est  ni plus ni moins que le
-cube (ou hexaèdre) et l'antiprisme `APR03` est l'octaèdre.
+platonicien. Également,  le graphe `Y04` est  ni plus ni moins  que le
+cube (ou hexaèdre) et l'antiprisme `AY03` est l'octaèdre.
 
 ![Graphes élémentaire particuliers](Special-graphs.webp)
 
