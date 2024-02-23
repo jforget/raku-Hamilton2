@@ -184,6 +184,8 @@ Les autres informations sont :
 * `with_scale`  indicateur spécifiant  si le  graphe correspond  à des
 points situés à la surface de la Terre, auquel cas les dessins devront
 afficher une échelle.
+* `with_isom` indicateur  spécifiant si  l'on a défini  des isométries
+pour ce graphe et si elles ont été calculées.
 
 Areas
 -----
@@ -268,7 +270,24 @@ Autres champs :
 * `color`,
 * `fruitless`,
 * `nb_paths`,
-* `nb_paths_1`.
+* `nb_paths_1`
+* `cross_idl`
+
+Dans certains cas, un enregistrement ne représente pas une frontière à
+proprement parler,  mais une liaison  maritime d'une zone à  une autre
+zone  située sur  une autre  île ou  un autre  continent. On  conserve
+néanmoins le terme géographique « frontière » ou le terme mathématique
+« arête ».
+
+Dans le cas où  la carte couvre la totalité du  globe terrestre, il se
+peut que certaines  arêtes joignent une zone  extrême-orientale sur le
+côté droit de  la carte avec une zone extrême-occidentale  sur le côté
+gauche  de la  carte. Pour  permettre  un affichage  correct de  cette
+arête,  le champ  `cross_idl`  est alimenté  à  `1`. « Idl »  signifie
+_International Date  Line_ ou  « ligne de  changement de  date », même
+s'il peut arriver que  la carte ne soit pas découpée  le long de cette
+ligne, comme dans
+[cet exemple](https://boardgamegeek.com/image/476132/risk).
 
 La plupart du  temps, la longitude et la latitude  resteront à zéro et
 dans  la représentation  graphique,  l'arête sera  représentée par  un
@@ -3316,21 +3335,21 @@ Graphes élémentaires
 Le progamme `init-elem.raku` permet de créer une série de graphes
 élémentaires, en fonction d'un nombre _n_ caractéristique :
 
-* le graphe linéaire P _n_ à _n_ sommets et _n_-1 arcs,
+* le graphe linéaire P _n_ à _n_ sommets et _n_-1 arêtes,
 
-* le  graphe circulaire  C _n_ à  _n_ sommets  et _n_ arcs (en  fait un
+* le graphe circulaire C  _n_ à _n_ sommets et _n_  arêtes (en fait un
   polygone à _n_ côtés),
 
-* le graphe en étoile S _n_ à _n_+1 sommets et _n_ arcs,
+* le graphe en étoile S _n_ à _n_+1 sommets et _n_ arêtes,
 
-* le graphe en roue W _n_ à _n_+1 sommets et 2 × _n_ arcs (_n_ pour la
-jante et _n_ pour les rayons),
+* le graphe en roue W _n_ à _n_+1  sommets et 2 × _n_ arêtes (_n_ pour
+la jante et _n_ pour les rayons),
 
-* le graphe prisme Y _n_ à 2 × _n_ sommets et 3 × _n_ arcs, représentant un
+* le graphe prisme Y _n_ à 2 × _n_ sommets et 3 × _n_ arêtes, représentant un
 [prisme  géométrique](https://mathcurve.com/polyedres/prisme/prisme.shtml)
 dont les  deux bases  sont des polygones  à _n_ côtés,
 
-* le graphe  antiprisme AY _n_  à 2  × _n_ sommets  et 4 ×  _n_ arcs,
+* le graphe  antiprisme AY _n_ à  2 × _n_  sommets et 4 ×  _n_ arêtes,
 représentant un
 [antiprisme géométrique](https://mathcurve.com/polyedres/prisme/antiprisme.shtml)
 dont les deux bases sont des polygones à _n_ côtés. La notation « AY »
@@ -3659,12 +3678,18 @@ extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
 ou Alaska → Northern Russia dans
 [War on Terror](https://boardgamegeek.com/image/134814/war-terror).
 Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
-l'Alaska basique à  la longitude 170 W et l'Alaska  bis à la longitude
-190 E, le Kamtchatka basique à la longitude 160 E et le Kamtchatka bis
-à la longitude 200 W. De même, l'arête reliant ces zones sera affichée
-deux fois, une première  fois entre les longitudes 170 W  et 200 W, la
-seconde fois entre les longitudes 160 E et 190 E. Facile à réaliser.
+l'Alaska basique à  la longitude 172 W et l'Alaska  bis à la longitude
+188 E, le Kamtchatka basique à la longitude 163 E et le Kamtchatka bis
+à la longitude 197 W. De même, l'arête reliant ces zones sera affichée
+deux fois, une première  fois entre les longitudes 172 W  et 197 W, la
+seconde fois entre les longitudes 163 E et 188 E. Facile à réaliser.
 
+8. Exporter les différents graphes (cartes complètes, cartes réduites,
+cartes régionales) dans des fichiers sources `dot`, pour pouvoir jouer
+avec ces graphes dans Graphviz /
+[`neato`](https://graphviz.org/docs/layouts/neato/)
+et dans
+[`tulip`](https://tulip.labri.fr/site/).
 
 LICENCE
 =======

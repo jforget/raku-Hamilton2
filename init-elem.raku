@@ -39,8 +39,8 @@ sub MAIN (
   SQL
 
   my $sto-border = $dbh.prepare(q:to/SQL/);
-  insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1)
-         values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0)
+  insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1, cross_idl)
+         values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0         , 0)
   SQL
 
   my $sto-mesg = $dbh.prepare(q:to/SQL/);
@@ -65,7 +65,8 @@ sub MAIN (
       when 'AY'  { $label = "Antiprism with two {$nb}-sided faces"; }
     }
     $dbh.execute(q:to/SQL/, $map, $label);
-    insert into Maps values (?, ?, 0, 0, 0, '', 0);
+    insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
+              values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0);
     SQL
     $sto-area.execute($map, 1, $map, $label, 0, 0, $colour, '');
     if $type eq 'W' | 'S' {

@@ -115,7 +115,8 @@ update Isometries as A
                      where  B.map       = A.map
                      and    B.transform = A.recipr
                     )
-where A.involution = -1
+where A.map        = 'ico'
+and   A.involution = -1
 SQL
 
 $dbh.execute("commit");
@@ -149,6 +150,11 @@ for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
     $sto-path.execute($canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
   }
 }
+$dbh.execute(q:to/SQL/);
+update Maps
+set    with_isom = 1
+where  map = 'ico'
+SQL
 $dbh.execute("commit");
 
 =begin POD

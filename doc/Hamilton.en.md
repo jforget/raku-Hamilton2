@@ -163,7 +163,9 @@ Other fields are:
 [fifth version of the software](#user-content-fifth-version),
 * `with_scale` flag controlling the display  of a scale in the various
 pictures,  meaning  that the  graph  nodes  are locations  on  Earth's
-surface.
+surface,
+* `with_isom` flag showing whether  isometries have been generated for
+the graph.
 
 Areas
 -----
@@ -248,6 +250,19 @@ Other fields:
 * `fruitless`,
 * `nb_paths`,
 * `nb_paths_1`.
+* `cross_idl`
+
+In some cases, a record in this table does not represent a terrestrial
+border proper, but a sea lane from  an area to another area on another
+island / continent. But we keep  the geographical word "border" or the
+mathematical word "edge".
+
+If the map covers the whole Earth,  it may happen that some edges link
+a far-east area  on the map right  side to a far-west area  on the map
+left  side. The  `cross_idl`  field is  set to  `1`  so the  graphical
+routine will deal  with this special case.  "idl" means "International
+Date Line", even if in some cases the map is not cut along this line, like in
+[this example]s(https://boardgamegeek.com/image/476132/risk).
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -3506,10 +3521,17 @@ For example, Alaska  → Kamtchatka in
 or Alaska  → Northern Russia in
 [War on Terror](https://boardgamegeek.com/image/134814/war-terror).
 In this  case, both nodes should  be displayed twice: basic  Alaska at
-longitude  170  W and  duplicate  Alaska  at  longitude 190  E,  basic
-Kamtchatka at  longitude 160 E  and duplicate Kamtchatka  at longitude
-200 W. The edge would be drawn twice, a first time from 170 W to 200 W
-and a second time from 190 E to 160 E. Rather easy to implement.
+longitude  172  W and  duplicate  Alaska  at  longitude 188  E,  basic
+Kamtchatka at  longitude 163 E  and duplicate Kamtchatka  at longitude
+197 W. The edge would be drawn twice, a first time from 172 W to 197 W
+and a second time from 188 E to 163 E. Rather easy to implement.
+
+8. Export the various graphs (full maps, macro maps, regional maps) to
+`dot` source  files, so  we can  play on  these graphs  with Graphviz'
+[`neato`](https://graphviz.org/docs/layouts/neato/)
+and with
+[`tulip`](https://tulip.labri.fr/site/).
+Easy to implement.
 
 License
 =======

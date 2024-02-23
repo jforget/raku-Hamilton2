@@ -23,16 +23,19 @@ for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
   $dbh.execute("delete from $table where map in ('fr1970', 'fr2015', 'frreg');");
 }
 
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('fr1970', 'Départements dans les régions de 1970', 0, 0, 0, '', 1);
+$dbh.execute(q:to/SQL/, 'fr1970', 'Départements dans les régions de 1970');
+insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
+          values (?  , ?   , 0       , 0      , 0         , ''              , 1,          0);
 SQL
 
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('fr2015', 'Départements dans les régions de 2015', 0, 0, 0, '', 1);
+$dbh.execute(q:to/SQL/, 'fr2015', 'Départements dans les régions de 2015');
+insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
+          values (?  , ?   , 0       , 0      , 0         , ''              , 1,          0);
 SQL
 
-$dbh.execute(q:to/SQL/);
-insert into Maps values ('frreg',  'Régions de 1970 dans les régions de 2015', 0, 0, 0, '', 1);
+$dbh.execute(q:to/SQL/, 'frreg', 'Régions de 1970 dans les régions de 2015');
+insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
+          values (?  , ?   , 0       , 0      , 0         , ''              , 1,          0);
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
@@ -41,8 +44,8 @@ insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_pat
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
-insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1)
-       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0)
+insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1, cross_idl)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0         , 0)
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);
@@ -160,8 +163,8 @@ for %borders.kv -> $from, $hashto {
 
 # Level 1 borders, all in one go
 $dbh.execute(q:to/SQL/);
-insert into Borders (map, level, from_code , to_code , upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1)
-     select distinct map, 1    , upper_from, upper_to, ''        , ''      , 0   , 0  , 'Black', 0,         0,        0
+insert into Borders (map, level, from_code , to_code , upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1, cross_idl)
+     select distinct map, 1    , upper_from, upper_to, ''        , ''      , 0   , 0  , 'Black', 0,         0,        0         , 0
      from   Small_Borders
      where  map in ('fr1970', 'fr2015')
        and  upper_from != upper_to
@@ -169,16 +172,16 @@ SQL
 
 # Filling map 'frreg' level 1
 $dbh.execute(q:to/SQL/);
-insert into Borders (map   ,  level, from_code, to_code, upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1)
-     select         'frreg',  1    , from_code, to_code, ''        , ''      , 0   , 0  , 'Black', 0,         0,        0
+insert into Borders (map   ,  level, from_code, to_code, upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1, cross_idl)
+     select         'frreg',  1    , from_code, to_code, ''        , ''      , 0   , 0  , 'Black', 0,         0,        0         , 0
      from  Big_Borders
      where map = 'fr2015'
 SQL
 
 # Filling map 'frreg' level 2, with a problem on the color
 $dbh.execute(q:to/SQL/);
-insert into Borders (map   ,  level, from_code  , to_code  , upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1)
-     select         'frreg',  2    , B.from_code, B.to_code, F.upper   , T.upper , 0   , 0  , F.color, 0,         0,        0
+insert into Borders (map   ,  level, from_code  , to_code  , upper_from, upper_to, long, lat, color  , fruitless, nb_paths, nb_paths_1, cross_idl)
+     select         'frreg',  2    , B.from_code, B.to_code, F.upper   , T.upper , 0   , 0  , F.color, 0,         0,        0         , 0
      from  Big_Borders B
         ,  Small_Areas F
         ,  Small_Areas T

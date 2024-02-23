@@ -22,7 +22,7 @@ my $dbh = DBIish.connect('SQLite', database => dbname());
 
 # No this is not a Bobby Tables problem. All table names are controlled by the programme,
 # they do not come from an external source.
-for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
+for <Maps Areas Borders Paths Path_Relations Exit_Borders Isometries Isom_Path Messages> -> $table {
   $dbh.execute("delete from $table where map = ?;", $map);
 }
 
@@ -32,8 +32,8 @@ insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_pat
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
-insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1)
-       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0)
+insert into Borders (map, level, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, nb_paths_1, cross_idl)
+       values       (?,   ?,     ?,         ?,       ?,          ?,        ?,    ?,   ?    , 0,         0,        0         , 0)
 SQL
 
 my $sto-mesg = $dbh.prepare(q:to/SQL/);
@@ -52,7 +52,8 @@ for $fh.lines -> Str $line {
   given $lvl {
     when 'A' {
       $dbh.execute(q:to/SQL/, $map, $name);
-      insert into Maps values (?, ?, 0, 0, 0, '', 0);
+      insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
+                values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0);
       SQL
       $region = ~ $code;
       $colour = ~ $color-or-coord;

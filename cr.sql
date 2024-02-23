@@ -5,6 +5,7 @@ create table Maps (map               TEXT
                  , nb_generic        INTEGER
                  , fruitless_reason  TEXT
                  , with_scale        INTEGER
+                 , with_isom         INTEGER
                  );
 
 create table Areas (map      TEXT
@@ -33,6 +34,7 @@ create table Borders (map       TEXT
                    , fruitless  INTEGER
                    , nb_paths   INTEGER
                    , nb_paths_1 INTEGER
+                   , cross_idl  INTEGER
                    );
 
 create table Paths   (map       TEXT
@@ -104,13 +106,13 @@ create view Small_Areas (map, code, name, long, lat, color, upper, nb_region_pat
             from         Areas
             where        level = 2;
 
-create view Big_Borders (map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1)
-         as select       map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1
+create view Big_Borders (map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1, cross_idl)
+         as select       map, from_code, to_code, long, lat, fruitless, nb_paths, nb_paths_1, cross_idl
             from         Borders
             where        level = 1;
 
-create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths)
-         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths
+create view Small_Borders (map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, cross_idl)
+         as select         map, from_code, to_code, upper_from, upper_to, long, lat, color, fruitless, nb_paths, cross_idl
             from           Borders
             where          level = 2;
 

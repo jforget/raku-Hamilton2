@@ -30,7 +30,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   else {
     $at.at('a.macro-stat1')».remove;
   }
-  if $mapcode eq 'ico' {
+  if %map<with_isom> == 1 {
     $at.at('a.path-derivation').attr(href => "/$lang/deriv-ico-path/%path<num>$query-string");
   }
   else {
