@@ -429,7 +429,7 @@ sub MAIN (
 
   # Counting the number of specific full paths for each macro-path
   $dbh.execute("begin transaction");
-  
+
   $dbh.execute(q:to/SQL/, $map);
   update  Paths as M
   set     nb_full_paths = ( select coalesce(sum(F.paths_nb), 0)

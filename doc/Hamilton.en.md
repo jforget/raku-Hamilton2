@@ -12,6 +12,8 @@ Hamiltonian path  is an hamiltonian path  crossing each one of  the 94
 departments, with  the additional  constraint that when  narrowing the
 view on any single region, the partial path is still Hamiltonian.
 
+(On the right, zomm on Île-de-France, which is too much cluttered on the left side of the picture)
+
 ![Example with French departments and year 1970 regions](fr1970-1.png)
 
 Checking whether  an Eulerian path  exists in  a connected unoriented graph  is a
@@ -79,9 +81,10 @@ departments 32 and 64 are irrelevant.
 
 ![Top of the fr1970 macro-map and South of Nouvelle Aquitaine](NPC-PIC-NAQ.png)
 
-When reading the
+According to the
 [Glossary of graph theory](https://en.wikipedia.org/wiki/Glossary_of_graph_theory)
-I found a convenient notion, the
+the phrase "dead end" is not an official phrase for graph theory.
+On the other hand, I found a convenient notion, the
 [Articulation point](https://en.wikipedia.org/wiki/Articulation_point).
 
 Within  a connected  graph, an  articulation point  is a  vertex which
@@ -556,8 +559,10 @@ Special Cases
 -------------
 
 For the [naval operation map] (https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
-of _Operation Mercury_, the mapedges are  not oriented west → east and
-north → south as usual. So the conversion functions look like:
+of _Operation Mercury_ and for the
+[map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
+the mapedges are not oriented west →  east and north → south as usual.
+So the conversion functions look like:
 
 ```
 sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
@@ -588,8 +593,9 @@ so that  when you  read the  values afterwards,  SQLite will  give you
 floating  numbers compatible  with Raku's  `Num`. When  displaying the
 graphs, the  kilometer-scale will not  be displayed. This  scale would
 have  been irrelevant  for the  dodecahedron  and it  would have  been
-misleading for the _Znutar_ spaceship  of _The Awful Green Things From
-Outer Space_.
+misleading for the
+[_Znutar_ spaceship](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
+of _The Awful Green Things From Outer Space_.
 
 Extracting Hamiltonian Paths
 ============================
@@ -3208,6 +3214,10 @@ prism graphs.
 Here are the graphs generated with _n_ = 5:
 
 ![Elementary graphs for n=5](Elementary-graphs.webp)
+
+Just one mistake I will fix some time: the picture shows graphs
+S06 and W06, named thus because they have 6 nodes, even if they have
+only 5 rays or 5 spokes.
 
 The  complete graph  K _n_  is not  generated, because  the number  of
 Hamiltonian paths  in this  graph would  be huge,  this number  is the

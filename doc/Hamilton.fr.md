@@ -13,6 +13,8 @@ hamiltonien  entre les  94 départements  continentaux, tel  que chaque
 fois  que   le  chemin  traverse   une  région,  le  bout   de  chemin
 correspondant est lui aussi hamiltonien.
 
+(À droite, zoom sur l'Île-de-France, qui est un peu trop confuse sur la partie gauche du dessin)
+
 ![Exemple avec les départements français et les régions de 1970](fr1970-1.png)
 
 La question  de déterminer  s'il existe des  chemins eulériens  sur un
@@ -82,9 +84,9 @@ départements 32 et 65 ne comptant pas.
 
 ![Haut de la macro-carte fr1970 et sud de la Nouvelle Aquitaine](NPC-PIC-NAQ.png)
 
-En consultant le
+D'après le
 [lexique de la théorie des graphes](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
-j'ai trouvé la notion de
+le terme « impasse » n'est pas un terme officiel. En revanche, j'ai trouvé la notion de
 [point d'articulation](https://fr.wikipedia.org/wiki/Point_d%27articulation_(th%C3%A9orie_des_graphes)).
 
 Dans le cas d'un graphe connexe, un point d'articulation est un sommet
@@ -586,9 +588,10 @@ Cas particuliers
 ----------------
 
 Pour la [carte d'opération navale](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
-de  _Operation Mercury_,  les  bords ne  respectent pas  l'orientation
-habituelle ouest  → est  et nord  → sud.  Les fonctions  de conversion
-prennent alors la forme :
+de  _Operation Mercury_, et pour la
+[carte de _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
+les bords  ne respectent pas  l'orientation habituelle ouest →  est et
+nord → sud. Les fonctions de conversion prennent alors la forme :
 
 ```
 sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
@@ -621,8 +624,9 @@ une  partie  fractionnaire  artificielle  pour  que  SQLite  fournisse
 effectivement  du `Num`.  L'affichage  des graphes  ne comportera  pas
 d'échelle  contrairement aux  cartes  géographiques terrestres.  Cette
 échelle n'aurait pas de signification  pour le dodécaèdre, elle serait
-fallacieuse pour le vaisseau _Znutar_  de _The Awful Green Things From
-Outer Space_.
+fallacieuse pour le
+[vaisseau _Znutar_](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
+de _The Awful Green Things From Outer Space_.
 
 Extraction des chemins hamiltoniens
 ===================================
@@ -3308,13 +3312,13 @@ peu près  comme sur le  globe terrestre. Pour  le cube PL6,  j'ai pris
 également  des villes  réparties  sur le  globe  terrestre, mais  sans
 choisir un motif  alphabétique particulier. Les noms vont  de `B` pour
 Buenos  Aires  jusqu'à  `W`  pour  Wellington,  avec  des  trous  dans
-l'alphabet. Et pour  l'icosèdre PL20, j'ai pris 12 villes  de `A` pour
+l'alphabet. Et pour l'icosaèdre PL20, j'ai pris 12 villes  de `A` pour
 Amsterdam à `L`  pour London, mais sans chercher à  les disposer comme
 sur le globe terrestre.
 
 Les  graphes  PL4,  PL6  et  PL8  représentent  les  solides  associés
 (tétraèdre, cube  et octaèdre) en perspective  cavalière. En revanche,
-l'icosèdre est  représenté par  PL20 en  projection polaire,  comme le
+l'icosaèdre est  représenté par PL20  en projection polaire,  comme le
 dodécaèdre. En fait, j'ai recopié  l'une des représentations du graphe
 que l'on voit sur le site
 [Wolfram](https://mathworld.wolfram.com/IcosahedralGraph.html).
@@ -3355,12 +3359,15 @@ représentant un
 dont les deux bases sont des polygones à _n_ côtés. La notation « AY »
 n'est  pas  une  notation  standard. C'est  une  notation  personnelle
 destinée à rappeler la notation standard « Y » donnée sur le
-[site web de Wolfram](https://mathworld.wolfram.com/AntiprismGraph.html)
+[site web de Wolfram](https://mathworld.wolfram.com/Prism.html)
 pour les  graphes de prisme.
 
 Voici les graphes obtenus pour _n_ valant 5 :
 
 ![Graphes élémentaires pour n=5](Elementary-graphs.webp)
+
+Juste une petite erreur à corriger : le dessin montre les graphes S06 et W06 contenant
+6 sommets pour seulement 5 rayons.
 
 Il  n'y a  pas de  graphe  complet K  _n_,  car le  nombre de  chemins
 hamiltoniens obtenus  serait trop fort,  c'est la factorielle  de _n_.
