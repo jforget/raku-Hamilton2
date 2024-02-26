@@ -243,7 +243,8 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   for @full-numbers.kv -> $i, $num {
     push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
   }
-  my @indices  = list-numbers(@full-numbers.elems, $num) «-» 1;
+  my @indices    = list-numbers(@full-numbers.elems, $num) «-» 1;
+  my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
   return region-path::render(lang     => $lng
                            , mapcode  => $map
@@ -255,6 +256,7 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , messages => @messages
                            , rpath-links    => @links
                            , fpath-links    => @full-links[@indices]
+                           , ico-links      => @ico-links
                            , query-string   => $query-string
                            );
 }
