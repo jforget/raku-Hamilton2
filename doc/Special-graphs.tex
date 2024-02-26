@@ -1,0 +1,86 @@
+% -*- encoding: utf-8 -*-
+%
+%     Utility script for raku-Hamilton2's documentation
+%     Copyright (C) 2024 Jean Forget
+%
+%     This program is distributed under the  Artistic License 2.0.
+%
+
+\documentclass[a4paper]{article}
+\usepackage{luamplib}
+\begin{document}
+\begin{mplibcode}
+beginfig(1);
+
+def node(expr lab, z) =
+unfill z + (side, side) -- z + (-side, side) -- z + (-side, -side) -- z + (side, -side) -- cycle;
+label(lab, z);
+enddef;
+
+side = 5; % half-size of box containing the labels
+pair cw; % centre of W4 graph
+pair rw; % ray of W4 graph
+cw = (0, 0);
+rw = (0, 50);
+
+draw cw -- cw + rw             -- cw + rw rotated 120;
+draw cw -- cw + rw rotated 120 -- cw + rw rotated 240;
+draw cw -- cw + rw rotated 240 -- cw + rw;
+node(btex Z etex, cw);
+node(btex A etex, cw + rw);
+node(btex B etex, cw + rw rotated 120);
+node(btex C etex, cw + rw rotated 240);
+label(btex W4 etex, cw + (0, 70));
+
+pair cy; % centre of Y4 graph
+pair rya; % ray of inner part of Y4 graph
+pair rye; % ray of outer part of Y4 graph
+
+cy = (120, 0);
+rya = (0, 30);
+rye = (0, 60);
+
+draw cy + rya -- cy + rya rotated 90 -- cy + rya rotated 180 -- cy + rya rotated 270 -- cycle;
+draw cy + rye -- cy + rye rotated 90 -- cy + rye rotated 180 -- cy + rye rotated 270 -- cycle;
+draw cy + rya -- cy + rye;
+draw cy + rya rotated  90 -- cy + rye rotated  90;
+draw cy + rya rotated 180 -- cy + rye rotated 180;
+draw cy + rya rotated 270 -- cy + rye rotated 270;
+label(btex Y4 etex, cy + (0, 80));
+node(btex A etex, cy + rya);
+node(btex B etex, cy + rya rotated  90);
+node(btex C etex, cy + rya rotated 180);
+node(btex D etex, cy + rya rotated 270);
+node(btex E etex, cy + rye);
+node(btex F etex, cy + rye rotated  90);
+node(btex G etex, cy + rye rotated 180);
+node(btex H etex, cy + rye rotated 270);
+
+pair cay; % centre of AY3 graph
+pair raya; % ray of inner part of AY3 graph
+pair rayd; % ray of outer part of AY3 graph
+
+cay = (250, 30);
+raya = (0, 20);
+rayd = (0, 70) rotated 60;
+
+draw cay + raya -- cay + raya rotated 120 -- cay + raya rotated 240 -- cycle;
+draw cay + rayd -- cay + rayd rotated 120 -- cay + rayd rotated 240 -- cycle;
+draw cay + raya             -- cay + rayd rotated 240;
+draw cay + raya             -- cay + rayd;
+draw cay + raya rotated 120 -- cay + rayd;
+draw cay + raya rotated 120 -- cay + rayd rotated 120;
+draw cay + raya rotated 240 -- cay + rayd rotated 120;
+draw cay + raya rotated 240 -- cay + rayd rotated 240;
+label(btex AY3 etex, cay + (0, 50));
+node(btex A etex, cay + raya);
+node(btex B etex, cay + raya rotated 120);
+node(btex C etex, cay + raya rotated 240);
+node(btex D etex, cay + rayd);
+node(btex E etex, cay + rayd rotated 120);
+node(btex F etex, cay + rayd rotated 240);
+
+
+endfig;
+\end{mplibcode}
+\end{document}

@@ -14,7 +14,7 @@ use DBIish;
 use db-conf-sql;
 
 sub MAIN (
-      Int  :$nb    = 4             #= The number characteristic
+      Int :$nb where 3 ≤ * ≤ 9 = 5   #= The number characteristic
     ) {
 
   my $dbh = DBIish.connect('SQLite', database => dbname());
@@ -24,7 +24,11 @@ sub MAIN (
   my @type = <P C W S Y AY>;
   my %map;
   for @type -> Str $type {
-    my $map = sprintf("%s%02d", $type, $nb);
+    my $map;
+    given $type {
+      when 'P'|'C'|'Y'|'AY' { $map = sprintf("%s%d", $type, $nb); }
+      when 'S'|'W'          { $map = sprintf("%s%d", $type, $nb + 1); }
+    }
     %map{$type} = $map;
     # No this is not a Bobby Tables problem. All table names are controlled by the programme,
     # they do not come from an external source.
@@ -52,6 +56,9 @@ sub MAIN (
   my Str $colour = 'Blue';
   my %borders;
   my Num $ε = 1e-8; # to prevent SQLite from storing and retrieving Num's as Int's
+  my Str $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+  my Str $first-ring  = $alphabet.substr(0  , $nb);
+  my Str $second-ring = $alphabet.substr($nb, $nb);
 
   for @type -> $type {
     my Str $label;
@@ -70,26 +77,26 @@ sub MAIN (
     SQL
     $sto-area.execute($map, 1, $map, $label, 0, 0, $colour, '');
     if $type eq 'W' | 'S' {
-      $sto-area.execute($map, 2, 'CTR', "Centre", $ε, $ε, $colour, $map);
+      $sto-area.execute($map, 2, 'Z', "Centre", $ε, $ε, $colour, $map);
     }
   }
 
   for 0..^$nb -> $angle {
     my Num $long = $radius.Num × cos( $angle.Num × 2 × π / $nb + π / 2) + $ε;
     my Num $lat  = $radius.Num × sin( $angle.Num × 2 × π / $nb + π / 2) + $ε;
-    my Str $code = sprintf("A%02d", $angle);
+    my Str $code = $first-ring.substr($angle, 1);
     for @type -> $type {
       my Str $map = %map{$type};
       $sto-area.execute($map , 2, $code, $code, $long, $lat, $colour, $map);
     }
 
-    %borders<W>{$code}<CTR>++;
-    %borders<W><CTR>{$code}++;
+    %borders<W>{$code}<Z>++;
+    %borders<W><Z>{$code}++;
 
-    %borders<S>{$code}<CTR>++;
-    %borders<S><CTR>{$code}++;
+    %borders<S>{$code}<Z>++;
+    %borders<S><Z>{$code}++;
 
-    my Str $code1 = sprintf("B%02d", $angle);
+    my Str $code1 = $second-ring.substr($angle, 1);
     $long = $prism-radius.Num × cos( $angle.Num × 2 × π / $nb + π / 2) + $ε;
     $lat  = $prism-radius.Num × sin( $angle.Num × 2 × π / $nb + π / 2) + $ε;
     $sto-area.execute(%map<Y>, 2, $code1, $code, $long, $lat, $colour, %map<Y>);
@@ -102,22 +109,22 @@ sub MAIN (
     %borders<AY>{$code }{$code1}++;
     %borders<AY>{$code1}{$code }++;
 
-    $code1 = sprintf("A%02d", ($angle + 1) % $nb);
+    $code1 = $first-ring.substr(($angle + 1) % $nb, 1);
     for <C W Y AY> -> $type {
       %borders{$type}{$code }{$code1}++;
       %borders{$type}{$code1}{$code }++;
     }
-    if $code1 ne 'A00' {
+    if $code1 ne 'A' {
       %borders<P>{$code }{$code1}++;
       %borders<P>{$code1}{$code }++;
     }
-    $code  = sprintf("B%02d", $angle);
-    $code1 = sprintf("B%02d", ($angle + 1) % $nb);
+    $code  = $second-ring.substr($angle, 1);
+    $code1 = $second-ring.substr(($angle + 1) % $nb, 1);
     %borders<Y>{$code }{$code1}++;
     %borders<Y>{$code1}{$code }++;
     %borders<AY>{$code }{$code1}++;
     %borders<AY>{$code1}{$code }++;
-    $code1 = sprintf("A%02d", ($angle + 1) % $nb);
+    $code1 = $first-ring.substr(($angle + 1) % $nb, 1);
     %borders<AY>{$code }{$code1}++;
     %borders<AY>{$code1}{$code }++;
   }
@@ -177,7 +184,7 @@ polygons (therefore 2×I<n> nodes),  antiprism with I<n>-sided polygons
 
 =head2 nb
 
-The characteristic number of the graphs. Default value is 4.
+The characteristic number of the graphs. Default value is 5.
 
 =head2 Database Configuration
 

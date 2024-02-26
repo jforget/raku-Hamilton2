@@ -3186,57 +3186,102 @@ these full graphs contains only one big area each.
 Elementary Graphs
 =================
 
-Programme `init-elem.raku` creates a few elemntary graphs, according
-to a number _n_:
+Programme `init-elem.raku`  creates a few elemntary  graphs, according
+to  a  number   _n_.  Here  are  possible  graphs,  using   _n_  =  5.
+Extrapolation  to other  _n_ numbers  is left  as an  exercise to  the
+reader.
 
-* linear graph P _n_, with _n_ nodes and _n_-1 edges,
+* complete graph K5, with 5 nodes and 10 edges,
 
-* circular  graph C  _n_, with  _n_ nodes  and _n_  edges, actually  a
-_n_-sided polygon,
+* "archipelago" graph A5, with 5 nodes (all isolated) and 0 edges,
 
-* star graph S _n_, with _n_+1 nodes and _n_ edges,
+* linear graph P5, with 5 nodes and 4 edges,
 
-* wheel graph W _n_, with _n_+1 nodes and 2 × _n_ edges (_n_ edges for
-the spokes and _n_ edges for the rim),
+* circular  graph C5, with  5 nodes  and 5  edges, actually  a pentagon,
+
+* star graph S6, with 6 nodes and 5 edges,
+
+* wheel graph W6, with 6 nodes and 2 × 5 = 10 edges (5 edges for
+the spokes and 5 edges for the rim),
 
 * [prism graph](https://mathworld.wolfram.com/PrismGraph.html)
-Y _n_, with 2 × _n_ nodes and 3 × _n_ edges, representing a
+Y5, with 2 × 5  =10 nodes and 3 × 5 = 15 edges, representing a
 [geometrical prism](https://mathworld.wolfram.com/Prism.html)
-in which both bases are _n_-sided polygons,
+in which both bases are pentagons,
 
 * [antiprism graph](https://mathworld.wolfram.com/AntiprismGraph.html)
-AY _n_, with 2 × _n_ nodes and 4 × _n_ edges, representing a
+AY5, with 2 × 5 = 10 nodes and 4 × 5 = 20 edges, representing a
 [geometrical antiprism](https://mathworld.wolfram.com/Antiprism.html)
-in which  both bases are  _n_-sided polygons.  "AY" is not  a standard
+in which  both bases are  pentagons.  "AY" is not  a standard
 notation, it is a personal extension  to the "Y" standard notation for
 prism graphs.
 
-Here are the graphs generated with _n_ = 5:
+* a few other graphs suggested by Wolfram, including
+[crossed prism graph](https://mathworld.wolfram.com/CrossedPrismGraph.html)
+(which is impossible if _n_ is odd),
+[helm graph H5 en](https://mathworld.wolfram.com/HelmGraph.html),
+[simple ladder graph L5](https://mathworld.wolfram.com/LadderGraph.html)
+[Möbius ladder graph M5](https://mathworld.wolfram.com/MoebiusLadder.html),
+[web graph](https://mathworld.wolfram.com/WebGraph.html).
 
-![Elementary graphs for n=5](Elementary-graphs.webp)
+Here are the graphs I have decided to generate:
 
-Just one mistake I will fix some time: the picture shows graphs
-S06 and W06, named thus because they have 6 nodes, even if they have
-only 5 rays or 5 spokes.
+![Elementary graphs for n=5](Elementary-graphs.png)
 
-The  complete graph  K _n_  is not  generated, because  the number  of
-Hamiltonian paths  in this  graph would  be huge,  this number  is the
-factorial  of  _n_. And  the  statistics  on  this graph  are  boring.
-Usually, the linear  graph P _n_ is drawn with  all nodes horizontally
+The  complete  graph  K5  is  not generated,  because  the  number  of
+Hamiltonian paths in  this graph would be the factorial  of _n_, which
+may be  correct for _n_ =  5, but would  be huge for higher  values of
+_n_.  Also,  the statistics  on  this  graph  are boring.  Radius  and
+diameter are both 1, all nodes are central nodes.
+
+The "archipelago"  graph is not  generated either, because it  is even
+less interesting. No Hamiltonian  paths, infinite diameter, no central
+nodes. Note:  the name "archipelago graph"  is not a standard  name, I
+have invented it. I have found nothing about this graph in the Wolfram
+website.
+
+Usually,  the linear  graph P5  is drawn  with all  nodes horizontally
 aligned. Here,  I have drawn this  graph as an incomplete  circle. The
 first   reason  is   that   this  reduces   the   size  of   programme
-`init-elem.raku`, the code for P _n_ sharing many lines with the other
+`init-elem.raku`, the  code for P5  sharing many lines with  the other
 graphs.  The  second reason  has  been  already described.  The  range
 between the max  latitude and the min latitude should  not be zero, to
 prevent a zero-by-zero division.
 
-Generating some graphs  allows us to find some  well-known graphs. For
-example, the `W03` wheel graph is  similar to the `K04` complete graph
-and to  the tetrahedron  graph. Also,  graph `Y04`  is similar  to the
-geometrical  cube (aka  hexahedron)  and graph  `AY03`  is similar  to
-octahedron.
+The star graph with 5 rays is named S6 by
+[the Wolfram site](https://mathworld.wolfram.com/StarGraph.html)
+because  it contains  6 nodes:  1 centre  node and  5 outlying  nodes.
+Because of code factoring, this S6 graph is generated among all graphs
+generated with  _n_ = 5.  It is  not very interesting.  No Hamiltonian
+paths (except  when _n_  = 2), diameter  is 2, radius  is 1,  only one
+central  node. The  Wolfram  website mentions  that  some authors  use
+another  naming convention  for this  graph. So  the 5-ray  star graph
+would be S5 instead of S6.
 
-![Special elementary Graphs](Special-graphs.webp)
+The wheel graph with 5 spokes is named W6 by
+[the Wolfram website](https://mathworld.wolfram.com/WheelGraph.html)
+for the same reasons as S6 and  I include it among the graphs with _n_
+= 5 for  the same reasons. And the Wolfram  website mentions that some
+authors prefer  give the name  W5 to the  5-spoke wheel graph  (with 6
+nodes and 10 edges).
+
+The Wolfram website gives several suggestions for the
+[Prism graph](https://mathworld.wolfram.com/PrismGraph.html):
+Y5, D5 or Π5, but it seems that the most used name is Y5, so I adopted
+this one. On the other hand, the website gives no suggestions for
+[Antiprism graphs](https://mathworld.wolfram.com/AntiprismGraph.html),
+so I adopted AY5, which is the Prism graph with a "A" for "Anti" prefix.
+
+As for  the other standard graphs  (ladders, helm, etc), they  are not
+included in the generation programme. For the moment at least.
+
+Generating some graphs  allows us to find some  well-known graphs. For
+example, the  `W4` wheel graph is  similar to the `K4`  complete graph
+and to the tetrahedron graph (which  I called `PL4`). Also, graph `Y4`
+is  similar to  the geometrical  cube (aka  hexahedron, or  `PL6`) and
+graph `AY3` is similar to octahedron (or `PL8`).
+
+![Special elementary Graphs](Special-graphs.png)
 
 Statistics
 ==========

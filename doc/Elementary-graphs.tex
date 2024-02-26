@@ -1,0 +1,131 @@
+% -*- encoding: utf-8 -*-
+%
+%     Utility script for raku-Hamilton2's documentation
+%     Copyright (C) 2024 Jean Forget
+%
+%     This program is distributed under the  Artistic License 2.0.
+%
+
+\documentclass[a4paper]{article}
+\usepackage{luamplib}
+\begin{document}
+\begin{mplibcode}
+beginfig(1);
+
+ray    = 30; % ray of the circle (inner circle for prism)
+side   =  5; % half-side of the square containing the node label
+htitle = 50; % height of title above centre of figure
+bigray = 70; % ray of the outer circle
+
+pair vraya;
+pair vrayb;
+pair vrayc;
+pair vrayd;
+pair vraye;
+vraya = (0, ray);
+vrayb = vraya rotated  72;
+vrayc = vraya rotated 144;
+vrayd = vraya rotated 216;
+vraye = vraya rotated 288;
+
+pair vrayf;
+pair vrayg;
+pair vrayh;
+pair vrayi;
+pair vrayj;
+vrayf = (0, bigray);
+vrayg = vrayf rotated  72;
+vrayh = vrayf rotated 144;
+vrayi = vrayf rotated 216;
+vrayj = vrayf rotated 288;
+
+def node(expr lab, z) =
+unfill z + (side, side) -- z + (-side, side) -- z + (-side, -side) -- z + (side, -side) -- cycle;
+label(lab, z);
+enddef;
+
+def graph(expr z) =
+node(btex A etex, z + vraya);
+node(btex B etex, z + vrayb);
+node(btex C etex, z + vrayc);
+node(btex D etex, z + vrayd);
+node(btex E etex, z + vraye);
+enddef;
+
+pair vp;
+vp = (0, 0); % center of P5
+draw (vp + vraya) --  (vp + vrayb) -- (vp + vrayc) -- (vp + vrayd) -- (vp + vraye);
+graph(vp);
+label(btex P5 etex, vp + (0, htitle));
+
+pair vc;
+vc = (80, 0); % center of C5
+draw (vc + vraya) --  (vc + vrayb) -- (vc + vrayc) -- (vc + vrayd) -- (vc + vraye) -- cycle;
+graph(vc);
+label(btex C5 etex, vc + (0, htitle));
+
+pair vs;
+vs = (160, 0); % center of S5
+draw vs --  (vs + vraya);
+draw vs --  (vs + vrayb);
+draw vs --  (vs + vrayc);
+draw vs --  (vs + vrayd);
+draw vs --  (vs + vraye);
+node(btex Z etex, vs);
+graph(vs);
+label(btex S6 etex, vs + (0, htitle));
+
+pair vw;
+vw = (240, 0); % center of W5
+draw (vw + vraya) --  (vw + vrayb) -- (vw + vrayc) -- (vw + vrayd) -- (vw + vraye) -- cycle;
+draw vw --  (vw + vraya);
+draw vw --  (vw + vrayb);
+draw vw --  (vw + vrayc);
+draw vw --  (vw + vrayd);
+draw vw --  (vw + vraye);
+node(btex Z etex, vw);
+graph(vw);
+label(btex W6 etex, vw + (0, htitle));
+
+pair vy;
+vy = ( 40, -160); % center of Y5
+draw (vy + vraya) --  (vy + vrayb) -- (vy + vrayc) -- (vy + vrayd) -- (vy + vraye) -- cycle;
+draw (vy + vrayf) --  (vy + vrayg) -- (vy + vrayh) -- (vy + vrayi) -- (vy + vrayj) -- cycle;
+draw (vy + vraya) -- (vy + vrayf);
+draw (vy + vrayb) -- (vy + vrayg);
+draw (vy + vrayc) -- (vy + vrayh);
+draw (vy + vrayd) -- (vy + vrayi);
+draw (vy + vraye) -- (vy + vrayj);
+graph(vy);
+node(btex F etex, vy + vrayf);
+node(btex G etex, vy + vrayg);
+node(btex H etex, vy + vrayh);
+node(btex I etex, vy + vrayi);
+node(btex J etex, vy + vrayj);
+label(btex Y5 etex, vy + (0, ray + htitle));
+
+pair vay;
+vay = (190, -160); % center of AY5
+draw (vay + vraya) -- (vay + vrayb) -- (vay + vrayc) -- (vay + vrayd) -- (vay + vraye) -- cycle;
+draw (vay - vrayf) -- (vay - vrayg) -- (vay - vrayh) -- (vay - vrayi) -- (vay - vrayj) -- cycle;
+draw (vay + vraya) -- (vay - vrayh);
+draw (vay + vraya) -- (vay - vrayi);
+draw (vay + vrayb) -- (vay - vrayi);
+draw (vay + vrayb) -- (vay - vrayj);
+draw (vay + vrayc) -- (vay - vrayj);
+draw (vay + vrayc) -- (vay - vrayf);
+draw (vay + vrayd) -- (vay - vrayf);
+draw (vay + vrayd) -- (vay - vrayg);
+draw (vay + vraye) -- (vay - vrayg);
+draw (vay + vraye) -- (vay - vrayh);
+graph(vay);
+node(btex F etex, vay - vrayf);
+node(btex G etex, vay - vrayg);
+node(btex H etex, vay - vrayh);
+node(btex I etex, vay - vrayi);
+node(btex J etex, vay - vrayj);
+label(btex AY5 etex, vay + (0, ray + htitle));
+
+endfig;
+\end{mplibcode}
+\end{document}

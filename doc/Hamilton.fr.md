@@ -3336,55 +3336,103 @@ chaque graphe ne comporte qu'une seule grande région.
 Graphes élémentaires
 ====================
 
-Le progamme `init-elem.raku` permet de créer une série de graphes
-élémentaires, en fonction d'un nombre _n_ caractéristique :
+Le  progamme `init-elem.raku`  permet de  créer une  série de  graphes
+élémentaires,  en fonction  d'un nombre  _n_ caractéristique.  Prenons
+l'exemple d'un  _n_ égal à 5  et je vous laisse  extrapoler aux autres
+nombres. Voici les graphes que l'on peut envisager :
 
-* le graphe linéaire P _n_ à _n_ sommets et _n_-1 arêtes,
+* le graphe complet K5 à 5 sommets et 10 arêtes,
 
-* le graphe circulaire C  _n_ à _n_ sommets et _n_  arêtes (en fait un
-  polygone à _n_ côtés),
+* le graphe archipel A5 à 5 sommets (tous isolés) et à 0 arête,
 
-* le graphe en étoile S _n_ à _n_+1 sommets et _n_ arêtes,
+* le graphe linéaire P5 à 5 sommets et 4 arêtes,
 
-* le graphe en roue W _n_ à _n_+1  sommets et 2 × _n_ arêtes (_n_ pour
-la jante et _n_ pour les rayons),
+* le graphe circulaire C5 à 5 sommets et 5  arêtes,
 
-* le graphe prisme Y _n_ à 2 × _n_ sommets et 3 × _n_ arêtes, représentant un
+* le graphe en étoile S6 à 6 sommets et 5 arêtes,
+
+* le graphe en roue W6 à 6  sommets et 2 × 5 = 10 arêtes (5 pour
+la jante et 5 pour les rayons),
+
+* le graphe prisme Y5 à 2 × 5 sommets et 3 × 5 arêtes, représentant un
 [prisme  géométrique](https://mathcurve.com/polyedres/prisme/prisme.shtml)
-dont les  deux bases  sont des polygones  à _n_ côtés,
+dont les  deux bases  sont des pentagones,
 
-* le graphe  antiprisme AY _n_ à  2 × _n_  sommets et 4 ×  _n_ arêtes,
+* le graphe  antiprisme AY5 à  2 × 5  sommets et 4 ×  5 arêtes,
 représentant un
 [antiprisme géométrique](https://mathcurve.com/polyedres/prisme/antiprisme.shtml)
-dont les deux bases sont des polygones à _n_ côtés. La notation « AY »
-n'est  pas  une  notation  standard. C'est  une  notation  personnelle
-destinée à rappeler la notation standard « Y » donnée sur le
-[site web de Wolfram](https://mathworld.wolfram.com/Prism.html)
-pour les  graphes de prisme.
+dont les deux bases sont des pentagones.
 
-Voici les graphes obtenus pour _n_ valant 5 :
+* Plusieurs autres graphes proposés par Wolfram, comme
+[le graphe prisme croisé](https://mathworld.wolfram.com/CrossedPrismGraph.html)
+(qui ne fonctionne pas pour _n_ impair, mais passons),
+le [graphe H5 en barre de timonier](https://mathworld.wolfram.com/HelmGraph.html),
+le [graphe L5 en échelle simple](https://mathworld.wolfram.com/LadderGraph.html)
+ou [en échelle de Möbius M5](https://mathworld.wolfram.com/MoebiusLadder.html),
+le [graphe en toile d'araignée](https://mathworld.wolfram.com/WebGraph.html).
 
-![Graphes élémentaires pour n=5](Elementary-graphs.webp)
+Voici les graphes que j'ai choisi de générer :
 
-Juste une petite erreur à corriger : le dessin montre les graphes S06 et W06 contenant
-6 sommets pour seulement 5 rayons.
+![Graphes élémentaires pour n=5](Elementary-graphs.png)
 
-Il  n'y a  pas de  graphe  complet K  _n_,  car le  nombre de  chemins
-hamiltoniens obtenus  serait trop fort,  c'est la factorielle  de _n_.
-Habituellement,  le graphe  linéaire  P _n_  est  représenté avec  des
-sommets   alignés  horizontalement.   Ici,   il   est  représenté   en
-quasi-cercle, d'une  part pour  avoir du code  commun avec  les autres
-graphes élémentaires, d'autre part parce qu'on a déjà vu qu'il n'était
-pas souhaitable que l'écart entre le max et le min de la latitude soit
-égal à zéro (division 0 par 0).
+Il  n'y  a  pas  le  graphe  complet K5,  car  le  nombre  de  chemins
+hamiltoniens obtenus  est la  factorielle de _n_,  ce qui  serait trop
+fort pour d'autres valeurs de _n_.  Le rayon et le diamètre sont égaux
+à 1,  tous les  sommets sont  centraux, donc  rien d'intéressant  à en
+tirer.
+
+Il n'y a pas non plus de  graphe « archipel », car il est encore moins
+intéressant. Aucun chemin hamiltonien,  diamètre infini, aucun centre.
+Remarque :  le nom  « graphe archipel »  et  la notation  A5 sont  une
+invention  de ma  part.  Je  n'ai pas  trouvé  d'entrée  dans le  site
+Wolfram.
+
+Habituellement, le graphe linéaire P5  est représenté avec des sommets
+alignés horizontalement. Ici, il est représenté en quasi-cercle, d'une
+part pour avoir  du code commun avec les  autres graphes élémentaires,
+d'autre part parce  qu'on a déjà vu qu'il n'était  pas souhaitable que
+l'écart  entre le  max et  le  min de  la  latitude soit  égal à  zéro
+(division 0 par 0).
+
+Le graphe en étoile à 5 rayons est appelé S6 par
+[le site Wolfram](https://mathworld.wolfram.com/StarGraph.html)
+parce qu'il a 6 sommets : un  centre et 5 sommets extérieurs. Pour des
+raisons de mise en commun de code,  le graphe S6 sera généré parmi les
+graphes  avec  _n_  =  5.  Il a  assez  peu  d'intérêt.  Aucun  chemin
+hamiltonien (sauf  si _n_ ≤  2), un diamètre de  2 quel que  soit _n_,
+ainsi qu'un  rayon de  1 et  un seul sommet  central. Le  site Wolfram
+mentionne  en  passant  que   certains  auteurs  utilisent  une  autre
+convention et appellent  S5 le graphe à 5 rayons,  c'est-à-dire avec 6
+sommets et 5 arêtes.
+
+Le graphe en roue à 5 rayons est appelé W6 par
+[le site Wolfram](https://mathworld.wolfram.com/WheelGraph.html)
+pour les  mêmes raisons que  pour S6 et  je l'inclus dans  les graphes
+avec _n_ = 5 pour les mêmes raisons. Et comme pour S6, le site Wolfram
+mentionne  en  passant  que   certains  auteurs  utilisent  une  autre
+convention et appellent  W5 le graphe à 5 rayons,  c'est-à-dire avec 6
+sommets et 10 arêtes.
+
+Le site web Wolfram donne plusieurs suggestions de noms pour les
+[graphes Prismes](https://mathworld.wolfram.com/PrismGraph.html) :
+« Y5 »,  « D5 » ou  « Π5 », mais  il semble  que la  notation la  plus
+utilisée soit « Y5 ». J'ai donc  adopté cette convention. En revanche,
+je n'ai trouvé aucune suggestion de nom pour les
+[graphes Antiprismes](https://mathworld.wolfram.com/AntiprismGraph.html),
+donc j'ai  adopté la convention  « AY5 », c'est-à-dire le  « Y5 » d'un
+graphe prisme avec le préfixe « A » pour « anti ».
+
+Quant aux autres  graphes (échelle, etc), leur génération  n'est pas à
+l'ordre du jour. Pour l'instant.
 
 La génération de certains graphes élémentaires permet de retrouver des
-graphes connus. Ainsi, le graphe `W03` (roue à 3 rayons) est également
-le  graphe  `K04`  (graphe  complet  à  4  sommets)  ou  le  tétraèdre
-platonicien. Également,  le graphe `Y04` est  ni plus ni moins  que le
-cube (ou hexaèdre) et l'antiprisme `AY03` est l'octaèdre.
+graphes connus. Ainsi, le graphe `W4`  (roue à 3 rayons) est identique
+au  graphe  `K4`  (graphe  complet   à  4  sommets)  ou  au  tétraèdre
+platonicien que  j'ai appelé `PL4`.  Également, le graphe `Y4`  est ni
+plus  ni moins  que le  cube (ou  hexaèdre) que  j'ai appelé  `PL6` et
+l'antiprisme `AY03` est l'octaèdre que j'ai appelé `PL8`.
 
-![Graphes élémentaire particuliers](Special-graphs.webp)
+![Graphes élémentaire particuliers](Special-graphs.png)
 
 Statistiques
 ============

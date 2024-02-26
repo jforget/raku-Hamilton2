@@ -76,7 +76,7 @@ our sub list-big-borders(Str $map) {
        , B.fruitless fruitless
        , B.nb_paths   nb_paths
        , B.nb_paths_1 nb_paths_1
-       , B.cross_lib  cross_lib
+       , B.cross_idl  cross_idl
   from Big_Borders B
   join Big_Areas F
     on  F.map  = B.map
@@ -97,7 +97,7 @@ our sub list-small-borders(Str $map) {
        , T.long long_t, T.lat lat_t
        , B.long long_m, B.lat lat_m
        , B.fruitless fruitless
-       , B.cross_lib cross_lib
+       , B.cross_idl cross_idl
   from Small_Borders B
   join Small_Areas F
     on  F.map  = B.map
@@ -121,7 +121,7 @@ our sub list-borders-for-region(Str $map, Str $region) {
        , B.long long_m, B.lat lat_m
        , B.fruitless fruitless
        , B.nb_paths  nb_paths
-       , B.cross_lib cross_lib
+       , B.cross_idl cross_idl
   from Small_Borders B
   join Small_Areas F
     on  F.map  = B.map
