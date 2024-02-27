@@ -389,6 +389,10 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
   my @indices = list-numbers(@full-numbers.elems, $num) «-» 1;
   my @ipaths  = access-sql::list-ico-paths-same-isom( $map, $num);
   my @cpaths  = access-sql::list-ico-paths-same-canon($map, $num);
+  my %isometries;
+  for access-sql::list-isometries($map) -> $isometry {
+    %isometries{$isometry<isometry>} = $isometry;
+  }
 
   return deriv-ico-path::render(lang           => $lng
                               , mapcode        => $map
@@ -402,6 +406,7 @@ get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
                               , messages       => @messages
                               , ipath-links    => @ipaths
                               , cpath-links    => @cpaths
+                              , isometries     => %isometries
                               , query-string   => $query-string
                               );
 }

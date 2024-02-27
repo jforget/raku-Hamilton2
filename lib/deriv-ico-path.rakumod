@@ -16,25 +16,6 @@ use MIME::Base64;
 use messages-list;
 
 my Str $before       = "BCDFGHJKLMNPQRSTVWXZ";
-my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
-my Str $after-kappa  = "PCBZQRWXHGFDMLKJVTSN";
-my Str $after-iota   = "CBGFDMLKJHXZQRWVTSNP";
-
-multi sub infix:<↣> (Str $string, Str $isom where * eq 'Id') {
-  return $string;
-}
-
-multi sub infix:<↣> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
-  my Str $resul = $string;
-  for $isom.comb -> $iso {
-    given $iso {
-      when 'λ' { $resul .= trans($before => $after-lambda); }
-      when 'κ' { $resul .= trans($before => $after-kappa ); }
-      when 'ɩ' { $resul .= trans($before => $after-iota  ); }
-    }
-  }
-  return $resul;
-}
 
 sub fill($at, :$lang
         ,     :$mapcode
@@ -48,6 +29,7 @@ sub fill($at, :$lang
         ,     :%canon-path
         ,     :@cpath-links
         ,     :@ipath-links
+        ,     :%isometries
         , Str :$query-string) {
   my $step = $at.at('ol li.step1');
 
@@ -84,50 +66,41 @@ sub fill($at, :$lang
   my @list-isom = <Id>;
   if %deriv<isometry> eq 'Id' {
     $at.at('p.yesderiv1')».remove;
-    $at.at('p.yesderiv2')».remove;
     $at.at('ol.deriv1').content('');
-    $at.at('ol.deriv2').content('');
     $at.at('ol.deriv1')».remove;
-    $at.at('ol.deriv2')».remove;
   }
   else {
     $at.at('p.noderiv')».remove;
-    push @list-isom, |%deriv<isometry>.comb;
+    for 1..%deriv<isometry>.chars -> $i {
+      push @list-isom, %deriv<isometry>.substr(0, $i);
+    }
     for @list-isom -> Str $isom {
-      for @step-areas <-> $area {
-        $area<code> = $area<code> ↣ $isom;
+      for @areas -> $area {
+        $area<code> .= trans($before => %isometries{$isom}<transform>);
       }
-      for @step-borders <-> $border {
-        $border<code_f> = $border<code_f> ↣ $isom;
-        $border<code_t> = $border<code_t> ↣ $isom;
+      for @borders -> $border {
+        $border<code_f> .= trans($before => %isometries{$isom}<transform>);
+        $border<code_t> .= trans($before => %isometries{$isom}<transform>);
       }
-      $step-path = $step-path ↣ $isom;
-      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string, with_scale => %map<with_scale>);
+      $step-path    = %canon-path<path>;
+      $step-path .= trans($before => %isometries{$isom}<transform>);
+      my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => $step-path, query-string => $query-string, with_scale => %map<with_scale>);
       $step.at('span.isom').content($isom);
       $step.at('span.path').content($step-path);
       $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
       $step-list ~= "$step\n";
+
+      my Str $transform-back = %isometries{%isometries{$isom}<recipr>}<transform>;
+      for @areas -> $area {
+        $area<code> .= trans($before => $transform-back);
+      }
+      for @borders -> $border {
+        $border<code_f> .= trans($before => $transform-back);
+        $border<code_t> .= trans($before => $transform-back);
+      }
     }
     $at.at('ol.deriv1').content($step-list);
 
-    $step-list = '';
-    @list-isom = <Id>;
-    push @list-isom,  | %deriv<recipr>.comb;
-    for @list-isom -> Str $isom {
-      for @step-areas <-> $area {
-        $area<code> = $area<code> ↣ $isom;
-      }
-      for @step-borders <-> $border {
-        $border<code_f> = $border<code_f> ↣ $isom;
-        $border<code_t> = $border<code_t> ↣ $isom;
-      }
-      my ($png, Str $imagemap) = map-gd::draw(@step-areas, @step-borders, path => $step-path, query-string => $query-string, with_scale => %map<with_scale>);
-      $step.at('span.isom').content($isom);
-      $step.at('span.path').content($step-path);
-      $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
-      $step-list ~= "$step\n";
-    }
-    $at.at('ol.deriv2').content($step-list);
   }
 
   my $links = join ' ', @ipath-links.map( { "<a href='$_$query-string'>{$_}</a>" } );
@@ -151,6 +124,7 @@ our sub render(Str :$lang
              ,     :@messages
              ,     :@ipath-links
              ,     :@cpath-links
+             ,     :%isometries
              , Str :$query-string) {
   my &filling = anti-template :source("html/deriv-ico-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
@@ -165,6 +139,7 @@ our sub render(Str :$lang
                 , actual-path    => %actual-path
                 , ipath-links    => @ipath-links
                 , cpath-links    => @cpath-links
+                , isometries     => %isometries
                 , query-string   => $query-string
                 );
 }

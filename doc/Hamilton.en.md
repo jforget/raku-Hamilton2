@@ -2867,11 +2867,6 @@ This allows me to test the special case of a graph containing a single
 Big Area.  This special case  was accounted for in  the specifications
 and hopefully in the code, but never tested until now.
 
-There are errors  that I did not  fix. For example, the  maps show an
-horizontal  scale and  a  vertical scale.  The  scales are  completely
-irrelevant for the `ico`  map. But I do not think  worthwhile to add a
-special case that would remove these scales when dealing with map `ico`.
-
 There  are 120  isometries  for  the dodecahedron.  You  can move  the
 dodecahedron so any one of the 20 nodes can be brought to the position
 initially occupied by node `B`. Then with a rotation around axis `BT`,
@@ -3144,6 +3139,27 @@ running an  `update` statement 44 times  to update a single  record at
 each iteration.
 
 Filling table `Isom_Path` is a small matter of programming.
+
+### Problem
+
+Actually,  what is  written above  is not  completely right.  Remember
+rotation λ:
+
+![Rotation λ](Lambda.png)
+
+Now, let us consider rotation κ followed by rotation λ. With the method
+described above, this gives:
+
+![Rotations κ then λ, old version](Kappa-Lambda-old.png)
+
+As  you can  see, rotation  λ  does not  really apply  to the  central
+pentagon  (as the  dodecahedron is  represented), but  to the  (BCDFG)
+pentagon,  wherever it  is. This  does not  match with  what we  would
+think.  We would  think  that rotation  λ would  always  apply to  the
+central pentagon, no matter which nodes it holds:
+
+![Rotations κ then λ, new version](Kappa-Lambda-new.png)
+
 
 Other Platonic Solids
 ---------------------

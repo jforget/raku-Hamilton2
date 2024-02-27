@@ -343,6 +343,12 @@ our sub read-deriv(Str $map, Int $num) {
   return %val;
 }
 
+our sub list-isometries(Str $map) {
+  my $sth = $dbh.prepare("select * from Isometries where map = ?");
+  my @val = $sth.execute($map).allrows(:array-of-hash);
+  return @val;
+}
+
 our sub bold-macro-path(Str $map, Int $num) {
   my $result = $dbh.execute(q:to/SQL/, $map, $num).row;
   select 1

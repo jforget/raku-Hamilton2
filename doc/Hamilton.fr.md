@@ -2996,13 +2996,6 @@ villes.  Cela m'a  permis de  tester le  cas d'un  graphe à  une seule
 région, cas  prévu dans les  spécifications et la  programmation, mais
 pour l'instant pas encore testé.
 
-J'ai  corrigé certaines  erreurs, mais  pas toutes.  Par exemple,  les
-cartes affichent une échelle horizontale  des distances et une échelle
-verticale. Ces deux échelles n'ont aucune signification dans le cas de
-la carte  `ico`. Il faudrait donc  ne plus les afficher.  J'estime que
-cela ne  vaut pas le  coup de prévoir un  cas particulier pour  ne pas
-afficher ces échelles.
-
 Il y a  120 isométries pour le dodécaèdre. Chacun  des 20 sommets peut
 être amené à la position initialement  occupée par le sommet `B`. Puis
 avec une rotation autour de l'axe  `BT`, on peut amener l'un des trois
@@ -3290,6 +3283,26 @@ enregistrements en un seul ordre `update` que de le faire en 44 ordres
 
 Ensuite,  l'alimentation  de  la  table `Isom_Path`  ne  pose  pas  de
 problème.
+
+### Problème
+
+En fait, ce  qui est marqué ci-dessus n'est pas  correct. Rappelons ce
+que fait la rotation λ
+
+![Rotation λ](Lambda.png)
+
+Maintenant, enchaînons  une rotation  κ puis une  rotation λ.  Avec la
+méthode exposée plus haut, cela donne :
+
+![Enchaînement κ puis λ, ancienne version](Kappa-Lambda-old.png)
+
+Vous voyez que  la rotation λ ne s'applique plus  au pentagone central
+de la représentation du dodécaèdre, mais au pentagone (BCDFG) où qu'il
+se trouve. Cela ne correspond pas à l'intuition qui demanderait plutôt
+que la  rotation λ s'applique  au pentagone central, quels  que soient
+les sommets qui l'occupent :
+
+![Enchaînement κ puis λ, nouvelle version](Kappa-Lambda-new.png)
 
 Autres solides platoniciens
 ---------------------------

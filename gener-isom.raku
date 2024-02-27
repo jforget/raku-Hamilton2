@@ -35,19 +35,49 @@ my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
 my Str $after-kappa  = "PCBZQRWXHGFDMLKJVTSN";
 my Str $after-iota   = "CBGFDMLKJHXZQRWVTSNP";
 
+my @before;
+my %before; # Gives the 0..^20 index of a letter
+my @transf-lambda; # For a before rotation index, gives the corresponding after rotation index
+my @transf-kappa ; # For a before rotation index, gives the corresponding after rotation index
+my @transf-iota  ; # For a before symmetry index, gives the corresponding after symmetry index
+my %trans;
+
+for $before.comb.kv -> $i, $c {
+  @before[$i] = $c;
+  %before{$c} = $i;
+}
+for $after-lambda.comb.kv -> $i, $c {
+  @transf-lambda[%before{$c}] = $i;
+}
+for $after-kappa.comb.kv -> $i, $c {
+  @transf-kappa[%before{$c}] = $i;
+}
+for $after-iota.comb.kv -> $i, $c {
+  @transf-iota[%before{$c}] = $i;
+}
+
+multi sub transform(Str $isom where * eq 'Id') {
+  return $before;
+}
+
+multi sub transform(Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
+  my @list = @before;
+  for $isom.comb -> $iso {
+    given $iso {
+      when 'λ' { @list[@transf-lambda] = @list; }
+      when 'κ' { @list[@transf-kappa ] = @list; }
+      when 'ɩ' { @list[@transf-iota  ] = @list; }
+    }
+  }
+  return @list.join;
+}
+
 multi sub infix:<↣> (Str $string, Str $isom where * eq 'Id') {
   return $string;
 }
 
 multi sub infix:<↣> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
-  my Str $resul = $string;
-  for $isom.comb -> $iso {
-    given $iso {
-      when 'λ' { $resul .= trans($before => $after-lambda); }
-      when 'κ' { $resul .= trans($before => $after-kappa ); }
-      when 'ɩ' { $resul .= trans($before => $after-iota  ); }
-    }
-  }
+  my Str $resul = $string.trans($before => %trans{$isom});
   return $resul;
 }
 
@@ -66,6 +96,7 @@ my %seen = $before       => 'Id'
          , $after-kappa  => 'κ'
          , $after-iota   => 'ɩ'
          ;
+%trans = %seen.invert;
 my @to-do = < λ κ ɩ >;
 
 $dbh.execute("begin transaction");
@@ -78,13 +109,14 @@ while @to-do.elems > 0 {
   my Str $old-isom = @to-do.shift;
   for < λ κ ɩ > -> Str $next-isom {
     my Str $new-isom  = $old-isom ~ $next-isom;
-    my Str $new-trans = $before ↣ $new-isom;
+    my Str $new-trans = transform($new-isom);
     # say join ' ', $new-trans, $new-isom;
     if %seen{$new-trans} {
       say join(' ', $new-trans, "duplicate", $new-isom, %seen{$new-trans});
     }
     else {
       %seen{$new-trans} = $new-isom;
+      %trans{$new-isom} = $new-trans;
       my Str $recipr = '';
       my Int $involution;
       my Str $backward = $before;
