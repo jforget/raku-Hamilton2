@@ -11,7 +11,7 @@ MD2HTMLOPT = --export --no-inline
 
 .md.html:
 	$(MD2HTML) $< $(MD2HTMLOPT)
-	perl -i -p -e 's/\<table\>/<table border="1">/; s/\xc2\xa0/\&nbsp;/g' $@
+	perl -i -p -e 's/\<table\>/<table border="1">/; s/\xc2\xa0/\&nbsp;/g; s/ +\Z//;' $@
 
 .tex.pdf:
 	lualatex $<
@@ -31,3 +31,24 @@ gr2: Special-graphs.png
 Special-graphs.png: Special-graphs.pdf
 	pdftoppm -png -f 1 -l 1 -x 240 -y 225 -W 780 -H 400 Special-graphs.pdf Special-graphs
 	mv Special-graphs-1.png Special-graphs.png
+
+gr3: Lambda.png
+	display $<
+
+Lambda.png: Dodecahedron.pdf
+	pdftoppm -png -f 1 -l 1 -x 240 -y 225 -W 650 -H 300 Dodecahedron.pdf Lambda
+	mv Lambda-1.png Lambda.png
+
+gr4: Kappa-Lambda-old.png
+	display $<
+
+Kappa-Lambda-old.png: Dodecahedron.pdf
+	pdftoppm -png -f 1 -l 1 -x 240 -y 600 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-old
+	mv Kappa-Lambda-old-1.png Kappa-Lambda-old.png
+
+gr5: Kappa-Lambda-new.png
+	display $<
+
+Kappa-Lambda-new.png: Dodecahedron.pdf
+	pdftoppm -png -f 1 -l 1 -x 240 -y 950 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-new
+	mv Kappa-Lambda-new-1.png Kappa-Lambda-new.png

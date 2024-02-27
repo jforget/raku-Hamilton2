@@ -1,0 +1,161 @@
+% -*- encoding: utf-8 -*-
+%
+%     Utility script for raku-Hamilton2's documentation
+%     Copyright (C) 2024 Jean Forget
+%
+%     This program is distributed under the  Artistic License 2.0.
+%
+
+\documentclass[a4paper]{article}
+\usepackage{luamplib}
+\begin{document}
+\begin{mplibcode}
+beginfig(1);
+
+side   =  5; % half-side of the square containing the node label
+pair ra;
+pair rb;
+pair rc;
+pair rd;
+ra = (0, 15);
+rb = (0, 30);
+rc = (0, 40);
+rd = (0, 60);
+
+def node(expr lab, z) =
+unfill z + (side, side) -- z + (-side, side) -- z + (-side, -side) -- z + (side, -side) -- cycle;
+label(lab, z);
+enddef;
+
+def dodec(expr z) =
+
+draw z + ra -- z + ra rotated 72 -- z + ra rotated 144 -- z + ra rotated 216 -- z + ra rotated 288 -- cycle;
+draw z + ra             -- z + rb;
+draw z + ra rotated  72 -- z + rb rotated  72;
+draw z + ra rotated 144 -- z + rb rotated 144;
+draw z + ra rotated 216 -- z + rb rotated 216;
+draw z + ra rotated 288 -- z + rb rotated 288;
+draw z + rb              -- z + rc rotated  36
+  -- z + rb rotated  72  -- z + rc rotated 108
+  -- z + rb rotated 144  -- z + rc rotated 180
+  -- z + rb rotated 216  -- z + rc rotated 252
+  -- z + rb rotated 288  -- z + rc rotated 324 -- cycle;
+draw z + rc rotated  36 -- z + rd rotated  36;
+draw z + rc rotated 108 -- z + rd rotated 108;
+draw z + rc rotated 180 -- z + rd rotated 180;
+draw z + rc rotated 252 -- z + rd rotated 252;
+draw z + rc rotated 324 -- z + rd rotated 324;
+draw z + rd rotated 36 -- z + rd rotated 108 -- z + rd rotated 180 -- z + rd rotated 252 -- z + rd rotated 324 -- cycle;
+
+enddef;
+
+def nodeb(expr lab, z) = node(lab, z + ra rotated 216); enddef;
+def nodec(expr lab, z) = node(lab, z + ra rotated 144); enddef;
+def noded(expr lab, z) = node(lab, z + ra rotated  72); enddef;
+def nodef(expr lab, z) = node(lab, z + ra            ); enddef;
+def nodeg(expr lab, z) = node(lab, z + ra rotated 288); enddef;
+def nodeh(expr lab, z) = node(lab, z + rb rotated 288); enddef;
+def nodej(expr lab, z) = node(lab, z + rc rotated 324); enddef;
+def nodek(expr lab, z) = node(lab, z + rb            ); enddef;
+def nodel(expr lab, z) = node(lab, z + rc rotated  36); enddef;
+def nodem(expr lab, z) = node(lab, z + rb rotated  72); enddef;
+def noden(expr lab, z) = node(lab, z + rc rotated 108); enddef;
+def nodep(expr lab, z) = node(lab, z + rb rotated 144); enddef;
+def nodeq(expr lab, z) = node(lab, z + rc rotated 180); enddef;
+def noder(expr lab, z) = node(lab, z + rd rotated 180); enddef;
+def nodes(expr lab, z) = node(lab, z + rd rotated 108); enddef;
+def nodet(expr lab, z) = node(lab, z + rd rotated  36); enddef;
+def nodev(expr lab, z) = node(lab, z + rd rotated 324); enddef;
+def nodew(expr lab, z) = node(lab, z + rd rotated 252); enddef;
+def nodex(expr lab, z) = node(lab, z + rc rotated 252); enddef;
+def nodez(expr lab, z) = node(lab, z + rb rotated 216); enddef;
+
+def dodeclabel(expr lab, origin) =
+dodec(origin);
+nodeb(substring ( 0,  1) of lab, origin);
+nodec(substring ( 1,  2) of lab, origin);
+noded(substring ( 2,  3) of lab, origin);
+nodef(substring ( 3,  4) of lab, origin);
+nodeg(substring ( 4,  5) of lab, origin);
+nodeh(substring ( 5,  6) of lab, origin);
+nodej(substring ( 6,  7) of lab, origin);
+nodek(substring ( 7,  8) of lab, origin);
+nodel(substring ( 8,  9) of lab, origin);
+nodem(substring ( 9, 10) of lab, origin);
+noden(substring (10, 11) of lab, origin);
+nodep(substring (11, 12) of lab, origin);
+nodeq(substring (12, 13) of lab, origin);
+noder(substring (13, 14) of lab, origin);
+nodes(substring (14, 15) of lab, origin);
+nodet(substring (15, 16) of lab, origin);
+nodev(substring (16, 17) of lab, origin);
+nodew(substring (17, 18) of lab, origin);
+nodex(substring (18, 19) of lab, origin);
+nodez(substring (19, 20) of lab, origin);
+enddef;
+
+def drawkappa(expr z) =
+drawarrow z + (0, -8) .. z + (8, 0) .. z + (0, 8) .. z + (-8, 0);
+enddef;
+
+def drawlambda(expr z) =
+drawarrow z + (0, 8) .. z + (8, 0) .. z + (0, -8) .. z + (-8, 0);
+enddef;
+
+pair origin;
+origin := (0, 0);
+dodeclabel("BCDFGHJKLMNPQRSTVWXZ", origin);
+
+drawarrow (60, 0) -- (100, 0);
+label.top(btex $\lambda$ etex, (80, 0));
+
+pair lambda;
+lambda = (160, 0);
+dodeclabel("GBCDFKLMNPQZXWRSTVJH", lambda);
+drawlambda(lambda);
+
+origin := (0, -170);
+dodeclabel("BCDFGHJKLMNPQRSTVWXZ", origin);
+
+drawarrow (60, -170) -- (100, -170);
+label.top(btex $\kappa$ etex, (80, -170));
+
+pair kappa;
+kappa := (160, -170);
+dodeclabel("PCBZQRWXHGFDMLKJVTSN", kappa);
+pair arrowk;
+arrowk := kappa + ra rotated 144;
+drawkappa(arrowk);
+
+drawarrow (220, -170) -- (260, -170);
+label.top(btex $\lambda$ etex, (240, -170));
+
+pair kl;
+kl := (320, -170);
+dodeclabel("ZBGHXWVJKFDCPNMLTSRQ", kl);
+pair arrowkl;
+arrowkl := kl + 0.8 * rb rotated 108;
+drawlambda(arrowkl);
+
+origin := (0, -340);
+dodeclabel("BCDFGHJKLMNPQRSTVWXZ", origin);
+
+drawarrow (60, -340) -- (100, -340);
+label.top(btex $\kappa$ etex, (80, -340));
+
+kappa := (160, -340);
+dodeclabel("PCBZQRWXHGFDMLKJVTSN", kappa);
+arrowk := kappa + ra rotated 144;
+drawkappa(arrowk);
+
+drawarrow (220, -340) -- (260, -340);
+label.top(btex $\lambda$ etex, (240, -340));
+
+kl := (320, -340);
+dodeclabel("QPCBZXHGFDMNSTLKJVWR", kl);
+drawlambda(kl);
+
+
+endfig;
+\end{mplibcode}
+\end{document}
