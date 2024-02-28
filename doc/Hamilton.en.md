@@ -3010,7 +3010,11 @@ I have implemented everything as SQL  tables, I will continue with the
 dodecahedron isometries.  So we  have an  `Isometries` table  with the
 following fields.
 
-* `isometry` is  the record key. It  is a string with  only chars `λ`,
+* `map` is  the first part  of the  record key, because  the programme
+will compute isometries  for the graphs describing  the other Platonic
+solids.
+
+* `isometry` is the second part of the record key. It is a string with only chars `λ`,
 `κ`  and `ɩ`,  describing  how  the isometry  derives  from the  basic
 isometries. Of course,  the string is read  left-to-right according to
 the usual  representation of the  flow of  time. One exception  is the
@@ -3035,15 +3039,18 @@ For example, with rotation `λ`, the transformation is computed with:
 isometry. This is zero for `Id`,  this is the length of the `isometry`
 field for the other isometries.
 
-* `recipr` is the key of the reciprocal isometry.
+* `recipr`  is the  transformation string  to "undo"  what `transform`
+would do. Previously, this was the key of the reciprocal isometry.
 
 * `involution` is a boolean showing whether the isometry is involutive or
 not. An involution is a function  equal to its reciprocal. This is the
-case with symmetries.
+case with symmetries. No longer used.
 
 Another new table  is `Isom_Path`, storing the  way dodecahedron paths
 derive from  canonical paths (that  is, paths starting  with `B →  C →
-D`). The table has three fields:
+D`). The table has four fields:
+
+* `map`, first part of the key, as with all other tables,
 
 * `canonical_num`: the key from the canonical Regional Path.
 
@@ -3053,11 +3060,11 @@ D`). The table has three fields:
 canonical path into the actual path.
 
 * `recipr`: the `isometry` field of the isometry that turns the actual
-path into the canonical path.
+path  into the  canonical  path. Previously,  it was  the  key of  the
+reciprocal isometry. No longer used.
 
 Note: there is  no need to store  the other key fields  of the `Paths`
-table: `map`, `level` and `area`.  Their values are constant: `"ico"`,
-`2` and `"ICO"`.
+table: `level` and `area`. Their values are constant: `2` and `"ICO"`.
 
 To feed  the isometry table, for  each isometry, we want  the shortest
 string of  basic isometries.  As is  written in  _Mastering Algorithms
@@ -3160,6 +3167,53 @@ central pentagon, no matter which nodes it holds:
 
 ![Rotations κ then λ, new version](Kappa-Lambda-new.png)
 
+There is still a problem,  computing the reciprocal isometry no longer
+works. Rotation λ uses the new position of pentagon (BCDFG) instead of
+the  central pentagon,  rotation κ  uses the  new position  of node  C
+instead of the old one, currently occupied by P, symmetry ɩ (not shown
+below)  uses the  oblique axis  (KFQR)  instead of  the vertical  axis
+(GBST).
+
+![Rotations κ and λ for the reciprocal isometry](Kappa-Lambda-after.png)
+
+Therefore, I  remove from programme `gener-isom.raku`  the computation
+of reciprocal isometry and of  field `involution`. Field `recipr` will
+still be used to store the  string used for the reverse transformation
+of strings. So  `recipr` is similar to `transform`, which  is used for
+direct transformation of strings.
+
+### Implementation
+
+The  computation of  isometries uses  arrays showing  how the  various
+dodecahedron  nodes  "travel"  when successive  basic  isometries  are
+applied.  After rotation  λ,  B  is located  in  C's  former place,  C
+replaces D, G replaces B, H replaces Z and so on, so:
+
+```
+@transf-lambda = <1 2 3 4 0 19 18 5 6 7 8 9 10 14 15 16 17 13 12 11>;
+```
+
+On the same way, we have:
+
+```
+@transf-kappa = <2 1 11 10 9 8 15 14 13 12 19 0 4 5 18 17 16 6 7 3 >;
+```
+
+![Arrays of indexes for isometries λ, κ and κλ](Kappa-Lambda-arrays.png)
+
+And for a composite isometry such as κλ, we have:
+
+```
+@list = <3 2 9 8 7 6 16 15 14 10 11 1 0 19 12 13 17 18 5 4 >;
+```
+
+These various arrays allows us to build the transformation strings:
+
+```
+%trans<λ>  = "GBCDFKLMNPQZXWRSTVJH";
+%trans<κ>  = "PCBZQRWXHGFDMLKJVTSN";
+%trans<κλ> = "QPCBZXHGFDMNSTLKJVWR";
+```
 
 Other Platonic Solids
 ---------------------
@@ -3198,6 +3252,10 @@ regional paths  and about  33 minutes to  renumber these  75840 paths.
 Then the generation  of generic full paths,  `gener2.raku`, was nearly
 instantaneous, including for  PL20. We could have  guessed so, because
 these full graphs contains only one big area each.
+
+We can  define basic isometries  and compute composite  isometries for
+those  Platonic solids,  just like  was  done for  the Icosian  game's
+dodecahedron.
 
 Elementary Graphs
 =================

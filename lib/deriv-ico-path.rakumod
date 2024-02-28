@@ -90,7 +90,7 @@ sub fill($at, :$lang
       $step.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
       $step-list ~= "$step\n";
 
-      my Str $transform-back = %isometries{%isometries{$isom}<recipr>}<transform>;
+      my Str $transform-back = %isometries{$isom}<recipr>;
       for @areas -> $area {
         $area<code> .= trans($before => $transform-back);
       }

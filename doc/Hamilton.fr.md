@@ -3147,7 +3147,11 @@ vais continuer avec les isométries du dodécaèdre.
 
 Nous avons donc une table `Isometries` avec les champs suivants.
 
-* `isometry`  est la  clé  de l'enregistrement.  C'est  une chaîne  de
+* `map`, la  première partie de  la clé de l'enregistrement.  Ce champ
+est nécessaire,  car à terme  le programme déterminera  les isométries
+pour d'autres graphes, ceux décrivant les autres solides platoniciens.
+
+* `isometry` est la deuxième partie de la clé de l'enregistrement. C'est une chaîne de
 caractères  constituée  uniquement des  caractères  `λ`,  `κ` et  `ɩ`,
 décrivant  comment   l'isométrie  est  obtenue  à   partir  des  trois
 isométries de  base. Évidemment, la  chaîne des isométries de  base se
@@ -3174,17 +3178,22 @@ Par exemple, pour la rotation `λ`, la transformation est calculée avec :
 C'est zéro  pour `Id`,  c'est la  longueur de la  clé pour  les autres
 isométries.
 
-* `recipr` clé de l'isométrie inverse (ou réciproque).
+* `recipr` est  la chaîne  de transformation  pour « défaire »  ce que
+`transform`  a  fait.  Initialement,  c'était la  clé  de  l'isométrie
+réciproque.
 
 * `involution` indicateur indiquant si l'isométrie est une involution,
 c'est-à-dire si l'isométrie est  égale à l'isométrie réciproque. C'est
-le cas pour l'identité et pour les symétries.
+le cas pour l'identité et pour les symétries. N'est plus utilisé.
 
 Il y  a une autre nouvelle  table, `Isom_Path`, destinée à  stocker la
 relation entre  les chemins du  dodécaèdre et les  chemins canoniques,
 notamment à savoir  par quelle isométrie un chemin  normal dérive d'un
 chemin canonique  (commençant par  `B →  C →  D%`). La  table comporte
 quatre champs :
+
+* `map` : la première  partie de la clé, comme dans  toutes les autres
+tables,
 
 * `canonical_num` : la clé du chemin régional canonique.
 
@@ -3194,11 +3203,12 @@ quatre champs :
 du chemin régional canonique au chemin régional réel.
 
 * `recipr` : le champ  `isometry` de l'isométrie qui  permet de passer
-du chemin régional réel au chemin régional canonique.
+du  chemin régional  réel  au chemin  régional  canonique. N'est  plus
+utilisé.
 
 Note : il n'y a pas besoin de stocker les autres champs faisant partie
 de la  clé de la table  `Paths`. Les valeurs sont  connues et fixées :
-`map = "ico"`, `level = 2` et `area = "ICO"`.
+`level = 2` et `area = "ICO"`.
 
 Pour  alimenter   la  table   des  isométries,  nous   recherchons  la
 décomposition en isométries  basiques la plus courte.  Ainsi qu'il est
@@ -3304,6 +3314,55 @@ les sommets qui l'occupent :
 
 ![Enchaînement κ puis λ, nouvelle version](Kappa-Lambda-new.png)
 
+Il reste un problème, c'est que le calcul de l'isométrie réciproque ne
+fonctionne plus.  La rotation λ  s'applique à la nouvelle  position du
+pentagone  (BCDFG) et  non pas  au  pentagone central,  la rotation  κ
+s'applique à la  nouvelle position du sommet C au  lieu de l'ancienne,
+(en bas à gauche,  occupée par le sommet P) et  la symétrie ɩ (absente
+du schéma  ci-dessous) s'applique  à l'axe oblique  (KFQR) au  lieu de
+l'axe vertical (GBST).
+
+![Rotations κ et λ pour l'isométrie réciproque](Kappa-Lambda-after.png)
+
+Donc   j'enlève  de   `gener-isom.raku`  le   calcul  de   l'isométrie
+réciproque, ainsi  que l'alimentation du champ  `involution`. Le champ
+`recipr` sera quand même utilisé, mais cette fois-ci pour la chaîne de
+transformation  réciproque,   l'équivalent  de  `transform`   pour  la
+transformation directe.
+
+### Implémentation
+
+Le calcul  des isométries se  base sur des tableaux  décrivant comment
+« voyagent »  les  différents  sommets  du  dodécaèdre.  Suite  à  une
+rotation λ,  B se retrouve  à la place  anciennement occupée par  C, C
+remplace D, G remplace B, H remplace Z et ainsi de suite, donc :
+
+```
+@transf-lambda = <1 2 3 4 0 19 18 5 6 7 8 9 10 14 15 16 17 13 12 11>;
+```
+
+De même, on a :
+
+```
+@transf-kappa = <2 1 11 10 9 8 15 14 13 12 19 0 4 5 18 17 16 6 7 3 >;
+```
+
+![Tableaux d'indices pour les isométries λ, κ et κλ](Kappa-Lambda-arrays.png)
+
+Et pour une isométrie composée, comme κλ, on a :
+
+```
+@list = <3 2 9 8 7 6 16 15 14 10 11 1 0 19 12 13 17 18 5 4 >;
+```
+
+Et ces tableaux d'indices servent à reconstituer les chaînes de transformation
+
+```
+%trans<λ>  = "GBCDFKLMNPQZXWRSTVJH";
+%trans<κ>  = "PCBZQRWXHGFDMLKJVTSN";
+%trans<κλ> = "QPCBZXHGFDMNSTLKJVWR";
+```
+
 Autres solides platoniciens
 ---------------------------
 
@@ -3345,6 +3404,10 @@ renumérotation  de ces  chemins.  La génération  des chemins  complets
 génériques  `gener2.raku` a  été,  quant à  elle,  immédiate pour  les
 quatres polyèdres. On  aurait pu s'en douter, compte tenu  du fait que
 chaque graphe ne comporte qu'une seule grande région.
+
+Il est possible de définir  des isométries élementaires et de calculer
+les isométries composées pour ces solides platoniciens, ainsi que cela
+a été fait pour le dodécaèdre du jeu icosien.
 
 Graphes élémentaires
 ====================

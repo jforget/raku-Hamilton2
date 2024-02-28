@@ -16,20 +16,22 @@ use access-sql;
 
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
-$dbh.execute("begin transaction");
-$dbh.execute('delete from Isometries');
-$dbh.execute('delete from Isom_Path');
-$dbh.execute("commit");
-
 my $sto-isom = $dbh.prepare(q:to/SQL/);
-insert into Isometries (map  , isometry, transform, length, recipr, involution)
-       values          ('ico', ?,        ?,         ?,      ?,      ?)
+insert into Isometries (map, isometry, transform, length, recipr, involution)
+       values          (?  , ?,        ?,         ?,      ?,      ?)
 SQL
 
 my $sto-path = $dbh.prepare(q:to/SQL/);
-insert into Isom_Path (map  , canonical_num, num, isometry, recipr)
-       values         ('ico', ?,             ?,   ?,        ?)
+insert into Isom_Path (map, canonical_num, num, isometry, recipr)
+       values         (?  , ?,             ?,   ?,        ?)
 SQL
+
+sub maj-isometries(Str $map) {
+
+  $dbh.execute("begin transaction");
+  $dbh.execute('delete from Isometries where map = ?', $map);
+  $dbh.execute('delete from Isom_Path  where map = ?', $map);
+  $dbh.execute("commit");
 my Str $before       = "BCDFGHJKLMNPQRSTVWXZ";
 my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
 my Str $after-kappa  = "PCBZQRWXHGFDMLKJVTSN";
@@ -85,12 +87,6 @@ my Str $back-lambda = $before; $back-lambda .= trans($after-lambda => $before);
 my Str $back-kappa  = $before; $back-kappa  .= trans($after-kappa  => $before);
 my Str $back-iota   = $before; $back-iota   .= trans($after-iota   => $before);
 
-# we already know that iota is an involution, we check the programme agrees with that
-if $back-iota ne $after-iota {
-  say "problem with iota reciprocal: $back-iota ≠ $after-iota";
-  exit(1);
-}
-
 my %seen = $before       => 'Id'
          , $after-lambda => 'λ'
          , $after-kappa  => 'κ'
@@ -99,11 +95,11 @@ my %seen = $before       => 'Id'
 %trans = %seen.invert;
 my @to-do = < λ κ ɩ >;
 
-$dbh.execute("begin transaction");
-$sto-isom.execute('Id', $before      , 0, 'Id', 1);
-$sto-isom.execute('λ' , $after-lambda, 1, $back-lambda, -1);
-$sto-isom.execute('κ' , $after-kappa , 1, $back-kappa , -1);
-$sto-isom.execute('ɩ' , $after-iota  , 1, 'ɩ',  1);
+  $dbh.execute("begin transaction");
+  $sto-isom.execute($map, 'Id', $before      , 0, $before     , -1);
+  $sto-isom.execute($map, 'λ' , $after-lambda, 1, $back-lambda, -1);
+  $sto-isom.execute($map, 'κ' , $after-kappa , 1, $back-kappa , -1);
+  $sto-isom.execute($map, 'ɩ' , $after-iota  , 1, $back-iota  , -1);
 
 while @to-do.elems > 0 {
   my Str $old-isom = @to-do.shift;
@@ -117,39 +113,12 @@ while @to-do.elems > 0 {
     else {
       %seen{$new-trans} = $new-isom;
       %trans{$new-isom} = $new-trans;
-      my Str $recipr = '';
-      my Int $involution;
-      my Str $backward = $before;
-      $backward .= trans($new-trans => $before);
-      if $backward eq $new-trans {
-        $backward   = $new-isom;
-        $involution = 1;
-      }
-      elsif %seen{$backward} {
-        $backward   = %seen{$backward};
-        $involution = 0;
-      }
-      else {
-        $involution = -1;
-      }
-
-      $sto-isom.execute($new-isom, $new-trans, $new-isom.chars, $backward, $involution);
+      my Str $recipr = $before.trans($new-trans => $before);
+      $sto-isom.execute($map, $new-isom, $new-trans, $new-isom.chars, $recipr, -1);
       @to-do.push($new-isom);
     }
   }
 }
-
-$dbh.execute(q:to/SQL/);
-update Isometries as A
-   set involution = 0
-     , recipr     = (select B.isometry
-                     from   Isometries B
-                     where  B.map       = A.map
-                     and    B.transform = A.recipr
-                    )
-where A.map        = 'ico'
-and   A.involution = -1
-SQL
 
 $dbh.execute("commit");
 $dbh.execute("begin transaction");
@@ -179,15 +148,18 @@ SQL
 for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
   for @canonical-paths -> $canon-rec {
     my @actual-path = $sth-actual.execute($canon-rec<path> ↣ $isometry-rec<isometry>).row();
-    $sto-path.execute($canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
+    $sto-path.execute($map, $canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
   }
 }
-$dbh.execute(q:to/SQL/);
+$dbh.execute(q:to/SQL/, $map);
 update Maps
 set    with_isom = 1
-where  map = 'ico'
+where  map = ?
 SQL
 $dbh.execute("commit");
+
+}
+maj-isometries('ico');
 
 =begin POD
 

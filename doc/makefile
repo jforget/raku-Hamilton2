@@ -36,19 +36,33 @@ gr3: Lambda.png
 	display $<
 
 Lambda.png: Dodecahedron.pdf
-	pdftoppm -png -f 1 -l 1 -x 240 -y 225 -W 650 -H 300 Dodecahedron.pdf Lambda
-	mv Lambda-1.png Lambda.png
+	pdftoppm -png -f 2 -l 2 -x 240 -y 225 -W 650 -H 300 Dodecahedron.pdf Lambda
+	mv Lambda-2.png Lambda.png
 
 gr4: Kappa-Lambda-old.png
 	display $<
 
 Kappa-Lambda-old.png: Dodecahedron.pdf
-	pdftoppm -png -f 1 -l 1 -x 240 -y 600 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-old
-	mv Kappa-Lambda-old-1.png Kappa-Lambda-old.png
+	pdftoppm -png -f 2 -l 2 -x 240 -y 600 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-old
+	mv Kappa-Lambda-old-2.png Kappa-Lambda-old.png
 
 gr5: Kappa-Lambda-new.png
 	display $<
 
 Kappa-Lambda-new.png: Dodecahedron.pdf
-	pdftoppm -png -f 1 -l 1 -x 240 -y 950 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-new
-	mv Kappa-Lambda-new-1.png Kappa-Lambda-new.png
+	pdftoppm -png -f 2 -l 2 -x 240 -y 950 -W 1000 -H 300 Dodecahedron.pdf Kappa-Lambda-new
+	mv Kappa-Lambda-new-2.png Kappa-Lambda-new.png
+
+gr6: Kappa-Lambda-after.png
+	display $<
+
+Kappa-Lambda-after.png: Dodecahedron.pdf
+	pdftoppm -png -f 2 -l 2 -x 240 -y 1300 -W 300 -H 300 Dodecahedron.pdf Kappa-Lambda-after
+	mv Kappa-Lambda-after-2.png Kappa-Lambda-after.png
+
+gr7: Kappa-Lambda-arrays.png
+	display $<
+
+Kappa-Lambda-arrays.png: Dodecahedron.pdf
+	pdftoppm -png -f 1 -l 1 -x 250 -y 250 -W 830 -H 740 Dodecahedron.pdf Kappa-Lambda-arrays
+	mv Kappa-Lambda-arrays-1.png Kappa-Lambda-arrays.png

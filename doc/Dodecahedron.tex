@@ -12,6 +12,108 @@
 \begin{mplibcode}
 beginfig(1);
 
+dx = 20;
+
+def index(expr y) =
+label( "0", (      0, y));
+label( "1", (     dx, y));
+label( "2", ( 2 * dx, y));
+label( "3", ( 3 * dx, y));
+label( "4", ( 4 * dx, y));
+label( "5", ( 5 * dx, y));
+label( "6", ( 6 * dx, y));
+label( "7", ( 7 * dx, y));
+label( "8", ( 8 * dx, y));
+label( "9", ( 9 * dx, y));
+label("10", (10 * dx, y));
+label("11", (11 * dx, y));
+label("12", (12 * dx, y));
+label("13", (13 * dx, y));
+label("14", (14 * dx, y));
+label("15", (15 * dx, y));
+label("16", (16 * dx, y));
+label("17", (17 * dx, y));
+label("18", (18 * dx, y));
+label("19", (19 * dx, y));
+
+enddef;
+
+def allnodes(expr y, nodes) =
+for i = 0 upto 19 :
+  % label.bot instead of label, so "Q" is aligned with the other letters
+  label.bot(substring (i, i+1) of nodes, (i * dx, y));
+endfor;
+
+enddef;
+
+def lambdaarrows(expr yb, ye) =
+drawarrow (      0, yb) -- (     dx, ye);
+drawarrow (     dx, yb) -- ( 2 * dx, ye);
+drawarrow ( 2 * dx, yb) -- ( 3 * dx, ye);
+drawarrow ( 3 * dx, yb) -- ( 4 * dx, ye);
+drawarrow ( 4 * dx, yb) -- (      0, ye);
+drawarrow ( 5 * dx, yb) -- (19 * dx, ye);
+drawarrow ( 6 * dx, yb) -- (18 * dx, ye);
+drawarrow ( 7 * dx, yb) -- ( 5 * dx, ye);
+drawarrow ( 8 * dx, yb) -- ( 6 * dx, ye);
+drawarrow ( 9 * dx, yb) -- ( 7 * dx, ye);
+drawarrow (10 * dx, yb) -- ( 8 * dx, ye);
+drawarrow (11 * dx, yb) -- ( 9 * dx, ye);
+drawarrow (12 * dx, yb) -- (10 * dx, ye);
+drawarrow (13 * dx, yb) -- (14 * dx, ye);
+drawarrow (14 * dx, yb) -- (15 * dx, ye);
+drawarrow (15 * dx, yb) -- (16 * dx, ye);
+drawarrow (16 * dx, yb) -- (17 * dx, ye);
+drawarrow (17 * dx, yb) -- (13 * dx, ye);
+drawarrow (18 * dx, yb) -- (12 * dx, ye);
+drawarrow (19 * dx, yb) -- (11 * dx, ye);
+enddef;
+
+def kappaarrows(expr yb, ye) =
+drawarrow (      0, yb) -- ( 2 * dx, ye);
+drawarrow (     dx, yb) -- (     dx, ye);
+drawarrow ( 2 * dx, yb) -- (11 * dx, ye);
+drawarrow ( 3 * dx, yb) -- (10 * dx, ye);
+drawarrow ( 4 * dx, yb) -- ( 9 * dx, ye);
+drawarrow ( 5 * dx, yb) -- ( 8 * dx, ye);
+drawarrow ( 6 * dx, yb) -- (15 * dx, ye);
+drawarrow ( 7 * dx, yb) -- (14 * dx, ye);
+drawarrow ( 8 * dx, yb) -- (13 * dx, ye);
+drawarrow ( 9 * dx, yb) -- (12 * dx, ye);
+drawarrow (10 * dx, yb) -- (19 * dx, ye);
+drawarrow (11 * dx, yb) -- (      0, ye);
+drawarrow (12 * dx, yb) -- ( 4 * dx, ye);
+drawarrow (13 * dx, yb) -- ( 5 * dx, ye);
+drawarrow (14 * dx, yb) -- (18 * dx, ye);
+drawarrow (15 * dx, yb) -- (17 * dx, ye);
+drawarrow (16 * dx, yb) -- (16 * dx, ye);
+drawarrow (17 * dx, yb) -- ( 6 * dx, ye);
+drawarrow (18 * dx, yb) -- ( 7 * dx, ye);
+drawarrow (19 * dx, yb) -- ( 3 * dx, ye);
+enddef;
+
+index(500);
+allnodes(480, "BCDFGHJKLMNPQRSTVWXZ");
+allnodes(400, "GBCDFKLMNPQZXWRSTVJH");
+lambdaarrows(465, 405);
+label(btex $\lambda$ etex, (0, 435));
+
+index(360);
+allnodes(350, "BCDFGHJKLMNPQRSTVWXZ");
+allnodes(270, "PCBZQRWXHGFDMLKJVTSN");
+kappaarrows(335, 275);
+label(btex $\kappa$ etex, (0, 305));
+
+lambdaarrows(255, 195);
+allnodes(190, "QPCBZXHGFDMNSTLKJVWR");
+label(btex $\lambda$ etex, (0, 225));
+index(170);
+endfig;
+\end{mplibcode}
+
+\begin{mplibcode}
+beginfig(1);
+
 side   =  5; % half-side of the square containing the node label
 pair ra;
 pair rb;
@@ -154,6 +256,11 @@ label.top(btex $\lambda$ etex, (240, -340));
 kl := (320, -340);
 dodeclabel("QPCBZXHGFDMNSTLKJVWR", kl);
 drawlambda(kl);
+
+kl := (0, -510);
+dodeclabel("QPCBZXHGFDMNSTLKJVWR", kl);
+drawlambda(kl + 0.8 * rb rotated 36);
+drawkappa (kl +       ra rotated 72);
 
 
 endfig;
