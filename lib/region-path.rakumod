@@ -36,7 +36,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('a.macro-stat1')».remove;
   }
   if %map<with_isom> == 1 {
-    $at.at('a.path-derivation').attr(href => "/$lang/deriv-ico-path/%path<num>$query-string");
+    $at.at('a.path-derivation').attr(href => "/$lang/deriv-ico-path/$mapcode/%path<num>$query-string");
   }
   else {
     $at.at('a.path-derivation')».remove;
@@ -72,7 +72,8 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('div.ico')».content('');
   }
   else {
-    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/ico/ICO/$_$query-string'>{$_}</a>" } );
+    my Str $region = %region<code>;
+    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/$mapcode/$region/$_$query-string'>{$_}</a>" } );
     $at.at('p.list-of-ico-paths').content($links);
   }
 

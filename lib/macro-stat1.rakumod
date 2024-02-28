@@ -192,7 +192,8 @@ sub fill($at, :$lang
     $at.at('div.ico')».content('');
   }
   else {
-    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/ico/ICO/$_$query-string'>{$_}</a>" } );
+    my Str $region = $mapcode.uc;
+    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/$mapcode/$region/$_$query-string'>{$_}</a>" } );
     $at.at('p.list-of-ico-paths').content($links);
   }
 

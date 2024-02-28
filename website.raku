@@ -348,10 +348,10 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
                                      );
 }
 
-get '/:ln/deriv-ico-path/:num' => sub ($lng_parm, $num_parm) {
+get '/:ln/deriv-ico-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   my Str $lng    = ~ $lng_parm;
-  my Str $map    = 'ico';
-  my Str $region = 'ICO';
+  my Str $map    = ~ $map_parm;
+  my Str $region = $map.uc;
   my Int $num    = + $num_parm;
   my Str $query-string = query-string;
 
