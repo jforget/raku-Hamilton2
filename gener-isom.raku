@@ -26,8 +26,23 @@ insert into Isom_Path (map, canonical_num, num, isometry, recipr)
        values         (?  , ?,             ?,   ?,        ?)
 SQL
 
+my $sth-check-candidate = $dbh.prepare(q:to/SQL/);
+select   'x'
+from     Isom_Path
+where    map = ?
+and      num = ?
+SQL
+
+my $sth-actual = $dbh.prepare(q:to/SQL/);
+select   num
+from     Region_Paths
+where    map  = ?
+and      path = ?
+SQL
+
 sub maj-isometries(Str $map, %trans) {
 
+  say DateTime.now.hh-mm-ss, " $map building Isometries";
   $dbh.execute("begin transaction");
   $dbh.execute('delete from Isometries where map = ?', $map);
   $dbh.execute('delete from Isom_Path  where map = ?', $map);
@@ -89,7 +104,7 @@ while @to-do.elems > 0 {
     my Str $new-isom  = $old-isom ~ $next-isom;
     my Str $new-trans = transform($new-isom);
     if %seen{$new-trans} {
-      say join(' ', $new-trans, "duplicate", $new-isom, %seen{$new-trans});
+      #say join(' ', $new-trans, "duplicate", $new-isom, %seen{$new-trans});
     }
     else {
       %seen{$new-trans} = $new-isom;
@@ -102,36 +117,35 @@ while @to-do.elems > 0 {
 }
 
 $dbh.execute("commit");
+  say DateTime.now.hh-mm-ss, " $map building Isom_Path";
 $dbh.execute("begin transaction");
 
-my $sth-canonical-paths = $dbh.execute(q:to/SQL/);
-select   num, path
-from     Region_Paths
-where    map = 'ico'
-and      path like 'B → C → D → %'
-order by num
-SQL
-my @canonical-paths = $sth-canonical-paths.allrows(:array-of-hash);
+  my @isometries = $dbh.execute(q:to/SQL/, $map).allrows(:array-of-hash);
+  select   *
+  from     Isometries
+  where    map = ?
+  SQL
 
-my $sth-actual = $dbh.prepare(q:to/SQL/);
-select   num
-from     Region_Paths
-where    map  = 'ico'
-and      path = ?
-SQL
+  my @all-paths = $dbh.execute(q:to/SQL/, $map).allrows(:array-of-hash);
+  select   num, path
+  from     Region_Paths
+  where    map = ?
+  order by path
+  SQL
 
-my $sth-isometries = $dbh.execute(q:to/SQL/);
-select   isometry, transform, recipr
-from     Isometries
-where    map = 'ico'
-SQL
-
-for $sth-isometries.allrows(:array-of-hash) -> $isometry-rec {
-  for @canonical-paths -> $canon-rec {
-    my @actual-path = $sth-actual.execute($canon-rec<path> ↣ $isometry-rec<isometry>).row();
-    $sto-path.execute($map, $canon-rec<num>, @actual-path[0], $isometry-rec<isometry>, $isometry-rec<recipr>);
+  for @all-paths -> $candidate-path {
+    my $check = $sth-check-candidate.execute($map, $candidate-path<num>).row();
+    if $check.elems > 0 {
+      #say "$candidate-path<num> already processed";
+      next;
+    }
+    for @isometries -> $isometry {
+      my Str $target-path = $candidate-path<path> ↣ $isometry<isometry>;
+      my @actual-path = $sth-actual.execute($map, $target-path).row();
+      $sto-path.execute($map, $candidate-path<num>, @actual-path[0], $isometry<isometry>, '');
+    }
   }
-}
+
 $dbh.execute(q:to/SQL/, $map);
 update Maps
 set    with_isom = 1
@@ -149,6 +163,12 @@ maj-isometries('PL4', %( 'Id' => "ABCD"
                        , 'κ'  => "ACDB"
                        , 'ɩ'  => "BACD"
                        ) );
+maj-isometries('PL8', %( 'Id' => "AEYIOU"
+                       , 'κ'  => "AYIOEU"
+                       , 'ɩ'  => "IUYAOE"
+                       ) );
+
+say DateTime.now.hh-mm-ss, " end";
 
 =begin POD
 
