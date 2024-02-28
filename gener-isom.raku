@@ -26,50 +26,39 @@ insert into Isom_Path (map, canonical_num, num, isometry, recipr)
        values         (?  , ?,             ?,   ?,        ?)
 SQL
 
-sub maj-isometries(Str $map) {
+sub maj-isometries(Str $map, %trans) {
 
   $dbh.execute("begin transaction");
   $dbh.execute('delete from Isometries where map = ?', $map);
   $dbh.execute('delete from Isom_Path  where map = ?', $map);
   $dbh.execute("commit");
-my Str $before       = "BCDFGHJKLMNPQRSTVWXZ";
-my Str $after-lambda = "GBCDFKLMNPQZXWRSTVJH";
-my Str $after-kappa  = "PCBZQRWXHGFDMLKJVTSN";
-my Str $after-iota   = "CBGFDMLKJHXZQRWVTSNP";
 
-my @before;
-my %before; # Gives the 0..^20 index of a letter
-my @transf-lambda; # For a before rotation index, gives the corresponding after rotation index
-my @transf-kappa ; # For a before rotation index, gives the corresponding after rotation index
-my @transf-iota  ; # For a before symmetry index, gives the corresponding after symmetry index
-my %trans;
+  my @elem-isom = %trans.keys.grep( * ne 'Id');
+  my Str $before = %trans<Id>;
+
+  my @before;
+  my %before; # Gives the 0..^20 index of a letter
+  my %after;  # hash of array: for an isometry, gives the array of index after the isometry has been applied
+  my %recipr;
 
 for $before.comb.kv -> $i, $c {
   @before[$i] = $c;
   %before{$c} = $i;
 }
-for $after-lambda.comb.kv -> $i, $c {
-  @transf-lambda[%before{$c}] = $i;
-}
-for $after-kappa.comb.kv -> $i, $c {
-  @transf-kappa[%before{$c}] = $i;
-}
-for $after-iota.comb.kv -> $i, $c {
-  @transf-iota[%before{$c}] = $i;
-}
+  for @elem-isom -> $isom {
+    for %trans{$isom}.comb.kv -> $i, $c {
+      %after{$isom}[%before{$c}] = $i;
+    }
+  }
 
 multi sub transform(Str $isom where * eq 'Id') {
   return $before;
 }
 
-multi sub transform(Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
+multi sub transform(Str $isom where * ~~ /^ @elem-isom * $/) {
   my @list = @before;
   for $isom.comb -> $iso {
-    given $iso {
-      when 'λ' { @list[@transf-lambda] = @list; }
-      when 'κ' { @list[@transf-kappa ] = @list; }
-      when 'ɩ' { @list[@transf-iota  ] = @list; }
-    }
+    @list[ |%after{$iso} ] = |@list;
   }
   return @list.join;
 }
@@ -78,35 +67,27 @@ multi sub infix:<↣> (Str $string, Str $isom where * eq 'Id') {
   return $string;
 }
 
-multi sub infix:<↣> (Str $string, Str $isom where * ~~ /^ <[ɩκλ]> * $/) {
+multi sub infix:<↣> (Str $string, Str $isom where * ~~ /^ @elem-isom * $/) {
   my Str $resul = $string.trans($before => %trans{$isom});
   return $resul;
 }
 
-my Str $back-lambda = $before; $back-lambda .= trans($after-lambda => $before);
-my Str $back-kappa  = $before; $back-kappa  .= trans($after-kappa  => $before);
-my Str $back-iota   = $before; $back-iota   .= trans($after-iota   => $before);
+  my %seen = %trans.invert;
 
-my %seen = $before       => 'Id'
-         , $after-lambda => 'λ'
-         , $after-kappa  => 'κ'
-         , $after-iota   => 'ɩ'
-         ;
-%trans = %seen.invert;
-my @to-do = < λ κ ɩ >;
+  my @to-do = @elem-isom;
 
   $dbh.execute("begin transaction");
   $sto-isom.execute($map, 'Id', $before      , 0, $before     , -1);
-  $sto-isom.execute($map, 'λ' , $after-lambda, 1, $back-lambda, -1);
-  $sto-isom.execute($map, 'κ' , $after-kappa , 1, $back-kappa , -1);
-  $sto-isom.execute($map, 'ɩ' , $after-iota  , 1, $back-iota  , -1);
+  for @elem-isom -> $isom {
+    %recipr{$isom} = $before.trans( %trans{$isom} => $before);
+    $sto-isom.execute($map, $isom, %trans{$isom}, 1, %recipr{$isom}, -1);
+  }
 
 while @to-do.elems > 0 {
   my Str $old-isom = @to-do.shift;
-  for < λ κ ɩ > -> Str $next-isom {
+  for @elem-isom -> Str $next-isom {
     my Str $new-isom  = $old-isom ~ $next-isom;
     my Str $new-trans = transform($new-isom);
-    # say join ' ', $new-trans, $new-isom;
     if %seen{$new-trans} {
       say join(' ', $new-trans, "duplicate", $new-isom, %seen{$new-trans});
     }
@@ -159,7 +140,15 @@ SQL
 $dbh.execute("commit");
 
 }
-maj-isometries('ico');
+maj-isometries('ico', %( 'Id' => "BCDFGHJKLMNPQRSTVWXZ"
+                       , 'λ'  => "GBCDFKLMNPQZXWRSTVJH"
+                       , 'κ'  => "PCBZQRWXHGFDMLKJVTSN"
+                       , 'ɩ'  => "CBGFDMLKJHXZQRWVTSNP"
+                       ) );
+maj-isometries('PL4', %( 'Id' => "ABCD"
+                       , 'κ'  => "ACDB"
+                       , 'ɩ'  => "BACD"
+                       ) );
 
 =begin POD
 
