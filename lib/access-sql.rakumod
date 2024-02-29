@@ -301,10 +301,11 @@ our sub find-related-path(Str $map, Int $full-num, Int $region-num) {
 our sub list-ico-paths-same-canon(Str $map, Int $num) {
   my $sth = $dbh.prepare(q:to/EOF/);
   select num
-  from   Isom_Path
-  where  canonical_num = (select canonical_num
+  from   Isom_Path as IP
+  where  map           = ?
+  and    canonical_num = (select canonical_num
                           from   Isom_Path
-                          where  map = ?
+                          where  map = IP.map
                           and    num = ?
                          )
   order by num
@@ -315,10 +316,11 @@ our sub list-ico-paths-same-canon(Str $map, Int $num) {
 our sub list-ico-paths-same-isom(Str $map, Int $num) {
   my $sth = $dbh.prepare(q:to/EOF/);
   select num
-  from   Isom_Path
-  where  isometry = (select isometry
+  from   Isom_Path as IP
+  where  map      = ?
+  and    isometry = (select isometry
                      from   Isom_Path
-                     where  map = ?
+                     where  map = IP.map
                      and    num = ?
                     )
   order by num
