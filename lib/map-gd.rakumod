@@ -58,8 +58,10 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
     }
   }
 
-  my Num $long-min = min map { $_<long> }, @areas;
-  my Num $long-max = max map { $_<long> }, @areas;
+  my %long-of-shadow-area; # longitude of the shadow image of the cross_idl area
+  my %must-display-main;   # Boolean to tell whether the main image must be displayed
+  my @longitudes;          # longitudes of all displayed areas excluding hidden areas
+
   my Num $lat-min  = min map { $_<lat>  }, @areas;
   my Num $lat-max  = max map { $_<lat>  }, @areas;
   my Int $char-max = max map { $_<code>.chars }, @areas;
@@ -74,12 +76,41 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
     if $border<long_m> != 0 or $border<lat_m> != 0 {
       my $long-m = $border<long_m>.Num;
       my $lat-m  = $border<lat_m >.Num;
-      $long-min = $long-m if $long-m < $long-min;
-      $long-max = $long-m if $long-m > $long-max;
-      $lat-min  = $lat-m  if $lat-m  < $lat-min;
-      $lat-max  = $lat-m  if $lat-m  > $lat-max;
+      @longitudes.push($long-m);
+      $lat-min = $lat-m if $lat-m < $lat-min;
+      $lat-max = $lat-m if $lat-m > $lat-max;
+    }
+    # crossing the international date line?
+    if $border<cross_idl> == 0 {
+      # not crossing: the main images of both areas must be displayed
+      %must-display-main{$border<code_f>} = True;
+      %must-display-main{$border<code_t>} = True;
+    }
+    else {
+      # crossing the IDL: the main image of the "from" area must be displayed,
+      # but the main image of the "to" area may be hidden, unless there is another reason to display it.
+      %must-display-main{$border<code_f>} = True;
+      %must-display-main{$border<code_t>} //= False;
+      if $border<long_t> ≥ $border<long_f> {
+        $border<long_t> -= 360;
+        @longitudes.push($border<long_t>);
+        %long-of-shadow-area{$border<code_t>} = $border<long_t>;
+      }
+      else {
+        $border<long_t> += 360;
+        @longitudes.push($border<long_t>);
+        %long-of-shadow-area{$border<code_t>} = $border<long_t>;
+      }
     }
   }
+  for @areas -> $area {
+    %must-display-main{$area<code>} //= True;
+    if %must-display-main{$area<code>} {
+      @longitudes.push($area<long>);
+    }
+  }
+  my Num $long-min = min @longitudes;
+  my Num $long-max = max @longitudes;
   my Num $delta-long = 1e-3 max ($long-max - $long-min); # 1e-3 to prevent a division by zero if $long-max == $long-min
   my Num $delta-lat  = 1e-3 max ( $lat-max -  $lat-min);
 
@@ -87,30 +118,30 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
   sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / $delta-lat  × ($height - 2 × $margin)).Int };
 
   if $with_scale {
-  my $scale-distance;
-  my $top-scale;
-  loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
-    # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
-    $top-scale =  conv-y($lat-min + $scale-distance / 111);
-    last if conv-y($lat-min) - $top-scale < $lg-max;
-  }
-  my $scale-label = "$scale-distance km";
-  my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
-  $image.line($width, conv-y($lat-min), $width, $top-scale, $black);
-  $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
+    my $scale-distance;
+    my $top-scale;
+    loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
+      # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
+      $top-scale =  conv-y($lat-min + $scale-distance / 111);
+      last if conv-y($lat-min) - $top-scale < $lg-max;
+    }
+    my $scale-label = "$scale-distance km";
+    my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
+    $image.line($width, conv-y($lat-min), $width, $top-scale, $black);
+    $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
 
-  my $left-scale;
-  # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
-  # but for a degree of longitude, the length is shorter, because of latitude
-  my $length-of-one-degree = 111 × cos(pi / 180 × ($lat-max + $lat-min) / 2);
-  loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
-    $left-scale =  conv-x($long-max - $scale-distance / $length-of-one-degree);
-    last if conv-x($long-max) - $left-scale < $lg-max;
-  }
-  $scale-label = "$scale-distance km";
-  $x-scale     = $left-scale - 6 × $scale-label.chars;
-  $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
-  $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
+    my $left-scale;
+    # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
+    # but for a degree of longitude, the length is shorter, because of latitude
+    my $length-of-one-degree = 111 × cos(pi / 180 × ($lat-max + $lat-min) / 2);
+    loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
+      $left-scale =  conv-x($long-max - $scale-distance / $length-of-one-degree);
+      last if conv-x($long-max) - $left-scale < $lg-max;
+    }
+    $scale-label = "$scale-distance km";
+    $x-scale     = $left-scale - 6 × $scale-label.chars;
+    $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
+    $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
   }
 
   my Str $imagemap = '';
@@ -139,12 +170,17 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
 
     $imagemap ~= draw-border($image, $xf, $yf, $xm, $ym, $xt, $yt, %color{$border<color>}, $border<color>, $thickness, $border<fruitless>, $border<name> // '', $black);
   }
-
   for @areas -> $area {
     my Int $x = conv-x($area<long>.Num);
     my Int $y = conv-y($area<lat >.Num);
     #say join ' ', $area<code>, $area<long>, $area<lat>, $x, $y;
-    $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>);
+    if %must-display-main{$area<code>} // True {
+      $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>, False);
+    }
+    if %long-of-shadow-area{$area<code>} {
+      $x = conv-x(%long-of-shadow-area{$area<code>});
+      $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>, True);
+    }
   }
 
   return $image.png(), $imagemap;
@@ -201,7 +237,14 @@ sub draw-border($img, Int $x-from
   return $title-text;
 }
 
-sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, Str $name is copy) {
+sub draw-area($img, Int $x, Int $y
+                  , Str $txt
+                  ,     $backg  # background colour
+                  ,     $ink    # text colour
+                  ,     $color  # line colour
+                  , Str $url
+                  , Str $name is copy
+                  , Bool $shadow) {
   my ($dx, $dy) = ( 2.5 × $txt.chars,  5);
   my Int $radius   =  5 × $txt.chars;
   if $radius < 10 {
@@ -210,8 +253,14 @@ sub draw-area($img, Int $x, Int $y, Str $txt, $backg, $ink, $color, Str $url, St
   }
   my Int $diameter =  2 × $radius;
   $img.setThickness(3);
-  $img.filledEllipse($x, $y, $diameter, $diameter, $backg);
-  $img.ellipse(      $x, $y, $diameter, $diameter, $color);
+  if $shadow {
+    $img.filledRectangle($x - $radius, $y - $radius, $x + $radius, $y + $radius, $backg);
+    $img.rectangle(      $x - $radius, $y - $radius, $x + $radius, $y + $radius, $color);
+  }
+  else {
+    $img.filledEllipse($x, $y, $diameter, $diameter, $backg);
+    $img.ellipse(      $x, $y, $diameter, $diameter, $color);
+  }
   $img.setThickness(1);
   $img.string(gdSmallFont, $x - $dx, $y - $dy, $txt, $ink);
   $name ~~ s:g/\'/\&\#039;/;

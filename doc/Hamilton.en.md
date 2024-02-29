@@ -1350,6 +1350,136 @@ belonging to the same region  are coloured. Colour-blind people cannot
 rely  on this  difference. So  the  dots allow  them to  differentiate
 between both kinds of borders.
 
+### Crossing the International Date Line
+
+Some maps show  the whole Earth and they include  links from a western
+area  to an  eastern area,  across  the International  Date Line.  For
+example, Alaska → Kamtchatka in
+[Risk](https://boardgamegeek.com/image/79615/risk)
+or Alaska  → Northern Russia in
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+In this  case, both nodes  should be  displayed twice: main  Alaska at
+longitude 172 W and shadow Alaska  at longitude 188 E, main Kamtchatka
+at longitude 163 E and shadow  Kamtchatka at longitude 197 W. The edge
+would be drawn  twice, a first time from  172 W to 197 W  and a second
+time from 188 E to 163 E.
+
+I thought it  would be easy to  implement. It was not.  It was neither
+easy,  nor  difficult,  but  kind  of average.  It  still  deserves  a
+description, which you will find below. This description will be based
+on Risk, with the full map, Northern America's regional map and Asia's
+regional map, shown just below.
+
+![Extracts from Risk: part of Northern America and part of Asia](cross-idl.webp)
+
+The needs are different for full maps (and macro-maps) on one side and
+for regional maps on the other side.
+
+On full maps, both areas must appear twice:
+
+* Main Alaska at longitude 172 W
+
+* Shadow Alaska at longitude 188 E
+
+* Main Kamtchatka at longitude 163 E
+
+* Shadow Kamtchatka at longitude 197 W
+
+and the horizontal scale must use the full range 197 W → 188 E.
+
+On a Northern America regional map, both areas appear only once:
+
+* Main Alaska at longitude 172 W
+
+* Shadow Kamtchatka at longitude 197 W
+
+and the horizontal scale must use a range limited to 197 W (shadow Kamtchatka) → 82 W (Greenland).
+
+On an Asia regional map, both areas appear only once:
+
+* Shadow Alaska at longitude 188 E
+
+* Main Kamtchatka at longitude 163 E
+
+and the horizontal scale must use a range limited to 20 E (Middle-East) → 188 E (shadow Alaska).
+
+Regional maps, full  maps and macro-maps are rendered  as PNG pictures
+by the same  module, `map-gd.rakumod`. How can this  module tell apart
+regional maps from  full maps and macro-maps?  The `@borders` variable
+gives the answer. Inner borders appear  twice in the list, for example
+`ALB → NWT` and `NWT → ALB`, while the outer borders appear only once.
+Thus, when rendering the Northern  America regional map, you will have
+`ALA → KAM` but  not `KAM → ALA` and when  rendering the Asia regional
+map, you will have `KAM → ALA` but not `ALA → KAM`. When rendering the
+full map, this border is an inner border (respective to the full map),
+so the list will contain both `ALA → KAM` and `KAM → ALA`.
+
+Let us see the questions separately.
+
+In which circumstances is a shadow  area drawn?
+
+A shadow area is drawn when it appears as the `to_code` of a cross-IDL
+border.  This fact  is memorised  in variable  `%long-of-shadow-area`,
+which is used both as a boolean  and a numeric (the longitude where it
+will be  drawn). If both `ALA  → KAM` and  `KAM → ALA` appear  in list
+`@borders`, that means we are drawing a full map and both "shadow ALA"
+and "shadow KAM" will be displayed.  If only `ALA → KAM` appears, that
+means that we are drawing the  region map of Northern America and that
+"shadow KAM"  will be drawn,  but not "shadow  ALA". By the  way, that
+`Bool+Num` convention means that no longitude can be strictly equal to
+zero. So  if an  area needs a  zero longitude, it  will be  amended to
+`1e-8` or the like.
+
+In which circumstances is a main area drawn?
+
+There are three  criteria. The most frequent criterion is  that a main
+area is drawn if it appears in  a border with `cross_idl == 0`, either
+as `from_code` or as `to_code`. Another  criterion is that it is drawn
+if  it appears  in a  cross IDL  border as  its `from_code`.  With the
+example above, if  the `ALA → KAM` border appears,  that means that we
+are drawing either a full map, or a regional map for Northern America.
+In both cases, "main ALA" must be drawn. A last case is if the area is
+an isolated area  (big area `ICO` in map `ico`,  or island areas `HEB`
+and `ORK` in Britannia's map when  using only the ground borders). You
+will have to draw this isolated  area. This fact is stored in variable
+`%must-display-main`: if the value is  `False`, the "main area" is not
+displayed; if the value is `True` _or if it is missing_, the main area
+is displayed.  This is why  I used the `//=  True` code. If  the value
+does not exist, that means the area  does not appear in any border, so
+this  is  an  isolated  node  (island), and  its  (missing)  entry  in
+`%must-display-main`  is  upgraded  to  `True`. If  the  value  exists
+already,  it is  not upgraded,  so `True`  remains `True`  and `False`
+remains `False`.
+
+How do we compute the longitude range for the horizontal scale?
+
+As all borders  then all areas are examined, each  time we decide that
+the  area  must  be  drawn,  we   store  its  longitude  into  a  list
+`@longitudes`.  Of course,  if both  "shadow ALA"  and "main  ALA" are
+displayed, we store both longitudes `-172` (main) and `+188` (shadow).
+Then, when all borders have been examined and when all areas have been
+examined, we extract the `min` and the `max` from this list and we get
+the longitude range.
+
+Remaining problems:
+
+Two special  cases for borders will  not work well together:  a border
+both crossing IDL and having a waypoint.  I have not tested and I fear
+some silly behaviour.
+
+We suppose  that no big  area straddles the  IDL. If the  case appears
+(think Alaska before  1867, under the Russian rule), we  might have to
+split the big area  in two parts. We can bet that  in this case, there
+would be  only one cross-IDL  `Small_Border`. In this  case, splitting
+the `Big_Area` will not change  the generated Hamiltonian paths. Since
+there  is only  one such  border,  that means  that its  two ends  are
+articulation  points (or  dead-ends),  which  channel the  Hamiltonian
+paths.  A  real problem  would  occur  if  there  were _two_  or  more
+cross-IDL borders, such as  both `KAM → ALA` and `JAP  → ALA`. In this
+case, splitting big area "pre-1867 Russia" into two parts could change
+the list of generated Hamiltonian paths.  But let's face it: this will
+happen once in a blue moon.
+
 ### Performances
 
 While  running the  `gener1.raku` programme  on the  Britannia map,  I
@@ -3649,19 +3779,7 @@ graph, or distances of all nodes from a given node within a graph. The notion of
 path would be missing from these new webpages, but it does not matter.
 Rather easy to implement.
 
-7.  Some maps  show the  whole  Earth and  they include  links from  a
-western area to  an eastern area, across the  International Date Line.
-For example, Alaska  → Kamtchatka in
-[Risk](https://boardgamegeek.com/image/79615/risk)
-or Alaska  → Northern Russia in
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-In this  case, both nodes should  be displayed twice: basic  Alaska at
-longitude  172  W and  duplicate  Alaska  at  longitude 188  E,  basic
-Kamtchatka at  longitude 163 E  and duplicate Kamtchatka  at longitude
-197 W. The edge would be drawn twice, a first time from 172 W to 197 W
-and a second time from 188 E to 163 E. Rather easy to implement.
-
-8. Export the various graphs (full maps, macro maps, regional maps) to
+7. Export the various graphs (full maps, macro maps, regional maps) to
 `dot` source  files, so  we can  play on  these graphs  with Graphviz'
 [`neato`](https://graphviz.org/docs/layouts/neato/)
 and with

@@ -1410,6 +1410,159 @@ Les daltoniens ne peuvent pas  toujours percevoir cette différence. La
 présence d'un point sur les frontières inter-régionales leur permet de
 faire la différence entre les deux types de frontières.
 
+### La traversée de la ligne de changement de date
+
+Certaines  cartes montrent  la totalité  du globe  terrestre et  elles
+comportent  des liens  entre une  zone extrême-orientale  et une  zone
+extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
+[carte de Risk](https://boardgamegeek.com/image/79615/risk)
+ou Alaska → Northern Russia dans
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
+l'Alaska basique à  la longitude 172 W et l'Alaska  bis à la longitude
+188 E, le Kamtchatka basique à la longitude 163 E et le Kamtchatka bis
+à la longitude 197 W. De même, l'arête reliant ces zones sera affichée
+deux fois, une première  fois entre les longitudes 172 W  et 197 W, la
+seconde fois entre les longitudes 163 E et 188 E.
+
+Je pensais que ce serait facile à  réaliser. Ce n'était pas le cas. Ce
+n'était pas  difficile non  plus, c'était  entre les  deux. Néanmoins,
+cela  mérite une  description,  que vous  trouverez ci-dessous.  Cette
+description s'appuie sur Risk, avec  dans l'illustration une partie de
+la  carte régionale  d'Amérique  du Nord  et une  partie  de celle  de
+l'Asie.
+
+![Extraits de Risk : un bout de l'Amérique du nord et un bout de l'Asie](cross-idl.webp)
+
+Les   besoins  sont   différents   pour  les   cartes  complètes   (et
+macro-cartes) d'une part et pour les cartes régionales d'autre part.
+
+Sur les cartes complètes, les zones doivent apparaître deux fois chacune :
+
+* Alaska basique à la longitude 172 W
+
+* Alaska bis à la longitude 188 E
+
+* Kamtchatka basique à la longitude 163 E
+
+* Kamtchatka bis à la longitude 197 W
+
+et le calcul de l'échelle horizontale doit prendre en compte l'intervalle total 197 W → 188 E.
+
+Sur une carte régionale de l'Amérique du Nord, les zones doivent apparaître une seule fois :
+
+* Alaska basique à la longitude 172 W
+
+* Kamtchatka bis à la longitude 197 W
+
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 197 W → 82 W (Groenland).
+
+Sur une carte régionale de l'Asie, les zones doivent apparaître une seule fois :
+
+* Alaska bis à la longitude 188 E
+
+* Kamtchatka basique à la longitude 163 E
+
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 20 E (Moyen-Orient) → 188 E.
+
+Les cartes régionales,  les cartes complètes et  les cartes régionales
+sont converties  en images  PNG par  le même  module `map-gd.rakumod`.
+Comment  ce  module peut-il  différencier  les  cartes régionales  des
+cartes  complètes et  macro ? La  réponse est  donnée par  la variable
+`@borders`. Les frontières intérieures  apparaissent deux fois dans la
+variable,  dans un  sens puis  dans l'autre.  Par exemple,  `@borders`
+contient  à la  fois `ALB  → NWT`  et `NWT  → ALB`.  À l'inverse,  les
+frontières menant à  l'extérieur apparaissent une seule  fois. Donc si
+vous dessinez la carte de l'Amérique  du Nord, vous aurez `ALA → KAM`,
+mais pas `KAM  → ALA`. Si vous dessinez la  carte régionale de l'Asie,
+vous aurez  `KAM →  ALA`, mais pas  `ALA → KAM`.  Si vous  dessinez la
+carte complète, cette frontière est  une frontière intérieure, donc la
+liste contient à la fois `ALA → KAM` et `KAM → ALA`.
+
+Prenons les questions séparément.
+
+Dans quelles circonstances faut-il dessiner une « zone bis » ?
+
+Une zone  bis est dessinée  quand elle  apparaît dans une  frontière à
+cheval sur  la ligne  de changement  de date (IDL),  en tant  que zone
+d'arrivée `to_code`. Cette information  est mémorisée dans la variable
+`%long-of-shadow-area`  où  elle sert  à  la  fois  de booléen  et  de
+numérique  (la  valeur  de  la  longitude  calculée).  Ainsi,  si  les
+frontières `ALA  → KAM` et `KAM  → ALA` apparaissent toutes  deux dans
+`@borders`, cela signifie que l'on est  en train de dessiner une carte
+complète et  les deux zones  « KAM bis »  et « ALA bis »  devront être
+dessinées. Si seule la frontière `ALA → KAM` apparaît dans `@borders`,
+cela signifie que l'on est en  train de dessiner la carte régionale de
+l'Amérique du Nord et qu'il faut  dessiner « KAM bis », mais pas « ALA
+bis ». À propos,  cette convention d'interpréter un `Num`  en tant que
+`Bool` signifie que l'on s'interdit de  stocker en base de données une
+longitude exactement égale à zéro. Si  le cas se présente, il faudrait
+remplacer cette longitude par `1e-8` ou similaire.
+
+Dans quelles circonstances faut-il dessiner une « zone basique » ?
+
+Il y  a trois  critères. Le  critère le plus  fréquent est  qu'il faut
+dessiner une zone basique si  elle apparaît dans une frontière normale
+c'est-à-dire avec  `cross_idl == 0`,  aussi bien  en tant que  zone de
+départ  `from_code`  qu'en  tant  que  zone  d'arrivée  `to_code`.  Le
+deuxième  critère est  qu'il faut  dessiner  la zone  basique si  elle
+apparaît  dans une  frontière trans-IDL,  en tant  que zone  de départ
+`from_code`. Avec  l'exemple ci-dessus,  si la  frontière `ALA  → KAM`
+apparaît, cela  signifie que l'on  est en  train de dessiner  soit une
+carte complète, soit  la carte régionale d'Amérique du  Nord. Dans les
+deux cas, il faudra dessiner « ALA basique ». Un dernier cas est si la
+zone est isolée (carte à une seule région, comme la région `ICO` de la
+carte `ico`, ou bien  les îles `HEB` et `ORK` de  la carte `brit0` qui
+utilise  uniquement  les  frontières   terrestres).  Alors  il  faudra
+dessiner cette  zone. Cette information  est stockée dans  la variable
+`%must-display-main` : si la valeur est  `False`, alors il ne faut pas
+dessiner la  zone basique ; si  la valeur est  `True` _ou si  elle est
+absente_, alors il faut dessiner  la zone basique. C'est pourquoi j'ai
+utilisé le code  `//= True`. Si la valeur n'existe  pas, cela signifie
+que  la zone  n'apparaît dans  aucune frontière  et qu'il  s'agit d'un
+sommet isolé (île, région unique), auquel  cas il faut faire passer la
+valeur à `True`. Si la valeur existe déjà, cela signifie qu'elle a été
+initialisée lors du traitement d'une frontière et alors elle n'est pas
+touchée. `True` reste `True` et `False` reste `False`.
+
+Comment  calcule-t-on  l'intervalle  de  longitudes,  pour  déterminer
+l'échelle horizontale ?
+
+Au fur et à mesure que l'on examine les frontières et les zones et que
+l'on décide  que telle  ou telle  zone sera  affichée, on  mémorise sa
+longitude dans une liste `@longitudes`.  Bien sûr, si l'on a déterminé
+qu'il faudra dessiner à la fois  « ALA basique » et « ALA bis », alors
+on stockera les deux longitudes  `-172` (basique) et `+188` (bis). Une
+fois que l'on a examiné toutes  les frontières et toutes les zones, on
+extrait le minimum  et le maximum de la liste  pour avoir l'intervalle
+de longitudes.
+
+Il reste quelques problèmes.
+
+Pour les frontières, il y a deux  cas particuliers qui ne font pas bon
+ménage. Si une frontière est à  la fois une frontière trans-IDL et une
+frontière avec point intermédiaire (dessinée en ligne brisée), alors à
+mon avis  il y aura un  problème, genre comportement absurde.  Je n'ai
+pas testé.
+
+Le  programme de  dessin  est basé  sur le  fait  que toute  frontière
+cross-IDL est  une frontière entre  deux régions (`Big_Areas`).  Il ne
+peut pas  y avoir  de région à  cheval sur la  ligne de  changement de
+date. Pensez  par exemple à  l'Alaska avant  1867, à l'époque  où elle
+appartenait  à la  Russie.  Si le  cas devait  se  produire, alors  il
+faudrait  découper artificiellement  la  région en  deux,  de part  et
+d'autre de la ligne de changement de  date. Il y a fort à parier qu'il
+y   aura  une   seule   frontière  entre   les   deux  petites   zones
+(`Small_Areas`) et que  cela ne changera pas  les chemins hamiltoniens
+obtenus. En  effet, comme il  y a  une seule frontière  trans-IDL, ses
+deux extrémités sont  des points d'articulation (ou  des impasses), ce
+qui canalise  les chemins  hamiltoniens. Le véritable  problème serait
+qu'il y ait deux frontières  trans-IDL, par exemple une frontière `KAM
+→ ALA` et  une frontière `JAP →  ALA`. Dans ce cas, la  scission de la
+`Big_Area` « Russie  pré-1867 » pourrait changer la  liste des chemins
+hamiltoniens générés. Mais reconnaissons-le, cela  a peu de chances de
+se produire.
+
 ### Performances
 
 En essayant le programme `gener1.raku` sur la carte de Britannia, j'ai
@@ -3423,7 +3576,7 @@ K5 à 5 sommets et 10 arêtes,
 * le [graphe vide](https://mathworld.wolfram.com/EmptyGraph.html)
 K-barre 5 à 5 sommets (tous isolés) et à 0 arête,
 
-* le [graphe linéaire](https://mathworld.wolfram.com/PathGraph.html) 
+* le [graphe linéaire](https://mathworld.wolfram.com/PathGraph.html)
 P5 à 5 sommets et 4 arêtes,
 
 * le [graphe cyclique](https://mathworld.wolfram.com/CycleGraph.html)
@@ -3809,20 +3962,7 @@ graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
 loin des problèmes de chemins hamiltoniens, mais tant pis. Réalisation
 assez facile.
 
-7. Certaines cartes  montrent la totalité du globe  terrestre et elles
-comportent  des liens  entre une  zone extrême-orientale  et une  zone
-extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
-[carte de Risk](https://boardgamegeek.com/image/79615/risk)
-ou Alaska → Northern Russia dans
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
-l'Alaska basique à  la longitude 172 W et l'Alaska  bis à la longitude
-188 E, le Kamtchatka basique à la longitude 163 E et le Kamtchatka bis
-à la longitude 197 W. De même, l'arête reliant ces zones sera affichée
-deux fois, une première  fois entre les longitudes 172 W  et 197 W, la
-seconde fois entre les longitudes 163 E et 188 E. Facile à réaliser.
-
-8. Exporter les différents graphes (cartes complètes, cartes réduites,
+7. Exporter les différents graphes (cartes complètes, cartes réduites,
 cartes régionales) dans des fichiers sources `dot`, pour pouvoir jouer
 avec ces graphes dans Graphviz /
 [`neato`](https://graphviz.org/docs/layouts/neato/)
