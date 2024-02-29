@@ -3417,17 +3417,23 @@ Le  progamme `init-elem.raku`  permet de  créer une  série de  graphes
 l'exemple d'un  _n_ égal à 5  et je vous laisse  extrapoler aux autres
 nombres. Voici les graphes que l'on peut envisager :
 
-* le graphe complet K5 à 5 sommets et 10 arêtes,
+* le [graphe complet](https://mathworld.wolfram.com/CompleteGraph.html)
+K5 à 5 sommets et 10 arêtes,
 
-* le graphe archipel A5 à 5 sommets (tous isolés) et à 0 arête,
+* le [graphe vide](https://mathworld.wolfram.com/EmptyGraph.html)
+K-barre 5 à 5 sommets (tous isolés) et à 0 arête,
 
-* le graphe linéaire P5 à 5 sommets et 4 arêtes,
+* le [graphe linéaire](https://mathworld.wolfram.com/PathGraph.html) 
+P5 à 5 sommets et 4 arêtes,
 
-* le graphe circulaire C5 à 5 sommets et 5  arêtes,
+* le [graphe cyclique](https://mathworld.wolfram.com/CycleGraph.html)
+C5 à 5 sommets et 5  arêtes,
 
-* le graphe en étoile S6 à 6 sommets et 5 arêtes,
+* le [graphe en étoile](https://mathworld.wolfram.com/StarGraph.html)
+S6 à 6 sommets et 5 arêtes,
 
-* le graphe en roue W6 à 6  sommets et 2 × 5 = 10 arêtes (5 pour
+* le [graphe en roue](https://mathworld.wolfram.com/WheelGraph.html)
+W6 à 6  sommets et 2 × 5 = 10 arêtes (5 pour
 la jante et 5 pour les rayons),
 
 * le graphe prisme Y5 à 2 × 5 sommets et 3 × 5 arêtes, représentant un
@@ -3457,11 +3463,12 @@ fort pour d'autres valeurs de _n_.  Le rayon et le diamètre sont égaux
 à 1,  tous les  sommets sont  centraux, donc  rien d'intéressant  à en
 tirer.
 
-Il n'y a pas non plus de  graphe « archipel », car il est encore moins
-intéressant. Aucun chemin hamiltonien,  diamètre infini, aucun centre.
-Remarque :  le nom  « graphe archipel »  et  la notation  A5 sont  une
-invention  de ma  part.  Je  n'ai pas  trouvé  d'entrée  dans le  site
-Wolfram.
+Il n'y a pas non plus de graphe vide K-barre 5 (que j'aurais bien aimé
+appeler  « graphe archipel »),  car il  est encore  moins intéressant.
+Aucun chemin  hamiltonien, diamètre  infini, aucun centre.  La mention
+« K-barre » signifie la lettre « K »  surmontée d'une barre. La raison
+de cette  notation est  que le  graphe vide  est le  complémentaire du
+graphe complet K5.
 
 Habituellement, le graphe linéaire P5  est représenté avec des sommets
 alignés horizontalement. Ici, il est représenté en quasi-cercle, d'une

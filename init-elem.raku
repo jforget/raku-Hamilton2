@@ -65,7 +65,7 @@ sub MAIN (
     my Str $map = %map{$type};
     given $type {
       when 'P'   { $label = "Path with $nb nodes"; }
-      when 'C'   { $label = "Circle with $nb nodes"; }
+      when 'C'   { $label = "Cycle with $nb nodes"; }
       when 'W'   { $label = "Wheel with $nb spokes"; }
       when 'S'   { $label = "Star with $nb rays"; }
       when 'Y'   { $label = "Prism with two {$nb}-sided faces"; }
@@ -170,10 +170,10 @@ init-elem.raku -- initialising elementary graphs
 =head1 DESCRIPTION
 
 This  programme  initialises elementary  graphs  for  a given  number:
-circle with I<n> nodes, star  with I<n> rays (therefore I<n>+1 nodes),
-wheel with I<n> spokes (therefore I<n>+1 nodes), prism with I<n>-sided
-polygons (therefore 2×I<n> nodes),  antiprism with I<n>-sided polygons
-(therefore 2×I<n> nodes).
+linear path  with I<n> nodes,  cycle with  I<n> nodes, star  with I<n>
+rays  (therefore  I<n>+1 nodes),  wheel  with  I<n> spokes  (therefore
+I<n>+1  nodes),  prism  with  I<n>-sided  polygons  (therefore  2×I<n>
+nodes), antiprism with I<n>-sided polygons (therefore 2×I<n> nodes).
 
 =head1 USAGE
 

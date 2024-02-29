@@ -99,7 +99,7 @@ SQL
 sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
-    , Str :$regions = ''     #= Comma-delimited list of region codes, e.g. --regions=NOR,CEN,HDF
+    , Str  :$regions = ''    #= Comma-delimited list of region codes, e.g. --regions=NOR,CEN,HDF
     ) {
 
   my %map = access-sql::read-map(~ $map);

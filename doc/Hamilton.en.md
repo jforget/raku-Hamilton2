@@ -3260,23 +3260,29 @@ dodecahedron.
 Elementary Graphs
 =================
 
-Programme `init-elem.raku`  creates a few elemntary  graphs, according
+Programme `init-elem.raku` creates a  few elementary graphs, according
 to  a  number   _n_.  Here  are  possible  graphs,  using   _n_  =  5.
 Extrapolation  to other  _n_ numbers  is left  as an  exercise to  the
 reader.
 
-* complete graph K5, with 5 nodes and 10 edges,
+* [complete graph](https://mathworld.wolfram.com/CompleteGraph.html)
+K5, with 5 nodes and 10 edges,
 
-* "archipelago" graph A5, with 5 nodes (all isolated) and 0 edges,
+* [empty graph](https://mathworld.wolfram.com/EmptyGraph.html)
+K-bar 5, with 5 nodes (all isolated) and 0 edges,
 
-* linear graph P5, with 5 nodes and 4 edges,
+* [path graph](https://mathworld.wolfram.com/PathGraph.html)
+P5, with 5 nodes and 4 edges,
 
-* circular  graph C5, with  5 nodes  and 5  edges, actually  a pentagon,
+* [cycle  graph](https://mathworld.wolfram.com/CycleGraph.html)
+C5, with  5 nodes  and 5  edges, actually  a pentagon,
 
-* star graph S6, with 6 nodes and 5 edges,
+* [star graph](https://mathworld.wolfram.com/StarGraph.html)
+S6, with 6 nodes and 5 edges,
 
-* wheel graph W6, with 6 nodes and 2 × 5 = 10 edges (5 edges for
-the spokes and 5 edges for the rim),
+* [wheel graph](https://mathworld.wolfram.com/WheelGraph.html)
+W6, with 6  nodes and 2 × 5 =  10 edges (5 edges for the  spokes and 5
+edges for the rim),
 
 * [prism graph](https://mathworld.wolfram.com/PrismGraph.html)
 Y5, with 2 × 5  =10 nodes and 3 × 5 = 15 edges, representing a
@@ -3308,11 +3314,11 @@ may be  correct for _n_ =  5, but would  be huge for higher  values of
 _n_.  Also,  the statistics  on  this  graph  are boring.  Radius  and
 diameter are both 1, all nodes are central nodes.
 
-The "archipelago"  graph is not  generated either, because it  is even
-less interesting. No Hamiltonian  paths, infinite diameter, no central
-nodes. Note:  the name "archipelago graph"  is not a standard  name, I
-have invented it. I have found nothing about this graph in the Wolfram
-website.
+The empty graph K-bar 5 (which I would have named "archipelago graph")
+is  not generated  either, because  it  is even  less interesting.  No
+Hamiltonian paths, infinite diameter,  no central nodes. "K-bar" means
+letter "K" with an overbar. The reason  is that the empty graph is the
+complement of the complete graph K5.
 
 Usually,  the linear  graph P5  is drawn  with all  nodes horizontally
 aligned. Here,  I have drawn this  graph as an incomplete  circle. The
