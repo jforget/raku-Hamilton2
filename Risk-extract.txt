@@ -1,0 +1,20 @@
+A ; AS  ; Asia                  ; Green
+B ; MON ; Mongolia              ; 616 ; 181 ; mea, ura, kam, jap
+B ; JAP ; Japan                 ; 692 ; 193 ; mon, kam
+B ; KAM ; Kamtchatka            ; 690 ;  90 ; jap, mon, yak, ala
+B ; YAK ; Yakutsk               ; 618 ;  95 ; kam, ura
+B ; URA ; Ural                  ; 524 ; 133 ; mon, yak, eur
+B ; MEA ; Middle East           ; 469 ; 272 ; mon, eur
+A ; EU  ; Europe                ; Blue
+B ; ICE ; Iceland               ; 327 ; 114 ; eur, gre
+B ; EUR ; Europe                ; 386 ; 181 ; ura, mea, ice
+A ; NA  ; North America         ; Yellow
+B ; GRE ; Greenland             ; 260 ;  61 ; ice, nwt, ont
+B ; NWT ; Northwest Territory   ; 124 ;  91 ; gre, alb, ala, ont
+B ; ALA ; Alaska                ;  60 ;  94 ; nwt, alb, kam
+B ; ALB ; Alberta               ; 120 ; 131 ; ala, nwt, ont, ven
+B ; ONT ; Ontario               ; 164 ; 137 ; ven, gre, nwt, alb
+A ; SA  ; South America         ; Red
+B ; VEN ; Venezuela             ; 177 ; 294 ; arg, alb, ont
+B ; ARG ; Argentina             ; 199 ; 420 ; ven
+Y ; NA  ; AS                    ; 380 ; 150

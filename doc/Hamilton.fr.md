@@ -1338,6 +1338,27 @@ une seule région,  donc l'écart min-max sur les longitudes  et sur les
 latitudes était égal  à zéro. J'ai donc été obligé  d'ajouter un terme
 positif, néanmoins très bas, pour éviter cette division par zéro.
 
+### Le stockage des longitudes et des latitudes dans SQLite
+
+Dans  les programmes  Raku, les  longitudes et  les latitudes  sont de
+nombres  à virgule,  c'est-à-dire des  `Num`. Il  peut arriver  que la
+[partie fractionnaire de la valeur soit nulle](https://confluence.org/).
+Notamment,  cela se  produit  fréquemment avec  les graphes  abstraits
+comme le jeu icosien ou les  graphes des solides platoniciens. Dans ce
+cas, même si vous utilisez un  `Num` dans votre programme Raku, SQLite
+stocke cette longitude  ou cette latitude en  tant qu'entier. Ensuite,
+lorsqu'un  autre  programme lit  cette  longitude  ou cette  latitude,
+SQLite lui transmet une valeur entière et Raku refuse de stocker cette
+valeur dans un `Num`.
+
+La solution  de contournement consiste à  systématiquement additionner
+une  très  faible valeur,  genre  `1e-8`.  Ainsi,  la latitude  et  la
+longitude sont stockées  dans SQLite en tant que  nombres flottants et
+lors des lectures ultérieures, les valeurs pourront être stockées dans
+des `Num`. Étant donné qu'un degré  fait 111 km (en latitude) ou moins
+(en longitude), l'erreur systématique est de l'ordre du millimètre sur
+le terrain, donc invisible sur la carte.
+
 ### Faire la moyenne des longitudes et latitudes pour situer une région
 
 Attribuer  à une  région une  latitude et  une longitude  égales à  la
@@ -1419,51 +1440,50 @@ extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
 ou Alaska → Northern Russia dans
 [War on Terror](https://boardgamegeek.com/image/134814/war-terror).
 Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
-l'Alaska basique à  la longitude 172 W et l'Alaska  bis à la longitude
-188 E, le Kamtchatka basique à la longitude 163 E et le Kamtchatka bis
-à la longitude 197 W. De même, l'arête reliant ces zones sera affichée
-deux fois, une première  fois entre les longitudes 172 W  et 197 W, la
-seconde fois entre les longitudes 163 E et 188 E.
+l'Alaska basique à  la longitude 152 W et l'Alaska  bis à la longitude
+208 E, le Kamtchatka basique à la longitude 130 E et le Kamtchatka bis
+à la longitude 230 W. De même, l'arête reliant ces zones sera affichée
+deux fois, une première  fois entre les longitudes 152 W  et 230 W, la
+seconde fois entre les longitudes 130 E et 208 E.
 
 Je pensais que ce serait facile à  réaliser. Ce n'était pas le cas. Ce
 n'était pas  difficile non  plus, c'était  entre les  deux. Néanmoins,
 cela  mérite une  description,  que vous  trouverez ci-dessous.  Cette
-description s'appuie sur Risk, avec  dans l'illustration une partie de
-la  carte régionale  d'Amérique  du Nord  et une  partie  de celle  de
-l'Asie.
+description  s'appuie   sur  une  carte  de   Risk  épurée,  présentée
+ci-dessous.
 
-![Extraits de Risk : un bout de l'Amérique du nord et un bout de l'Asie](cross-idl.webp)
+![Extrait de Risk, montrant la traversée de la ligne de changement de date](cross-idl.webp)
 
 Les   besoins  sont   différents   pour  les   cartes  complètes   (et
 macro-cartes) d'une part et pour les cartes régionales d'autre part.
 
 Sur les cartes complètes, les zones doivent apparaître deux fois chacune :
 
-* Alaska basique à la longitude 172 W
+* Alaska basique à la longitude 152 W
 
-* Alaska bis à la longitude 188 E
+* Alaska bis à la longitude 208 E (208 = -152 + 360)
 
-* Kamtchatka basique à la longitude 163 E
+* Kamtchatka basique à la longitude 130 E
 
-* Kamtchatka bis à la longitude 197 W
+* Kamtchatka bis à la longitude 230 W (-230 = 130 - 360)
 
-et le calcul de l'échelle horizontale doit prendre en compte l'intervalle total 197 W → 188 E.
+et le calcul de l'échelle horizontale doit prendre en compte l'intervalle total 230 W → 208 E.
 
 Sur une carte régionale de l'Amérique du Nord, les zones doivent apparaître une seule fois :
 
-* Alaska basique à la longitude 172 W
+* Alaska basique à la longitude 152 W
 
-* Kamtchatka bis à la longitude 197 W
+* Kamtchatka bis à la longitude 230 W
 
-et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 197 W → 82 W (Groenland).
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 230 W → 32 W (Iceland).
 
 Sur une carte régionale de l'Asie, les zones doivent apparaître une seule fois :
 
-* Alaska bis à la longitude 188 E
+* Alaska bis à la longitude 208 E
 
-* Kamtchatka basique à la longitude 163 E
+* Kamtchatka basique à la longitude 130 E
 
-et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 20 E (Moyen-Orient) → 188 E.
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 5 W (Europe) → 208 E.
 
 Les cartes régionales,  les cartes complètes et  les cartes régionales
 sont converties  en images  PNG par  le même  module `map-gd.rakumod`.
@@ -1532,7 +1552,7 @@ Au fur et à mesure que l'on examine les frontières et les zones et que
 l'on décide  que telle  ou telle  zone sera  affichée, on  mémorise sa
 longitude dans une liste `@longitudes`.  Bien sûr, si l'on a déterminé
 qu'il faudra dessiner à la fois  « ALA basique » et « ALA bis », alors
-on stockera les deux longitudes  `-172` (basique) et `+188` (bis). Une
+on stockera les deux longitudes  `-152` (basique) et `+208` (bis). Une
 fois que l'on a examiné toutes  les frontières et toutes les zones, on
 extrait le minimum  et le maximum de la liste  pour avoir l'intervalle
 de longitudes.

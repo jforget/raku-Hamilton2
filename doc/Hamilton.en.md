@@ -1283,6 +1283,24 @@ would display a single Big Area, so the min-to-max difference was zero
 for  both longitudes  and  latitudes. Therefore,  I  added a  positive
 number, yet a very small one, to the min-to-max differences.
 
+### Storing latitudes and longitudes in SQLite
+
+In Raku  programmes, latitudes  and longitudes  are `Num`  values, not
+`Int`. Yet, it may  happen that a latitude or a  longitude has a value
+[with a fractional part equal to zero](https://confluence.org/).
+It happens especially with abstract graphs such as the Icosian game or
+the  Platonic solids.  In this  case,  even if  you use  a `Num`  when
+storing the  longitude and  latitude into SQLite,  when you  read back
+these values,  they are retrieved  as `Int`'s. And the  Raku programme
+refuses to load these values into `Num` variables.
+
+The workaround  is to always add  a very small value,  such as `1e-8`.
+Thus,  the longitude  or latitude  is stored  into SQLite  as a  float
+number  and when  it  is retrieved,  it  can be  stored  into a  `Num`
+variable. Since  1 degree is 111  km (for latitude) or  less than that
+(for  longitude),  the bias  is  about  1  millimeter on  the  ground,
+therefore invisible on the map.
+
 ### About the average longitude and the average latitude
 
 Giving to a big  area a longitude and a latitude  equal to the average
@@ -1359,49 +1377,48 @@ example, Alaska → Kamtchatka in
 or Alaska  → Northern Russia in
 [War on Terror](https://boardgamegeek.com/image/134814/war-terror).
 In this  case, both nodes  should be  displayed twice: main  Alaska at
-longitude 172 W and shadow Alaska  at longitude 188 E, main Kamtchatka
-at longitude 163 E and shadow  Kamtchatka at longitude 197 W. The edge
-would be drawn  twice, a first time from  172 W to 197 W  and a second
-time from 188 E to 163 E.
+longitude 152 W and shadow Alaska  at longitude 208 E, main Kamtchatka
+at longitude 130 E and shadow  Kamtchatka at longitude 230 W. The edge
+would be drawn  twice, a first time from  152 W to 230 W  and a second
+time from 208 E to 130 E.
 
 I thought it  would be easy to  implement. It was not.  It was neither
 easy,  nor  difficult,  but  kind  of average.  It  still  deserves  a
 description, which you will find below. This description will be based
-on Risk, with the full map, Northern America's regional map and Asia's
-regional map, shown just below.
+on an reduced Risk map, as shown below.
 
-![Extracts from Risk: part of Northern America and part of Asia](cross-idl.webp)
+![Extracts from Risk showing the crossing of the International Date Line](cross-idl.webp)
 
 The needs are different for full maps (and macro-maps) on one side and
 for regional maps on the other side.
 
 On full maps, both areas must appear twice:
 
-* Main Alaska at longitude 172 W
+* Main Alaska at longitude 152 W
 
-* Shadow Alaska at longitude 188 E
+* Shadow Alaska at longitude 208 E (208 = -152 + 360)
 
-* Main Kamtchatka at longitude 163 E
+* Main Kamtchatka at longitude 130 E
 
-* Shadow Kamtchatka at longitude 197 W
+* Shadow Kamtchatka at longitude 230 W (-230 = 130 - 360)
 
-and the horizontal scale must use the full range 197 W → 188 E.
+and the horizontal scale must use the full range 230 W → 208 E.
 
 On a Northern America regional map, both areas appear only once:
 
-* Main Alaska at longitude 172 W
+* Main Alaska at longitude 152 W
 
-* Shadow Kamtchatka at longitude 197 W
+* Shadow Kamtchatka at longitude 230 W
 
-and the horizontal scale must use a range limited to 197 W (shadow Kamtchatka) → 82 W (Greenland).
+and the horizontal scale must use a range limited to 230 W (shadow Kamtchatka) → 32 W (Iceland).
 
 On an Asia regional map, both areas appear only once:
 
-* Shadow Alaska at longitude 188 E
+* Shadow Alaska at longitude 208 E
 
-* Main Kamtchatka at longitude 163 E
+* Main Kamtchatka at longitude 130 E
 
-and the horizontal scale must use a range limited to 20 E (Middle-East) → 188 E (shadow Alaska).
+and the horizontal scale must use a range limited to 5 W (Europe) → 208 E (shadow Alaska).
 
 Regional maps, full  maps and macro-maps are rendered  as PNG pictures
 by the same  module, `map-gd.rakumod`. How can this  module tell apart
@@ -1456,7 +1473,7 @@ How do we compute the longitude range for the horizontal scale?
 As all borders  then all areas are examined, each  time we decide that
 the  area  must  be  drawn,  we   store  its  longitude  into  a  list
 `@longitudes`.  Of course,  if both  "shadow ALA"  and "main  ALA" are
-displayed, we store both longitudes `-172` (main) and `+188` (shadow).
+displayed, we store both longitudes `-152` (main) and `+208` (shadow).
 Then, when all borders have been examined and when all areas have been
 examined, we extract the `min` and the `max` from this list and we get
 the longitude range.
