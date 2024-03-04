@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #     Génération des macro-chemins hamiltoniens et des chemins hamiltoniens régionaux
-#     Genetating macro-paths and regional paths
+#     Generating macro-paths and regional paths
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.

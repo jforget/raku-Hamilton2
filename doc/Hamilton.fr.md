@@ -1258,6 +1258,24 @@ avoir un rectangle de 500 pixels sur 700 :
 
   http://localhost:3000/fr/full-map/fr2015?w=500&h=700
 
+Autres possibilités
+-------------------
+
+Un  programme `export.raku`  permet d'exporter  des graphes  au format
+`.dot`. Il est ainsi possible de créer des fichiers graphiques avec
+[Graphviz}(https://graphviz.org/)
+(`neato`) ou de visualiser les graphes en interactif avec
+[`tulip`](https://tulip.labri.fr/site/).
+
+Le programme d'export permet de  choisir le répertoire de destination.
+Il  permet  également  de  choisir  si l'on  veut  exporter  la  carte
+complète, la macro-carte ou les cartes régionales (toutes ou seulement
+celles qui sont spécifiées).
+
+Les sommets et les arcs sont  exportés avec leur couleur et avec leurs
+longitude et latitude.  L'affichage par Graphviz et  par Tulip devrait
+assez bien ressembler aux dessins générés par `website.raku`.
+
 Quelques remarques
 ------------------
 

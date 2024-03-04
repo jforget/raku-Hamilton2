@@ -1209,6 +1209,25 @@ in a 500 by 700 pixel rectangle:
 
   http://localhost:3000/fr/full-map/fr2015?w=500&h=700
 
+Other Possibilities
+-------------------
+
+A programme `export.raku`  allows you to export various  graphs to the
+`.dot` format. Then, you can create graphical files with
+[Graphviz}(https://graphviz.org/)
+(`neato`) or use them interactively with
+[`tulip`](https://tulip.labri.fr/site/).
+
+The  export programme  allows you  to choose  the directory  where the
+`.dot` files will be created.  Other command line parameters allow you
+to choose  which graphs  are exported  for a given  map: the  full map
+graph, the  macro-map graph or the  regional maps graphs (all  or only
+those specified in the command line).
+
+Nodes and edges are exported with their colours and their longitudes /
+latitudes,  so   the  rendering  by   Graphviz  or  Tulip   should  be
+approximately the same as the rendering by `website.raku`.
+
 A Few Remarks
 -------------
 
