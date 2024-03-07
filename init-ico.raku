@@ -27,8 +27,8 @@ for <Maps Areas Borders Paths Path_Relations Exit_Borders Isometries Isom_Path M
 }
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
-insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_macro_paths_1, nb_region_paths, exterior)
-       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0)
+insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_macro_paths_1, nb_region_paths, exterior, diameter, radius, full_eccentricity, region_eccentricity)
+       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0       , 0       , 0     , 0                , 0)
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
@@ -52,8 +52,8 @@ for $fh.lines -> Str $line {
   given $lvl {
     when 'A' {
       $dbh.execute(q:to/SQL/, $map, $name);
-      insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
-                values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0);
+      insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom, full_diameter, full_radius, macro_diameter, macro_radius)
+                values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0        , 0            , 0          , 0             , 0);
       SQL
       $region = ~ $code;
       $colour = ~ $color-or-coord;

@@ -6,6 +6,10 @@ create table Maps (map               TEXT
                  , fruitless_reason  TEXT
                  , with_scale        INTEGER
                  , with_isom         INTEGER
+                 , full_diameter     INTEGER
+                 , full_radius       INTEGER
+                 , macro_diameter    INTEGER
+                 , macro_radius      INTEGER
                  );
 
 create table Areas (map      TEXT
@@ -16,10 +20,14 @@ create table Areas (map      TEXT
                   , lat      NUMERIC
                   , color    TEXT
                   , upper    TEXT
-                  , nb_macro_paths   INTEGER
-                  , nb_macro_paths_1 INTEGER
-                  , nb_region_paths  INTEGER
-                  , exterior         INTEGER
+                  , nb_macro_paths       INTEGER
+                  , nb_macro_paths_1     INTEGER
+                  , nb_region_paths      INTEGER
+                  , exterior             INTEGER
+                  , diameter             INTEGER
+                  , radius               INTEGER
+                  , full_eccentricity    INTEGER
+                  , region_eccentricity  INTEGER
                   );
 
 create table Borders (map       TEXT

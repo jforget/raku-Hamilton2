@@ -136,6 +136,32 @@ our sub list-borders-for-region(Str $map, Str $region) {
   return @val;
 }
 
+# This routine extracts all department borders inside a region
+# BUT NOT department borders across a region border
+our sub list-borders-in-region(Str $map, Str $region) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select B.from_code code_f, B.to_code code_t, B.color color
+       , F.long long_f, F.lat lat_f
+       , T.long long_t, T.lat lat_t
+       , B.long long_m, B.lat lat_m
+       , B.fruitless fruitless
+       , B.nb_paths  nb_paths
+       , B.cross_idl cross_idl
+  from Small_Borders B
+  join Small_Areas F
+    on  F.map  = B.map
+    and F.code = B.from_code
+  join Small_Areas T
+    on  T.map  = B.map
+    and T.code = B.to_code
+  where B.map        = ?
+  and   B.upper_from = ?
+  and   B.upper_to   = B.upper_from
+  SQL
+  my @val = $sth.execute($map, $region).allrows(:array-of-hash);
+  return @val;
+}
+
 our sub list-messages(Str $map) {
   my $sth = $dbh.prepare("select * from Messages where map = ? order by dh");
   my @val = $sth.execute($map).allrows(:array-of-hash);

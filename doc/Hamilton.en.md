@@ -168,7 +168,14 @@ Other fields are:
 pictures,  meaning  that the  graph  nodes  are locations  on  Earth's
 surface,
 * `with_isom` flag showing whether  isometries have been generated for
-the graph.
+the graph,
+* `full_diameter`,
+* `full_radius`,
+* `macro_diameter`,
+* `macro_radius`.
+
+Fields `full_diameter`, `full_radius`, `macro_diameter` and `macro_radius`
+are described in the chapter about "shortest paths statistics".
 
 Areas
 -----
@@ -197,7 +204,11 @@ Other fields are:
 * `nb_macro_paths`,
 * `nb_macro_paths_1`,
 * `nb_region_paths`,
-* `exterior` showing whether the department is linked with another region.
+* `exterior` showing whether the department is linked with another region,
+* `diameter`,
+* `radius`,
+* `full_eccentricity`,
+* `region_eccentricity`.
 
 Two views are defined on this table, `Big_Areas` which filters `level`
 equal  to `1`  for regions  and  `Small_Areas` which  filters `2`  for
@@ -230,6 +241,10 @@ The  `exterior`  field  is  significant only  for  departments  (small
 areas). If `1`, that means that  the department shares a border with a
 department  from another  region. If  `0`,  that means  that for  this
 department, all neighbour departments belong to the same region.
+
+Fields  `full_eccentricity`,   `region_eccentricity`,  `diameter`  and
+`radius`  are   described  in   the  chapter  about   "shortest  paths
+statistics".
 
 Borders
 -------
@@ -3534,7 +3549,10 @@ Statistics
 
 A new feature has crept in, statistics!
 
-Below, I describe  statistics for regional paths,  yet the definitions
+Statistics on Hamiltonian Paths
+-------------------------------
+
+Below, I describe  statistics for regional Hamiltonian paths,  yet the definitions
 can  extend to  macro-paths.  But, with  the way  the  full paths  are
 implemented, no statistics will be computed for full paths.
 
@@ -3776,6 +3794,51 @@ macro-paths with full paths and  without this suffix when counting all
 macro-paths.  These  two categories  of  statistics  are displayed  in
 different webpages.
 
+Statistics on shortest paths
+----------------------------
+
+When you are  interested in drawing shortest paths (or
+[geodesics](https://mathworld.wolfram.com/GraphGeodesic.html))
+and computing distances in a  graph, very soon
+you learn some standard notions such as
+[graph diameter](https://mathworld.wolfram.com/GraphDiameter.html),
+[graph radius](https://mathworld.wolfram.com/GraphRadius.html)
+and [vertex eccentricity](https://mathworld.wolfram.com/GraphEccentricity.html).
+These notions are readily accessible in the
+[Perl 5 module `Graph.pm`](https://metacpan.org/dist/Graph/view/lib/Graph.pod).
+
+In  this project,  the Raku  programme `shortest-path-statistics.raku`
+calls this Perl  module, computes the path statistics  and stores them
+into  tables `Maps`  and `Areas`.  These statistics  are displayed  in
+another webpage.  The eccentricities are  displayed both in  the graph
+picture (as colours) and in a  table, like it was done for Hamiltonian
+paths statistics (see above).
+
+For a full map, statistics  are stored into fields `full_diameter` and
+`full_radius` of  table `Maps`  and into field  `full_eccentricity` of
+table `Areas` (for departments, with `level = 2`).
+
+For a  macro-map, statistics  are stored into  fields `macro_diameter`
+and `macro_radius` of table  `Maps` and into field `full_eccentricity`
+of table `Areas` (for regions, with `level = 1`).
+
+For a regional  map, statistics are stored into  fields `diameter` and
+`radius` of  table `Areas` (for  regions, with  `level = 1`)  and into
+field `region_eccentricity`  of table  `Areas` (for  departments, with
+`level = 2`).
+
+For a reason I do not  undestand, module `Graph.pm` refuses to compute
+the eccentricity, diameter and radius values for a graph with only one
+node  and zero  edges.  Yet,  these values  could  be  given as  zero.
+Actually, programme `shortest-path-statistics.raku` takes this special
+case in account and stores  zeroes into the statistics without calling
+`Graph.pm`.
+
+On  the  other  hand,  with   unconnected  graphs,  I  understand  why
+`Graph.pm` returns `undef` or `Inf`  (infinity) for these graphs. This
+corner case is also dealt with,  by storing out-of-bound value -1 into
+the statistical fields.
+
 Todo
 ====
 
@@ -3808,19 +3871,6 @@ be mistaken.
 5. Similary, port Perl module `Graph.pm`  to Raku. This task will most
 certainly be a lengthy  one, but I do not know  the difficulty. I must
 understand some technical peculiarities of `Graph.pm`.
-
-6. Using either `Graph.rakumod` or `Graph.pm` with `Inline::Perl5.pm6`,
-create new webpages showing, for example, the diameter of such and such
-graph, or distances of all nodes from a given node within a graph. The notion of Hamiltonian
-path would be missing from these new webpages, but it does not matter.
-Rather easy to implement.
-
-7. Export the various graphs (full maps, macro maps, regional maps) to
-`dot` source  files, so  we can  play on  these graphs  with Graphviz'
-[`neato`](https://graphviz.org/docs/layouts/neato/)
-and with
-[`tulip`](https://tulip.labri.fr/site/).
-Easy to implement.
 
 License
 =======

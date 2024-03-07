@@ -178,16 +178,24 @@ Les autres informations sont :
 
 * `name` une désignation compréhensible pour cette carte,
 * `nb_macro` le nombre de macro-chemins pour cette carte,
-* `nb_full` le nombre de chemins complets pour cette carte.
+* `nb_full` le nombre de chemins complets pour cette carte,
 * `nb_generic` champ décrit dans la
-[quatrième version du logiciel](#user-content-quatrième-tentative).
+[quatrième version du logiciel](#user-content-quatrième-tentative),
 * `fruitless_reason` champ décrit dans la
 [cinquième version du logiciel](#user-content-cinquième-version)
 * `with_scale`  indicateur spécifiant  si le  graphe correspond  à des
 points situés à la surface de la Terre, auquel cas les dessins devront
-afficher une échelle.
+afficher une échelle,
 * `with_isom` indicateur  spécifiant si  l'on a défini  des isométries
-pour ce graphe et si elles ont été calculées.
+pour ce graphe et si elles ont été calculées,
+* `full_diameter`,
+* `full_radius`,
+* `macro_diameter`,
+* `macro_radius`.
+
+Les  champs   `macro_diameter`,  `macro_radius`,   `full_diameter`  et
+`full_radius`  sont  décrits dans  le  chapitre  sur les  statistiques
+associées aux « plus courts chemins ».
 
 Areas
 -----
@@ -216,7 +224,11 @@ Les autres informations sont :
 * `nb_macro_paths`,
 * `nb_macro_paths_1`,
 * `nb_region_paths`,
-* `exterior` montrant si le département est relié à une autre région
+* `exterior` montrant si le département est relié à une autre région,
+* `diameter`,
+* `radius`,
+* `full_eccentricity`,
+* `region_eccentricity`.
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
 sélectionne  le niveau  1  des  régions et  la  vue `Small_Areas`  qui
@@ -250,6 +262,10 @@ Le champ `exterior` n'a de signification que pour les départements. Il
 vaut `1`  si le département a  au moins une frontière  commune avec un
 département d'une autre  région et il vaut `0` si  tous les voisins du
 département appartiennent à la même région.
+
+Les champs  `full_eccentricity`, `region_eccentricity`,  `diameter` et
+`radius` sont décrits dans le  chapitre sur les statistiques associées
+aux « plus courts chemins ».
 
 Borders
 -------
@@ -3713,7 +3729,10 @@ Statistiques
 
 Et une nouvelle fonctionnalité, les statistiques !
 
-Je décris ci-dessous les statistiques  sur les chemins régionaux, mais
+Statistiques sur chemins hamiltoniens
+-------------------------------------
+
+Je décris ci-dessous les statistiques  sur les chemins hamiltoniens régionaux, mais
 les définitions s'étendent aux macro-chemins. En revanche, compte tenu
 de  la  façon   dont  les  chemins  complets   sont  implémentés,  les
 statistiques ne s'appliquent pas aux chemins complets.
@@ -3959,6 +3978,56 @@ catégories de  statistiques sont stockées dans  des champs différents,
 avec ou sans suffixe `_1` et  elles sont affichées dans deux pages web
 différentes.
 
+Statistiques sur les chemins les plus courts d'un point à un autre
+------------------------------------------------------------------
+
+Lorsque l'on s'intéresse au dessin de « chemins les plus courts » (ou
+[géodésiques](https://mathworld.wolfram.com/GraphGeodesic.html))
+et au calcul des distances dans un graphe,
+on découvre rapidement les notions de
+[diamètre](https://progresser-en-maths.com/le-vocabulaire-des-graphes/#Diametre),
+[rayon](https://progresser-en-maths.com/le-vocabulaire-des-graphes/#Rayon)
+et [excentricité d'un sommet](https://progresser-en-maths.com/le-vocabulaire-des-graphes/#Excentricite).
+Ces notions sont directement accessibles dans le
+[module Perl 5 `Graph.pm`](https://metacpan.org/dist/Graph/view/lib/Graph.pod).
+
+Dans  ce  projet,  le programme  Raku  `shortest-path-statistics.raku`
+appelle ce module  Perl 5, calcule les statistiques  sur les métriques
+et  les stocke  dans la  table `Maps`  et dans  la table  `Areas`. Ces
+statistiques   sont  affichées   dans  une   nouvelle  page   web.  En
+particulier,  les excentricités  sont affichées  avec un  code couleur
+dans le  dessin du graphe  et dans un tableau,  comme cela a  été fait
+pour  les  statistiques  sur  les  chemins  hamiltoniens  du  chapitre
+précédent.
+
+Les statistiques  d'une carte complète  sont stockées dans  les champs
+`full_diameter` et `full_radius`  de la table `Maps` et  dans le champ
+`full_eccentricity` de  la table `Areas` (pour  les départements, avec
+`level = 2`).
+
+Les  statistiques  d'une macro-carte  sont  stockées  dans les  champs
+`macro_diameter` et `macro_radius` de la table `Maps` et dans le champ
+`full_eccentricity` de la table `Areas` (pour les régions, avec `level
+= 1`).
+
+Les statistiques d'une  carte régionale sont stockées  dans les champs
+`diameter` et  `radius` de  la table `Areas`  (pour les  régions, avec
+`level  = 1`)  et  dans  le champ  `region_eccentricity`  de la  table
+`Areas` (pour les départements, avec `level = 2`).
+
+Pour une raison  que je ne comprends pas, le  module `Graph.pm` refuse
+de calculer les valeurs d'excentricité, de diamètre et de rayon sur un
+graphe contenant un seul sommet et aucune arête, alors que ces valeurs
+pourraient   être  alimentées   à  zéro.   D'ailleurs,  le   programme
+`shortest-path-statistics.raku`  prévoit ce  cas particulier  et évite
+d'appeler `Graph.pm` dans ce cas particulier.
+
+En revanche, il  est très compréhensible que le  calcul n'aboutira pas
+pour un  graphe qui n'est  pas connexe.  Ce cas particulier  est prévu
+également et le programme `shortest-path-statistics.raku` alimente les
+statistiques à la valeur « impossible » -1.
+
+
 RESTE À FAIRE
 =============
 
@@ -3993,19 +4062,6 @@ pas à l'abri de mauvaises surprises.
 5. De la même manière, porter  le module Perl `Graph.pm` vers Raku. La
 réalisation  sera longue  à coup  sûr, encore  faut-il que  j'arrive à
 comprendre les particularités techniques de `Graph.pm`.
-
-6. Avec  `Graph.rakumod`, ou  avec `Graph.pm`  et `Inline::Perl5.pm6`,
-créer de nouvelles pages web  affichant, par exemple, le diamètre d'un
-graphe, ou bien  les distances à partir  de tel ou tel  sommet. On est
-loin des problèmes de chemins hamiltoniens, mais tant pis. Réalisation
-assez facile.
-
-7. Exporter les différents graphes (cartes complètes, cartes réduites,
-cartes régionales) dans des fichiers sources `dot`, pour pouvoir jouer
-avec ces graphes dans Graphviz /
-[`neato`](https://graphviz.org/docs/layouts/neato/)
-et dans
-[`tulip`](https://tulip.labri.fr/site/).
 
 LICENCE
 =======

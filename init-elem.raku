@@ -38,8 +38,8 @@ sub MAIN (
   }
 
   my $sto-area = $dbh.prepare(q:to/SQL/);
-  insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_macro_paths_1, nb_region_paths, exterior)
-         values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0)
+  insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_macro_paths_1, nb_region_paths, exterior, diameter, radius, full_eccentricity, region_eccentricity)
+         values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0       , 0       , 0     , 0                , 0)
   SQL
 
   my $sto-border = $dbh.prepare(q:to/SQL/);
@@ -72,8 +72,8 @@ sub MAIN (
       when 'AY'  { $label = "Antiprism with two {$nb}-sided faces"; }
     }
     $dbh.execute(q:to/SQL/, $map, $label);
-    insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom)
-              values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0);
+    insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom, full_diameter, full_radius, macro_diameter, macro_radius)
+              values (?  , ?   , 0       , 0      , 0         , ''              , 0         , 0        , 0            , 0          , 0             , 0);
     SQL
     $sto-area.execute($map, 1, $map, $label, 0, 0, $colour, '');
     if $type eq 'W' | 'S' {
