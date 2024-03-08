@@ -22,10 +22,14 @@ our sub links($at, :$lang
   $at.at('a.macro-map-link' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
   $at.at('a.macro-stat-link').attr(href => "/$lang/macro-stat/$mapcode$query-string");
   if %region<code>:exists {
-    $at.at('a.region-map-link').attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+    $at.at('a.region-map-link'  ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
+    $at.at('a.region-stat-link' ).attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
+    $at.at('a.shpth-region-link').attr(href => "/$lang/shortest-path/region/$mapcode/%region<code>$query-string");
   }
   else {
-    $at.at('a.region-map-link')».remove;
+    $at.at('a.region-map-link'  )».remove;
+    $at.at('a.region-stat-link' )».remove;
+    $at.at('a.shpth-region-link')».remove;
   }
   if %map<nb_full> != 0 {
     $at.at('a.macro-stat1-link').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
@@ -35,12 +39,6 @@ our sub links($at, :$lang
   }
   $at.at('a.shpth-macro-link').attr(href => "/$lang/shortest-path/macro/$mapcode$query-string");
   $at.at('a.shpth-full-link' ).attr(href => "/$lang/shortest-path/full/$mapcode$query-string");
-  if %region<code>:exists {
-    $at.at('a.shpth-region-link').attr(href => "/$lang/shortest-path/region/$mapcode/%region<code>$query-string");
-  }
-  else {
-    $at.at('a.shpth-region-link')».remove;
-  }
 
   if @macro-links.elems eq 0 {
     $at.at('p.list-of-macro-paths')».remove;
