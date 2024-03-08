@@ -104,13 +104,13 @@ create table Isom_Path    (map           TEXT
 
 
 
-create view Big_Areas (map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1)
-         as select     map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1
+create view Big_Areas (map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1, diameter, radius, full_eccentricity, region_eccentricity)
+         as select     map, code, name, long, lat, color, nb_region_paths, nb_macro_paths, nb_macro_paths_1, diameter, radius, full_eccentricity, region_eccentricity
             from       Areas
             where      level = 1;
 
-create view Small_Areas (map, code, name, long, lat, color, upper, nb_region_paths, exterior)
-         as select       map, code, name, long, lat, color, upper, nb_region_paths, exterior
+create view Small_Areas (map, code, name, long, lat, color, upper, nb_region_paths, exterior, full_eccentricity, region_eccentricity)
+         as select       map, code, name, long, lat, color, upper, nb_region_paths, exterior, full_eccentricity, region_eccentricity
             from         Areas
             where        level = 2;
 

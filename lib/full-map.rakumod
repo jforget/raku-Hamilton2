@@ -14,11 +14,30 @@ use Template::Anti :one-off;
 use map-gd;
 use MIME::Base64;
 use messages-list;
+use common;
 
-sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-links
+sub fill($at, :$lang, :$mapcode
+        ,     :%map
+        ,     :%region
+        ,     :@areas
+        ,     :@borders
+        ,     :@messages
+        ,     :@macro-links
         ,     :@full-links
         ,     :@ico-links
         , Str :$query-string) {
+
+  common::links($at, lang         => $lang
+                   , mapcode      => $mapcode
+                   , map          => %map
+                   , region       => %region
+                   , messages     => @messages
+                   , macro-links  => @macro-links
+                   , full-links   => @full-links
+                   , region-links => ()
+                   , canon-links  => @ico-links
+                   , query-string => $query-string);
+
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
@@ -33,7 +52,6 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-
     $at.at('a.macro-stat1')».remove;
   }
   $at('map')».content($imagemap);
-  $at.at('ul.messages').content(messages-list::render($lang, @messages));
 
   if %map<fruitless_reason> eq '' {
     $at.at('span.fruitless-reason')».remove;
@@ -43,37 +61,6 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :@macro-
     $at.at('span.fruitless-reason').content(%map<fruitless_reason>);
   }
 
-  if @macro-links.elems eq 0 {
-    $at.at('p.list-of-macro-paths')».remove;
-  }
-  else {
-    for @macro-links <-> $macro {
-      if $macro<bold> {
-        $macro<txt> = "<b>{$macro<txt>}</b>";
-      }
-    }
-    my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-macro-paths').content($links);
-    $at.at('p.empty-list-of-macro-paths')».remove;
-  }
-
-  if @full-links.elems eq 0 {
-    $at.at('p.list-of-full-paths')».remove;
-  }
-  else {
-    my $links = join ' ', @full-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-full-paths').content($links);
-    $at.at('p.empty-list-of-full-paths')».remove;
-  }
-
-  if @ico-links.elems == 0 {
-    $at.at('div.ico')».content('');
-  }
-  else {
-    my Str $region = $mapcode.uc;
-    my $links = join ' ', @ico-links.map( { "<a href='/$lang/region-path/$mapcode/$region/$_$query-string'>{$_}</a>" } );
-    $at.at('p.list-of-ico-paths').content($links);
-  }
 }
 
 our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages
