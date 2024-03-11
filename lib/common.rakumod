@@ -85,3 +85,32 @@ our sub links($at, :$lang
   }
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
+
+
+=begin POD
+
+=encoding utf8
+
+=head1 NAME
+
+common.rakumod -- utility module to update the hypertext links in the webpages
+
+=head1 DESCRIPTION
+
+This module is called by the  HTML file rendering roiutines, to update
+the  hypertext links  in the  various generated  webpages. It  is used
+internally by the rendering modules of C<website.raku>.
+
+=head1 COPYRIGHT and LICENSE
+
+Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+
+This program  is published under  the same conditions as  Raku: the
+Artistic License version 2.0.
+
+The text of  the license is available  in the F<LICENSE-ARTISTIC-2.0>
+file in this repository, or you can read them at:
+
+  L<https://raw.githubusercontent.com/Raku/doc/master/LICENSE>
+
+=end POD

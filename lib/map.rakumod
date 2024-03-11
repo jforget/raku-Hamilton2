@@ -117,7 +117,7 @@ our sub render(Str $lang
 
 =head1 NAME
 
-page.rakumod -- utility module to render a map.
+map.rakumod -- utility module to render a map.
 
 =head1 DESCRIPTION
 
@@ -131,7 +131,7 @@ Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.
 
-The text of  the licenses is available  in the F<LICENSE-ARTISTIC-2.0>
+The text of  the license is available  in the F<LICENSE-ARTISTIC-2.0>
 file in this repository, or you can read them at:
 
   L<https://raw.githubusercontent.com/Raku/doc/master/LICENSE>
