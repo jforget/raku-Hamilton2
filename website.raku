@@ -19,10 +19,8 @@ use map-list-page;
 use map;
 use full-path;
 use macro-path;
-use macro-stat;
-use macro-stat1;
+use Hamilton-stat;
 use region-path;
-use region-stat;
 use region-with-full-path;
 use deriv-ico-path;
 use shortest-path-stat;
@@ -445,27 +443,45 @@ get '/:ln/region-stat/:map/:region' => sub ($lng_parm, $map_parm, $reg_parm) {
   @areas.append(@neighbours);
   for @areas -> $area {
     if $area<upper> eq $region {
-      $area<url> = '';
+      $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
+      $area<nb_paths_stat> = $area<nb_region_paths>;
     }
     else {
       $area<url> = "/$lng/region-stat/$map/$area<upper>$query-string";
     }
   }
+  for @borders -> $border {
+    if $border<color> ne 'Black' {
+      $border<nb_paths_stat> = $border<nb_paths>;
+    }
+  }
 
-  my @list-paths = list-numbers(%region<nb_region_paths>, 0);
-  my @path-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
-  my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt  => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
+
+  @list-paths      = list-numbers(%map<nb_full>, 0);
+  my @full-links   = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+  @list-paths      = list-numbers(%region<nb_region_paths>, 0);
+  my @region-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+  my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
   my @messages = access-sql::list-regional-messages($map, $region);
-  return region-stat::render($lng, $map, %map
-                            , region       => %region
-                            , areas        => @areas
-                            , borders      => @borders
-                            , messages     => @messages
-                            , path-links   => @path-links
-                            , ico-links    => @ico-links
-                            , query-string => $query-string
-                            );
+  return Hamilton-stat::render($lng, $map
+                             , map          => %map
+                             , region       => %region
+                             , areas        => @areas
+                             , borders      => @borders
+                             , messages     => @messages
+                             , macro-links  => @macro-links
+                             , full-links   => @full-links
+                             , region-links => @region-links
+                             , canon-links  => @canon-links
+                             , query-string => $query-string
+                             , variant      => False
+                             );
 }
 
 get '/:ln/macro-stat/:map' => sub ($lng_parm, $map_parm) {
@@ -480,7 +496,11 @@ get '/:ln/macro-stat/:map' => sub ($lng_parm, $map_parm) {
   my @areas   = access-sql::list-big-areas($map);
   my @borders = access-sql::list-big-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
+    $area<url> = "/$lng/region-stat/$map/$area<code>$query-string";
+    $area<nb_paths_stat> = $area<nb_macro_paths>;
+  }
+  for @borders -> $border {
+    $border<nb_paths_stat> = $border<nb_paths>;
   }
   my @messages = access-sql::list-messages($map);
 
@@ -492,17 +512,20 @@ get '/:ln/macro-stat/:map' => sub ($lng_parm, $map_parm) {
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
-  my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+  my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
-  return macro-stat::render($lng, $map, %map
-                          , areas        => @areas
-                          , borders      => @borders
-                          , messages     => @messages
-                          , macro-links  => @macro-links
-                          , full-links   => @full-links
-                          , ico-links    => @ico-links
-                          , query-string => $query-string
-                          );
+  return Hamilton-stat::render($lng, $map
+                             , map          => %map
+                             , region       => %()
+                             , areas        => @areas
+                             , borders      => @borders
+                             , messages     => @messages
+                             , macro-links  => @macro-links
+                             , full-links   => @full-links
+                             , canon-links  => @canon-links
+                             , query-string => $query-string
+                             , variant      => False
+                             );
 }
 
 get '/:ln/macro-stat1/:map' => sub ($lng_parm, $map_parm) {
@@ -517,7 +540,11 @@ get '/:ln/macro-stat1/:map' => sub ($lng_parm, $map_parm) {
   my @areas   = access-sql::list-big-areas($map);
   my @borders = access-sql::list-big-borders($map);
   for @areas -> $area {
-    $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
+    $area<url> = "/$lng/region-stat/$map/$area<code>$query-string";
+    $area<nb_paths_stat> = $area<nb_macro_paths_1>;
+  }
+  for @borders -> $border {
+    $border<nb_paths_stat> = $border<nb_paths_1>;
   }
   my @messages = access-sql::list-messages($map);
 
@@ -529,17 +556,20 @@ get '/:ln/macro-stat1/:map' => sub ($lng_parm, $map_parm) {
 
   @list-paths    = list-numbers(%map<nb_full>, 0);
   my @full-links = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
-  my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+  my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
-  return macro-stat1::render($lng, $map, %map
-                           , areas        => @areas
-                           , borders      => @borders
-                           , messages     => @messages
-                           , macro-links  => @macro-links
-                           , full-links   => @full-links
-                           , ico-links    => @ico-links
-                           , query-string => $query-string
-                           );
+  return Hamilton-stat::render($lng, $map
+                             , map          => %map
+                             , region       => %()
+                             , areas        => @areas
+                             , borders      => @borders
+                             , messages     => @messages
+                             , macro-links  => @macro-links
+                             , full-links   => @full-links
+                             , canon-links  => @canon-links
+                             , query-string => $query-string
+                             , variant      => True
+                             );
 }
 
 get '/:ln/shortest-path/macro/:map' => sub ($lng_parm, $map_parm) {
