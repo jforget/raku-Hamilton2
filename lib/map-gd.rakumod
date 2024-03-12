@@ -44,19 +44,9 @@ our sub palette-sample(@palette) {
 our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$with_scale = 1) {
   my $height = height-from-query($query-string) || picture-height;
   my $width  =  width-from-query($query-string) || picture-width;
+  my $adjust = adjust-from-query($query-string) || 'nothing';
   my Int $dim-scale =  20;
   my Int $lg-max    = ($width / 2).Int;
-
-  my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
-  my $white  = $image.colorAllocate(255, 255, 255);
-  my $black  = $image.colorAllocate(  0,   0,   0);
-  my %rgb = colors();
-  my %color = Black => $black; # $black is already allocated, do not allocate twice
-  for %rgb.keys -> $color {
-    if $color ne 'Black' {
-      %color{$color} = $image.colorAllocate(|%rgb{$color});
-    }
-  }
 
   my %long-of-shadow-area; # longitude of the shadow image of the cross_idl area
   my %must-display-main;   # Boolean to tell whether the main image must be displayed
@@ -114,10 +104,64 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
   my Num $delta-long = 1e-3 max ($long-max - $long-min); # 1e-3 to prevent a division by zero if $long-max == $long-min
   my Num $delta-lat  = 1e-3 max ( $lat-max -  $lat-min);
 
-  sub conv-x(Num $long) { return ($margin + ($long - $long-min) / $delta-long × ($width  - 2 × $margin)).Int };
-  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) / $delta-lat  × ($height - 2 × $margin)).Int };
+  my Num $coef-x  = ($width  - 2 × $margin) / $delta-long;
+  my Num $coef-y  = ($height - 2 × $margin) / $delta-lat;
+  my Num $mid-lat = π / 180 × ($lat-max + $lat-min) / 2; # medium latitude in radians
+  if $with_scale != 1 {
+    $mid-lat = 0e0; # so its cosinus is 1
+  }
 
-  if $with_scale {
+  given $adjust {
+    when 'h' {
+      $width  = ($width × $coef-y × cos($mid-lat) / $coef-x + 2 × $margin).Int;
+      $coef-x = $coef-y × cos($mid-lat);
+    }
+    when 'w' {
+      $height = ($height × $coef-x / ($coef-y × cos($mid-lat)) + 2 × $margin).Int;
+      $coef-y = $coef-x / cos($mid-lat);
+    }
+    when 'min' {
+      if $coef-x > $coef-y × cos($mid-lat) {
+        $width  = ($width × $coef-y × cos($mid-lat) / $coef-x + 2 × $margin).Int;
+        $coef-x = $coef-y × cos($mid-lat);
+      }
+      else {
+        $height = ($height × $coef-x / ($coef-y × cos($mid-lat)) + 2 × $margin).Int;
+        $coef-y = $coef-x / cos($mid-lat);
+      }
+    }
+    when 'max' {
+      if $coef-x < $coef-y × cos($mid-lat) {
+        $width  = ($width × $coef-y × cos($mid-lat) / $coef-x + 2 × $margin).Int;
+        $coef-x = $coef-y × cos($mid-lat);
+      }
+      else {
+        $height = ($height × $coef-x / ($coef-y × cos($mid-lat)) + 2 × $margin).Int;
+        $coef-y = $coef-x / cos($mid-lat);
+      }
+    }
+  }
+
+  sub conv-x(Num $long) { return ($margin + ($long - $long-min) × $coef-x).Int };
+  sub conv-y(Num $lat ) { return ($margin + ($lat-max   - $lat) × $coef-y).Int };
+
+  if @areas.elems == 1 {
+    $width  = 2 × $margin;
+    $height = $width;
+  }
+
+  my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
+  my $white = $image.colorAllocate(255, 255, 255);
+  my $black = $image.colorAllocate(  0,   0,   0);
+  my %rgb   = colors();
+  my %color = Black => $black; # $black is already allocated, so it must be entered into %color without being allocated twice
+  for %rgb.keys -> $color {
+    if $color ne 'Black' {
+      %color{$color} = $image.colorAllocate(|%rgb{$color});
+    }
+  }
+
+  if $with_scale && @areas.elems > 1 {
     my $scale-distance;
     my $top-scale;
     loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
@@ -133,7 +177,7 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
     my $left-scale;
     # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
     # but for a degree of longitude, the length is shorter, because of latitude
-    my $length-of-one-degree = 111 × cos(pi / 180 × ($lat-max + $lat-min) / 2);
+    my $length-of-one-degree = 111 × cos(π / 180 × ($lat-max + $lat-min) / 2);
     loop ($scale-distance = 10_000; $scale-distance > 0.001; $scale-distance /= 10) {
       $left-scale =  conv-x($long-max - $scale-distance / $length-of-one-degree);
       last if conv-x($long-max) - $left-scale < $lg-max;
@@ -286,6 +330,14 @@ sub width-from-query(Str $query-string) {
 
 sub height-from-query(Str $query-string) {
   param-from-query($query-string, 'h');
+}
+
+sub adjust-from-query(Str $query-string) {
+  my Str $p = param-from-query($query-string, 'adj');
+  if $p ne 'h' | 'w' | 'min' | 'max' {
+    $p = 'nothing';
+  }
+  return $p;
 }
 
 =begin POD

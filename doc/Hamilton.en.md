@@ -1218,11 +1218,69 @@ http://localhost:3000/en/region-path/fr2015/HDF/1
 * A regional map with a (truncated) full path. URL
 http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
 
+### Parameters For The Picture Size
+
 For each page, you can add parameters `h` and `w` to tweak the heights
 and widths of the drawings. For example, if we want to display the map
 in a 500 by 700 pixel rectangle:
 
   http://localhost:3000/fr/full-map/fr2015?w=500&h=700
+
+This is the basic  idea. A first exception is a map  with a single big
+area. To  avoid a huge blank  page when displaying the  macro-map, the
+canvas size  is reduced to  the minimal  size that allows  drawing the
+single area.  The programme does  not use  the values from  the string
+`?h=700&w=500`.
+
+Another case  is when you are  bothered by the fact  that the vertical
+scale and the horizontal scale are much different. So there is a third
+parameter to overload the `h` and `w` parameters. Possible values are:
+
+* `adj=h`, the `w`  parameter for the horizontal scale  is ignored and
+its value is updated to give the same pixel-per-kilometre scale as the
+`h` parameter.
+
+* `adj=w`, the `h` parameter for the vertical scale is ignored and its
+value is updated to give the same pixel-per-kilometre scale as the `w`
+parameter.
+
+* `adj=max`, the programme compares the vertical and horizontal scales
+(in pixels-per-kilometre) and keeps the higher.
+
+* `adj=min`, the programme compares the vertical and horizontal scales
+(in pixels-per-kilometre) and keeps the lower.
+
+Of course, this is relevant only for maps of the surface of Earth with
+a  cylindrical  projection,  in   other  words  maps  with  attributes
+`with_scale=1`.  For abstract  maps,  the adjustment  is  done on  the
+"pixels-per-pseudo-degree" values.
+
+Let us use the example of Britanny and its neighbour departments.
+
+![Bretagne](Bretagne.png)
+
+The  latitudes range  from  47.36°N (Loire-Atlantique  44) to  49.15°N
+(Manche 50),  which gives 1.79° or  200 km. The longitudes  range from
+0.95°W (Maine-et-Loire 49)  to 4.01°W (Finistère 29),  which gives 257
+km.
+
+With  parameter  string  `?h=700&w=500`,  we get  3.5  pixels  per  km
+vertically and 1.94 pixel per km horizontally.
+
+With  string `?h=700&w=500&adj=h`,  the picture  height overloads  its
+width, so we have  3.5 pixels per km in both  directions and the width
+is extended to 900 pixels.
+
+With  string `?h=700&w=500&adj=w`,  the  picture  width overloads  its
+height, so we have  1.94 pixels per km and the  height is shortened to
+388 pixels.
+
+With parameter  string `?h=700&w=500&adj=min`, the  programme compares
+both scales 3.5 pixels / km and  1.94 pixels / km and keeps the second
+one, which gives in this case the same result as `?h=700&w=500&adj=w`.
+On the  other hand,  the parameter string  `?h=700&w=500&adj=max` will
+result in the programme choosing the bigger scale, 3.5 pixels / km and
+will adjust the width to 900 pixels.
 
 Other Possibilities
 -------------------
@@ -1965,6 +2023,11 @@ dead end 1 --- articulation 1            articulation 2 --- dead end 2
 
 with  no  edge  between area  A  and  area  B.  How can  you  find  an
 Hamiltonian path in this graph?
+
+Actually, these maps are not  completely discarded. Since I have added
+webpages to display shortest paths and similar notions, there is still
+some interest  including _History of the  World_, _Twilight Struggle_,
+_War on Terror_ and other maps in the database.
 
 Conclusion
 ----------

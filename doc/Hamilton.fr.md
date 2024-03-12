@@ -1267,6 +1267,8 @@ http://localhost:3000/fr/region-path/fr2015/HDF/3
 * L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
 http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
 
+### Paramètres de taille de l'image
+
 Pour chacune  de ces pages,  il est possible d'ajouter  des paramètres
 `h` et  `w` pour ajuster les  dimensions des graphiques : `h`  pour la
 hauteur et  `w` pour  la largeur (_width_  en anglais).  Exemple, pour
@@ -1274,12 +1276,69 @@ avoir un rectangle de 500 pixels sur 700 :
 
   http://localhost:3000/fr/full-map/fr2015?w=500&h=700
 
+C'est  l'idée  de  base.  Une  première exception  est  le  cas  d'une
+macro-carte  avec  une  seule  région. Pour  éviter  une  grande  page
+blanche,  le dessin  de  la  carte est  réduit  à  la taille  minimale
+permettant  d'afficher  l'unique zone.  On  ne  tient pas  compte  des
+paramètres fournis par une éventuelle chaîne `?h=700&w=500`.
+
+Un autre cas de  figure est que l'on peut être  gêné par la distorsion
+de  la  carte,  avec  les  échelles  nettement  différentes  entre  la
+direction horizontale et la direction verticale. Aussi est-il prévu un
+troisième paramètre, `adj` pour  « ajustement ». Les valeurs possibles
+sont :
+
+* `adj=h`, l'échelle  horizontale `w` est ajustée  pour coïncider avec
+l'échelle verticale, exprimée en pixels par kilomètre.
+
+* `adj=w`  le symétrique  du  précédent, l'échelle  verticale `h`  est
+ajustée pour coïncider avec  l'échelle horizontale, exprimée en pixels
+par kilomètre.
+
+* `adj=max`,  le  programme compare  les  deux  échelles verticale  et
+horizontale ; la plus petite des deux est ajustée à la plus grande.
+
+* `adj=min`, le symétrique du précédent, le programme compare les deux
+échelles  verticale  et horizontale ;  la  plus  grande des  deux  est
+ajustée à la plus petite.
+
+Évidemment, c'est valable uniquement  pour les cartes représentant une
+portion   de  la   surface   terrestre   en  projection   cylindrique,
+c'est-à-dire  les  cartes  avec l'attribut  `with_scale=1`.  Lorsqu'il
+s'agit d'une carte  abstraite, l'ajustement se fait  simplement sur la
+valeur des paramètres `h` et `w` exprimés en pixels par « pseudo-degré ».
+
+Prenons l'exemple de la Bretagne et des départements voisins.
+
+![Bretagne](Bretagne.png)
+
+La plage de valeurs des latitudes s'étend de 47,36°N (Loire-Atlantique
+44) à 49,15°N (Manche  50), soit 1,79° ou 200 km.  La plage de valeurs
+des  longitudes  s'étend  de   0,95°W  (Maine-et-Loire  49)  à  4,01°W
+(Finistère 29), soit 257 km.
+
+Avec la  chaîne paramètre  `?h=700&w=500`, on aura  3,5 pixels  par km
+dans le sens vertical et 1,94 pixel par km dans le sens horizontal.
+
+Avec la chaîne `?h=700&w=500&adj=h`, la hauteur de l'image prime, donc
+on aura 3,5 pixels par km et la largeur sera étendue à 900 pixels.
+
+Avec la chaîne `?h=700&w=500&adj=w`, la largeur de l'image prime, donc
+on aura 1,94 pixel par km et la hauteur sera réduite à 388 pixels.
+
+Pour   la  chaîne   paramètre  `?h=700&w=500&adj=min`,   le  programme
+comparera les  deux échelles  3,5 pixels /  km et 1,94  pixel /  km et
+choisira la seconde, ce qui donne dans ce cas un résultat équivalent à
+`?h=700&w=500&adj=w`. À l'inverse, le paramètre `?h=700&w=500&adj=max`
+fera que le programme choisira l'échelle  la plus grande, 3,5 pixels /
+km et ajustera la largeur à 900 pixels.
+
 Autres possibilités
 -------------------
 
 Un  programme `export.raku`  permet d'exporter  des graphes  au format
 `.dot`. Il est ainsi possible de créer des fichiers graphiques avec
-[Graphviz}(https://graphviz.org/)
+[Graphviz](https://graphviz.org/)
 (`neato`) ou de visualiser les graphes en interactif avec
 [`tulip`](https://tulip.labri.fr/site/).
 
@@ -2070,6 +2129,12 @@ impasse 1 --- articulation 1            articulation 2 --- impasse 2
 
 sans  frontière entre  la zone  A et  la zone  B. Comment  voulez-vous
 générer un chemin hamiltonien avec cela ?
+
+En fait,  ces cartes ne  sont pas totalement abandonnées.  Étant donné
+que j'ai ajouté l'affichage des chemins les plus courts et des notions
+associées, il est possible de trouver un intérêt à inclure _History of
+the World_,  _Twilight Struggle_,  _War on Terror_  et autres  dans la
+base de données.
 
 Conclusion
 ----------
