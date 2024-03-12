@@ -52,8 +52,8 @@ sub fill($at, :$lang
     $at.at('span.start-stop-number')».content(2 × %map<nb_macro>.Str);
   }
 
-  my Int $diameter = %region<diameter> // %map<diameter>;
-  my Int $radius   = %region<radius  > // %map<radius  >;
+  my Int $diameter = %region<diameter> // %map<diameter> // 999;
+  my Int $radius   = %region<radius  > // %map<radius  > // 999;
   if $diameter ≥ 0 {
     $at.at('span.diameter')».content($diameter.Str);
   }
@@ -61,14 +61,21 @@ sub fill($at, :$lang
     $at.at('span.radius')».content($radius.Str);
   }
   my @colour-scheme;
-  my @colours-full = <Blue Cyan Green Chartreuse Yellow1 Orange Pink Red>;
+  my @colours-full = <Blue Cyan Green Chartreuse Yellow1 Orange Red>;
   my @colours-part = <Blue Green Yellow Red>;
 
   my %node-histo;
+  my %tbl-url-of-area;
   for @areas -> $area {
     if $area<stat>:exists {
       %node-histo{$area<stat>}<nb>++;
       %node-histo{$area<stat>}<nodes>.push($area<code>);
+      if $area<tbl-url>:exists {
+        %tbl-url-of-area{$area<code>} = "<a href='{$area<tbl-url>}'>{$area<code>}</a>";
+      }
+      else {
+        %tbl-url-of-area{$area<code>} = $area<code>;
+      }
     }
   }
   my @colours;
@@ -81,20 +88,24 @@ sub fill($at, :$lang
   my $colour-max = @colours.elems;
   my %palette    = map-gd::palette-sample(@colours);
 
+  my Int $low-stat = %node-histo.keys.map( { $_.Int } ).min;
   my Str $list = '';
   my $node-line = $at.at('table.node-table tr.node-line');
   $at('table.node-table tr.node-line')».remove;
   for %node-histo.keys.sort( { $^a <=> $^b }) -> $nb {
-    my $i = ($nb - $radius) % $colour-max;
-    my $mime-png = MIME::Base64.encode(%palette{@colours[$i]});
-    $node-line.at('td.node-col img').attr(src => "data:image/png;base64," ~ $mime-png);
-    if $nb ≥ 0 {
+    my $mime-png;
+    if 0 ≤ $nb < @areas.elems {
+      my Int $i = ($nb - $low-stat) % $colour-max;
+      $mime-png = MIME::Base64.encode(%palette{@colours[$i]});
       $node-line.at('td.node-nb').content($nb);
     }
     else {
+      $mime-png = MIME::Base64.encode(%palette<Red>);
       $node-line.at('td.node-nb').content('∞');
     }
-    $node-line.at('td.node-list').content(%node-histo{$nb}<nodes>.sort.join(', '));
+    $node-line.at('td.node-col img').attr(src => "data:image/png;base64," ~ $mime-png);
+    my @content;
+    $node-line.at('td.node-list').content(%node-histo{$nb}<nodes>.sort.map({ %tbl-url-of-area{$_} }).join(', '));
     $list ~= "$node-line\n";
   }
   $at.at('table.node-table').append-content($list);
@@ -102,12 +113,13 @@ sub fill($at, :$lang
   my %colour-of-area;
   for @areas -> $area {
     if $area<stat>:exists {
-      $area<color> = @colours[($area<stat> - $radius) % $colour-max];
-      if $area<stat> ≥ 0 {
+      if 0 ≤ $area<stat> < @areas.elems {
+        $area<color> = @colours[($area<stat> - $low-stat) % $colour-max];
         $area<name> ~= ": $area<stat>";
       }
       else {
         $area<name> ~= ": ∞";
+        $area<color> = 'Red';
       }
     }
     else {
@@ -166,6 +178,34 @@ our sub render(Str $lang
                 );
 }
 
+our sub render-from(Str $lang
+                  , Str  $map
+                  ,      %map
+                  ,      %region
+                  ,     :@areas
+                  ,     :@borders
+                  ,     :@messages
+                  ,     :@macro-links
+                  ,     :@full-links
+                  ,     :@region-links
+                  ,     :@canon-links
+                  , Str :$query-string) {
+  my &filling = anti-template :source("html/shortest-paths-from.$lang.html".IO.slurp), &fill;
+  return filling( lang         => $lang
+                , mapcode      => $map
+                , map          => %map
+                , region       => %region
+                , areas        => @areas
+                , borders      => @borders
+                , messages     => @messages
+                , macro-links  => @macro-links
+                , full-links   => @full-links
+                , region-links => @region-links
+                , canon-links  => @canon-links
+                , query-string => $query-string
+                );
+}
+
 
 =begin POD
 
@@ -173,7 +213,7 @@ our sub render(Str $lang
 
 =head1 NAME
 
-map-page.rakumod -- utility module to render a map.
+shortest-path-stat.rakumod -- utility module to render a map.
 
 =head1 DESCRIPTION
 

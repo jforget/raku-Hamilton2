@@ -24,7 +24,7 @@ sub colors {
             , Yellow     => [223, 150,  23] # darkish, poor contrast with Orange
             , Yellow1    => [255, 255,   0] # light, good contrast with Orange
             , Orange     => [255, 127,   0]
-            , Pink       => [255,  79,   0]
+            , Pink       => [255,  79,   0] # poor contrast with Orange and with Red
             , Red        => [255,   0,   0];
   return %color;
 }
