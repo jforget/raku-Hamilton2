@@ -116,6 +116,11 @@ discussions   (like   this   documentation    file),   but   not   for
 human-to-computer discussions. In other words, the articulation points
 are not implemented in the programmes from this project.
 
+There is  a similar notion for  edges, the "bridges". In  the examples
+above, the `NPC` to `PIC` edge and the `64` to `40` edges are bridges.
+There are no bridges in the "Pays  de la Loire" region. I did not need
+this notion in my programmes or in my documentation.
+
 An interior border  is a border between two  departments (small areas)
 belonging  to the  same region  (big area).  An exterior  border is  a
 border between  two departments belonging  to different regions.  I do
@@ -144,6 +149,10 @@ be four different paths `29 → 56 → 35  → 22`, `22 → 29 → 56 → 35`, `
 → 22  → 29 → 56`  and `56 →  35 → 22 →  29` for this cycle,  plus four
 other, running along the cycle in the opposite direction.
 
+When I  read texts about  graphs, I notice  that most often  they deal
+with Hamiltonian cycles and they ignore Hamiltonian paths. This is not
+the opposite here,  I deal with Hamiltonian paths and  I nearly ignore
+Hamiltonian cycles.
 
 Database
 ========
@@ -175,7 +184,9 @@ the graph,
 * `macro_radius`.
 
 Fields `full_diameter`, `full_radius`, `macro_diameter` and `macro_radius`
-are described in the chapter about "shortest paths statistics".
+are described in the
+[chapter](#user-content-statistics-on-shortest-paths)
+about "shortest paths statistics".
 
 Areas
 -----
@@ -243,8 +254,9 @@ department  from another  region. If  `0`,  that means  that for  this
 department, all neighbour departments belong to the same region.
 
 Fields  `full_eccentricity`,   `region_eccentricity`,  `diameter`  and
-`radius`  are   described  in   the  chapter  about   "shortest  paths
-statistics".
+`radius` are described in the
+[chapter](#user-content-statistics-on-shortest-paths)
+about "shortest paths statistics".
 
 Borders
 -------
@@ -3890,7 +3902,7 @@ For a regional  map, statistics are stored into  fields `diameter` and
 field `region_eccentricity`  of table  `Areas` (for  departments, with
 `level = 2`).
 
-For a reason I do not  undestand, module `Graph.pm` refuses to compute
+For a reason I do not understand, module `Graph.pm` refuses to compute
 the eccentricity, diameter and radius values for a graph with only one
 node  and zero  edges.  Yet,  these values  could  be  given as  zero.
 Actually, programme `shortest-path-statistics.raku` takes this special
@@ -3901,6 +3913,117 @@ On  the  other  hand,  with   unconnected  graphs,  I  understand  why
 `Graph.pm` returns `undef` or `Inf`  (infinity) for these graphs. This
 corner case is also dealt with,  by storing out-of-bound value -1 into
 the statistical fields.
+
+These statistics are displayed at the following webpages, depending on
+their scope:
+
+* http://localhost:3000/en/shortest-path/full/fr1970
+
+* http://localhost:3000/en/shortest-path/macro/fr1970
+
+* http://localhost:3000/en/shortest-path/region/fr1970/BOU
+
+Another series  of webpages lists the  distances from a given  area to
+all other areas  in the same graph. These distances  are not stored in
+the database, they are computed on-the-fly by `Graph.pm`. Here are the
+webpages for big area `BOU` and small area `21`:
+
+* http://localhost:3000/en/shortest-paths-from/full/fr1970/21
+
+* http://localhost:3000/en/shortest-paths-from/macro/fr1970/BOU
+
+* http://localhost:3000/en/shortest-paths-from/region/fr1970/BOU/21
+
+A last  series of webpages  displays the  shortest paths from  a given
+start area to  a given stop area. These shortests  paths are displayed
+in a  similar way to statistics  on Hamiltonian paths, with  a colored
+map and with two tables. Addresses are:
+
+* http://localhost:3000/en/shortest-paths-from-to/full/fr1970/21/29
+
+* http://localhost:3000/en/shortest-paths-from-to/macro/fr1970/BOU/BRE
+
+* http://localhost:3000/en/shortest-paths-from-to/region/fr1970/BOU/21/58
+
+### Counting the Shortest Paths from an Area to Another Area
+
+Like the distances from area A to area B, the counts of shortest paths
+from  area A  to area  B  are not  stored  in the  database, they  are
+computed  each time  a webpage  is accessed.  Here is  the computation
+method, using the `HDF` to `OCC` shortest paths in map `fr2015`.
+
+The first step is computing the  distance from `HDF` to `OCC`. This is
+a standard  function of `Graph.pm`.  The distance is 4,  therefore the
+shortest paths follow the pattern `HDF → X → Y → Z → OCC`.
+
+As you can  see, all possible `X`  nodes are at distance  1 from `HDF`
+and at distance 3 from `OCC`, all possible `Y` nodes are at distance 2
+from both `HDF` and `OCC` and all possible `Z` nodes are at distance 3
+from `HDF` and at distance 1 from `OCC`.
+
+So, the  second step scans all  areas and computes the  distances from
+each area to  both `HDF` and `OCC`. Depending on  the result, the area
+is dispatched in various buckets:
+
+![distances from HDF and from OCC](HDF-to-OCC.webp)
+
+* `NOR`, `IDF` and `GES` (distance 1 from `HDF` and 3 from `OCC`) in bucket 1,
+
+* `PDL`, `CVL` and `BFC` in bucket 2,
+
+* `NAQ` and `ARA` in bucket 3,
+
+* of course, `HDF` in bucket 0 and `OCC` in bucket 4,
+
+* `BRE` (distances 2 and 3) and `PAC` (distances 4 and 1) are discarded.
+
+The third step  consists in counting how many shortest  paths run from
+`HDF` to such or such area. Counting is also done for crossed borders.
+Let us  call these  counters `n1`.  This step  is executed  in several
+iterations, according to ascending bucket numbers.
+
+* For the start area, `HDF`, the counter is always 1.
+
+* For a border between a bucket `n`  area and a bucket `n`+1 area, the
+`n1` counter is the same as for the bucket `n` area.
+
+* For a bucket `n` area, the `n1` counter is the sum of `n1` counters
+from the borders between this area and the bucket `n`-1 areas.
+
+Below is an illustration of the successive iterations.
+
+![Third step for the HDF → OCC computation](HDF-to-OCC-a.png)
+
+At the end of  the third step, we know the  overall number of shortest
+paths from  `HDF` to  `OCC`, but  we do  not know  how this  number is
+dispatched  among  the various  intermediary  areas  and borders.  The
+fourth step is  used to compute this and store  it into counters named
+`n2`. It is  executed according to descending bucket  numbers. Here is
+the illustration of the fourth  step, followed by the explanations. Do
+not puzzle  about the dots in  the picture, it is  just a disagreement
+between Metapost and me.
+
+![Fourth step for the HDF → OCC computation](HDF-to-OCC-b.png)
+
+* For the stopping area `OCC`, the `n2`  value is the same as its `n1`
+value.
+
+* For a border between a bucket `n`  area and a bucket `n`+1 area, the
+counter  `n2`  of  the  `n`+1  area  is  split  between  the  borders,
+proportionally to the  `n1` values. Thus, counter `n2=4`  for `CVL` is
+split into `n2=2` for `NOR → CVL`  and `n2=2` for `IDF → CVL`, because
+the `n1` counter of these two  borders are the same for these borders.
+Likewise, border  `NAQ → OCC`  has `n1=3` and  border `ARA →  OCC` has
+`n1=4`, so the counter `n2=7` for  `OCC` will be split into `n2=3` for
+`NAQ → OCC` and `n2=4` for `ARA → OCC`.
+
+* For an area from bucket `n`, the counter `n2` is the sum of counters
+`n2`  for the  borders  from  this area  to  bucket  `n`+1 areas.  For
+example, `CVL  → NAQ` has  `n2=2` and `CVL →  ARA` has `n2=2`  too, so
+`CVL` has `n2=4`.
+
+You  may notice  that on  each horizontal  line, the  sum of  all `n2`
+counters is a constant.
 
 Todo
 ====

@@ -1,0 +1,109 @@
+% -*- encoding: utf-8 -*-
+%
+%     Utility script for raku-Hamilton2's documentation
+%     Copyright (C) 2024 Jean Forget
+%
+%     This program is distributed under the  Artistic License 2.0.
+%
+
+\documentclass[a4paper]{article}
+\usepackage{luamplib}
+\begin{document}
+\oddsidemargin=0mm
+\begin{mplibcode}
+beginfig(1);
+
+dx  = 14;
+dy  = 35;
+ddx = 10;
+ddy =  5;
+
+pair decala; decala = (1.2 * ddx, ddy);
+pair decalb; decalb = (0, 0);
+pair zhdf; zhdf = (3 * dx, 4 * dy);
+pair znor; znor = (    dx, 3 * dy);
+pair zidf; zidf = (3 * dx, 3 * dy);
+pair zges; zges = (5 * dx, 3 * dy);
+pair zpdl; zpdl = (0     , 2 * dy);
+pair zcvl; zcvl = (2 * dx, 2 * dy);
+pair zbfc; zbfc = (4 * dx, 2 * dy);
+pair znaq; znaq = (    dx,     dy);
+pair zara; zara = (3 * dx,     dy);
+pair zocc; zocc = (2 * dx, 0     );
+
+def area(expr lbl, z) =
+
+path p;
+p = (ddx, ddy) -- (ddx, -ddy) -- (-ddx, -ddy) -- (-ddx, ddy) -- cycle;
+fill p shifted z withcolor white;
+label(lbl, z);
+enddef;
+
+def nb(expr lbl, z) =
+label(lbl, z + decala);
+enddef;
+
+def nbe(expr lbl, z) =
+label(lbl, z + decalb);
+enddef;
+
+def graphe(expr z, ch, cha) =
+
+draw (zhdf -- znor -- zpdl -- znaq -- zocc -- zara -- zbfc -- zges -- zhdf
+   -- zidf -- zcvl -- znor) shifted z withcolor green;
+draw (znaq -- zcvl -- zara) shifted z withcolor green;
+draw (zidf -- zbfc)         shifted z withcolor green;
+
+area(btex HDF etex, z + zhdf);
+area(btex NOR etex, z + znor);
+area(btex IDF etex, z + zidf);
+area(btex GES etex, z + zges);
+area(btex PDL etex, z + zpdl);
+area(btex CVL etex, z + zcvl);
+area(btex BFC etex, z + zbfc);
+area(btex NAQ etex, z + znaq);
+area(btex ARA etex, z + zara);
+area(btex OCC etex, z + zocc);
+
+nb(substring ( 0,  1) of ch, z + zhdf);
+nb(substring ( 1,  2) of ch, z + znor);
+nb(substring ( 2,  3) of ch, z + zidf);
+nb(substring ( 3,  4) of ch, z + zges);
+nb(substring ( 4,  5) of ch, z + zpdl);
+nb(substring ( 5,  6) of ch, z + zcvl);
+nb(substring ( 6,  7) of ch, z + zbfc);
+nb(substring ( 7,  8) of ch, z + znaq);
+nb(substring ( 8,  9) of ch, z + zara);
+nb(substring ( 9, 10) of ch, z + zocc);
+
+nbe(substring ( 0,  1) of cha, z + (0.5 * zhdf + 0.5 * znor));
+nbe(substring ( 1,  2) of cha, z + (0.5 * zhdf + 0.5 * zidf));
+nbe(substring ( 2,  3) of cha, z + (0.5 * zhdf + 0.5 * zges));
+nbe(substring ( 3,  4) of cha, z + (0.5 * znor + 0.5 * zpdl));
+nbe(substring ( 4,  5) of cha, z + (0.5 * znor + 0.5 * zcvl));
+nbe(substring ( 5,  6) of cha, z + (0.5 * zidf + 0.5 * zcvl));
+nbe(substring ( 6,  7) of cha, z + (0.5 * zidf + 0.5 * zbfc));
+nbe(substring ( 7,  8) of cha, z + (0.5 * zges + 0.5 * zbfc));
+nbe(substring ( 8,  9) of cha, z + (0.5 * zpdl + 0.5 * znaq));
+nbe(substring ( 9, 10) of cha, z + (0.5 * zcvl + 0.5 * znaq));
+nbe(substring (10, 11) of cha, z + (0.5 * zcvl + 0.5 * zara));
+nbe(substring (11, 12) of cha, z + (0.5 * zbfc + 0.5 * zara));
+nbe(substring (12, 13) of cha, z + (0.5 * znaq + 0.5 * zocc));
+nbe(substring (13, 14) of cha, z + (0.5 * zara + 0.5 * zocc));
+enddef;
+
+graphe((  0,    0), "1", "111");
+graphe(( 95,    0), "1111", "11111111");
+graphe((190,    0), "1111122", "111111111222");
+graphe((285,    0), "111112234", "11111111122234");
+graphe((380,    0), "1111122347", "11111111122234");
+
+graphe((  0, -200), ".........7", "..............");
+graphe(( 95, -200), ".......347", "............34");
+graphe((190, -200), "....142347", "........122234");
+graphe((285, -200), ".331142347", "...12211122234");
+graphe((380, -200), "7331142347", "33112211122234");
+
+endfig;
+\end{mplibcode}
+\end{document}

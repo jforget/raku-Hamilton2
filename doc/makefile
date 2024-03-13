@@ -66,3 +66,14 @@ gr7: Kappa-Lambda-arrays.png
 Kappa-Lambda-arrays.png: Dodecahedron.pdf
 	pdftoppm -png -f 1 -l 1 -x 250 -y 250 -W 830 -H 740 Dodecahedron.pdf Kappa-Lambda-arrays
 	mv Kappa-Lambda-arrays-1.png Kappa-Lambda-arrays.png
+
+gr8: HDF-to-OCC-a.png
+	display $?
+
+HDF-to-OCC-a.png: HDF-to-OCC.pdf
+	pdftoppm -png -f 1 -l 1 -x 130 -y 220 -W 1060 -H 380 $< HDF-to-OCC
+	mv HDF-to-OCC-1.png HDF-to-OCC-a.png
+
+HDF-to-OCC-b.png: HDF-to-OCC.pdf
+	pdftoppm -png -f 1 -l 1 -x 130 -y 640 -W 1060 -H 380 $< HDF-to-OCC
+	mv HDF-to-OCC-1.png HDF-to-OCC-b.png

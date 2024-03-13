@@ -118,6 +118,13 @@ discussions d'humain à humain (cette documentation), mais pas pour les
 discussions  d'humain à  ordinateur.  En d'autres  termes, ce  concept
 n'est pas implémenté dans les programmes traitant les graphes.
 
+Le concept associé pour les arêtes  a pour nom « isthme » ou « pont ».
+Dans les exemples  ci-dessus, l'arête de `NPC` à `PIC`  est un isthme,
+tout comme l'arête de  `64` à `40`. Il n'y en a pas  dans le graphe de
+la région Pays  de la Loire. Je mentionne ce  concept pour mémoire, je
+n'ai pas eu l'occasion de l'utiliser ni dans la programmation, ni dans
+la documentation.
+
 Dans ce même
 [lexique](https://fr.wikipedia.org/wiki/Lexique_de_la_th%C3%A9orie_des_graphes),
 je constate que pour un graphe non orientés, une suite de sommets tels
@@ -163,6 +170,12 @@ enregistrements différents  pour ce cycle  dans la table  des chemins,
 35 → 22 → 29`, plus  quatre autres enregistrements pour le parcours en
 sens inverse.
 
+Lorsque je  lis des textes  sur les  graphes, je remarque  que presque
+toujours,  ils   s'intéressent  aux  cycles  hamiltoniens   et  qu'ils
+délaissent les chemins hamiltoniens (ou chaînes hamiltoniennes). C'est
+l'inverse  ici, je  m'intéresse aux  chemins hamiltoniens  et j'ignore
+presque totalement les cycles hamiltoniens.
+
 Base de données
 ===============
 
@@ -194,8 +207,9 @@ pour ce graphe et si elles ont été calculées,
 * `macro_radius`.
 
 Les  champs   `macro_diameter`,  `macro_radius`,   `full_diameter`  et
-`full_radius`  sont  décrits dans  le  chapitre  sur les  statistiques
-associées aux « plus courts chemins ».
+`full_radius` sont décrits dans le
+[chapitre](#user-content-statistiques-sur-les-chemins-les-plus-courts-dun-point-à-un-autre)
+sur les statistiques associées aux « plus courts chemins ».
 
 Areas
 -----
@@ -264,8 +278,9 @@ département d'une autre  région et il vaut `0` si  tous les voisins du
 département appartiennent à la même région.
 
 Les champs  `full_eccentricity`, `region_eccentricity`,  `diameter` et
-`radius` sont décrits dans le  chapitre sur les statistiques associées
-aux « plus courts chemins ».
+`radius` sont décrits dans le
+[chapitre](#user-content-statistiques-sur-les-chemins-les-plus-courts-dun-point-à-un-autre)
+sur les statistiques associées aux « plus courts chemins ».
 
 Borders
 -------
@@ -4092,6 +4107,122 @@ pour un  graphe qui n'est  pas connexe.  Ce cas particulier  est prévu
 également et le programme `shortest-path-statistics.raku` alimente les
 statistiques à la valeur « impossible » -1.
 
+Ces statistiques sont présentées sous la forme d'une carte coloriée et
+d'un tableau aux adresses :
+
+* http://localhost:3000/fr/shortest-path/full/fr1970
+
+* http://localhost:3000/fr/shortest-path/macro/fr1970
+
+* http://localhost:3000/fr/shortest-path/region/fr1970/BOU
+
+Une autre série  de pages web donne les distances  à partir d'une zone
+donnée, vers  les autres  zones du  domaine envisagé  (carte complète,
+macro-carte, carte régionale). Ces distances ne sont pas stockées dans
+la base  de données, elles  sont calculées par `Graph.pm`  chaque fois
+que l'on  demande l'affichage de la  page. Voici les adresses  pour la
+région `BOU` et le département `21` :
+
+* http://localhost:3000/fr/shortest-paths-from/full/fr1970/21
+
+* http://localhost:3000/fr/shortest-paths-from/macro/fr1970/BOU
+
+* http://localhost:3000/fr/shortest-paths-from/region/fr1970/BOU/21
+
+Une dernière série de pages permet d'afficher les plus courts chemins
+d'une zone à une autre. Ces plus courts chemins sont affichés d'une
+façon similaire aux statistiques sur les chemins hamiltoniens, avec
+une carte coloriée et deux tableaux. Les adresses sont :
+
+* http://localhost:3000/fr/shortest-paths-from-to/full/fr1970/21/29
+
+* http://localhost:3000/fr/shortest-paths-from-to/macro/fr1970/BOU/BRE
+
+* http://localhost:3000/fr/shortest-paths-from-to/region/fr1970/BOU/21/58
+
+### Comment compter les chemins les plus courts d'un point A à un point B
+
+Comme les  distances d'un point  à un  autre, le comptage  des chemins
+d'un point  à un  autre n'est pas  stocké en base  de données,  il est
+calculé à  chaque affichage.  Voici comment cela  se fait,  en prenant
+l'exemple des chemins de `HDF` à `OCC` dans la carte `fr2015`.
+
+La  première étape  consiste à  calculer  la distance  entre `HDF`  et
+`OCC`, ce  qui se  fait par  une fonction  standard de  `Graph.pm`. On
+obtient 4,  donc tous les  chemins les  plus courts suivent  le schéma
+`HDF → X → Y → Z → OCC`.
+
+Comme vous pouvez le constater, toutes  les zones possibles `X` sont à
+distance  1 de  `HDF`  et à  distance  3 de  `OCC`,  toutes les  zones
+possibles `Y` sont à distance 2 de `HDF` et de `OCC`, toutes les zones
+possibles `Z` sont à distance 3 de `HDF` et à distance 1 de `OCC`.
+
+La deuxième  étape consiste à passer  en revue toutes les  zones de la
+carte et à  déterminer la distance avec `HDF` et  celle avec `OCC`. En
+fonction du résultat, la zone est  rangée dans tel ou tel groupe. Dans
+le cas présent :
+
+![distances à partir de HDF et de OCC](HDF-to-OCC.webp)
+
+* `NOR`, `IDF` et `GES` (distance 1 depuis `HDF` et distance 3 depuis `OCC`) sont rangées dans le groupe 1,
+
+* `PDL`, `CVL` et `BFC` sont rangées dans le groupe 2,
+
+* `NAQ` et `ARA` sont rangées dans le groupe 3,
+
+* évidemment, la zone `HDF` est rangée dans le groupe 0 et `OCC` dans le groupe 4,
+
+* `BRE` (distances 2 et 3) et `PAC` (distances 4 et 1) sont laissées de côté.
+
+La troisième étape  consiste à compter combien de  plus courts chemins
+partent de  `HDF` et  aboutissent à  telle ou telle  zone. On  fait le
+compte  également   pour  les  frontières  concernées.   Appelons  ces
+compteurs `n1`. Le processus se fait par groupe croissant.
+
+* Pour la zone origine, `HDF`, c'est forcément 1.
+
+* Pour  une frontière  entre une  zone du  groupe `n`  et une  zone du
+groupe `n`+1, le  compteur reprend la valeur du compteur  pour la zone
+origine du groupe `n`.
+
+* Pour une zone du groupe `n`, on fait la somme des compteurs `n1` des
+frontières entre cette zone et les zones du groupe `n`-1.
+
+Voici ci-dessous les différentes itérations de cette troisième étape.
+
+![Troisième étape pour le calcul HDF → OCC](HDF-to-OCC-a.png)
+
+À la fin  de la troisième étape,  on connaît le nombre  de plus courts
+chemins de  `HDF` vers `OCC`, mais  on ne sait pas  exactement comment
+ils se répartissent entre les zones intermédiaires. La quatrième étape
+se  fait  dans l'autre  sens,  elle  est  destinée à  effectuer  cette
+répartition en calculant  une nouvelle série de  compteurs `n2`. Voici
+ci-dessous les différentes itérations de  la quatrième étape, puis les
+explications.  Ne tenez  pas compte  des points  sur le  schéma, c'est
+juste un désaccord entre Metapost et moi.
+
+![Quatrième étape pour le calcul HDF → OCC](HDF-to-OCC-b.png)
+
+* Pour la zone d'arrivée `OCC`, `n2` a la même valeur que `n1`.
+
+* Pour  une frontière  entre une  zone du  groupe `n`  et une  zone du
+groupe `n`+1, le compteur `n2` de  la zone `n`+1 est réparti entre les
+frontières  aboutissant   à  cette   zone,  la  répartition   se  fait
+proportionnellement aux compteurs `n1` des frontières. C'est ainsi que
+le compteur `n2=4` de `CVL` est réparti pour moitié entre la frontière
+`NOR → CVL` et  la frontière `IDF → CVL`, car le  compteur `n1` de ces
+deux frontières  vaut 1.  Également, le compteur  `n2=7` de  `OCC` est
+réparti en fonction de `n1=3` pour `NAQ  → OCC` et de `n1=4` pour `ARA
+→ OCC`, donc  pour `NAQ → OCC` on  aura `n2=3` et pour `ARA  → OCC` on
+aura `n2=4.`
+
+* Pour  une zone  du groupe  `n`, le  compteur `n2`  est la  somme des
+compteurs `n2` des frontières reliant cette zone à des zones du groupe
+`n`+1. Ainsi  `CVL → NAQ` est  à 2 et `CVL  → ARA` est à  2 également,
+donc `CVL` obtient un 4.
+
+On  peut remarquer  que sur  chaque  ligne horizontale,  la somme  des
+compteurs `n2` est constante.
 
 RESTE À FAIRE
 =============
