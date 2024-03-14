@@ -301,6 +301,7 @@ our sub render-from-to(Str  $lang
       @border-codes.push([$border<code_f>, $border<code_t>]);
     }
   }
+
   my $graph = Graph.new(undirected => 1
                       , vertices   => @area-codes
                       , edges      => @border-codes);
@@ -308,8 +309,14 @@ our sub render-from-to(Str  $lang
 
   # step zero: initialise the statistics for discarded areas, for their borders and for transverse borders
   # the statistics are initialised to zero for the used areas and the used borders, but it does not matter
+  my %n1-of-area;
+  my %n1-of-border;
+  my %n2-of-area;
+  my %n2-of-border;
   for @areas -> $area {
     $area<nb_paths_stat> = 0;
+    %n1-of-area{$area<code>} = 0;
+    %n2-of-area{$area<code>} = 0;
   }
   for @neighbours -> $area {
     $area<nb_paths_stat> = 0;
@@ -334,8 +341,6 @@ our sub render-from-to(Str  $lang
   }
 
   # Third step, compute n1 for areas and borders
-  my %n1-of-area;
-  my %n1-of-border;
   %n1-of-area{$from} = 1;
   for 1 .. $dist -> $d {
     for @(@node-buckets[$d]) -> $area {
@@ -358,8 +363,6 @@ our sub render-from-to(Str  $lang
   }
 
   # Fourth step, compute n2 for areas and borders
-  my %n2-of-area;
-  my %n2-of-border;
   %n2-of-area{$to} = %n1-of-area{$to};
   for (0 ..^ $dist).reverse -> $d {
     for @(@node-buckets[$d]) -> $area {
