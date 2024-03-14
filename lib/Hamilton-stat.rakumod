@@ -15,11 +15,14 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 use common;
+use Graph:from<Perl5>;
 
 sub fill($at,  :$lang
         ,      :$mapcode
         ,      :%map
         ,      :%region
+        , Str  :$from = ''
+        , Str  :$to   = ''
         ,      :@areas
         ,      :@borders
         ,      :@messages
@@ -29,6 +32,7 @@ sub fill($at,  :$lang
         ,      :@canon-links
         , Str  :$query-string
         , Bool :$variant
+        , Bool :$squeeze-zero = False
         ) {
 
   common::links($at, lang         => $lang
@@ -45,6 +49,10 @@ sub fill($at,  :$lang
   my Str $region-code = %region<code> // '';
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
+  if $from ne '' {
+    $at('span.from-code')».content($from);
+    $at('span.to-code'  )».content($to);
+  }
   if $region-code eq '' {
     $at.at('table.node-table tr.small-node-title')».content('');
     $at.at('table.edge-table tr.small-edge-title')».content('');
@@ -78,10 +86,17 @@ sub fill($at,  :$lang
   my @colours-part = <Blue Green Yellow Red>;
 
   my %node-histo;
+  my %tbl-url-of-area;
   for @areas -> $area {
     if $region-code eq '' || $area<upper> eq $region-code {
       %node-histo{$area<nb_paths_stat>}<nb>++;
       %node-histo{$area<nb_paths_stat>}<nodes>.push($area<code>);
+      if $area<tbl-url>:exists {
+        %tbl-url-of-area{$area<code>} = "<a href='{$area<tbl-url>}'>{$area<code>}</a>";
+      }
+      else {
+        %tbl-url-of-area{$area<code>} = $area<code>;
+      }
     }
   }
   my @colours;
@@ -119,7 +134,7 @@ sub fill($at,  :$lang
     my $mime-png = MIME::Base64.encode(%palette{@colours[$i]});
     $node-line.at('td.node-col img').attr(src => "data:image/png;base64," ~ $mime-png);
     $node-line.at('td.node-nb'  ).content($nb);
-    $node-line.at('td.node-list').content(%node-histo{$nb}<nodes>.join(', '));
+    $node-line.at('td.node-list').content(%node-histo{$nb}<nodes>.sort.map({ %tbl-url-of-area{$_} }).join(', '));
     $list ~= "$node-line\n";
   }
   $at.at('table.node-table').append-content($list);
@@ -141,6 +156,9 @@ sub fill($at,  :$lang
       %edge-histo{$border<nb_paths_stat>}<nb>++;
       %edge-histo{$border<nb_paths_stat>}<edges>.push("$border<code_f> → $border<code_t>");
     }
+  }
+  if $squeeze-zero {
+    %edge-histo<0>:delete;
   }
   if %edge-histo.keys.elems ≤ @colours-part.elems {
     @colours = @colours-part;
@@ -185,9 +203,15 @@ sub fill($at,  :$lang
 
   for @borders -> $border {
     if $region-code eq '' or $border<color> ne 'Black' {
-      my $i = @colour-scheme.first( { $_<min> ≤ $border<nb_paths_stat> ≤ $_<max> }, :k);
-      $border<color> = @colours[$i];
-      $border<name > = $border<nb_paths_stat>.Str;
+      if $squeeze-zero and $border<nb_paths_stat> == 0 {
+        $border<color> = 'Black';
+        $border<name > = '';
+      }
+      else {
+        my $i = @colour-scheme.first( { $_<min> ≤ $border<nb_paths_stat> ≤ $_<max> }, :k);
+        $border<color> = @colours[$i];
+        $border<name > = $border<nb_paths_stat>.Str;
+      }
     }
   }
 
@@ -249,6 +273,148 @@ our sub render(Str  $lang
                , canon-links  => @canon-links
                , query-string => $query-string
                , variant      => $variant
+               );
+}
+
+our sub render-from-to(Str  $lang
+                     , Str  $map
+                     , Str  :$from
+                     , Str  :$to
+                     ,      :%map
+                     ,      :%region
+                     ,      :@areas
+                     ,      :@borders
+                     ,      :@neighbours
+                     ,      :@messages
+                     ,      :@macro-links
+                     ,      :@full-links
+                     ,      :@region-links
+                     ,      :@canon-links
+                     , Str  :$query-string
+                     ) {
+  my &filling = anti-template :source("html/shortest-paths-from-to.$lang.html".IO.slurp), &fill;
+
+  my @area-codes = @areas.map( { $_<code> } );
+  my @border-codes = ();
+  for @borders -> $border {
+    if $border<code_f> lt $border<code_t> {
+      @border-codes.push([$border<code_f>, $border<code_t>]);
+    }
+  }
+  my $graph = Graph.new(undirected => 1
+                      , vertices   => @area-codes
+                      , edges      => @border-codes);
+  my $apsp = $graph.APSP_Floyd_Warshall;
+
+  # step zero: initialise the statistics for discarded areas, for their borders and for transverse borders
+  # the statistics are initialised to zero for the used areas and the used borders, but it does not matter
+  for @areas -> $area {
+    $area<nb_paths_stat> = 0;
+  }
+  for @neighbours -> $area {
+    $area<nb_paths_stat> = 0;
+  }
+  for @borders -> $border {
+    $border<nb_paths_stat> = 0;
+  }
+
+  # first step, compute the total distance
+  my Int $dist = $apsp.path_length($from, $to);
+
+  # second step, fill the buckets
+  my Array @node-buckets = [] xx ($dist + 1);
+  my %bucket-of-node;
+  for @area-codes -> $area-code {
+    my $d1 = $apsp.path_length($from, $area-code);
+    my $d2 = $apsp.path_length($to  , $area-code);
+    if $d1 + $d2 == $dist {
+      @node-buckets[$d1].push($area-code);
+      %bucket-of-node{$area-code} = $d1;
+    }
+  }
+
+  # Third step, compute n1 for areas and borders
+  my %n1-of-area;
+  my %n1-of-border;
+  %n1-of-area{$from} = 1;
+  for 1 .. $dist -> $d {
+    for @(@node-buckets[$d]) -> $area {
+      for @border-codes -> $border-code {
+        my Str $b-from = $border-code[0];
+        my Str $b-to   = $border-code[1];
+        next unless $b-from eq $area or $b-to eq $area;
+        next unless %bucket-of-node{$b-from}:exists; # border from a discarded area
+        next unless %bucket-of-node{$b-to  }:exists; # border to   a discarded area
+        next if     %bucket-of-node{$b-from} == %bucket-of-node{$b-to}; # transverse border
+        if %bucket-of-node{$b-from} > %bucket-of-node{$b-to} {
+          ($b-from, $b-to) = $b-to, $b-from;
+        }
+        if $b-to eq $area {
+          %n1-of-border{$b-from}{$b-to} = %n1-of-area{$b-from};
+          %n1-of-area{$b-to} += %n1-of-border{$b-from}{$b-to};
+        }
+      }
+    }
+  }
+
+  # Fourth step, compute n2 for areas and borders
+  my %n2-of-area;
+  my %n2-of-border;
+  %n2-of-area{$to} = %n1-of-area{$to};
+  for (0 ..^ $dist).reverse -> $d {
+    for @(@node-buckets[$d]) -> $area {
+      for @border-codes -> $border-code {
+        my Str $b-from = $border-code[0];
+        my Str $b-to   = $border-code[1];
+        next unless $b-from eq $area or $b-to eq $area;
+        next unless %bucket-of-node{$b-from}:exists; # border from a discarded area
+        next unless %bucket-of-node{$b-to  }:exists; # border to   a discarded area
+        next if     %bucket-of-node{$b-from} == %bucket-of-node{$b-to}; # transverse border
+        if %bucket-of-node{$b-from} > %bucket-of-node{$b-to} {
+          ($b-from, $b-to) = $b-to, $b-from;
+        }
+        if $b-from eq $area {
+          %n2-of-border{$b-from}{$b-to} = %n2-of-area{$b-to} × %n1-of-border{$b-from}{$b-to} / %n1-of-area{$b-to};
+          %n2-of-area{$b-from} += %n2-of-border{$b-from}{$b-to};
+        }
+      }
+    }
+  }
+
+  # Conclusion, filling the statistics
+  for @areas -> $area {
+    if %n2-of-area{$area<code>}:exists {
+      $area<nb_paths_stat> =  %n2-of-area{$area<code>}.Int;
+    }
+  }
+  for @borders -> $border {
+    my $code_f = $border<code_f>;
+    my $code_t = $border<code_t>;
+    if %n2-of-border{$code_f}{$code_t}:exists {
+      $border<nb_paths_stat> =  %n2-of-border{$code_f}{$code_t}.Int;
+    }
+    if %n2-of-border{$code_t}{$code_f}:exists {
+      $border<nb_paths_stat> =  %n2-of-border{$code_t}{$code_f}.Int;
+    }
+  }
+
+  @areas.append(@neighbours);
+  return filling(lang         => $lang
+               , mapcode      => $map
+               , map          => %map
+               , region       => %region
+               , from         => $from
+               , to           => $to
+               , areas        => @areas
+               , borders      => @borders
+               , messages     => @messages
+               , macro-links  => @macro-links
+               , full-links   => @full-links
+               , region-links => @region-links
+               , canon-links  => @canon-links
+               , query-string => $query-string
+               , variant      => False
+               , squeeze-zero => True
                );
 }
 

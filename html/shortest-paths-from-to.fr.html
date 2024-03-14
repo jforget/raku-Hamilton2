@@ -1,30 +1,30 @@
 <html><head>
-<title>Les plus courts chemins depuis une zone donnée</title>
+<title>Chemins les plus courts d'une zone à l'autre</title>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 </head>
 <body>
 
 <p><a href=/fr/list/>Liste des cartes</a>
-<a href="/fr/full-map/xx" class='full-map-link'>carte complète</a>
-<a href="/fr/macro-map/xx" class='macro-map-link'>carte réduite</a>
+<a href="/fr/full-map/xx"   class='full-map-link'  >carte complète</a>
+<a href="/fr/macro-map/xx"  class='macro-map-link' >carte réduite</a>
 <a href="/fr/region-map/xx" class='region-map-link'>carte régionale</a>
+</p>
 <p>Statistiques sur les chemins hamiltoniens
-<a href="/fr/macro-stat/xx" class='macro-stat-link'>carte réduite</a>
-<a href="/fr/macro-stat1/xx" class='macro-stat1-link'>(variante)</a>
+<a href="/fr/macro-stat/xx"     class='macro-stat-link' >carte réduite</a>
+<a href="/fr/macro-stat1/xx"    class='macro-stat1-link'>(variante)</a>
 <a href="/fr/region-stat/xx/yy" class='region-stat-link'>carte régionale</a>
 </p>
 <p>Statistiques sur les plus courts chemins&nbsp;:
-<a href="/fr/shortest-path/full/xx" class='shpth-full-link'>carte complète</a>
-<a href="/fr/shortest-path/macro/xx" class='shpth-macro-link'>carte réduite</a>
+<a href="/fr/shortest-path/full/xx"      class='shpth-full-link'  >carte complète</a>
+<a href="/fr/shortest-path/macro/xx"     class='shpth-macro-link' >carte réduite</a>
 <a href="/fr/shortest-path/region/xx/yy" class='shpth-region-link'>carte régionale</a>
 </p>
 
+<h1>Titre</h1>
 
-<h1>Les plus courts chemins depuis une zone donnée</h1>
+<h2>Plus courts chemins de <span class='from-code'>xxx</span> à <span class='to-code'>yyy</span></h2>
 
-<h2>Carte avec les longueurs des plus courts chemins depuis la zone <span class='from-code'>xxx</span></h2>
-
-<img src='xxx' alt='Map' usemap="#map1" />
+<img src='xxx' alt='Carte faisant apparaître les chemins les plus courts' usemap="#map1" />
 
 <map name="map1" id="map1">
 <area shape="circle" coords="637,18,30"  href="/en/region-map/fr2015/HDF" />
@@ -32,13 +32,20 @@
 <area shape="circle" coords="18,287,30"  href="/en/region-map/fr2015/BRE" />
 </map>
 
-<h2>Table des longueurs de chemins</h2>
+<h2>Tables</h2>
 
 <table class='node-table' border='1'>
-<tr><th>Couleur</th><th>Longueur</th><th>Zones</th></tr>
+<tr><th>Couleur</th><th>Nombre</th><th>Zones</th></tr>
 <tr class='node-line'><td class='node-col' align='center'><img src="data:image/png;base64,xxx"></td>
-                      <td class='node-nb'  align='right' >∞</td>
+                      <td class='node-nb'  align='right' >0</td>
                       <td class='node-list'>01 02 03</td></tr>
+</table>
+
+<table class='edge-table' border='1'>
+<tr><th>Couleur</th><th>Nombre</th><th>Frontières</th></tr>
+<tr class='edge-line'><td class='edge-col' align='center'><img src="data:image/png;base64,xxx"></td>
+                      <td class='edge-nb'  align='right' >0</td>
+                      <td class='edge-list'>01 02 03</td></tr>
 </table>
 
 <h2>Macro-chemins</h2>
@@ -51,7 +58,7 @@
 <p class='empty-list-of-full-paths'>Cette carte n'a pas de chemins complets.</p>
 <p class='list-of-full-paths'>xxx</p>
 
-<div class='region-path'>
+<div class='region'>
 <h2>Chemins régionaux</h2>
 
 <p class='empty-list-of-region-paths'>Cette région n'a pas de chemins régionaux.</p>

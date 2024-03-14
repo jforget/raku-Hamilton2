@@ -737,6 +737,7 @@ get '/:ln/shortest-paths-from/macro/:map/:area' => sub ($lng_parm, $map_parm, $a
   for @areas -> $area {
     $area<url>  = "/$lng/shortest-path/region/$map/$area<code>$query-string";
     $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+    $area<tbl-url> = "/$lng/shortest-paths-from-to/macro/$map/$area-code/$area<code>$query-string";
   }
   my @messages = access-sql::list-messages($map);
 
@@ -751,6 +752,7 @@ get '/:ln/shortest-paths-from/macro/:map/:area' => sub ($lng_parm, $map_parm, $a
   my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
 
   return shortest-path-stat::render-from($lng, $map, %map, %()
+                           , from         => $area-code
                            , areas        => @areas
                            , borders      => @borders
                            , messages     => @messages
@@ -790,6 +792,7 @@ get '/:ln/shortest-paths-from/full/:map/:area' => sub ($lng_parm, $map_parm, $ar
   for @areas -> $area {
     $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
     $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+    $area<tbl-url> = "/$lng/shortest-paths-from-to/full/$map/$area-code/$area<code>$query-string";
   }
   my @messages = access-sql::list-messages($map);
 
@@ -804,6 +807,7 @@ get '/:ln/shortest-paths-from/full/:map/:area' => sub ($lng_parm, $map_parm, $ar
   my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
 
   return shortest-path-stat::render-from($lng, $map, %map, %()
+                           , from         => $area-code
                            , areas        => @areas
                            , borders      => @borders
                            , messages     => @messages
@@ -848,6 +852,7 @@ get '/:ln/shortest-paths-from/region/:map/:region/:area' => sub ($lng_parm, $map
     if $area<upper> eq $region {
       $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
       $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+      $area<tbl-url> = "/$lng/shortest-paths-from-to/region/$map/$area<upper>/$area-code/$area<code>$query-string";
     }
     else {
       $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
@@ -868,8 +873,158 @@ get '/:ln/shortest-paths-from/region/:map/:region/:area' => sub ($lng_parm, $map
   my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
   return shortest-path-stat::render-from($lng, $map, %map, %region
+                           , from         => $area-code
                            , areas        => @areas
                            , borders      => @borders
+                           , messages     => @messages
+                           , macro-links  => @macro-links
+                           , full-links   => @full-links
+                           , region-links => @region-links
+                           , canon-links  => @canon-links
+                           , query-string => $query-string
+                           );
+}
+
+get '/:ln/shortest-paths-from-to/macro/:map/:from/:to' => sub ($lng_parm, $map_parm, $from_parm, $to_parm) {
+  my Str $lng          = ~ $lng_parm;
+  my Str $map          = ~ $map_parm;
+  my Str $from-code    = ~ $from_parm;
+  my Str $to-code      = ~ $to_parm;
+  my Str $query-string = query-string;
+
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-big-areas($map);
+  my @borders = access-sql::list-big-borders($map);
+
+  for @areas -> $area {
+    $area<url    > = "/$lng/shortest-path/region/$map/$area<code>$query-string";
+    $area<tbl-url> = "/$lng/shortest-paths-from-to/macro/$map/$from-code/$area<code>$query-string";
+  }
+  my @messages = access-sql::list-messages($map);
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
+
+  @list-paths     = list-numbers(%map<nb_full>, 0);
+  my @full-links  = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+  my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+  return Hamilton-stat::render-from-to($lng, $map
+                           , from         => $from-code
+                           , to           => $to-code
+                           , map          => %map
+                           , region       => %()
+                           , areas        => @areas
+                           , borders      => @borders
+                           , neighbours   => ()
+                           , messages     => @messages
+                           , macro-links  => @macro-links
+                           , full-links   => @full-links
+                           , canon-links  => @canon-links
+                           , region-links => ()
+                           , query-string => $query-string
+                           );
+}
+
+get '/:ln/shortest-paths-from-to/full/:map/:from/:to' => sub ($lng_parm, $map_parm, $from_parm, $to_parm) {
+  my Str $lng          = ~ $lng_parm;
+  my Str $map          = ~ $map_parm;
+  my Str $from-code    = ~ $from_parm;
+  my Str $to-code      = ~ $to_parm;
+  my Str $query-string = query-string;
+
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map     = access-sql::read-map($map);
+  my @areas   = access-sql::list-small-areas(  $map);
+  my @borders = access-sql::list-small-borders($map);
+
+  for @areas -> $area {
+    $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
+    $area<tbl-url> = "/$lng/shortest-paths-from-to/full/$map/$from-code/$area<code>$query-string";
+  }
+  my @messages = access-sql::list-messages($map);
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
+
+  @list-paths     = list-numbers(%map<nb_full>, 0);
+  my @full-links  = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+  my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+  return Hamilton-stat::render-from-to($lng, $map
+                           , from         => $from-code
+                           , to           => $to-code
+                           , map          => %map
+                           , region       => %()
+                           , areas        => @areas
+                           , borders      => @borders
+                           , neighbours   => ()
+                           , messages     => @messages
+                           , macro-links  => @macro-links
+                           , full-links   => @full-links
+                           , canon-links  => @canon-links
+                           , region-links => ()
+                           , query-string => $query-string
+                           );
+}
+
+get '/:ln/shortest-paths-from-to/region/:map/:region/:from/:to' => sub ($lng_parm, $map_parm, $region_parm, $from_parm, $to_parm) {
+  my Str $lng          = ~ $lng_parm;
+  my Str $map          = ~ $map_parm;
+  my Str $region       = ~ $region_parm;
+  my Str $from-code    = ~ $from_parm;
+  my Str $to-code      = ~ $to_parm;
+  my Str $query-string = query-string;
+
+  if $lng !~~ /^ @languages $/ {
+    return slurp('html/unknown-language.html');
+  }
+  my %map        = access-sql::read-map($map);
+  my %region     = access-sql::read-region(            $map, $region);
+  my @areas      = access-sql::list-areas-in-region(   $map, $region);
+  my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+  my @borders    = access-sql::list-borders-for-region($map, $region);
+
+  for @areas -> $area {
+    $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
+    $area<tbl-url> = "/$lng/shortest-paths-from-to/region/$map/$area<upper>/$from-code/$area<code>$query-string";
+  }
+  for @neighbours -> $area {
+    $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
+  }
+  my @messages = access-sql::list-regional-messages($map, $region);
+
+  my @list-paths  = list-numbers(%map<nb_macro>, 0);
+  my @macro-links = @list-paths.map( { %( txt => $_
+                                        , link => "/$lng/macro-path/$map/$_$query-string"
+                                        , bold => access-sql::bold-macro-path($map, $_)
+                                        ) } );
+
+  @list-paths      = list-numbers(%map<nb_full>, 0);
+  my @full-links   = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+  @list-paths      = list-numbers(%region<nb_region_paths>, 0);
+  my @region-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+  my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+  return Hamilton-stat::render-from-to($lng, $map
+                           , from         => $from-code
+                           , to           => $to-code
+                           , map          => %map
+                           , region       => %region
+                           , areas        => @areas
+                           , borders      => @borders
+                           , neighbours   => @neighbours
                            , messages     => @messages
                            , macro-links  => @macro-links
                            , full-links   => @full-links

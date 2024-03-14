@@ -18,6 +18,7 @@ use common;
 
 sub fill($at, :$lang
         ,     :$mapcode
+        , Str :$from = ''
         ,     :%map
         ,     :%region
         ,     :@areas
@@ -41,6 +42,9 @@ sub fill($at, :$lang
                    , query-string => $query-string);
 
   my Int $nb-areas = @areas.elems;
+  if $from ne '' {
+    $at('span.from-code')».content($from);
+  }
   $at.at('span.path-number')».content(%map<nb_macro>.Str);
   $at.at('span.node-number')».content($nb-areas.Str);
   $at.at('span.edge-number')».content((%map<nb_macro> × ($nb-areas - 1)).Str);
@@ -182,6 +186,7 @@ our sub render-from(Str $lang
                   , Str  $map
                   ,      %map
                   ,      %region
+                  , Str :$from
                   ,     :@areas
                   ,     :@borders
                   ,     :@messages
@@ -193,6 +198,7 @@ our sub render-from(Str $lang
   my &filling = anti-template :source("html/shortest-paths-from.$lang.html".IO.slurp), &fill;
   return filling( lang         => $lang
                 , mapcode      => $map
+                , from         => $from
                 , map          => %map
                 , region       => %region
                 , areas        => @areas
