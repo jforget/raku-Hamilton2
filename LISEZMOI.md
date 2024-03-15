@@ -3,8 +3,11 @@
 But
 ===
 
-Le but de ce projet est de trouver des chemins doublement hamiltoniens
-dans une carte administrative. Dans un graphe connexe, un
+Le but de ce  projet est de dessiner des graphes et  de jouer avec les
+chemins hamiltoniens et les plus courts chemins.
+
+Le premier  but de  ce projet  est de  trouver des  chemins doublement
+hamiltoniens dans une carte administrative. Dans un graphe connexe, un
 [chemin hamiltonien](https://mathworld.wolfram.com/HamiltonianPath.html)
 est un chemin qui passe une fois  et une seule par chacun des sommets.
 Mais  qu'est-ce  un  chemin  _doublement_ hamiltonien  ?  Prenons  par
@@ -20,6 +23,10 @@ Il  est  possible  d'utiliser  les  programmes  pour  d'autres  cartes
 administratives, mais  il vous faudra fournir  les caractéristiques de
 ces cartes.
 
+The second  but de ce  projet est  d'examiner les plus  courts chemins
+d'un sommet A à un sommet B,  ainsi que les notions associées comme le
+diamètre d'un graphe et le rayon d'un graphe.
+
 Installation
 ============
 
@@ -31,7 +38,7 @@ Vous aurez besoin de Raku, SQLite et GD, ainsi que des modules suivants :
 * Inline::Perl5
 * List::Util
 
-et le module GD pour Perl 5 (pas celui pour Raku).
+et les modules Graph.pm et GD.pm pour Perl 5 (pas le module GD pour Raku).
 
 Il y a  un peu de paramétrage à faire.  Notamment, vous devrez changer
 le chemin  d'accès de  la base SQLite  dans `lib/db-conf-sql.rakumod`.
@@ -58,11 +65,12 @@ Initialisez les cartes de France avec :
 Lancez la génération des chemins hamiltoniens avec :
 
 ```
-./gener1.raku --map=fr2015
-./gener2.raku --map=fr2015
+./gener1.raku --map=fr1970
+./gener2.raku --map=fr1970
 ```
 
-en faisant de même avec `fr1970` et `frreg`.
+en faisant de même avec  `frreg` et `fr2015` (en évitant `gener2.raku`
+pour ce dernier, car il prend trop de temps).
 
 Pour afficher les cartes en HTML, lancez le serveur web :
 
@@ -76,10 +84,15 @@ et dans votre navigateur préféré, demandez l'adresse :
 http://localhost:3000/
 ```
 
+Vous pouvez  également utiliser les graphes  correspondant aux solides
+platoniciens avec  `init-ico.raku` (dodécaèdre)  et `init-platon.raku`
+(les  quatre  autres)  ou   utiliser  des  graphes  élémentaires  avec
+`init-elem.raku`.
+
 Auteur
 ======
 
-Jean Forget (JFORGET at cpan dot org)
+Jean Forget (J2N-FORGET at orange dot fr)
 
 Licence
 =======
