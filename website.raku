@@ -836,10 +836,11 @@ get '/:ln/shortest-paths-from/region/:map/:region/:area' => sub ($lng_parm, $map
   my @borders    = access-sql::list-borders-for-region($map, $region);
 
   my @area-codes = @areas.map( { $_<code> } );
-  my @border-codes = ();
-  for @borders -> $border {
-    if $border<code_f> lt $border<code_t> {
-      @border-codes.push([$border<code_f>, $border<code_t>]);
+  my @border-codes = gather {
+    for access-sql::list-borders-in-region($map, $region) -> $border {
+      if $border<code_f> lt $border<code_t> {
+        take ([$border<code_f>, $border<code_t>]);
+      }
     }
   }
   my $graph = Graph.new(undirected => 1

@@ -295,10 +295,15 @@ our sub render-from-to(Str  $lang
   my &filling = anti-template :source("html/shortest-paths-from-to.$lang.html".IO.slurp), &fill;
 
   my @area-codes = @areas.map( { $_<code> } );
-  my @border-codes = ();
-  for @borders -> $border {
-    if $border<code_f> lt $border<code_t> {
-      @border-codes.push([$border<code_f>, $border<code_t>]);
+  my %code-ok;
+  for @area-codes -> $code {
+    %code-ok{$code} = True;
+  }
+  my @border-codes = gather {
+    for @borders -> $border {
+      if %code-ok{$border<code_f>} && %code-ok{$border<code_t>} && $border<code_f> lt $border<code_t> {
+        take [$border<code_f>, $border<code_t>];
+      }
     }
   }
 
@@ -339,21 +344,30 @@ our sub render-from-to(Str  $lang
       %bucket-of-node{$area-code} = $d1;
     }
   }
+  my @active-borders = gather {
+      for @border-codes -> $border-code {
+        my Str $b-from = $border-code[0];
+        my Str $b-to   = $border-code[1];
+        next unless %bucket-of-node{$b-from}:exists; # border from a discarded area
+        next unless %bucket-of-node{$b-to  }:exists; # border to   a discarded area
+        next if     %bucket-of-node{$b-from} == %bucket-of-node{$b-to}; # transverse border
+        if %bucket-of-node{$b-from} < %bucket-of-node{$b-to} {
+          take ($b-from, $b-to);
+        }
+        else {
+          take ($b-to, $b-from);
+        }
+      }
+    }
 
   # Third step, compute n1 for areas and borders
   %n1-of-area{$from} = 1;
   for 1 .. $dist -> $d {
     for @(@node-buckets[$d]) -> $area {
-      for @border-codes -> $border-code {
+      for @active-borders -> $border-code {
         my Str $b-from = $border-code[0];
         my Str $b-to   = $border-code[1];
         next unless $b-from eq $area or $b-to eq $area;
-        next unless %bucket-of-node{$b-from}:exists; # border from a discarded area
-        next unless %bucket-of-node{$b-to  }:exists; # border to   a discarded area
-        next if     %bucket-of-node{$b-from} == %bucket-of-node{$b-to}; # transverse border
-        if %bucket-of-node{$b-from} > %bucket-of-node{$b-to} {
-          ($b-from, $b-to) = $b-to, $b-from;
-        }
         if $b-to eq $area {
           %n1-of-border{$b-from}{$b-to} = %n1-of-area{$b-from};
           %n1-of-area{$b-to} += %n1-of-border{$b-from}{$b-to};
@@ -366,16 +380,10 @@ our sub render-from-to(Str  $lang
   %n2-of-area{$to} = %n1-of-area{$to};
   for (0 ..^ $dist).reverse -> $d {
     for @(@node-buckets[$d]) -> $area {
-      for @border-codes -> $border-code {
+      for @active-borders -> $border-code {
         my Str $b-from = $border-code[0];
         my Str $b-to   = $border-code[1];
         next unless $b-from eq $area or $b-to eq $area;
-        next unless %bucket-of-node{$b-from}:exists; # border from a discarded area
-        next unless %bucket-of-node{$b-to  }:exists; # border to   a discarded area
-        next if     %bucket-of-node{$b-from} == %bucket-of-node{$b-to}; # transverse border
-        if %bucket-of-node{$b-from} > %bucket-of-node{$b-to} {
-          ($b-from, $b-to) = $b-to, $b-from;
-        }
         if $b-from eq $area {
           %n2-of-border{$b-from}{$b-to} = %n2-of-area{$b-to} × %n1-of-border{$b-from}{$b-to} / %n1-of-area{$b-to};
           %n2-of-area{$b-from} += %n2-of-border{$b-from}{$b-to};
