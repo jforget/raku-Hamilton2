@@ -622,7 +622,16 @@ Pour la [carte d'opération navale](https://boardgamegeek.com/image/308459/opera
 de  _Operation Mercury_, et pour la
 [carte de _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
 les bords  ne respectent pas  l'orientation habituelle ouest →  est et
-nord → sud. Les fonctions de conversion prennent alors la forme :
+nord  →  sud. Dans  le  cas  de _Raid  on  St.  Nazaire_, je  conserve
+l'orientation de la  carte de jeu, avec  le sud à gauche et  le nord à
+droite, pour permettre l'affichage de  cette carte en mode « paysage »
+sur mon  écran en  mode « paysage ». Les  longitudes et  les latitudes
+n'auront aucune signification réelle, tant pis.
+
+En revanche, pour _Operation Mercury_, je fusionne la carte navale (en
+biais)  avec  la  carte  des   zones  terrestres  de  l'île  de  Crète
+(orientation  traditionnelle). Les  fonctions  de  conversion pour  la
+carte navale prennent alors la forme :
 
 ```
 sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }

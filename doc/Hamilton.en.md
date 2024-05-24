@@ -589,7 +589,15 @@ For the [naval operation map] (https://boardgamegeek.com/image/308459/operation-
 of _Operation Mercury_ and for the
 [map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
 the mapedges are not oriented west →  east and north → south as usual.
-So the conversion functions look like:
+For _Raid  on St. Nazaire_, I  keep the map orientation  with south on
+the left  and north  on the  right, so  the map  will be  displayed in
+"landscape" orientation on my  "landscape" computer screen. Longitudes
+and latitudes will have no significance.
+
+On the other hand, with _Operation Mercury_, I rotate the naval map so
+it can be  merged with the map  giving the land areas  of Crete island
+(set-up in the  usual way, north on  top and south at  the bottom). So
+the conversion functions for the naval map look like:
 
 ```
 sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
