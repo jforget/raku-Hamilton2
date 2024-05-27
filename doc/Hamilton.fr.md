@@ -4233,6 +4233,121 @@ donc `CVL` obtient un 4.
 On  peut remarquer  que sur  chaque  ligne horizontale,  la somme  des
 compteurs `n2` est constante.
 
+Carte du métro de la RATP
+-------------------------
+
+Tant que  je m'intéressais  uniquement aux chemins  hamiltoniens, j'ai
+laissé de côté certaines cartes parce qu'elles étaient trop grosses ou
+parce qu'elles ne contenaient  manifestement aucun chemin hamiltonien.
+C'est  le cas  pour la  carte  des lignes  de  métro de  la RATP,  qui
+contient plus de 300 stations et dans laquelle la plupart des terminus
+de ligne  sont des impasses, dépassant  ainsi la limite de  2 impasses
+pour être compatible avec l'existence de chemins hamiltoniens.
+
+Cela  dit, avec  l'ajout des  statistiques  sur les  chemins les  plus
+courts,  les cartes  avec  beaucoup d'impasses  retrouvent un  certain
+intérêt. C'est pour cela que j'ai  finalement ajouté la carte du métro
+de la RATP au présent projet.
+
+J'ai pris  un plan  de fin 2023  et j'ai repris  toutes les  lignes de
+métro. J'ai ajouté les lignes de RER, dans la portion intra-muros. Par
+exemple, j'ai repris  la ligne B du  RER de « Gare du  Nord » à « Cité
+Universitaire », mais j'ai laissé tomber « la Plaine Stade de France »
+et tout ce qui est au nord,  ainsi que « Gentilly » et tout ce qui est
+au sud. Exception : sur la ligne A,  j'ai repris la Défense qui est en
+correspondance   avec  la   ligne   1.  J'ai   repris  également   les
+correspondances  par  couloir piétonnier.  En  revanche,  je n'ai  pas
+repris les lignes de tramway ni  les lignes de train. Pour des raisons
+évoquées plus tard, je n'ai pas repris la ligne D du RER.
+
+Les  stations  de  RER  et   les  stations  avec  correspondance  sont
+identifiées  par un  code  à 3  lettres. Les  stations  de métro  sans
+correspondance sont identifiées par le code  à 2 chiffres de la ligne,
+suivi  d'un code  alphabétique séquentiel  (ou numérique  si la  ligne
+possède trop  de stations, comme  c'est le cas avec  la ligne 7  et la
+ligne 8 qui se terminent avec `070` = « Pierre et Marie Curie », `071`
+= « Mairie d'Ivry » et `080` = « Créteil Pointe du Lac »). Dans le cas
+où une  station se trouve sur  une seule ligne et,  néanmoins, possède
+une  correspondance   piétonne  avec  une  autre   station,  elle  est
+identifiée  avec le  numéro de  la ligne.  Exemple, « les  Halles » se
+trouve uniquement sur la ligne 4 et a une correspondance piétonne avec
+« Chatelet les Halles ». « Les Halles » est donc identifiée par `04F`.
+
+![Dessin du voisinage de 04F, CLH, CHA, 04G, 07L, 07M](RATP-1.png)
+
+Dans les autres cartes, la couleur sert à identifier les régions. Pour
+le  réseau  métropolitain,  il  n'y  a pas  de  découpage  naturel  et
+intéressant. J'ai donc  utilisé les couleurs pour  rappeler autant que
+possible le  code couleur standard des  lignes de métro. Cela  dit, la
+carte  standard  de la  RATP  utilise  une  palette d'une  dizaine  de
+couleurs, voire  plus, tandis que  mes programmes ne  prévoient qu'une
+palette de quatre couleurs en plus du  blanc et du noir. Donc j'ai par
+exemple assimilé  le rose  (ligne 7)  et le violet  (ligne 4)  avec le
+rouge. Voir  dans le schéma ci-dessus  la ligne 4 avec  `04E` (Étienne
+Marcel),  `04F` (Les  Halles), `CHA`  (Châtelet), `04G`  (Cité), `07L`
+(Pont Neuf)  et `07M`  (Pont Marie).  De façon  peut-être incohérente,
+j'ai  assimilé   le  violet-lilas   (ligne  8)   avec  le   bleu.  Les
+correspondances piétonnières entre stations sont en noir.
+
+![Voisinage de Place de clichy et voisinage de Pasteur](RATP-2.png)
+
+Dans les cartes représentant un  découpage régional, les couleurs sont
+attribuées aux enregistrements `Areas`  du graphe, puis recopiées vers
+les enregistrements `Borders`. Ici, c'est l'inverse. Les couleurs sont
+attribuées d'abord aux enregistrements  `Borders`, puis recopiées vers
+les enregistrements `Areas`. Une station appartenant à une seule ligne
+de  métro  prend   la  couleur  de  cette  ligne.   Une  station  avec
+correspondance sur  plusieurs lignes de  même couleur (Pasteur  sur la
+ligne 6 vert clair  et sur la ligne 12 vert foncé,  ou Place de Clichy
+sur la  ligne 2  bleu foncé et  la ligne 13  bleu clair)  adopte cette
+couleur. Une station sur plusieurs  lignes de couleurs différentes est
+représentée en  noir. C'est  le cas  avec Villiers  (vert et  bleu) et
+Montparnasse-Bienvenüe (vert,  rouge et bleu).  Dans tout cela,  on ne
+tient pas  compte des correspondances piétonnes  représentées en noir.
+Ainsi, `04F` (les Halles) est représentée  en rouge, même s'il y a une
+arête en noir vers `CLH` (Châtelet les Halles).
+
+Jusqu'à présent, j'ai traité uniquement  des graphes standards et j'ai
+évité les  « multigraphes ». Et je continue.  Or il existe des  cas de
+figure dans la carte du métro  qui auraient pu m'inciter à traiter des
+multigraphes. C'est le cas des lignes 8 et 9 entre Richelieu-Drouot et
+République. Pour éviter de dupliquer l'arête Richelieu-Drouot → Grands
+Boulevards, l'arête Grands-Boulevards →  Bonne Nouvelle, l'arête Bonne
+Nouvelle → Strasbourg-Saint-Denis  et l'arête Strasbourg-Saint-Denis →
+République, je  considère que la ligne  9 (en vert-jaune sur  la carte
+standard,   en   vert   sur   le   schéma   généré)   s'interrompt   à
+Richelieu-Drouot  et  qu'elle  reprend   à  République.  Les  stations
+Grands-Boulevards et Bonne Nouvelle sont  codées `08H` et `08I`, comme
+si elles appartenaient uniquement à la  ligne 8 (en lilas sur la carte
+standard, en bleu sur le schéma généré).
+
+![Détail du tronçon de Richelieu-Drouot à Oberkampf](RATP-3.png)
+
+Le même  cas de figure  se produit  à d'autres endroits  avec d'autres
+lignes.  Ainsi, contrairement  à ce  que je  viens juste  d'écrire, la
+ligne 9 reprend à Oberkampf, car  le tronçon `REP` → `OBE` existe déjà
+sur la ligne 5. De même, la  ligne D du RER disparaît entièrement, car
+son tronçon `GNO` → `CLH` est redondant  avec un tronçon de la ligne B
+et le tronçon `CLH` → `GLY` est redondant avec la ligne A.
+
+Dans la partie ouest de la ligne 10  et dans la partie est de la ligne
+7bis,  il y  a  une boucle  avec  un sens  de  circulation unique.  La
+modélisation en graphe  du réseau RATP ne tient pas  compte de ce sens
+de circulation.
+
+Dans le  plan original de la  RATP, les lignes sont  stylisées, ce qui
+veut dire que  les différentes stations ne sont pas  exactement à leur
+place géographique. C'est particulièrement flagrant sur la ligne 8, au
+voisinage du terminus "Créteil Pointe du Lac". Lorsque j'ai repris ces
+positions,  je  les  ai  moi-même ajustées  pour  réduire  autant  que
+possible  la  superposition  des  stations  voisines,  d'où  un  écart
+supplémentaire par rapport à la position géographique. Malgré cela, la
+carte est déclarée comme étant à l'échelle (`with_scale = 1`), donc le
+schéma comporte l'indication de l'échelle.
+
+Pour avoir  une carte où  les stations ne  se chevauchent pas,  il est
+souhaitable d'utiliser un paramètre d'affichage `?w=2000&adj=max`.
+
 RESTE À FAIRE
 =============
 

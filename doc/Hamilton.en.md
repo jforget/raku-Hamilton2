@@ -4033,6 +4033,116 @@ example, `CVL  → NAQ` has  `n2=2` and `CVL →  ARA` has `n2=2`  too, so
 You  may notice  that on  each horizontal  line, the  sum of  all `n2`
 counters is a constant.
 
+Map of Paris Subway
+-------------------
+
+As long as I  was interested only in Hamiltonian paths,  I set aside a
+few maps  because they  were too  big and or  there were  obviously no
+Hamiltonian paths.  Both reasons apply  to the Paris subway  map, with
+more than 300 stops and in which most lines end in a dead-end station,
+far  more than  the two-dead-end  limit for  a graph  with Hamiltonian
+paths.
+
+With shortest  path exploration,  maps with  many dead-ends  gain some
+renewed interest.  This is why  I added the  Paris subway map  to this
+repository.
+
+I took a map  from late 2023 and I kept all subway  lines. I added all
+RER lines (regional netwok) for their parts within Paris. For example,
+line B extends from "Gare du Nord" to "Cité Universitaire", discarding
+"La Plaine Stade  de France" and northward, as well  as "Gentilly" and
+southward. The only exception is "La Défense", which is outside Paris,
+yet  has  a connection  with  subway  line  1.  I also  added  walking
+connections through  corridors. On the  other hand, I did  not include
+tram lines  and train lines. For  reasons explained later, RER  line D
+does not appear in the map.
+
+RER  stations and  connecting subway  stations have  a 3-letter  code,
+abbreviating the actual name. Subway stations located on a single line
+have a  code consisting  of the  line number (2  digits) and  a letter
+suffix (or sometimes a digit suffix  when the subway line has too many
+stations; e.g.  line 7 ends with  `070` = "Pierre et  Marie Curie" and
+`071` = "Mairie  d'Ivry" and line 8 ends with  `080` = "Créteil Pointe
+du Lac"). If a station is located on a single line, yet has a corridor
+connection  with  another  station  on   another  line,  it  is  still
+identified with the line number.  For example, station "Les Halles" is
+located on  line 4 and is  connected to station "Châtelet  les Halles"
+through a corridor. "Les Halles" is coded `04F`.
+
+![Neighbourhood of 04F, CLH, CHA, 04G, 07L, 07M](RATP-1.png)
+
+In other maps,  the colour is used  to show regions or  big areas. For
+the subway  network, there is  neither obvious nor interesting  way to
+define regions.  So I used  colours to try representing  subway lines.
+The standard RATP  map has a palette with more  than 10 colours, while
+my programmes have  only 4 coulours (in addition to  black and white).
+So for example  I merged pink (line  7) and purple (line  4) with red.
+See  the  picture  above,  with `04E`  (Étienne  Marcel),  `04F`  (Les
+Halles), `CHA` (Châtelet),  `04G` (Cité), `07L` (Pont  Neuf) and `07M`
+(Pont Marie). Somewhat inconsistently,  I merged lilac-purple (line 8)
+with blue. The corridor connections are drawn in black.
+
+![Neighbourhood of "Place de Clichy" and neighbourhood of "Pasteur"](RATP-2.png)
+
+In maps divided  into regions (or big areas), colours  are assigned to
+small areas  (`Areas` records)  in a  first step  and to  border links
+(`Borders`  records)  in a  second  step.  In  this network  map,  the
+opposite is done.  Colours are assigned to `Borders`  records and then
+copied to `Areas`  record if some conditions apply. When  a station is
+located on  a single line, it  inherits the colour of  this line. Some
+stations connect lines with similar colours, such as "Place de Clichy"
+connecting line  2 (dark blue)  to line  13 (light blue)  or "Pasteur"
+connecting line 6 (light green) to line 12 (dark green). In this case,
+the station inherits the colour from the limited palette. If a station
+connects lines  with different colours  (in the limited  palette), the
+station is  drawn in black. This  is the case with  "Villiers" (blue +
+green) and  "Montparnasse-Bienvenüe" (blue  + red  + green).  For this
+step, black corridor connections are not considered. See station `04F`
+(Les Halles) in the second picture above:  if is drawn in red, even if
+it has a black-drawn connection to `CLH` (Châtelet-les-Halles).
+
+Until now, I was working with  plain standard undirected graphs. I did
+not use the "multigraph" variant. And I continue avoiding multigraphs.
+Yet, there  are cases where multigraphs  seems to be required.  One of
+these  cases is  line  8  and line  9  between "Richelieu-Drouot"  and
+"République". There  are both a  line 8 segment  and a line  9 segment
+from  "Richelieu-Drouot"  to  "Grands  Boulevards",  as  from  "Grands
+Boulevards"   to   "Bonne   Nouvelle",  from   "Bonne   Nouvelle"   to
+"Strasbourg-Saint-Denis"   and    from   "Strasbourg-Saint-Denis"   to
+"République". So  I cut line 9  (yellowish green in the  standard map,
+green in the limited palette) at "Richelieu-Drouot" and I restarted it
+at "République". Stations "Grands Boulevards" and "Bonne Nouvelle" are
+coded `08H` and  `08I` as if they belong only  to line 8 (lilac-purple
+on the standard map, blue on the limited palette picture).
+
+![Zoom on the part from Richelieu-Drouot to République](RATP-3.png)
+
+The same happens at other points in the map. For instance, contrary to
+what I have written in the previous paragraph, line 9 does not restart
+at "République", but at "Oberkampf", because there is already a line 5
+edge from "République" to "Oberkampf". In the same way, RER line D has
+disappeared  completely, because  its `GNO`  → `CLH`  segment overlaps
+with RER line B  and its `CLH` → `GLY` segment  overlaps with RER line
+A.
+
+There is a loop  in the western end of line 10 and  another one in the
+eastern end of  line 7-bis. These loops are  single-track segments, so
+the subways always travel in the same direction. Yet, this is modelled
+with undirected edges, irrespective of the traffic direction.
+
+The  original RATP  map  shows  lines in  a  stylised  way, with  many
+horizontal,  vertical  and 45-degree  segments.  That  means that  the
+locations of  the stations do  not exactly reflect  their geographical
+positions. An obvious case if the  "Créteil Pointe du Lac" end of line
+8. Moreover,  when I  typed the  data file  describing the  network, I
+shifted  some positions  so the  generated picture  would not  include
+overlapping  stations. This  is an  additional shift  from the  actual
+geographical  positions. Yet,  this map  is declared  as a  scaled map
+(`with_scale = 1`), so the picture includes a scale.
+
+To generate a no-overlap picture, you should use the `?w=2000&adj=max`
+display parameter.
+
 Todo
 ====
 

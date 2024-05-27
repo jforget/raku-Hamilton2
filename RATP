@@ -1,0 +1,396 @@
+A ; ratp ; Plan du métro pour la RATP        ; Blue
+# Ligne A du RER
+B ; LDE    ; La Défense Grande Arche            ;  290 ;  762
+B ; CDG    ; Charles de Gaulle Étoile           ;  671 ; 1154
+B ; AUB    ; Auber                              ; 1151 ; 1247
+B ; CLH    ; Châtelet-les-Halles                ; 1550 ; 1450
+B ; GLY    ; Gare de Lyon                       ; 1991 ; 1880
+B ; NAT    ; Nation                             ; 2307 ; 1692
+L ; Red    ; lde, cdg, aub, clh, gly, nat
+X ; LDE    ; CDG ;  528 ;  882
+X ; AUB    ; CLH ; 1300 ; 1424
+X ; GLY    ; NAT ; 2139 ; 1880
+# Ligne B du RER
+B ; GNO    ; Gare du Nord                       ; 1779 ;  860
+B ; SMN    ; Saint-Michel Notre-Dame            ; 1470 ; 1655
+B ; LUX    ; Luxembourg                         ; 1470 ; 1854
+B ; PRO    ; Port-Royal                         ; 1470 ; 2000
+B ; DFR    ; Denfert-Rochereau                  ; 1470 ; 2118
+B ; CTU    ; Cité Universitaire                 ; 1470 ; 2342
+L ; Blue   ; gno, clh, smn, lux, pro, dfr, ctu
+# Ligne C du RER
+B ; BFM    ; Bibliothèque François Mitterrand   ; 2132 ; 2222
+B ; GAU    ; Gare d'Austerlitz                  ; 1862 ; 1968
+B ; MDO    ; Musée d'Orsay                      ; 1026 ; 1554
+B ; INV    ; Invalides                          ;  896 ; 1556
+B ; PAL    ; Pont de l'Alma                     ;  741 ; 1557
+B ; CMT    ; Champ de Mars Tour Eiffel          ;  585 ; 1653
+B ; JAV    ; Javel                              ;  522 ; 1910
+B ; PGA    ; Pont du Garigliano                 ;  522 ; 2175
+B ; APK    ; Avenue du Pdt Kennedy              ;  442 ; 1716
+B ; BOU    ; Boulainvilliers                    ;  300 ; 1626
+B ; AHM    ; Avenue Henri Martin                ;  267 ; 1493
+B ; AFO    ; Avenue Foch                        ;  372 ; 1188
+B ; NPM    ; Porte Maillot                      ;  515 ; 1060
+B ; PEL    ; Pereire-Levallois                  ;  780 ;  773
+B ; PCL    ; Porte de Clichy                    ;  980 ;  579
+L ; Yellow ; bfm, gau, smn, mdo, inv, pal, cmt, jav, pga
+L ; Yellow ; cmt, apk, bou, ahm, afo, npm, pel, pcl
+# Ligne D du RER : longe la ligne B de GNO à CLH et longe la ligne A de CLH à GLY
+# Ligne E du RER
+B ; HSL    ; Hausmann Saint-Lazare              ; 1151 ; 1092
+B ; MAG    ; Magenta                            ; 1830 ;  878
+L ; Black  ; mag, gno
+L ; Red    ; hsl, mag
+# Ligne 1
+B ; 01A    ; Esplanade de la Défense            ;  335 ;  824
+B ; 01B    ; Pont de Neuilly                    ;  392 ;  882
+B ; 01C    ; Les Sablons                        ;  447 ;  938
+B ; 01D    ; Porte Maillot                      ;  515 ; 1000
+L ; Black  ; 01d, npm
+B ; 01E    ; Argentine                          ;  593 ; 1094
+B ; 01F    ; George V                           ;  753 ; 1256
+B ; FDR    ; Franklin D. Roosevelt              ;  837 ; 1335
+B ; CEC    ; Champs-Élysées Clemenceau          ;  899 ; 1392
+B ; CNC    ; Concorde                           ;  953 ; 1449
+B ; 01G    ; Tuileries                          ; 1080 ; 1488
+B ; PRL    ; Palais-Royal Musée du Louvre       ; 1196 ; 1478
+B ; 01H    ; Louvre Rivoli                      ; 1302 ; 1481
+B ; CHA    ; Châtelet                           ; 1515 ; 1490
+L ; Black  ; cha, clh
+B ; HDV    ; Hôtel de Ville                     ; 1637 ; 1490
+B ; 01I    ; Saint-Paul                         ; 1739 ; 1584
+B ; BAS    ; Bastille                           ; 1865 ; 1617
+B ; RDI    ; Reuilly-Diderot                    ; 2139 ; 1790
+B ; 01J    ; Porte de Vincennes                 ; 2435 ; 1725
+B ; 01K    ; Saint-Mandé                        ; 2531 ; 1781
+B ; 01L    ; Château de Vincennes               ; 2606 ; 1865
+L ; Yellow ; lde, 01a, 01b, 01c, 01d, 01e, cdg, 01f, fdr, cec, cnc, 01g, prl, 01h, cha, hdv, 01i, bas, gly, rdi, nat, 01j, 01k, 01l
+# Ligne 2
+B ; 02A    ; Porte Dauphine                      ;  426 ; 1172
+B ; 02B    ; Victor Hugo                         ;  518 ; 1275
+B ; 02C    ; Ternes                              ;  749 ; 1083
+B ; 02D    ; Courcelles                          ;  809 ; 1020
+B ; 02E    ; Monceau                             ;  870 ;  950
+B ; VIL    ; Villiers                            ;  947 ;  891
+B ; 02F    ; Rome                                ; 1019 ;  821
+B ; PLC    ; Place de Clichy                     ; 1107 ;  800
+B ; 02G    ; Blanche                             ; 1257 ;  800
+B ; PIG    ; Pigalle                             ; 1406 ;  800
+B ; 02H    ; Anvers                              ; 1517 ;  800
+B ; BRO    ; Barbès Rochechouart                 ; 1650 ;  800
+B ; LCH    ; La Chapelle                         ; 1797 ;  800
+L ; Black  ; lch, gno
+B ; STA    ; Stalingrad                          ; 1971 ;  813
+B ; JAU    ; Jaurès                              ; 2037 ;  873
+B ; 02I    ; Colonel Fabien                      ; 2051 ;  972
+B ; BLV    ; Belleville                          ; 2055 ; 1071
+B ; 02J    ; Couronnes                           ; 2112 ; 1154
+B ; 02K    ; Ménilmontant                        ; 2190 ; 1232
+B ; PLA    ; Père Lachaise                       ; 2270 ; 1325
+B ; 02L    ; Philippe Auguste                    ; 2270 ; 1413
+B ; 02M    ; Alexandre Dumas                     ; 2280 ; 1509
+B ; 02N    ; Avron                               ; 2290 ; 1602
+L ; Blue   ; 02a, 02b, cdg, 02c, 02d, 02e, vil, 02f, plc, 02g, pig, 02h, bro, lch, sta, jau, 02i, blv, 02j, 02k, pla, 02l, 02m, 02n, nat
+# Ligne 3
+B ; 03A    ; Pont de Levallois Bécon            ;  665 ;  615
+B ; 03B    ; Anatole France                     ;  699 ;  654
+B ; 03C    ; Louise Michel                      ;  738 ;  684
+B ; 03D    ; Porte de Champerret                ;  767 ;  717
+B ; PER    ; Pereire                            ;  825 ;  774
+L ; Black  ; per, pel
+B ; 03E    ; Wagram                             ;  858 ;  809
+B ; 03F    ; Malesherbes                        ;  899 ;  846
+B ; 03G    ; Europe                             ; 1010 ;  965
+B ; GSL    ; Gare Saint-Lazare                  ; 1101 ; 1077
+L ; Black  ; gsl, hsl
+B ; HCA    ; Havre-Caumartin                    ; 1136 ; 1175
+L ; Black  ; hsl, hca, aub
+B ; OPE    ; Opéra                              ; 1209 ; 1242
+L ; Black  ; ope, aub
+B ; 03H    ; Quatre Septembre                   ; 1266 ; 1314
+B ; 03I    ; Bourse                             ; 1379 ; 1344
+B ; 03J    ; Sentier                            ; 1482 ; 1347
+B ; RSB    ; Réaumur Sébastopol                 ; 1625 ; 1352
+B ; AEM    ; Arts et Métiers                    ; 1787 ; 1319
+B ; 03K    ; Temple                             ; 1833 ; 1271
+B ; REP    ; République                         ; 1892 ; 1235
+B ; 03L    ; Parmentier                         ; 2120 ; 1300
+B ; 03M    ; Rue Saint-Maur                     ; 2175 ; 1337
+B ; GAM    ; Gambetta                           ; 2381 ; 1320
+B ; 03N    ; Porte de Bagnolet                  ; 2508 ; 1329
+B ; 03O    ; Gallieni                           ; 2621 ; 1332
+L ; Green  ; 03a, 03b, 03c, 03d, per, 03e, 03f, vil, 03g, gsl, hca, ope, 03h, 03i, 03j, rsb, aem, 03k, rep, 03l, 03m, pla, gam, 03n, 03o
+# Ligne 3 bis
+B ; 03Y    ; Pelleport                          ; 2466 ; 1223
+B ; 03Z    ; Saint-Fargeau                      ; 2520 ; 1121
+B ; PLI    ; Porte des Lilas                    ; 2520 ; 1026
+L ; Blue   ; gam, 03y, 03z, pli
+# Ligne 4
+B ; 04A    ; Porte de Clignancourt              ; 1476 ;  543
+B ; 04B    ; Simplon                            ; 1521 ;  589
+B ; MAP    ; Marcadet Poissonniers              ; 1570 ;  655
+B ; 04C    ; Château Rouge                      ; 1565 ;  716
+B ; GES    ; Gare de l'Est                      ; 1800 ;  977
+B ; 04D    ; Château d'Eau                      ; 1730 ; 1053
+B ; SSD    ; Strasbourg Saint-Denis             ; 1685 ; 1184
+B ; 04E    ; Étienne Marcel                     ; 1540 ; 1375
+B ; 04F    ; Les Halles                         ; 1510 ; 1415
+L ; Black  ; 04f, clh
+B ; 04G    ; Cité                               ; 1469 ; 1573
+B ; 04H    ; Saint-Michel                       ; 1420 ; 1684
+L ; Black  ; 04h, smn
+B ; ODE    ; Odéon                              ; 1409 ; 1738
+B ; 04I    ; Saint-Germain-des-Prés             ; 1288 ; 1731
+B ; 04J    ; Saint-Sulpice                      ; 1255 ; 1811
+B ; 04K    ; Saint-Placide                      ; 1250 ; 1911
+B ; MPB    ; Montparnasse Bienvenüe             ; 1238 ; 2015
+B ; 04L    ; Vavin                              ; 1340 ; 2011
+B ; RAS    ; Raspail                            ; 1408 ; 2057
+B ; 04M    ; Mouton Duvernet                    ; 1451 ; 2201
+B ; 04N    ; Alésia                             ; 1404 ; 2306
+B ; 04O    ; Porte d'Orléans                    ; 1366 ; 2344
+B ; 04P    ; Mairie de Montrouge                ; 1363 ; 2414
+L ; Red    ; 04a, 04b, map, 04c, bro, gno, ges, 04d, ssd, rsb, 04e, 04f, cha, 04g, 04h, ode, 04i, 04j, 04k, mpb, 04l, ras, dfr, 04m, 04n, 04o, 04p
+# Ligne 5
+B ; 05A    ; Bobigny Pablo Picasso              ; 2593 ;  557
+B ; 05B    ; Bobigny-Pantin Raymond Queneau     ; 2522 ;  657
+B ; 05C    ; Église de Pantin                   ; 2470 ;  711
+B ; 05D    ; Hoche                              ; 2394 ;  752
+B ; 05E    ; Porte de Pantin                    ; 2293 ;  758
+B ; 05F    ; Ourcq                              ; 2182 ;  756
+B ; 05G    ; Laumière                           ; 2103 ;  806
+L ; Yellow ; 05a, 05b, 05c, 05d, 05e, 05f, 05g, jau, 
+# ne pas écrire de doublon jau-sta, ni gno-ges
+L ; Yellow ; sta, gno
+B ; 05H    ; Jacques Bonsergent                 ; 1837 ; 1116
+B ; OBE    ; Oberkampf                          ; 1946 ; 1290
+B ; 05I    ; Richard Lenoir                     ; 1992 ; 1454
+B ; 05J    ; Bréguet Sabin                      ; 1929 ; 1522
+B ; 05K    ; Quai de la Rapée                   ; 1870 ; 1823
+B ; 05L    ; Saint-Marcel                       ; 1870 ; 2041
+B ; 05M    ; Campo Formio                       ; 1817 ; 2101
+B ; PIT    ; Place d'Italie                     ; 1749 ; 2205
+L ; Yellow ; ges, 05h, rep, obe, 05i, 05j, bas, 05k, gau, 05l, 05m, pit
+# Ligne 6
+B ; 06A    ; Kléber                             ;  581 ; 1270
+B ; 06B    ; Boissière                          ;  495 ; 1358
+B ; TRO    ; Trocadéro                          ;  484 ; 1481
+B ; 06C    ; Passy                              ;  493 ; 1632
+B ; 06D    ; Bir-Hakeim                         ;  581 ; 1720
+L ; Black  ; cmt, 06d
+B ; 06E    ; Dupleix                            ;  653 ; 1795
+B ; LMP    ; La Motte Picquet Grenelle          ;  755 ; 1858
+B ; 06F    ; Cambronne                          ;  893 ; 1911
+B ; 06G    ; Sèvres Lecourbe                    ;  973 ; 1990
+B ; PAS    ; Pasteur                            ; 1075 ; 2028
+B ; 06H    ; Edgar Quinet                       ; 1297 ; 2047
+L ; Green  ; cdg, 06a, 06b, tro, 06c, 06d, 06e, lmp, 06f, 06g, pas, mpb, 06h, ras
+# pas de doublon ras-dfr
+B ; 06I    ; Saint-Jacques                      ; 1516 ; 2172
+B ; 06J    ; Glacière                           ; 1591 ; 2205
+B ; 06K    ; Corvisart                          ; 1684 ; 2210
+B ; 06L    ; Nationale                          ; 1859 ; 2207
+B ; 06M    ; Chevaleret                         ; 1945 ; 2206
+B ; 06N    ; Quai de la Gare                    ; 2030 ; 2159
+B ; BER    ; Bercy                              ; 2143 ; 2067
+B ; 06O    ; Dugommier                          ; 2214 ; 2005
+B ; DAU    ; Daumesnil                          ; 2279 ; 1939
+B ; 06P    ; Bel-Air                            ; 2334 ; 1878
+B ; 06Q    ; Picpus                             ; 2388 ; 1829
+L ; Green  ; dfr, 06i, 06j, 06k, pit, 06l, 06m, 06n, ber, 06o, dau, 06p, 06q, nat
+# Ligne 7
+B ; 07A    ; La Courneuve 8 Mai 1945                  ; 2272 ;  353
+B ; 07B    ; Fort d'Aubervilliers                     ; 2272 ;  442
+B ; 07C    ; Aubervilliers Pantin Quatre Chemins      ; 2203 ;  539
+B ; 07D    ; Porte de la Villette                     ; 2135 ;  607
+B ; 07E    ; Corentin Cariou                          ; 2080 ;  663
+B ; 07F    ; Crimée                                   ; 2037 ;  703
+B ; 07G    ; Riquet                                   ; 1993 ;  750
+B ; LBL    ; Louis Blanc                              ; 1947 ;  883
+B ; 07H    ; Château Landon                           ; 1895 ;  935
+B ; 07I    ; Poissonnière                             ; 1593 ;  979
+B ; 07J    ; Cadet                                    ; 1447 ; 1001
+X ; HSL    ; MAG ; 1590 ; 1090
+B ; 07K    ; Le Peletier                              ; 1402 ; 1048
+B ; CAL    ; Chaussée d'Antin La Fayette              ; 1270 ; 1180
+B ; PYR    ; Pyramides                                ; 1196 ; 1351
+B ; 07L    ; Pont-Neuf                                ; 1378 ; 1520
+B ; 07M    ; Pont Marie                               ; 1651 ; 1630
+B ; 07N    ; Sully Morland                            ; 1732 ; 1700
+B ; JUS    ; Jussieu                                  ; 1696 ; 1884
+B ; 07O    ; Place Monge                              ; 1642 ; 1957
+B ; 07P    ; Censier Daubenton                        ; 1636 ; 2037
+B ; 07Q    ; Les Gobelins                             ; 1693 ; 2113
+B ; 07R    ; Tolbiac                                  ; 1745 ; 2269
+B ; 07S    ; Maison Blanche                           ; 1745 ; 2330
+B ; 07T    ; Le Kremlin Bicêtre                       ; 1745 ; 2405
+B ; 07U    ; Villejuif Léo Lagrange                   ; 1745 ; 2465
+B ; 07V    ; Villejuif Paul Vaillant-Couturier        ; 1745 ; 2530
+B ; 07W    ; Villejuif Louis Aragon                   ; 1745 ; 2590
+L ; Red    ; 07a, 07b, 07c, 07d, 07e, 07f, 07g, sta, lbl, 07h, ges, 07i, 07j, 07k, cal, ope, pyr, prl, 07l, cha, 07m, 07n, jus, 07o, 07p, 07q, pit, 07r, 07s, 07t, 07u, 07v, 07w
+B ; 07X    ; Porte d'Italie                           ; 1824 ; 2380
+B ; 07Y    ; Porte de Choisy                          ; 1922 ; 2380
+B ; 07Z    ; Porte d'Ivry                             ; 2020 ; 2380
+B ; 070    ; Pierre et Marie Curie                    ; 2088 ; 2411
+B ; 071    ; Mairie d'Ivry                            ; 2130 ; 2460
+L ; Red    ; 07s, 07x, 07y, 07z, 070, 071
+# Ligne 7 bis
+B ; 072    ; Bolivar                                  ; 2104 ;  917
+B ; 073    ; Buttes Chaumont                          ; 2211 ;  942
+B ; 074    ; Botzaris                                 ; 2271 ;  942
+B ; PDF    ; Place des Fêtes                          ; 2359 ; 1025
+B ; 075    ; Pré Saint-Gervais                        ; 2435 ;  928
+B ; 076    ; Danube                                   ; 2361 ;  869
+L ; Green  ; lbl, jau, 072, 073, 074, pdf, 075, 076, 074
+# Ligne 8
+B ; 08A    ; Balard                                   ;  585 ; 2283
+B ; 08B    ; Lourmel                                  ;  665 ; 2205
+B ; 08C    ; Boucicaut                                ;  726 ; 2138
+B ; 08D    ; Félix Faure                              ;  755 ; 2055
+B ; 08E    ; Commerce                                 ;  755 ; 1971
+B ; 08F    ; École Militaire                          ;  755 ; 1726
+B ; 08G    ; La Tour Maubourg                         ;  830 ; 1630
+B ; MAD    ; Madeleine                                ;  967 ; 1341
+B ; RDR    ; Richelieu-Drouot                         ; 1355 ; 1186
+B ; 08H    ; Grands Boulevards                        ; 1465 ; 1188
+B ; 08I    ; Bonne Nouvelle                           ; 1607 ; 1188
+B ; 08J    ; Filles du Calvaire                       ; 1855 ; 1366
+B ; 08K    ; Saint-Sébastien Froissard                ; 1855 ; 1447
+B ; 08L    ; Chemin Vert                              ; 1855 ; 1523
+B ; 08M    ; Ledru-Rollin                             ; 1938 ; 1673
+B ; 08N    ; Faidherbe Chaligny                       ; 2063 ; 1720
+B ; 08O    ; Montgallet                               ; 2203 ; 1859
+B ; 08P    ; Michel Bizot                             ; 2321 ; 1979
+B ; 08Q    ; Porte Dorée                              ; 2371 ; 2050
+B ; 08R    ; Porte de Charenton                       ; 2310 ; 2114
+B ; 08S    ; Liberté                                  ; 2353 ; 2188
+B ; 08T    ; Charenton-Écoles                         ; 2419 ; 2256
+B ; 08U    ; École Vétérinaire de Maisons-Alfort      ; 2481 ; 2324
+B ; 08V    ; Maisons-Alfort-Stade                     ; 2535 ; 2375
+B ; 08W    ; Maisons Les Juillotes                    ; 2535 ; 2432
+B ; 08X    ; Créteil-L'Échat                          ; 2535 ; 2481
+B ; 08Y    ; Créteil-Université                       ; 2535 ; 2536
+B ; 08Z    ; Créteil-Préfecture                       ; 2535 ; 2589
+B ; 080    ; Créteil-Pointe du Lac                    ; 2535 ; 2641
+L ; Blue   ; 08a, 08b, 08c, 08d, 08e, lmp, 08f, 08g, inv, cnc, mad, ope, rdr, 08h, 08i, ssd, rep, 08j, 08k, 08l, bas, 08m, 08n, rdi, 08o, dau, 08p, 08q, 08r, 08s, 08t, 08u, 08v, 08w, 08x, 08y, 08z, 080
+# Ligne 9
+B ; 09A    ; Pont de Sèvres                           ;  197 ; 2346
+B ; 09B    ; Billancourt                              ;  242 ; 2298
+B ; 09C    ; Marcel Sembat                            ;  290 ; 2247
+B ; 09D    ; Porte de Saint-Cloud                     ;  340 ; 2186
+B ; 09E    ; Exelmans                                 ;  340 ; 2110
+B ; MAM    ; Michel-Ange Molitor                      ;  340 ; 2039
+B ; MAA    ; Michel-Ange Auteuil                      ;  340 ; 1956
+B ; 09F    ; Jasmin                                   ;  340 ; 1844
+B ; 09G    ; Ranelagh                                 ;  340 ; 1727
+B ; 09H    ; La Muette                                ;  340 ; 1607
+L ; Black  ; 09h, bou
+B ; 09I    ; Rue de la Pompe                          ;  362 ; 1480
+B ; 09J    ; Iéna                                     ;  610 ; 1480
+B ; 09K    ; Alma-Marceau                             ;  745 ; 1430
+B ; 09L    ; Saint-Philippe-du-Roule                  ;  927 ; 1237
+B ; MIR    ; Miromesnil                               ;  985 ; 1187
+B ; 09M    ; Saint-Augustin                           ; 1000 ; 1120
+L ; Black  ; 09m, gsl
+L ; Green  ; 09a, 09b, 09c, 09d, 09e, mam, maa, 09f, 09g, 09h, 09i, tro, 09j, 09k, fdr, 09l, mir, 09m, hca, cal, rdr
+# eviter les doublons rdr-08j-08i-ssd-rep avec la ligne 8 et rep-obe avec la ligne 5
+B ; 09N    ; Saint-Ambroise                           ; 2083 ; 1436
+B ; 09O    ; Voltaire                                 ; 2138 ; 1494
+B ; 09P    ; Charonne                                 ; 2192 ; 1545
+B ; 09Q    ; Rue des Boulets                          ; 2241 ; 1597
+B ; 09R    ; Buzenval                                 ; 2400 ; 1633
+B ; 09S    ; Maraîchers                               ; 2440 ; 1592
+B ; 09T    ; Porte de Montreuil                       ; 2487 ; 1551
+B ; 09U    ; Robespierre                              ; 2523 ; 1511
+B ; 09V    ; Croix de Chavaux                         ; 2563 ; 1466
+B ; 09W    ; Mairie de Montreuil                      ; 2611 ; 1429
+L ; Green  ; obe, 09n, 09o, 09p, 09q, nat, 09r, 09s, 09t, 09u, 09v, 09w
+B ; 10A    ; Boulogne Pont de Saint-Cloud             ;  146 ; 2112
+B ; 10B    ; Boulogne Jean Jaurès                     ;  198 ; 2060
+B ; 10C    ; Porte d'Auteuil                          ;  250 ; 2000
+B ; 10D    ; Église d'Auteuil                         ;  425 ; 1956
+B ; 10E    ; Chardon Lagache                          ;  406 ; 2036
+B ; 10F    ; Mirabeau                                 ;  470 ; 2008
+B ; 10G    ; Javel-André Citroën                      ;  552 ; 1958
+L ; Yellow ; 10a, 10b, 10c, maa, 10d, 10g
+L ; Black  ; jav, 10g
+B ; 10H    ; Charles Michel                           ;  642 ; 1936
+B ; 10I    ; Avenu Émile Zola                         ;  687 ; 1888
+B ; 10J    ; Ségur                                    ;  943 ; 1879
+B ; DUR    ; Duroc                                    ; 1037 ; 1907
+B ; 10K    ; Vaneau                                   ; 1100 ; 1845
+B ; SBA    ; Sèvres Babylone                          ; 1160 ; 1787
+B ; 10L    ; Mabillon                                 ; 1315 ; 1780
+B ; 10M    ; Cluny la Sorbonne                        ; 1490 ; 1752
+L ; Black  ; 10m, smn
+B ; 10N    ; Maubert-Mutualité                        ; 1556 ; 1800
+B ; 10O    ; Cardinal Lemoine                         ; 1608 ; 1852
+L ; Yellow ; 10b, mam, 10e, 10f, 10g, 10h, 10i, lmp, 10j, dur, 10k, sba, 10l, ode, 10m, 10n, 10o, jus, gau
+B ; 11A    ; Rambuteau                                ; 1710 ; 1411
+B ; 11B    ; Goncourt                                 ; 1975 ; 1145
+B ; 11C    ; Pyrénées                                 ; 2145 ; 1024
+B ; 11D    ; Jourdain                                 ; 2262 ; 1025
+B ; 11E    ; Télégraphe                               ; 2457 ; 1025
+B ; 11F    ; Mairie des Lilas                         ; 2607 ;  934
+# éviter un doublon avec la ligne 1 cha-hdv
+L ; Red    ; hdv, 11a, aem, rep, 11b, blv, 11c, 11d, pdf, 11e, pli, 11f
+X ; AEM    ; REP ; 1840 ; 1320
+# Ligne 12
+B ; 12A    ; Aubervilliers Front Populaire            ; 1910 ;  500
+B ; 12B    ; Porte de la Chapelle                     ; 1805 ;  540
+B ; 12C    ; Max Dormoy                               ; 1805 ;  622
+B ; 12D    ; Jules Joffrin                            ; 1482 ;  655
+B ; 12E    ; Lamarck Caulaincourt                     ; 1400 ;  670
+B ; 12F    ; Abbesses                                 ; 1400 ;  731
+B ; 12G    ; Saint-Georges                            ; 1400 ;  900
+B ; 12H    ; Notre-Dame-de-Lorette                    ; 1370 ; 1010
+B ; 12I    ; Trinité d'Estienne d'Orves               ; 1220 ; 1010
+B ; 12J    ; Assemblée Nationale                      ;  963 ; 1590
+B ; 12K    ; Solférino                                ; 1025 ; 1650
+B ; 12L    ; Rue du Bac                               ; 1100 ; 1720
+B ; 12M    ; Rennes                                   ; 1227 ; 1850
+B ; 12N    ; Notre-Dame-des-Champs                    ; 1330 ; 1945
+B ; 12O    ; Falguière                                ; 1130 ; 1980
+B ; 12P    ; Volontaires                              ;  993 ; 2111
+B ; 12Q    ; Vaugirard                                ;  922 ; 2180
+B ; 12R    ; Convention                               ;  850 ; 2250
+B ; 12S    ; Porte de Versailles                      ;  792 ; 2310
+B ; 12T    ; Corentin Celton                          ;  677 ; 2430
+B ; 12U    ; Mairie d'Issy                            ;  592 ; 2513
+# éviter un doublon mad-cnc avec la ligne 8
+L ; Green  ; 12a, 12b, 12c, map, 12d, 12e, 12f, pig, 12g, 12h, 12i, gsl, mad
+L ; Green  ; cnc, 12j, 12k, 12l, sba, 12m, 12n, mpb, 12o, pas, 12p, 12q, 12r, 12s, 12t, 12u
+# Ligne 13
+B ; 13A    ; Asnières Gennevilliers Les Courtilles    ;  647 ;  180
+B ; 13B    ; Les Agnettes                             ;  720 ;  318
+B ; 13C    ; Gabriel Péri                             ;  765 ;  365
+B ; 13D    ; Mairie de Clichy                         ;  875 ;  475
+B ; 13E    ; Brochant                                 ; 1040 ;  640
+B ; 13F    ; La Fourche                               ; 1105 ;  720
+L ; Blue   ; 13a, 13b, 13c, 13d, pcl, 13e, 13f
+B ; 13G    ; Saint-Denis Université                   ; 1725 ;  150
+B ; 13H    ; Basilique de Saint-Denis                 ; 1670 ;  205
+B ; 13I    ; Saint-Denis Porte de Paris               ; 1485 ;  280
+B ; 13J    ; Carrefour Pleyel                         ; 1315 ;  320
+B ; 13K    ; Mairie de Saint-Ouen                     ; 1240 ;  390
+B ; 13L    ; Garibaldi                                ; 1170 ;  460
+B ; 13M    ; Porte de Saint-Ouen                      ; 1107 ;  545
+B ; 13N    ; Guy Môquet                               ; 1107 ;  630
+B ; 13O    ; Liège                                    ; 1107 ;  900
+B ; 13P    ; Varenne                                  ;  900 ; 1675
+B ; 13Q    ; Saint François Xavier                    ;  950 ; 1815
+B ; 13R    ; Gaîté                                    ; 1237 ; 2123
+B ; 13S    ; Pernety                                  ; 1195 ; 2193
+B ; 13T    ; Plaisance                                ; 1125 ; 2262
+B ; 13U    ; Porte de Vanves                          ; 1047 ; 2340
+B ; 13V    ; Malakoff Plateau de Vanves               ;  970 ; 2415
+B ; 13W    ; Malakoff Rue Étienne Dolet               ;  890 ; 2500
+B ; 13X    ; Châtillon-Montrouge                      ;  800 ; 2590
+L ; Blue   ; 13g, 13h, 13i, 13j, 13k, 13l, 13m, 13n, 13f, 13o, gsl, mir, cec, inv, 13p, 13q, dur, mpb, 13r, 13s, 13t, 13u, 13v, 13w, 13x
+# Ligne 14
+B ; 14A    ; Cour Saint-Émilion                       ; 2180 ; 2163
+B ; 14B    ; Olympiades                               ; 1985 ; 2275
+# éviter le doublon gsl-mad avec la ligne 12
+# En revanche, il n'y a pas de doublon cha-gly avec la ligne A, qui contient un segment clh-gly
+L ; Blue   ; mad, pyr, cha, gly, ber, 14a, bfm, 14b
