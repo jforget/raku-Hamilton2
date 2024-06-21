@@ -1482,6 +1482,8 @@ between both kinds of borders.
 
 ### Crossing the International Date Line
 
+#### First Version
+
 Some maps show  the whole Earth and they include  links from a western
 area  to an  eastern area,  across  the International  Date Line.  For
 example, Alaska → Kamtchatka in
@@ -1608,6 +1610,50 @@ cross-IDL borders, such as  both `KAM → ALA` and `JAP  → ALA`. In this
 case, splitting big area "pre-1867 Russia" into two parts could change
 the list of generated Hamiltonian paths.  But let's face it: this will
 happen once in a blue moon.
+
+Here is the macro-map for
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle).
+The longitude scale and the latitude scale are equal.
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v1.png)
+
+As you can see,  the link from USA to big area  `ASI` (Asia) spans one
+third  of the  picture.  And  since it  is  drawn  twice, it  occupies
+actually two thirds of the picture. The explanation is this: longitude
+of area `USA` is 84°W (near  Albany, in Georgia) and longitude of area
+`ASI` is  103°E (between Thailand  and Cambodia). So the  shadow areas
+are at 276°E  and 257°W respectively, which gives an  overall width of
+533°. This overall width has twice 173° for the `USA → ASI` border and
+only 187° for the inner part of the map. Therefore, a second version
+
+#### Second Version
+
+We discard the notion  of "shadow area" and we add  a new use-case for
+the waypoint  in the border record.  If a border crosses  the IDL, the
+initialisation  programme  feeds  the  `long` and  `lat`  fields  when
+storing a  `Borders` record. The  latitude can  be computed, as  it is
+done in the `init-risk-extract.raku` programme, or it can be extracted
+from the init file,  like it is done for other reasons  with the `93 →
+95` border  in the `fr1970` and  `fr2015` maps, or several  borders in
+the `ratp` map.  The longitude is either 180°E or  180°W, according to
+the border `from_code` area. For example,  in the `ASI → USA` border ,
+the  longitude will  be +180  (or  180°E), while  in the  `USA →  ASI`
+border,  the longitude  will be  -180 (or  180°W). With,  as explained
+above, a fractional part.
+
+Then, when the  drawing programme deals with this border,  it draws it
+in  two segments,  one reaching  longitude 180°E,  the other  reaching
+longitude 180°W.
+
+The result is more balanced than the previous version:
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
+
+Only  the  initialisation programmes  and  the  drawing programme  are
+affected. The programmes  which compute the Hamiltonian  paths and the
+programme which computes the statistics for the shortest paths are not
+modified.
+
 
 ### Performances
 

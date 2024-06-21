@@ -48,7 +48,8 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
   my Int $dim-scale =  20;
   my Int $lg-max    = ($width / 2).Int;
 
-  my %long-of-shadow-area; # longitude of the shadow image of the cross_idl area
+  my %long-of-relay;       # longitude of the relay point of the cross_idl border
+  my %lat-of-relay;        #  latitude of the relay point of the cross_idl border
   my %must-display-main;   # Boolean to tell whether the main image must be displayed
   my @longitudes;          # longitudes of all displayed areas excluding hidden areas
 
@@ -81,16 +82,9 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
       # but the main image of the "to" area may be hidden, unless there is another reason to display it.
       %must-display-main{$border<code_f>} = True;
       %must-display-main{$border<code_t>} //= False;
-      if $border<long_t> ≥ $border<long_f> {
-        $border<long_t> -= 360;
-        @longitudes.push($border<long_t>);
-        %long-of-shadow-area{$border<code_t>} = $border<long_t>;
-      }
-      else {
-        $border<long_t> += 360;
-        @longitudes.push($border<long_t>);
-        %long-of-shadow-area{$border<code_t>} = $border<long_t>;
-      }
+      %long-of-relay{    $border<code_t>} = $border<long_m>;
+       %lat-of-relay{    $border<code_t>} = $border<lat_m >;
+      @longitudes.push($border<long_m>);
     }
   }
   for @areas -> $area {
@@ -199,7 +193,13 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
     # Is there a middle point?
     my Int $xm = 0;
     my Int $ym = 0;
-    if $border<long_m> != 0 or $border<lat_m> != 0 {
+    if $border<cross_idl> == 1 {
+      # there is a middle point, but it is displayed as an end point because the line crosses the IDL
+      $xt = conv-x($border<long_m>.Num);
+      $yt = conv-y($border<lat_m >.Num);
+    }
+    elsif $border<long_m> != 0 or $border<lat_m> != 0 {
+      # there is a middle point and it has nothing to do with the IDL
       $xm = conv-x($border<long_m>.Num);
       $ym = conv-y($border<lat_m >.Num);
     }
@@ -221,8 +221,9 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
     if %must-display-main{$area<code>} // True {
       $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>, False);
     }
-    if %long-of-shadow-area{$area<code>} {
-      $x = conv-x(%long-of-shadow-area{$area<code>});
+    if %long-of-relay{$area<code>} {
+      $x = conv-x(%long-of-relay{$area<code>});
+      $y = conv-y( %lat-of-relay{$area<code>});
       $imagemap ~= draw-area($image, $x, $y, $area<code>, $white, $black, %color{$area<color>}, $area<url>, $area<name>, True);
     }
   }

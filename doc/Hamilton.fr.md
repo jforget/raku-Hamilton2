@@ -1550,6 +1550,8 @@ faire la différence entre les deux types de frontières.
 
 ### La traversée de la ligne de changement de date
 
+#### Première version
+
 Certaines  cartes montrent  la totalité  du globe  terrestre et  elles
 comportent  des liens  entre une  zone extrême-orientale  et une  zone
 extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
@@ -1699,6 +1701,55 @@ qu'il y ait deux frontières  trans-IDL, par exemple une frontière `KAM
 `Big_Area` « Russie  pré-1867 » pourrait changer la  liste des chemins
 hamiltoniens générés. Mais reconnaissons-le, cela  a peu de chances de
 se produire.
+
+Voici la macro-carte pour 
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
+L'échelle sur les longitudes et l'échelle sur les latitudes sont les mêmes.
+
+![Macro-carte pour Twilight Struggle](Twilight-Struggle-macro-v1.png)
+
+Comme vous pouvez le voir, le lien des USA vers la région `ASI` (Asie)
+occupe le tiers de  la largeur de la carte et comme  il est en double,
+il occupe en fait  les deux tiers. C'est parce que  la longitude de la
+région  `USA`  est 84°O  (aux  environs  d'Albany  en Georgie)  et  la
+longitude de la  région `ASI` est 103°E (frontière  entre la Thaïlande
+et le Cambodge). Donc les régions bis sont en 276°E et 257°O, pour une
+largeur totale de 533°, qui se décompose  en 2 fois 173° pour les deux
+exemplaires  de  la  frontière  `USA  → ASI`  et  187°  pour  l'espace
+intérieur de la carte. D'où la deuxième version.
+
+#### Deuxième version
+
+On abandonne  le concept  de « zone  bis » et on  la remplace  par une
+nouvelle utilisation du concept  déjà existant de point intermédiaire.
+Lorsqu'une  frontière traverse  la  ligne de  changement  de date,  le
+programme d'initialisation alimente  les champs `long` et  `lat` de la
+table  `Borders`, pour  définir  le point  intermédiaire  où la  ligne
+représentant la  frontière traverse  la ligne  de changement  de date.
+Cela  peut  faire   l'objet  d'un  calcul  comme   dans  le  programme
+`init-risk-extract.raku`  ou cela  peut se  faire par  l'intermédiaire
+d'une ligne  « `X` » dans le  fichier d'initialisation comme  pour les
+autres points intermédiaires,  par exemple la frontière `93  → 95` des
+cartes `fr1970` et `fr2015`, ou  bien plusieurs tronçons dans la carte
+`ratp`. La longitude du point  intermédiaire est 180°E ou 180°O, selon
+l'hémisphère où se trouve le point de départ. Ainsi, pour la frontière
+`ASI →  USA` la  longitude sera  +180 (ou 180°E),  tandis que  pour la
+frontière `USA → ASI`, la longitude  sera -180 (ou 180°O). Avec, comme
+signalé plus haut, une partie fractionnaire.
+
+D'autre  part, le  programme  de  dessin trace  la  frontière en  deux
+tronçons,  l'un aboutissant  à  la  longitude 180°O  et  l'autre à  la
+longitude 180°E.
+
+Comme vous pouvez  le voir, le résultat est moins  déséquilibré que la
+version précédente :
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
+
+Seuls les programmes d'initialisation et  le module générant le dessin
+PNG sont concernés. Les  programmes calculant les chemins hamiltoniens
+(macro, régional,  complet) ou  les statistiques  sur les  chemins les
+plus courts ne sont pas affectés.
 
 ### Performances
 

@@ -179,6 +179,55 @@ and   exists (select 'X'
               and   B.upper_to  != Areas.upper)
 SQL
 
+# computing the cross-IDL latitudes
+my $select-cross-idl = $dbh.prepare(q:to/SQL/);
+select B.level     as level
+     , B.from_code as code_f
+     , B.to_code   as code_t
+     , F.long      as long_f
+     , F.lat       as lat_f
+     , T.long      as long_t
+     , T.lat       as lat_t
+from Borders as B
+join Areas   as F
+  on  F.map   = B.map
+  and F.level = B.level
+  and F.code  = B.from_code
+join Areas   as T
+  on  T.map   = B.map
+  and T.level = B.level
+  and T.code  = B.to_code
+where B.map       = ?
+and   B.cross_idl = 1
+SQL
+
+my $upd-lat-cross-idl = $dbh.prepare(q:to/SQL/);
+update Borders
+set    long = ?
+  ,    lat  = ?
+where  map       = ?
+and    level     = ?
+and    from_code = ?
+and    to_code   = ?
+SQL
+
+for $select-cross-idl.execute($map).allrows(:array-of-hash) -> $border {
+  say $border.raku;
+  my Num $long-f = $border<long_f>;
+  my Num $long-t = $border<long_t>;
+  my Rat $long;
+  if $long-f < $long-t {
+    $long-f += 360;
+    $long   = -180.000001;
+  }
+  else {
+    $long-t += 360;
+    $long   = +180.000001;
+  }
+  my Num $lat = $border<lat_f> + ($border<lat_t> - $border<lat_f>) × (180 - $long-f) / ($long-t - $long-f);
+  $upd-lat-cross-idl.execute($long.Num, $lat, $map, $border<level>, $border<code_f>, $border<code_t>);
+}
+
 $sto-mesg.execute($map, DateTime.now.Str, 'INIT');
 
 
