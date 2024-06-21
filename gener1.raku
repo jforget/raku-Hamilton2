@@ -157,7 +157,7 @@ sub MAIN (
       $upd-stat-small-a.execute($map, $region);
       $upd-stat-small-b.execute($map, $region);
       $dbh.execute("commit");
-      generic-paths($map, $region<code>);
+      generic-paths($map, $region);
     }
   }
 }
