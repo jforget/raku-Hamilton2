@@ -1084,7 +1084,15 @@ group by P.from_code, P.to_code
 
 Un  autre   point :  comme   pour  la  génération   des  macro-chemins
 hamiltoniens et  des chemins hamiltoniens régionaux,  la liste `to-do`
-du présent programme sera utilisée en mode LIFO.
+du  présent  programme  sera  utilisée  en  mode  LIFO.  Pour  que  la
+numérotation  des  chemins  complets  soit cohérente  avec  celle  des
+chemins  régionaux  qu'ils  contiennent,  les  chemins  partiels  sont
+empilés  par numéro  de chemin  décroissant et  dépilés par  numéro de
+chemin  croissant. C'est  la  raison pour  laquelle  la recherche  des
+chemins régionaux prévoit  un tri décroissant sur le  numéro de chemin
+régional. La  seule exception est  la recherche des  chemins régionaux
+pour la  dernière étape, car il  ne s'agit plus d'empiler  des chemins
+partiels, mais de stocker en base de données des chemins complets.
 
 Simplification
 --------------

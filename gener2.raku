@@ -109,7 +109,6 @@ join Generic_Region_Paths B
 where A.map       = ?
 and   A.from_code = ?
 and   A.upper_to  = ?
-order by B.num desc
 SQL
 
 my $sth-check-cyclic = $dbh.prepare(q:to/SQL/);

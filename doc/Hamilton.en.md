@@ -1039,7 +1039,14 @@ group by P.from_code, P.to_code
 
 Another point: from  reasons similar to the  generation of Hamiltonian
 macro-paths  and the  generation  of Hamiltonian  regional paths,  the
-`to-do` list is processed in a LIFO order, rather than FIFO.
+`to-do` list is processed in a LIFO  order, rather than FIFO. To get a
+numeric  order consistent  between  the full  paths  and the  regional
+paths, the partial paths are  pushed ordered by decreasing path number
+and  popped by  increasing path  number. This  is the  reason why  the
+regional paths  are selected  from the  database with  decreasing path
+number. The  exception is the  last step, because the  generated paths
+are no  longer partial paths  pushed into  the `to-do` list,  but full
+paths stored into the database.
 
 Simplification
 --------------
