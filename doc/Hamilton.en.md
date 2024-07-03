@@ -1654,6 +1654,38 @@ affected. The programmes  which compute the Hamiltonian  paths and the
 programme which computes the statistics for the shortest paths are not
 modified.
 
+#### Examples of Initialisation Programmes
+
+The Git repository provides two initialisation programmes for the Risk
+extract  map. In  the first  example, the  data file  is used  only to
+declare that  such and such big  borders cross the IDL.  The programme
+propagates the  `cross_idl` indicator to the  `Small_Borders` records.
+Also, it computes the latitude where the borders cross the IDL (linear
+variation with  respect to  the longitude)  and updates  all `Borders`
+records with this latitude and the associated longitude.
+
+In the  second example, all cross-IDL  borders are listed in  the data
+file,  both  `Big_Borders`  records and  `Small_Borders`  records.  In
+addition, these  borders must be declared  on two lines, one  line for
+the East relay point, the other for the West relay point.
+
+Using  longitudes 180°E  and 180°W  is not  mandatory. You  may use  a
+shorter longitude range  which will generate a  more detailed drawing.
+Let us use the example of
+[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
+In the West → East direction, 
+[the map](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
+spans from Senegal (15°W) to Philippines (120°E). The locations
+of Canada and United States are
+[adjusted](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
+to fit within this range, which gives 9°W and 17°W respectively. There
+is a  border from  the USA  to Philippines. Drawing  a relay  point at
+180°W would be silly, with a  153° shift from the (relocated) USA. The
+relay point is  drawn at 22°W, which  is enough. In the  same way, the
+other relay point is drawn at 130°E instead of 180°E.
+
+As for the second programme for the Risk extract, the relay points for
+the `ALA → KAM` border are at 158°E and 170°W.
 
 ### Performances
 

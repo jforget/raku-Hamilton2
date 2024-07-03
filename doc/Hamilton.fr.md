@@ -1751,6 +1751,46 @@ PNG sont concernés. Les  programmes calculant les chemins hamiltoniens
 (macro, régional,  complet) ou  les statistiques  sur les  chemins les
 plus courts ne sont pas affectés.
 
+#### Exemples de programmes d'initialisation
+
+Le  dépôt Git  contient deux  exemples de  programmes initialisant  la
+carte  Risk épurée.  Dans le  premier exemple,  le fichier  de données
+indique uniquement que telle ou telle frontière entre régions traverse
+la ligne de  changement de date. Et le  programme reporte l'indicateur
+`cross_idl`  vers les  frontières  entre  départements. Également,  il
+détermine  la  latitude  où  cette  frontière  traverse  la  ligne  de
+changement de date (variation linéaire en fonction de la longitude) et
+met à  jour les  enregistrements `Borders` avec  cette latitude  et la
+longitude.
+
+Dans le deuxième exemple, toutes les frontières traversant la ligne de
+changement de date doivent être  déclarées dans le fichier de données,
+qu'il  s'agisse de  frontières entre  régions ou  de frontières  entre
+départements. De plus, chaque frontière  est déclarée sur deux lignes,
+l'une  contenant le  point intermédiaire  ouest, l'autre  contenant le
+point intermédiaire est.
+
+On n'est  pas tenu d'utiliser les  longitudes 180°O et 180°E,  on peut
+diminuer la  plage de longitudes  pour avoir un dessin  plus détaillé.
+Dans le  cas de  la carte de  Risk, cela ne  se remarque  pas. Prenons
+l'exemple de
+[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
+Dans le sens ouest → est,
+[la carte](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
+s'étend du Sénégal (15°O) jusqu'aux Philippines (120°E).
+La position du Canada et celle des États-Unis sont
+[ajustées](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
+pour rentrer  dans la  carte, ce  qui donne des  longitudes de  9°O et
+17°O. Pour la frontière entre les USA et les Philippines, cela n'a pas
+de sens de placer le point  intermédiaire à la longitude 180°O, ce qui
+créerait un  écart de  153°. Il  est donc placé  à la  longitude 22°O,
+c'est  largement   suffisant.  Dans  la  même   veine,  l'autre  point
+intermédiaire a été placé à la longitude 130°E au lieu de 180°E.
+
+Pour revenir au deuxième programme traitant la carte extraite de Risk,
+les  points intermédiaires  pour la  frontière  `ALA →  KAM` sont  aux
+longitudes 158°E et 170°O.
+
 ### Performances
 
 En essayant le programme `gener1.raku` sur la carte de Britannia, j'ai
