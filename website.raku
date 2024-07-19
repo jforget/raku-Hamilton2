@@ -916,6 +916,10 @@ get '/:ln/shortest-paths-from-to/macro/:map/:from/:to' => sub ($lng_parm, $map_p
   my @full-links  = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
   my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
 
+  my %reverse-link = %( txt  => "$to-code → $from-code"
+                      , link => "/$lng/shortest-paths-from-to/macro/$map/$to-code/$from-code$query-string"
+                      );
+
   return Hamilton-stat::render-from-to($lng, $map
                            , from         => $from-code
                            , to           => $to-code
@@ -929,6 +933,7 @@ get '/:ln/shortest-paths-from-to/macro/:map/:from/:to' => sub ($lng_parm, $map_p
                            , full-links   => @full-links
                            , canon-links  => @canon-links
                            , region-links => ()
+                           , reverse-link => %reverse-link
                            , query-string => $query-string
                            );
 }
@@ -963,6 +968,10 @@ get '/:ln/shortest-paths-from-to/full/:map/:from/:to' => sub ($lng_parm, $map_pa
   my @full-links  = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
   my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
 
+  my %reverse-link = %( txt  => "$to-code → $from-code"
+                      , link => "/$lng/shortest-paths-from-to/full/$map/$to-code/$from-code$query-string"
+                      );
+
   return Hamilton-stat::render-from-to($lng, $map
                            , from         => $from-code
                            , to           => $to-code
@@ -976,6 +985,7 @@ get '/:ln/shortest-paths-from-to/full/:map/:from/:to' => sub ($lng_parm, $map_pa
                            , full-links   => @full-links
                            , canon-links  => @canon-links
                            , region-links => ()
+                           , reverse-link => %reverse-link
                            , query-string => $query-string
                            );
 }
@@ -1018,6 +1028,10 @@ get '/:ln/shortest-paths-from-to/region/:map/:region/:from/:to' => sub ($lng_par
   my @region-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
   my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
 
+  my %reverse-link = %( txt  => "$to-code → $from-code"
+                      , link => "/$lng/shortest-paths-from-to/region/$map/$region/$to-code/$from-code$query-string"
+                      );
+
   return Hamilton-stat::render-from-to($lng, $map
                            , from         => $from-code
                            , to           => $to-code
@@ -1031,6 +1045,7 @@ get '/:ln/shortest-paths-from-to/region/:map/:region/:from/:to' => sub ($lng_par
                            , full-links   => @full-links
                            , region-links => @region-links
                            , canon-links  => @canon-links
+                           , reverse-link => %reverse-link
                            , query-string => $query-string
                            );
 }

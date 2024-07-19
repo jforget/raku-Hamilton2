@@ -16,6 +16,7 @@ our sub links($at, :$lang
              ,     :@full-links
              ,     :@region-links
              ,     :@canon-links
+             ,     :%reverse-link
              , Str :$query-string) {
   $at('h1')».content(%map<name>);
   $at.at('a.full-map-link'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
@@ -82,6 +83,13 @@ our sub links($at, :$lang
     my Str $region = $mapcode.uc;
     my $links = join ' ', @canon-links.map( { "<a href='/$lang/region-path/$mapcode/$region/$_$query-string'>{$_}</a>" } );
     $at.at('p.list-of-canon-paths').content($links);
+  }
+
+  if %reverse-link<txt>:exists {
+    $at.at('a.reverse-link').attr(href => %reverse-link<link>);
+  }
+  else {
+    $at.at('a.reverse-link')».remove;
   }
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }

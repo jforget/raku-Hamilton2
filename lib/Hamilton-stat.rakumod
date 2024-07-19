@@ -30,6 +30,7 @@ sub fill($at,  :$lang
         ,      :@full-links
         ,      :@region-links
         ,      :@canon-links
+        ,      :%reverse-link
         , Str  :$query-string
         , Bool :$variant
         , Bool :$squeeze-zero = False
@@ -44,6 +45,7 @@ sub fill($at,  :$lang
                    , full-links   => @full-links
                    , region-links => @region-links
                    , canon-links  => @canon-links
+                   , reverse-link => %reverse-link
                    , query-string => $query-string);
 
   my Str $region-code = %region<code> // '';
@@ -290,6 +292,7 @@ our sub render-from-to(Str  $lang
                      ,      :@full-links
                      ,      :@region-links
                      ,      :@canon-links
+                     ,      :%reverse-link
                      , Str  :$query-string
                      ) {
   my &filling = anti-template :source("html/shortest-paths-from-to.$lang.html".IO.slurp), &fill;
@@ -423,6 +426,7 @@ our sub render-from-to(Str  $lang
                , full-links   => @full-links
                , region-links => @region-links
                , canon-links  => @canon-links
+               , reverse-link => %reverse-link
                , query-string => $query-string
                , variant      => False
                , squeeze-zero => True
