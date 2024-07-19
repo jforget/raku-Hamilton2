@@ -1680,7 +1680,7 @@ Using  longitudes 180°E  and 180°W  is not  mandatory. You  may use  a
 shorter longitude range  which will generate a  more detailed drawing.
 Let us use the example of
 [Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
-In the West → East direction, 
+In the West → East direction,
 [the map](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
 spans from Senegal (15°W) to Philippines (120°E). The locations
 of Canada and United States are

@@ -24,12 +24,12 @@ for <Maps Areas Borders Paths Path_Relations Exit_Borders Messages> -> $table {
 
 $dbh.execute(q:to/SQL/, 'ratp', "Métro");
 insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom, full_diameter, full_radius, macro_diameter, macro_radius)
-          values (?  , ?   , 0       , 0      , 0         , ''              , 1         , 0        , 0            , 0          , 0             , 0);          
+          values (?  , ?   , 0       , 0      , 0         , ''              , 1         , 0        , 0            , 0          , 0             , 0);
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
 insert into Areas (map, level, code, name, long, lat, color, upper, nb_macro_paths, nb_macro_paths_1, nb_region_paths, exterior, diameter, radius, full_eccentricity, region_eccentricity)
-       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0       , 0       , 0     , 0                , 0)                  
+       values     (?,   ?,     ?,    ?,    ?,    ?,   ?,     ?    , 0,              0,                0,               0       , 0       , 0     , 0                , 0)
 SQL
 
 my $sto-border = $dbh.prepare(q:to/SQL/);
@@ -113,11 +113,11 @@ sub MAIN(Bool :$complet = False) {
         my $color = $code;
         my @stations = $name.uc.split(/',' \s*/);
         my $st1 = @stations.shift;
-	for @stations -> $st2 {
+        for @stations -> $st2 {
           $sto-border.execute($map-name, 2, $st1, $st2, $region, $region, 0, 0, $color);
           $sto-border.execute($map-name, 2, $st2, $st1, $region, $region, 0, 0, $color);
-	  $st1 = $st2;
-	}
+          $st1 = $st2;
+        }
       }
       when 'X' {
         my Num $lon = conv-lon($color-or-long.Num);

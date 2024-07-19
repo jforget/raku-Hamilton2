@@ -169,11 +169,11 @@ sub MAIN(Bool :$complete = False) {
         if $cross-idl {
           $lon = %middle-small{$to}{$from}<lon>;
           $lat = %middle-small{$to}{$from}<lat>;
-	  $sto-border.execute($map, 2, $to  , $from, $border<toup>, $border<fromup>, $lon, $lat, $color, 1);
-	}
-	else {
-	  $sto-border.execute($map, 2, $to  , $from, $border<toup>, $border<fromup>, $lon, $lat, $color, 0);
-	}
+          $sto-border.execute($map, 2, $to  , $from, $border<toup>, $border<fromup>, $lon, $lat, $color, 1);
+        }
+        else {
+          $sto-border.execute($map, 2, $to  , $from, $border<toup>, $border<fromup>, $lon, $lat, $color, 0);
+        }
 
       }
     }

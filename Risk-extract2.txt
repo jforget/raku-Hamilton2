@@ -17,7 +17,7 @@ B ; ONT ; Ontario               ; 164 ; 137 ; ven, gre, nwt, alb
 A ; SA  ; South America         ; Red
 B ; VEN ; Venezuela             ; 177 ; 294 ; arg, alb, ont
 B ; ARG ; Argentina             ; 199 ; 420 ; ven
-Y ; ALA ; KAM			;  20 ; 100
-Y ; KAM ; ALA			; 750 ; 100
+Y ; ALA ; KAM                   ;  20 ; 100
+Y ; KAM ; ALA                   ; 750 ; 100
 X ; NA  ; AS                    ;  20 ; 150
 X ; AS  ; NA                    ; 750 ; 150

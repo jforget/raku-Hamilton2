@@ -160,7 +160,7 @@ B ; 05D    ; Hoche                              ; 2394 ;  752
 B ; 05E    ; Porte de Pantin                    ; 2293 ;  758
 B ; 05F    ; Ourcq                              ; 2182 ;  756
 B ; 05G    ; Laumière                           ; 2103 ;  806
-L ; Yellow ; 05a, 05b, 05c, 05d, 05e, 05f, 05g, jau, 
+L ; Yellow ; 05a, 05b, 05c, 05d, 05e, 05f, 05g, jau
 # ne pas écrire de doublon jau-sta, ni gno-ges
 L ; Yellow ; sta, gno
 B ; 05H    ; Jacques Bonsergent                 ; 1837 ; 1116

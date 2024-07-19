@@ -1710,7 +1710,7 @@ qu'il y ait deux frontières  trans-IDL, par exemple une frontière `KAM
 hamiltoniens générés. Mais reconnaissons-le, cela  a peu de chances de
 se produire.
 
-Voici la macro-carte pour 
+Voici la macro-carte pour
 [Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
 L'échelle sur les longitudes et l'échelle sur les latitudes sont les mêmes.
 
