@@ -17,6 +17,7 @@ use Bailador;
 use access-sql;
 use map-list-page;
 use map;
+use common;
 use full-path;
 use macro-path;
 use Hamilton-stat;
@@ -209,6 +210,8 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   }
 
   my @ico-links = access-sql::list-ico-paths-for-isom($map, 'Id');
+  my %reverse-link = access-sql::read-path-by-path($map, 1, '', common::rev-path(%path<path>));
+  %reverse-link<link> = "/$lng/macro-path/$map/%reverse-link<num>$query-string";
 
   return macro-path::render($lng, $map, %map
                            , areas          => @areas
@@ -218,6 +221,7 @@ get '/:ln/macro-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
                            , macro-links    => @macro-links
                            , full-links     => @full-links
                            , ico-links      => @ico-links
+                           , reverse-link   => %reverse-link
                            , query-string   => $query-string
                            );
 }

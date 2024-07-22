@@ -18,6 +18,7 @@ our sub links($at, :$lang
              ,     :@canon-links
              ,     :%reverse-link
              , Str :$query-string) {
+
   $at('h1')».content(%map<name>);
   $at.at('a.full-map-link'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map-link' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
@@ -85,7 +86,7 @@ our sub links($at, :$lang
     $at.at('p.list-of-canon-paths').content($links);
   }
 
-  if %reverse-link<txt>:exists {
+  if %reverse-link<link>:exists {
     $at.at('a.reverse-link').attr(href => %reverse-link<link>);
   }
   else {
@@ -94,6 +95,9 @@ our sub links($at, :$lang
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
+our sub rev-path(Str $path) {
+  return $path.split(/ \s+ '→' \s+ /).reverse.join(' → ');
+}
 
 =begin POD
 

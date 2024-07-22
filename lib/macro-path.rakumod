@@ -11,6 +11,7 @@
 unit package macro-path;
 
 use Template::Anti :one-off;
+use common;
 use map-gd;
 use MIME::Base64;
 use messages-list;
@@ -19,9 +20,22 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
         ,     :@macro-links
         ,     :@full-links
         ,     :@ico-links
+        ,     :%reverse-link
         , Str :$query-string) {
+
+  common::links($at, lang         => $lang
+                   , mapcode      => $mapcode
+                   , map          => %map
+                   , region       => %()
+                   , messages     => @messages
+                   , macro-links  => @macro-links
+                   , full-links   => @full-links
+                   , region-links => ()
+                   , canon-links  => ()
+                   , reverse-link => %reverse-link
+                   , query-string => $query-string);
+
   $at('title')».content(%map<name>);
-  $at('h1'   )».content(%map<name>);
 
   $at.at('span.extended-path').content(%path<path>.Str);
   if %path<cyclic> == 1 {
@@ -44,14 +58,6 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
   }
   $at('map')».content($imagemap);
   $at.at('span.path-number').content(%path<num>.Str);
-  $at.at('ul.messages').content(messages-list::render($lang, @messages));
-  for @macro-links <-> $macro {
-    if $macro<bold> {
-      $macro<txt> = "<b>{$macro<txt>}</b>";
-    }
-  }
-  my $links = join ' ', @macro-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-  $at.at('p.list-of-paths').content($links);
 
   if %path<fruitless> == 1 {
     $at('span.fruitless-reason')».content(%path<fruitless_reason>);
@@ -60,13 +66,9 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
   }
   elsif @full-links.elems == 0 {
     $at('p.fruitless-path'    )».remove;
-    $at('p.list-of-full-paths')».remove;
   }
   else {
-    my $links = join ' ', @full-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-full-paths').content($links);
     $at('p.fruitless-path'          )».remove;
-    $at('p.empty-list-of-full-paths')».remove;
   }
 
   if @ico-links.elems == 0 {
@@ -83,6 +85,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
             ,     :@macro-links
             ,     :@full-links
             ,     :@ico-links
+            ,     :%reverse-link
             , Str :$query-string) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
@@ -95,6 +98,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , macro-links    => @macro-links
                 , full-links     => @full-links
                 , ico-links      => @ico-links
+                , reverse-link   => %reverse-link
                 , query-string   => $query-string
                 );
 }

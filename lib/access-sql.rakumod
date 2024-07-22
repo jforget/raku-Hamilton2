@@ -192,6 +192,12 @@ our sub read-path(Str $map, Int $level, Str $area, Int $num) {
   return %val;
 }
 
+our sub read-path-by-path(Str $map, Int $level, Str $area, Str $path) {
+  my $sth = $dbh.prepare("select * from Paths where map = ? and level = ? and area = ? and path = ?");
+  my %val = $sth.execute($map, $level, $area, $path).row(:hash);
+  return %val;
+}
+
 our sub read-specific-path(Str $map, Int $num) {
   my $sth = $dbh.prepare(q:to/SQL/);
   select *
