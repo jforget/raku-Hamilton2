@@ -264,6 +264,8 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
   }
   my @indices    = list-numbers(@full-numbers.elems, $num) «-» 1;
   my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+  my %reverse-link = access-sql::read-path-by-path($map, 2, $region, common::rev-path(%path<path>));
+  %reverse-link<link> = "/$lng/region-path/$map/$region/%reverse-link<num>$query-string";
 
   return region-path::render(lang     => $lng
                            , mapcode  => $map
@@ -272,10 +274,11 @@ get '/:ln/region-path/:map/:region/:num' => sub ($lng_parm, $map_parm, $region_p
                            , areas    => @areas
                            , borders  => @borders
                            , path     => %path
-                           , messages => @messages
+                           , messages       => @messages
                            , rpath-links    => @links
                            , fpath-links    => @full-links[@indices]
                            , ico-links      => @ico-links
+                           , reverse-link   => %reverse-link
                            , query-string   => $query-string
                            );
 }

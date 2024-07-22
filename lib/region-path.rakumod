@@ -11,6 +11,7 @@
 unit package region-path;
 
 use Template::Anti :one-off;
+use common;
 use map-gd;
 use MIME::Base64;
 use messages-list;
@@ -20,15 +21,22 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
         ,     :@rpath-links
         ,     :@fpath-links
         ,     :@ico-links
+        ,     :%reverse-link
         , Str :$query-string) {
-  $at('title')».content(%map<name>);
-  $at('h1'   )».content(%map<name>);
 
-  $at.at('a.full-map'   ).attr(href => "/$lang/full-map/$mapcode$query-string");
-  $at.at('a.macro-map'  ).attr(href => "/$lang/macro-map/$mapcode$query-string");
-  $at.at('a.macro-stat' ).attr(href => "/$lang/macro-stat/$mapcode$query-string");
-  $at.at('a.region-map' ).attr(href => "/$lang/region-map/$mapcode/%region<code>$query-string");
-  $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
+  common::links($at, lang         => $lang
+                   , mapcode      => $mapcode
+                   , map          => %map
+                   , region       => %region
+                   , messages     => @messages
+                   , macro-links  => ()
+                   , full-links   => @fpath-links
+                   , region-links => @rpath-links
+                   , canon-links  => @fpath-links
+                   , reverse-link => %reverse-link
+                   , query-string => $query-string);
+  $at('title')».content(%map<name>);
+
   if %map<nb_full> != 0 {
     $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
   }
@@ -56,18 +64,6 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 
-  my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-  $at.at('p.list-of-region-paths').content($links);
-
-  if @fpath-links.elems eq 0 {
-    $at.at('p.list-of-full-paths')».remove;
-  }
-  else {
-    $links = join ' ', @fpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-    $at.at('p.list-of-full-paths').content($links);
-    $at.at('p.empty-list-of-full-paths')».remove;
-  }
-
   if @ico-links.elems == 0 {
     $at.at('div.ico')».content('');
   }
@@ -77,7 +73,6 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region, :@areas, :@borders, :@messages
     $at.at('p.list-of-ico-paths').content($links);
   }
 
-  $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
 our sub render(Str :$lang
@@ -91,6 +86,7 @@ our sub render(Str :$lang
              ,     :@rpath-links
              ,     :@fpath-links
              ,     :@ico-links
+             ,     :%reverse-link
              , Str :$query-string) {
   my &filling = anti-template :source("html/region-path.$lang.html".IO.slurp), &fill;
   return filling( lang     => $lang
@@ -99,11 +95,12 @@ our sub render(Str :$lang
                 , region   => %region
                 , areas    => @areas
                 , borders  => @borders
-                , messages => @messages
+                , messages     => @messages
                 , path         => %path
                 , rpath-links  => @rpath-links
                 , fpath-links  => @fpath-links
                 , ico-links    => @ico-links
+                , reverse-link => %reverse-link
                 , query-string => $query-string
                 );
 }
