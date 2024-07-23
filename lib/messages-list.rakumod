@@ -16,6 +16,7 @@ use MIME::Base64;
 my @errcode = <INIT MAC1 MAC2 MAC3 MAC4 MAC5 MAC6 MAC7 MAC8
                     REG1 REG2 REG3 REG4 REG5 REG6 REG7 REG8 REG9 REGA
                     FUL1 FUL2 FUL3 FUL4 FUL5
+                    FLA1 FLA2
                     ISO1 ISO2 ISO3
                     STA1 STA2
               >;

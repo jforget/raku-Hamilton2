@@ -35,6 +35,10 @@ sub sample-size is export {
   return 10;
 }
 
+sub full-path-threshold is export {
+  return 100;
+}
+
 =begin POD
 
 =encoding utf8

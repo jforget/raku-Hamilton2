@@ -298,7 +298,10 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
   }
-  my %path       = access-sql::read-specific-path($map, $num);
+  my %path       = access-sql::read-path($map, 3, '', $num);
+  if (%path<path> // '(').contains('(') {
+    %path        = access-sql::read-specific-path($map, $num);
+  }
   my @messages   = access-sql::list-messages($map);
   my @list-paths = list-numbers(%map<nb_full>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
@@ -340,7 +343,10 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
     }
   }
-  my %specific-path = access-sql::read-specific-path($map, $num);
+  my %specific-path = access-sql::read-path($map, 3, '', $num);
+  if (%specific-path<path> // '(').contains('(') {
+    %specific-path = access-sql::read-specific-path($map, $num);
+  }
   my @messages      = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_region_paths>, $num);
@@ -349,11 +355,13 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
   my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
   my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
 
-  my @rel = relations-for-full-path-in-region($map, $region, $num);
-  my $rel1 = @rel[0];
-  my $rel2 = @rel[1];
-  my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
-  my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+  #my @rel = relations-for-full-path-in-region($map, $region, $num);
+  #my $rel1 = @rel[0];
+  #my $rel2 = @rel[1];
+  #my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+  #my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+  my @links1 = ();
+  my @links2 = ();
 
   return region-with-full-path::render(lang           => $lng
                                      , mapcode        => $map
