@@ -298,8 +298,11 @@ get '/:ln/full-path/:map/:num' => sub ($lng_parm, $map_parm, $num_parm) {
   for @areas -> $area {
     $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
   }
-  my %path       = access-sql::read-path($map, 3, '', $num);
-  if (%path<path> // '(').contains('(') {
+  my %path;
+  if %map<specific_paths> == 1 {
+    %path        = access-sql::read-path($map, 3, '', $num);
+  }
+  else {
     %path        = access-sql::read-specific-path($map, $num);
   }
   my @messages   = access-sql::list-messages($map);
@@ -343,8 +346,11 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
     }
   }
-  my %specific-path = access-sql::read-path($map, 3, '', $num);
-  if (%specific-path<path> // '(').contains('(') {
+  my %specific-path;
+  if %map<specific_paths> == 1 {
+    %specific-path = access-sql::read-path($map, 3, '', $num);
+  }
+  else {
     %specific-path = access-sql::read-specific-path($map, $num);
   }
   my @messages      = access-sql::list-regional-messages($map, $region);

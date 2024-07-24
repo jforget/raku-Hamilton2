@@ -3,6 +3,7 @@ create table Maps (map               TEXT
                  , nb_macro          INTEGER
                  , nb_full           INTEGER
                  , nb_generic        INTEGER
+                 , specific_paths    INTEGER
                  , fruitless_reason  TEXT
                  , with_scale        INTEGER
                  , with_isom         INTEGER

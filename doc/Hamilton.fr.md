@@ -194,6 +194,8 @@ Les autres informations sont :
 * `nb_full` le nombre de chemins complets pour cette carte,
 * `nb_generic` champ décrit dans la
 [quatrième version du logiciel](#user-content-quatrième-tentative),
+* `specific_paths` booléen également décrit dans la
+[quatrième version du logiciel](#user-content-quatrième-tentative),
 * `fruitless_reason` champ décrit dans la
 [cinquième version du logiciel](#user-content-cinquième-version)
 * `with_scale`  indicateur spécifiant  si le  graphe correspond  à des
@@ -465,8 +467,9 @@ chemins régionaux. Elle contient les champs suivants :
 
 Jusqu'à la  version 3,  les champs  `full_num` et  `regional_num` font
 référence  à  des  chemins  complets  spécifiques  et  à  des  chemins
-régionaux spécifiques. À partir de la  version 4, ils font référence à
-des chemins complets génériques et à des chemins régionaux génériques.
+régionaux spécifiques.  À partir de  la version 4,  dans le cas  où le
+booléen `specific_paths` de  `Maps` est à 0, ils font  référence à des
+chemins complets génériques et à des chemins régionaux génériques
 
 L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
 [quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
@@ -2703,13 +2706,22 @@ De la même manière, il y a maintenant les chemins complets génériques,
 constitués de la concaténation de chemins régionaux génériques, et les
 chemins  complets  spécifiques,  concaténations de  chemins  régionaux
 spécifiques. Les chemins  complets génériques sont stockés  en base de
-données avec `level=2`.  Les chemins complets spécifiques  ne sont pas
-stockés en base  de données (il y  en a des millions  pour `fr1970` et
-pour `fr2015`), ils  sont reconstitués lors de l'affichage  de la page
-web correspondante.
+données avec  `level=2`. En général, les  chemins complets spécifiques
+ne sont pas  stockés en base de  données (il y en a  des millions pour
+`fr1970` et pour `fr2015`), ils  sont reconstitués lors de l'affichage
+de  la page  web correspondante.
+
+Toutefois, si le nombre de chemins complets spécifiques pour une carte
+est   suffisamment   faible  (paramètre   `full-path-threshold`),   un
+programme  supplémentaire `gener3.raku`  reconstitue tous  les chemins
+spécifiques et  les stocke dans  la table `Paths` en  remplacement des
+chemins  complets génériques.  Cette opération  est mémorisée  dans la
+table `Maps` en positionnant le booléen `specific_paths` à 1.
 
 Relations entre les différents chemins
 --------------------------------------
+
+Ce paragraphe s'applique aux cartes flaguées avec `specific_paths = 0`.
 
 Compte tenu de la renumérotation  des chemins dans `gener1.raku`, tous
 les chemins régionaux  spécifiques associés à un  même chemin régional

@@ -140,6 +140,7 @@ sub MAIN (
 
   # Last step, the report
   $dbh.execute("begin transaction");
+  $dbh.execute("update Maps set specific_paths = 1 where map = ?", $map);
   $sto-mesg.execute($map, DateTime.now.Str, 'FLA2', '', 0, '');
   $dbh.execute("commit");
   say "{DateTime.now.hh-mm-ss} the end";

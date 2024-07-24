@@ -171,6 +171,8 @@ Other fields are:
 * `nb_full` the number of full paths for this map,
 * `nb_generic` field described in the
 [fourth version of the software](#user-content-fourth-attempt).
+* `specific_paths` boolean field also described in the
+[fourth version of the software](#user-content-fourth-attempt).
 * `fruitless_reason` field described in the
 [fifth version of the software](#user-content-fifth-version),
 * `with_scale` flag controlling the display  of a scale in the various
@@ -433,8 +435,8 @@ paths. It contains the following fields:
 
 Up  to  version  3,  `full_num`   and  `region_num`  are  the  numbers
 identifying specific full paths  and specific regional paths. Starting
-from version 4, these columns refer  to generic full paths and generic
-regional paths.
+with version 4,  if the `specific_paths` flag from table  `Maps` is 0,
+these columns refer to generic full paths and generic regional paths.
 
 The use of fields `range1`, `coef1` et `coef2` is explained in
 [fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
@@ -2560,8 +2562,17 @@ stored in the  database (there are millions of them  just for `fr1970`
 and `fr2015`!), they are  built on demand when a web  page is about to
 display this specific full path.
 
+Yet, if the number of specific full paths is low enough (see parameter
+`full-path-threshold`),   an   additional  programme,   `gener3.raku`,
+rebuilds all these  specific paths and stores them  into table `Paths`
+instead  of the  generic paths.  This  operation is  flagged in  table
+`Maps` by updating the boolean field `specific_paths` to 1.
+
 Relations Between The Various Paths
 -----------------------------------
+
+This  paragraph describes  the paths  relations in  maps flagged  with
+`specific_paths = 0`.
 
 Since  the  regional   paths  are  created  and   then  renumbered  in
 `gener1.raku`, all specific  regional paths linked to  a given generic

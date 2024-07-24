@@ -43,8 +43,8 @@ for <Maps Areas Borders Paths Path_Relations Messages> -> $table {
 }
 
 $dbh.execute(q:to/SQL/, $map, $name);
-insert into Maps (map, name, nb_macro, nb_full, nb_generic, fruitless_reason, with_scale, with_isom, full_diameter, full_radius, macro_diameter, macro_radius)
-          values (?  , ?   , 0       , 0      , 0         , ''              , 1         , 0        , 0            , 0          , 0             , 0);
+insert into Maps (map, name, nb_macro, nb_full, nb_generic, specific_paths, fruitless_reason, with_scale, with_isom, full_diameter, full_radius, macro_diameter, macro_radius)
+          values (?  , ?   , 0       , 0      , 0         , 0             , ''              , 1         , 0        , 0            , 0          , 0             , 0);
 SQL
 
 my $sto-area = $dbh.prepare(q:to/SQL/);
