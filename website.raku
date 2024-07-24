@@ -346,38 +346,43 @@ get '/:ln/region-with-full-path/:map/:region/:num' => sub ($lng_parm, $map_parm,
       $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
     }
   }
+  my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
   my %specific-path;
+  my @links0 = ();
+  my @links1 = ();
+  my @links2 = ();
   if %map<specific_paths> == 1 {
     %specific-path = access-sql::read-path($map, 3, '', $num);
+    my $rel0 = access-sql::path-relations($map, $region, $region-num);
+    @links0  =  $rel0.map( { %( txt => "$_", link => "/$lng/full-path/$map/$_$query-string" ) } );
   }
   else {
     %specific-path = access-sql::read-specific-path($map, $num);
+    my @rel  = relations-for-full-path-in-region($map, $region, $num);
+    my $rel1 = @rel[0];
+    my $rel2 = @rel[1];
+    @links1  = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+    @links2  = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
   }
   my @messages      = access-sql::list-regional-messages($map, $region);
 
   my @list-paths = list-numbers(%region<nb_region_paths>, $num);
   my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
 
-  my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
   my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
 
-  #my @rel = relations-for-full-path-in-region($map, $region, $num);
-  #my $rel1 = @rel[0];
-  #my $rel2 = @rel[1];
-  #my @links1 = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
-  #my @links2 = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
-  my @links1 = ();
-  my @links2 = ();
 
   return region-with-full-path::render(lang           => $lng
                                      , mapcode        => $map
                                      , map            => %map
                                      , region         => %region
+                                     , region-num     => $region-num
                                      , areas          => @areas
                                      , borders        => @borders
                                      , path           => %specific-path
                                      , messages       => @messages
                                      , rpath-links    => @links
+                                     , fpath-links0   => @links0
                                      , fpath-links1   => @links1
                                      , fpath-links2   => @links2
                                      , query-string   => $query-string

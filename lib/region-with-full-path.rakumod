@@ -15,12 +15,15 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 
-sub fill($at, :$lang, :$mapcode, :%map, :%region
+sub fill($at, :$lang, :$mapcode, :%map
+      ,     :%region
+      , Int :$region-num
       ,     :@areas
       ,     :@borders
       ,     :@messages
       ,     :%path
       ,     :@rpath-links
+      ,     :@fpath-links0
       ,     :@fpath-links1
       ,     :@fpath-links2
       , Str :$query-string) {
@@ -33,7 +36,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region
   $at.at('a.full-path'  ).attr(href => "/$lang/full-path/$mapcode/%path<num>$query-string");
   $at.at('a.macro-path' ).attr(href => "/$lang/macro-path/$mapcode/%path<macro_num>$query-string");
   $at.at('a.macro-stat' ).attr(href => "/$lang/macro-stat/$mapcode$query-string");
-  $at.at('a.region-path').attr(href => "/$lang/region-path/$mapcode/%region<code>/%path<num>$query-string");
+  $at.at('a.region-path').attr(href => "/$lang/region-path/$mapcode/%region<code>/$region-num$query-string");
   $at.at('a.region-stat').attr(href => "/$lang/region-stat/$mapcode/%region<code>$query-string");
   if %map<nb_full> != 0 {
     $at.at('a.macro-stat1').attr(href => "/$lang/macro-stat1/$mapcode$query-string");
@@ -59,32 +62,58 @@ sub fill($at, :$lang, :$mapcode, :%map, :%region
   my $links = join ' ', @rpath-links.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
   $at.at('p.list-of-region-paths').content($links);
 
-  my $bug-with-full-path-links-is-fixed = 0; # to avoid buggy code
-  if $bug-with-full-path-links-is-fixed {
-    if @fpath-links1.elems > 0 {
-      $links = join ' ', @fpath-links1.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-      $at.at('span.full-paths-1').content($links);
-    }
-    if @fpath-links2.elems > 0 {
-      $links = join ' ', @fpath-links2.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
-      $at.at('span.full-paths-2').content($links);
+  if %map<specific_paths> == 1 {
+    $links = join ' ', @fpath-links0.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+    $at.at('p.full0').content($links);
+    $at.at('span.full-paths-1')».remove;
+    $at.at('span.full-paths-2')».remove;
+    $at.at('p.full1')».remove;
+    $at.at('p.full2')».remove;
+  }
+  else {
+    $at.at('p.full0')».remove;
+    my $bug-with-full-path-links-is-fixed = 0; # to avoid buggy code
+    if $bug-with-full-path-links-is-fixed {
+      if @fpath-links1.elems > 0 {
+        $links = join ' ', @fpath-links1.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+        $at.at('span.full-paths-1').content($links);
+      }
+      if @fpath-links2.elems > 0 {
+        $links = join ' ', @fpath-links2.map( { "<a href='{$_<link>}'>{$_<txt>}</a>" } );
+        $at.at('span.full-paths-2').content($links);
+      }
     }
   }
 
   $at.at('ul.messages').content(messages-list::render($lang, @messages));
 }
 
-our sub render(Str :$lang, Str :$mapcode, :%map, :%region, :@areas, :@borders, :@messages, :%path, :@rpath-links, :@fpath-links1, :@fpath-links2, :$query-string) {
+our sub render(Str :$lang
+             , Str :$mapcode
+             ,     :%map
+             ,     :%region
+             , Int :$region-num
+             ,     :@areas
+             ,     :@borders
+             ,     :@messages
+             ,     :%path
+             ,     :@rpath-links
+             ,     :@fpath-links0
+             ,     :@fpath-links1
+             ,     :@fpath-links2
+             ,     :$query-string) {
   my &filling = anti-template :source("html/region-with-full-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
                 , mapcode        => $mapcode
                 , map            => %map
                 , region         => %region
+                , region-num     => $region-num
                 , areas          => @areas
                 , borders        => @borders
                 , messages       => @messages
                 , path           => %path
                 , rpath-links    => @rpath-links
+                , fpath-links0   => @fpath-links0
                 , fpath-links1   => @fpath-links1
                 , fpath-links2   => @fpath-links2
                 , query-string   => $query-string

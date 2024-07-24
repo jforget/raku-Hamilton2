@@ -83,7 +83,10 @@ sub MAIN (
     die "Specific paths already built for $map";
   }
 
-  say "{DateTime.now.hh-mm-ss} beginning";
+  my Int $increment = commit-interval();
+  my Int $threshold = $increment;
+  my Int $counter   = 0;
+  say "{DateTime.now.hh-mm-ss} beginning the generation of specific full paths for $map";
   # Initial clean-up
   $dbh.execute("begin transaction");
   $dbh.execute("delete from Paths          where map = ? and level = 5"          , $map);
@@ -123,6 +126,13 @@ sub MAIN (
         $cyclic = 1;
       }
       $sto-path.execute($map, 5, '', $abs-num, $path, $from_code, $to_code, $cyclic, %generic<macro_num>, $abs-num, 1);
+      $counter++;
+      if $counter ≥ $threshold {
+        $dbh.execute("commit");
+        $dbh.execute("begin transaction");
+        say "{DateTime.now.hh-mm-ss} updates so far: $counter";
+        $threshold += $increment;
+      }
     }
   }
   $dbh.execute("commit");
