@@ -3875,6 +3875,40 @@ The  only  drawback  is  that   it  reintroduces  the  ugly  star  for
 multiplication purposes, while we were glad that Raku would accept the
 proper Saint-Andrew cross `×`.
 
+Actually,  the SQL  statement  above  contains a  tricky  bug. Let  us
+suppose the  big area  contains small  areas `A`,  `AA`, `B`  and `BB`
+among others. When  we compute the statistics for the  border `A → B`,
+the SQL statement will extract not only the paths `xxx → A → B → yyy`,
+but also the paths `xxx → AA → B → yyy`, `xxx → A → BB → yyy` and `xxx
+→ AA → BB → yyy` (plus the cases  where `A` or `AA` is at the start of
+the path and the cases where `B` or `BB` is at the end of the path).
+
+To tell apart `A` from `AA` and `B`  from `BB`, the idea is to use the
+pattern `% A → B %`, with  a space after the first percent and another
+before the second percent. The filter would be:
+
+```
+and    P.path like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
+```
+
+But this  filter rejects  the paths beginning with  `A` and  the paths
+ending in `B`.  So the spaces are  added not only to  the pattern, but
+also to the checked string:
+
+```
+and    ' ' || P.path || ' ' like '% ' || B.from_code || ' → ' || B.to_code || ' %'
+```
+
+More readable with programmatically superfluous parentheses:
+
+```
+and    (' ' || P.path || ' ') like ('% ' || B.from_code || ' → ' || B.to_code || ' %')
+```
+
+This  filter is  good even  for big  areas containing  only two  small
+areas, in  other words big  areas with  only two Hamiltonian  paths of
+length 1, `A → B` and `B → A`.
+
 Displaying The Statistics
 -------------------------
 

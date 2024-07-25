@@ -76,7 +76,7 @@ set nb_paths = 2 * (select count(*)
                     from   Paths as P
                     where  P.map   = B.map
                     and    P.level = 1
-                    and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    and    (' ' || P.path || ' ') like ('% ' || B.from_code || ' → ' || B.to_code   || ' %')
                     )
 where  map        = ?
 and    level      = 1
@@ -88,7 +88,7 @@ set nb_paths = 2 * (select count(*)
                     from   Paths as P
                     where  P.map   = B.map
                     and    P.level = 2
-                    and    P.path  like '%' || B.from_code || ' → ' || B.to_code   || '%'
+                    and    (' ' || P.path || ' ') like ('% ' || B.from_code || ' → ' || B.to_code   || ' %')
                     )
 where  map        = ?
 and    level      = 2

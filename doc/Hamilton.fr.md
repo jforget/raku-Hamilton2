@@ -4078,6 +4078,42 @@ Le seul inconvénient  de cet ordre SQL est que  cela fait réapparaître
 l'étoile en tant  qu'opérateur de multiplication, alors  que Raku nous
 permettait d'utilise la croix de Saint-André `×`.
 
+Et en  fait, cet  ordre SQL  contient un bug  tordu. Supposons  que la
+région contienne entre autres des départements `A`, `AA`, `B` et `BB`.
+Lorsque  l'on calcule  les statistiques  pour  la frontière  `A →  B`,
+l'ordre SQL extraira  non seulement les chemins  `xxx → A →  B → yyy`,
+mais aussi les chemins `xxx → AA → B → yyy`, les chemins `xxx → A → BB
+→ yyy` et les chemins `xxx → AA → BB → yyy` (plus les cas de figure où
+`A` ou  `AA` se trouve au  début du chemin et  ceux où `B` ou  `BB` se
+trouve à la fin du chemin).
+
+Pour différencier `A` de `AA` et `B` de `BB`, l'idée consiste à tester
+le schéma `% A → B %`, en insérant un espace après le premier pourcent
+et un autre avant le second. La clause de sélection serait:
+
+```
+and    P.path like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
+```
+
+Mais  on  perd  les  chemins   commençant  par  `A`,  ainsi  que  ceux
+aboutissant  en `B`.  L'idée est  d'ajouter  les espaces  à la  chaîne
+testée, ainsi~:
+
+```
+and    ' ' || P.path || ' ' like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
+```
+
+Plus lisible  en ajoutant des parenthèses  qui, du point de  vue de la
+programmation, seraient inutiles~:
+
+```
+and    (' ' || P.path || ' ') like ('% ' || B.from_code || ' → ' || B.to_code || ' %')
+```
+
+Cette  clause convient  même aux  régions  qui ne  possèdent que  deux
+départements  et  donc  pour  lesquels  il  n'y  a  que  deux  chemins
+hamiltoniens, tous deux de longueur 1, `A → B` et `B → A`.
+
 Affichage des statistiques
 --------------------------
 
