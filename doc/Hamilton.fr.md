@@ -1459,12 +1459,38 @@ l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
 zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
 sont évitées.
 
+### Le cas des cartes à une seule région
+
 En fait, il  y a un cas de  figure où j'ai quand même  eu une division
 par zéro. Lorsque j'ai ajouté le jeu  icosien à la liste des graphes à
 tester, à l'occasion de la cinquième version, la macro-carte contenait
 une seule région,  donc l'écart min-max sur les longitudes  et sur les
 latitudes était égal  à zéro. J'ai donc été obligé  d'ajouter un terme
-positif, néanmoins très bas, pour éviter cette division par zéro.
+positif, néanmoins très bas, pour éviter cette division par zéro. Cela
+ne fait rien, c'est une carte abstraite.
+
+Puis j'ai  ajouté des  cartes réelles  avec une  seule région.  Pas de
+problème. Puis j'ai ajouté la carte de
+[Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
+Cette carte  représente quatre rues  ainsi que le saloon  délimité par
+ces rues,  soit pifométriquement  un carré  de 40~m  × 40~m.  Faute de
+mieux,  j'ai arbitrairement  localisé cet  endroit à  Tombstone, ville
+rendue célèbre par la
+[fusillade de O.K. Corral](https://fr.wikipedia.org/wiki/Fusillade_d%27O.K._Corral).
+
+La macro-carte s'affichait sans problème, mais la carte complète et la
+carte  régionale montraient  quelques points  en haut  à gauche  et un
+large espace vide à droite et  en bas. Pourquoi~? L'écart min-max pour
+les  longitudes et  les latitudes  est  initialisé à  `1e-3`. À  cette
+latitude, un  millidegré correspond à  111~m dans le sens  nord-sud et
+95~m dans  le sens  est-ouest. Le programme  affichait donc  une bande
+vide de 71~m en bas et une bande vide de 55~m sur la droite.
+
+En adaptant  cette valeur  initiale à `1e-6`,  cela règle  le problème
+pour
+[le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon).
+Le  problème  se  posera  de   nouveau  si  j'ai  une  carte  concrète
+représentant un carré de 11~cm de côté. Je n'ai pas d'exemple en tête.
 
 ### Le stockage des longitudes et des latitudes dans SQLite
 

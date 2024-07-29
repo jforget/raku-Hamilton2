@@ -95,8 +95,8 @@ our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$w
   }
   my Num $long-min = min @longitudes;
   my Num $long-max = max @longitudes;
-  my Num $delta-long = 1e-3 max ($long-max - $long-min); # 1e-3 to prevent a division by zero if $long-max == $long-min
-  my Num $delta-lat  = 1e-3 max ( $lat-max -  $lat-min);
+  my Num $delta-long = 1e-6 max ($long-max - $long-min); # 1e-6 to prevent a division by zero if $long-max == $long-min
+  my Num $delta-lat  = 1e-6 max ( $lat-max -  $lat-min); # and 1e-6 degree is about 0.11 meter
 
   my Num $coef-x  = ($width  - 2 × $margin) / $delta-long;
   my Num $coef-y  = ($height - 2 × $margin) / $delta-lat;
