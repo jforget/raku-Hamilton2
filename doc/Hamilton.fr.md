@@ -1473,24 +1473,24 @@ Puis j'ai  ajouté des  cartes réelles  avec une  seule région.  Pas de
 problème. Puis j'ai ajouté la carte de
 [Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
 Cette carte  représente quatre rues  ainsi que le saloon  délimité par
-ces rues,  soit pifométriquement  un carré  de 40~m  × 40~m.  Faute de
+ces rues,  soit pifométriquement  un carré  de 40 m  × 40 m.  Faute de
 mieux,  j'ai arbitrairement  localisé cet  endroit à  Tombstone, ville
 rendue célèbre par la
 [fusillade de O.K. Corral](https://fr.wikipedia.org/wiki/Fusillade_d%27O.K._Corral).
 
 La macro-carte s'affichait sans problème, mais la carte complète et la
 carte  régionale montraient  quelques points  en haut  à gauche  et un
-large espace vide à droite et  en bas. Pourquoi~? L'écart min-max pour
+large espace vide à droite et  en bas. Pourquoi ? L'écart min-max pour
 les longitudes et les latitudes est initialisé à `1e-3`. Un millidegré
-correspond à 111~m  dans le sens nord-sud et, à cette latitude, à 95~m
+correspond à 111 m  dans le sens nord-sud et, à cette latitude, à 95 m
 dans le sens est-ouest. Le programme  affichait donc une bande vide de
-71~m en bas et une bande vide de 55~m sur la droite.
+71 m en bas et une bande vide de 55 m sur la droite.
 
 En adaptant  cette valeur  initiale à `1e-6`,  cela règle  le problème
 pour
 [le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
 sans rien  changer pour les  autres cartes.  Le problème se  posera de
-nouveau si j'ai  une carte concrète représentant un carré  de 11~cm de
+nouveau si j'ai  une carte concrète représentant un carré  de 11 cm de
 côté. Je n'ai pas d'exemple en tête.
 
 ### Le stockage des longitudes et des latitudes dans SQLite
@@ -4124,7 +4124,7 @@ trouve à la fin du chemin).
 
 Pour différencier `A` de `AA` et `B` de `BB`, l'idée consiste à tester
 le schéma `% A → B %`, en insérant un espace après le premier pourcent
-et un autre avant le second. La clause de sélection serait:
+et un autre avant le second. La clause de sélection serait :
 
 ```
 and    P.path like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
@@ -4132,14 +4132,14 @@ and    P.path like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
 
 Mais  on  perd  les  chemins   commençant  par  `A`,  ainsi  que  ceux
 aboutissant  en `B`.  L'idée est  d'ajouter  les espaces  à la  chaîne
-testée, ainsi~:
+testée, ainsi :
 
 ```
 and    ' ' || P.path || ' ' like '% ' || B.from_code || ' → ' || B.to_code   || ' %'
 ```
 
 Plus lisible  en ajoutant des parenthèses  qui, du point de  vue de la
-programmation, seraient inutiles~:
+programmation, seraient inutiles :
 
 ```
 and    (' ' || P.path || ' ') like ('% ' || B.from_code || ' → ' || B.to_code || ' %')

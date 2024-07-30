@@ -1410,7 +1410,7 @@ Then I  added more maps  with a single  Big Area each,  including real
 maps located on Earth. Still no problems. Then I added the map for
 [Shoot-out at the Saloon](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
 which represents  four streets enclosing  a single saloon.  This would
-very roughly represent  a 40~m × 40~m square. Having  no indication of
+very roughly represent  a 40 m × 40 m square. Having  no indication of
 the location where the game takes  place, I adopted the coordinates of
 Tombstone, the famous town where the
 [Gunfight at the O.K. Corral](https://en.wikipedia.org/wiki/Gunfight_at_the_O.K._Corral)
@@ -1421,15 +1421,15 @@ But the  full map and  the regional map would  be awkward, with  a few
 points in  the upper-left corner and  an empty strip on  the right and
 another empty strip on the bottom. Why did this happen? When computing
 the  min-max  difference,   I  used  an  initial   value  `1e-3`.  One
-milli-degree represents a length of 111~m  in the NS direction and, at
-Tombstone's latitude,  a length of  95~m in  the EW direction.  So the
-picture would  display a  71~m empty  strip at the  bottom and  a 55~m
+milli-degree represents a length of 111 m  in the NS direction and, at
+Tombstone's latitude,  a length of  95 m in  the EW direction.  So the
+picture would  display a  71 m empty  strip at the  bottom and  a 55 m
 empty strip on the right.
 
 So I changed this value to `1e-6`, which fixes the problem for
 [Shootout at the Saloon](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
 without any  side effect for  the other  maps. The problem  will arise
-again if  I find  a concrete  map which  fits inside  a 11~cm  × 11~cm
+again if  I find  a concrete  map which  fits inside  a 11 cm  × 11 cm
 square. For the moment, no such example comes to my mind.
 
 ### Storing latitudes and longitudes in SQLite
