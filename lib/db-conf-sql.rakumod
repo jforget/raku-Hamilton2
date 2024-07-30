@@ -36,7 +36,7 @@ sub sample-size is export {
 }
 
 sub full-path-threshold is export {
-  return 100;
+  return 500;
 }
 
 =begin POD

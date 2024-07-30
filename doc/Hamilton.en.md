@@ -1420,10 +1420,11 @@ The macro-map would display as usual  for maps with a single Big Area.
 But the  full map and  the regional map would  be awkward, with  a few
 points in  the upper-left corner and  an empty strip on  the right and
 another empty strip on the bottom. Why did this happen? When computing
-the min-max difference, I used an initial value `1e-3`. At Tombstone's
-latitude,  one milli-degree  represents a  length of  111~m in  the NS
-direction and  95~m in the EW  direction. So the picture  would show a
-71~m empty strip at the bottom and a 55~m empty strip on the right.
+the  min-max  difference,   I  used  an  initial   value  `1e-3`.  One
+milli-degree represents a length of 111~m  in the NS direction and, at
+Tombstone's latitude,  a length of  95~m in  the EW direction.  So the
+picture would  display a  71~m empty  strip at the  bottom and  a 55~m
+empty strip on the right.
 
 So I changed this value to `1e-6`, which fixes the problem for
 [Shootout at the Saloon](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
@@ -2644,7 +2645,13 @@ replaced by the specific path:
 Rebuilding a specific full path
 -------------------------------
 
-Specific full  paths are  not stored  in the  database. They  are just
+This  paragraph describes  the paths  relations in  maps flagged  with
+`specific_paths =  0`, both `website.raku`  which displays a  map with
+`specific_paths  = 0`  and  `gener3.raku` which  converts  a map  with
+`specific_paths = 0` to `specific_paths = 1`.
+
+When `specific_paths = 0`,
+specific full  paths are  not stored  in the  database. They  are just
 known with  their keys:  map code  and sequential  number. How  can we
 rebuild the full path when these two values are given?
 
@@ -2708,6 +2715,9 @@ records.
 
 Listing All Specific Full Paths Linked to a Specific Regional Path
 ------------------------------------------------------------------
+
+This  paragraph   describes  the  processing  of   maps  flagged  with
+`specific_paths = 0`.
 
 Remark: there is a bug in  the implementation of the feature described
 below. If you do not intend to debug my code, you can skip

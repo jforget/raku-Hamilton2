@@ -1481,16 +1481,17 @@ rendue célèbre par la
 La macro-carte s'affichait sans problème, mais la carte complète et la
 carte  régionale montraient  quelques points  en haut  à gauche  et un
 large espace vide à droite et  en bas. Pourquoi~? L'écart min-max pour
-les  longitudes et  les latitudes  est  initialisé à  `1e-3`. À  cette
-latitude, un  millidegré correspond à  111~m dans le sens  nord-sud et
-95~m dans  le sens  est-ouest. Le programme  affichait donc  une bande
-vide de 71~m en bas et une bande vide de 55~m sur la droite.
+les longitudes et les latitudes est initialisé à `1e-3`. Un millidegré
+correspond à 111~m  dans le sens nord-sud et, à cette latitude, à 95~m
+dans le sens est-ouest. Le programme  affichait donc une bande vide de
+71~m en bas et une bande vide de 55~m sur la droite.
 
 En adaptant  cette valeur  initiale à `1e-6`,  cela règle  le problème
 pour
-[le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon).
-Le  problème  se  posera  de   nouveau  si  j'ai  une  carte  concrète
-représentant un carré de 11~cm de côté. Je n'ai pas d'exemple en tête.
+[le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
+sans rien  changer pour les  autres cartes.  Le problème se  posera de
+nouveau si j'ai  une carte concrète représentant un carré  de 11~cm de
+côté. Je n'ai pas d'exemple en tête.
 
 ### Le stockage des longitudes et des latitudes dans SQLite
 
@@ -2793,7 +2794,13 @@ la formule correspondante par le chemin spécifique :
 Reconstitution d'un chemin complet spécifique
 ---------------------------------------------
 
-Les  chemins complets  spécifiques  ne  sont pas  stockés  en base  de
+Ce paragraphe  s'applique aux  cartes flaguées avec  `specific_paths =
+0`, pour l'affichage par `website.raku`, mais aussi pour la conversion
+`gener3.raku` qui  transforme une  carte `specific_paths  = 0`  en une
+carte `specific_paths = 1`.
+
+Lorsque `specific_paths = 0`,
+les  chemins complets  spécifiques  ne  sont pas  stockés  en base  de
 données. Ils sont  juste connus par leur clé, c'est-à-dire  le code de
 la carte  et le numéro  séquentiel. Comment fait-on pour  retrouver le
 chemin complet spécifique en fonction de ces deux éléments ?
@@ -2860,6 +2867,8 @@ vue `Generic_Region_Paths`.
 
 Lister les chemins complets spécifiques pour un chemin régional spécifique
 --------------------------------------------------------------------------
+
+Ce paragraphe s'applique aux cartes flaguées avec `specific_paths = 0`.
 
 Remarque :  il y  a un  bug dans  l'implémentation de  cette fonction.
 Donc, si vous ne souhaitez pas débuguer  à ma place mon code, ce n'est

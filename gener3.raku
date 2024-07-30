@@ -67,20 +67,24 @@ sub MAIN (
 
   my %map = access-sql::read-map(~ $map);
   unless %map {
-    die "Unkown map $map";
+    say "Unkown map $map";
+    exit;
   }
   my Int $nb-full = %map<nb_full>;
   if $nb-full == 0 {
-    die "Map $map has no full paths";
+    say "Map $map has no full paths";
+    exit;
   }
   if $nb-full > full-path-threshold() {
-    die "Map $map has too many full paths: $nb-full";
+    say "Map $map has too many full paths: $nb-full";
+    exit;
   }
   my Int $max-macro = %map<nb_macro>;
 
   my $check = $dbh.execute('select path from Full_Paths where map = ?', $map).row(:hash);
   unless $check<path>.contains(')') {
-    die "Specific paths already built for $map";
+    say "Specific paths already built for $map";
+    exit;
   }
 
   my Int $increment = commit-interval();
@@ -153,7 +157,7 @@ sub MAIN (
   $dbh.execute("update Maps set specific_paths = 1 where map = ?", $map);
   $sto-mesg.execute($map, DateTime.now.Str, 'FLA2', '', 0, '');
   $dbh.execute("commit");
-  say "{DateTime.now.hh-mm-ss} the end";
+  say "{DateTime.now.hh-mm-ss} the end: $counter paths";
 
 }
 
