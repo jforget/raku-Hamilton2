@@ -4343,6 +4343,16 @@ be mistaken.
 certainly be a lengthy  one, but I do not know  the difficulty. I must
 understand some technical peculiarities of `Graph.pm`.
 
+Except that I has just discovered
+[two](https://raku.land/zef:antononcube/Graph)
+[modules](https://raku.land/zef:titsuki/Algorithm::Kruskal)
+written by
+[other](https://raku.land/zef:antononcube)
+[people](https://raku.land/zef:titsuki)
+These modules might fulfill my requirements and they will be ready for
+use faster than if  I write my own pure-Raku version.  So I guess that
+this point is void now.
+
 License
 =======
 

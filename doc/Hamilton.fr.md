@@ -1495,7 +1495,7 @@ côté. Je n'ai pas d'exemple en tête.
 
 ### Le stockage des longitudes et des latitudes dans SQLite
 
-Dans  les programmes  Raku, les  longitudes et  les latitudes  sont de
+Dans  les programmes  Raku, les  longitudes et  les latitudes sont des
 nombres  à virgule,  c'est-à-dire des  `Num`. Il  peut arriver  que la
 [partie fractionnaire de la valeur soit nulle](https://confluence.org/).
 Notamment,  cela se  produit  fréquemment avec  les graphes  abstraits
@@ -1564,10 +1564,10 @@ l'étranger à l'intérieur de l'Inde du Nord.
 C'est pis avec
 [Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
 si l'on tient compte des six  zones maritimes. Les six zones maritimes
-forment un  cercle autour  des zones  terrestres, donc il  y a  fort à
-parier que la latitude et la longitude attribuées à la région maritime
-placeront cette région au centre  de la carte, nettement à l'intérieur
-des frontières de l'Angleterre.
+forment un  cercle autour des  zones terrestres  et la latitude  et la
+longitude  attribuées à  la région  maritime placent  cette région  au
+centre  de  la  carte,  nettement  à  l'intérieur  des  frontières  de
+l'Angleterre.
 
 ![Britannia, carte régionale des zones maritimes et macro-carte](Britannia-mer.webp)
 
@@ -4564,6 +4564,16 @@ pas à l'abri de mauvaises surprises.
 5. De la même manière, porter  le module Perl `Graph.pm` vers Raku. La
 réalisation  sera longue  à coup  sûr, encore  faut-il que  j'arrive à
 comprendre les particularités techniques de `Graph.pm`.
+
+Sauf que je viens de découvrir
+[deux](https://raku.land/zef:antononcube/Graph)
+[modules](https://raku.land/zef:titsuki/Algorithm::Kruskal)
+écrits par
+d'[autres](https://raku.land/zef:antononcube)
+[personnes](https://raku.land/zef:titsuki).
+Ces  modules peuvent  répondre à  mes besoins  et ils  seront prêts  à
+l'emploi beaucoup plus  rapidement que si j'écris ma  version Raku. Je
+considère donc ce dernier point comme caduc.
 
 LICENCE
 =======
