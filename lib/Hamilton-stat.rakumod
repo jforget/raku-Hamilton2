@@ -56,31 +56,36 @@ sub fill($at,  :$lang
     $at('span.to-code'  )».content($to);
   }
   if $region-code eq '' {
-    $at.at('table.node-table tr.small-node-title')».content('');
-    $at.at('table.edge-table tr.small-edge-title')».content('');
-    $at.at('table.node-table tr.small-node-title')».remove;
-    $at.at('table.edge-table tr.small-edge-title')».remove;
+    $at.at('span.small-node-header')».remove;
+    $at.at('span.small-edge-header')».remove;
   }
   else {
-    $at.at('table.node-table tr.big-node-title'  )».content('');
-    $at.at('table.edge-table tr.big-edge-title'  )».content('');
-    $at.at('table.node-table tr.big-node-title'  )».remove;
-    $at.at('table.edge-table tr.big-edge-title'  )».remove;
+    $at.at('span.big-node-header')».remove;
+    $at.at('span.big-edge-header')».remove;
   }
   unless $variant {
     $at.at('p.variant')».remove;
   }
 
   my Int $nb-areas = @areas.elems;
-  $at.at('span.path-number')».content(%map<nb_macro>.Str);
   $at.at('span.node-number')».content($nb-areas.Str);
-  $at.at('span.edge-number')».content((%map<nb_macro> × ($nb-areas - 1)).Str);
+  if $region-code eq '' {
+    $at.at('span.path-number')».content( %map<nb_macro>.Str);
+    $at.at('span.edge-number')».content((%map<nb_macro> × ($nb-areas - 1)).Str);
+  }
+  else {
+    $at.at('span.path-number')».content( %region<nb_region_paths>.Str);
+    $at.at('span.edge-number')».content((%region<nb_region_paths> × ($nb-areas - 1)).Str);
+  }
   if $nb-areas == 1 {
     # only one area, only one Hamiltonian macro-path in which the beginning and the end are located on the same node
     $at.at('span.start-stop-number')».content('1');
   }
-  else {
+  elsif $region-code eq '' {
     $at.at('span.start-stop-number')».content(2 × %map<nb_macro>.Str);
+  }
+  else {
+    $at.at('span.start-stop-number')».content(2 × %region<nb_region_paths>.Str);
   }
 
   my @colour-scheme;

@@ -212,7 +212,7 @@ and    to_code   = ?
 SQL
 
 for $select-cross-idl.execute($map).allrows(:array-of-hash) -> $border {
-  say $border.raku;
+  #say $border.raku;
   my Num $long-f = $border<long_f>;
   my Num $long-t = $border<long_t>;
   my Rat $long;
