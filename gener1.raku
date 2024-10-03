@@ -100,25 +100,47 @@ sub MAIN (
       Str  :$map             #= The code of the map
     , Bool :$macro = False   #= True to generate the macro-paths, else False
     , Str  :$regions = ''    #= Comma-delimited list of region codes, e.g. --regions=NOR,CEN,HDF
+    , Bool :$all-regions    = False #= True to generate the regional paths for all regions, without listing them in C<--regions>
+    , Str  :$except-regions = ''    #= Comma-delimited list of region codes to restrict the C<--all-regions> parameter, e.g. --regions=NOR,CEN,HDF
     ) {
+
+  my Bool $macro1       = $macro; # Better mutable than immutable
+  my Bool $all-regions1 = $all-regions;
+
+  # no parameters → generate all paths
+  if !$macro && $regions eq '' && !$all-regions && $except-regions eq '' {
+    $macro1       = True;
+    $all-regions1 = True;
+  }
+
+  # parameter incompatibility
+  if $regions ne '' && $all-regions {
+    die "Cannot use both 'regions' and 'all-regions' parameters";
+  }
+  if $except-regions ne '' && !$all-regions {
+    die "Cannot use 'except-regions' parameter if 'all-regions' is false";
+  }
 
   my %map = access-sql::read-map(~ $map);
   unless %map {
     die "Unkown map $map";
   }
 
-  my Str @regions = $regions.split(',');
-  my Str @unknown-regions;
-  if $regions ne '' {
-    for @regions -> Str $region {
-      my $result = $dbh.execute("select 'X' from Big_Areas where map = ? and code = ?", $map, $region).row;
-      if $result ne 'X' {
-        push @unknown-regions, $region;
+  my Str @regions = ();
+  for ($regions, $except-regions) -> $reg {
+    my Str @unknown-regions;
+    if $reg ne '' {
+      @regions = $reg.split(',');
+      for @regions -> Str $region {
+        my $result = $dbh.execute("select 'X' from Big_Areas where map = ? and code = ?", $map, $region).row;
+        if $result ne 'X' {
+          push @unknown-regions, $region;
+        }
       }
     }
-  }
-  if @unknown-regions {
-    die "Unknown regions: ", @unknown-regions.join(', ');
+    if @unknown-regions {
+      die "Unknown regions: ", @unknown-regions.join(', ');
+    }
   }
 
   $dbh.execute("begin transaction");
@@ -126,7 +148,7 @@ sub MAIN (
   $dbh.execute("delete from Path_Relations where map = ?"              , $map);
   $dbh.execute("commit");
 
-  if $macro or $regions eq '' {
+  if $macro1 {
     say "generating macro-paths for $map";
     my $nb = generate($map, 1, '', 'MAC');
     $dbh.execute("begin transaction");
@@ -135,17 +157,24 @@ sub MAIN (
     $upd-stat-big-b.execute($map);
     $dbh.execute("commit");
   }
-  if ! $macro && $regions eq '' {
-    say "generating regional paths for all regions of $map";
+  if $all-regions1 {
+    if $except-regions ne '' {
+      say "generating regional paths for all regions of $map except $except-regions";
+    }
+    else {
+      say "generating regional paths for all regions of $map";
+    }
     for access-sql::list-big-areas($map) -> $region {
-      say "generating regional paths for region $region<code> of $map";
-      my $nb = generate($map, 2, $region<code>, 'REG');
-      $dbh.execute("begin transaction");
-      $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
-      $upd-stat-small-a.execute($map, $region<code>);
-      $upd-stat-small-b.execute($map, $region<code>);
-      $dbh.execute("commit");
-      generic-paths($map, $region<code>);
+      unless $region<code> ∈ @regions {
+        say "generating regional paths for region $region<code> of $map";
+        my $nb = generate($map, 2, $region<code>, 'REG');
+        $dbh.execute("begin transaction");
+        $dbh.execute("update Areas set nb_region_paths = ? where map = ? and level = 1 and code = ?", + $nb, $map, $region<code>);
+        $upd-stat-small-a.execute($map, $region<code>);
+        $upd-stat-small-b.execute($map, $region<code>);
+        $dbh.execute("commit");
+        generic-paths($map, $region<code>);
+      }
     }
   }
   if $regions ne '' {
@@ -430,6 +459,8 @@ for a map.
 
 The code of the map, e.g. C<fr1970> or C<frreg>.
 
+This parameter is mandatory.
+
 =head2 macro
 
 Boolean parameter to run or to bypass macro-path generation.
@@ -439,13 +470,22 @@ Boolean parameter to run or to bypass macro-path generation.
 String giving the codes of the regions that will be processed.
 The region codes are separated by commas (with no spaces).
 
+=head2 all-regions
+
+Boolean parameter to run the generation of all regional paths.
+
+=head2 except-regions
+
+Restricts the C<all-regions> parameter. String giving the codes of the
+regions that will be avoided. The region codes are separated by commas
+(with no spaces).
+
 =head2 Special case
 
-If both C<macro> and C<regions> parameters are missing (or C<False> in
-the case  of C<macro>),  then the  generation programme  generates all
-macro-paths and all regional paths for all regions of the map.
-
-On the other hand, the C<map> parameter is mandatory.
+If only the C<map> parameter is  provided and all other parameters are
+missing (or C<False> in the case of C<macro> and C<all-regions>), then
+the generation  programme generates  all macro-paths and  all regional
+paths for all regions of the map.
 
 =head2 Parameter Summary
 
@@ -472,7 +512,11 @@ If you want to generate some regional paths but no macro-paths
 
 If you want to generate regional paths for all regions, but no macro-paths.
 
-Sorry, that is not possible.
+  raku gener1.raku --map=frreg --all-regions
+
+If you want to generate regional paths for most regions, but no macro-paths.
+
+  raku gener1.raku --map=frreg --all-regions --except-regions=NOR,HDF
 
 =head1 OTHER ELEMENTS
 
