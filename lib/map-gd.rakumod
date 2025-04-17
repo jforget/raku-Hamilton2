@@ -41,10 +41,14 @@ our sub palette-sample(@palette) {
   return %samples;
 }
 
-our sub draw(@areas, @borders, Str :$path = '', Str :$query-string = '', Int :$with_scale = 1) {
-  my $height = height-from-query($query-string) || picture-height;
-  my $width  =  width-from-query($query-string) || picture-width;
-  my $adjust = adjust-from-query($query-string) || 'nothing';
+our sub draw(@areas, @borders
+           , Str :$path = ''
+           , Str :$query-string = ''
+           ,     :%query-params = %()
+           , Int :$with_scale = 1) {
+  my $height = %query-params<h>   || height-from-query($query-string) || picture-height;
+  my $width  = %query-params<w>   ||  width-from-query($query-string) || picture-width;
+  my $adjust = %query-params<adj> || adjust-from-query($query-string) || 'nothing';
   my Int $dim-scale =  20;
   my Int $lg-max    = ($width / 2).Int;
 

@@ -27,6 +27,7 @@ sub fill($at, :$lang
         ,     :@full-links
         ,     :@region-links
         ,     :@canon-links
+        ,     :%query-params
         , Str :$query-string) {
 
   common::links($at, lang         => $lang
@@ -43,7 +44,11 @@ sub fill($at, :$lang
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
 
   if %region<code>:!exists {
     $at.at('div.region').content('');
@@ -93,6 +98,7 @@ our sub render(Str $lang
              ,     :@full-links
              ,     :@region-links
              ,     :@canon-links
+             ,     :%query-params
              , Str :$query-string) {
   my &filling = anti-template :source("html/map.$lang.html".IO.slurp), &fill;
   return filling(lang         => $lang
@@ -106,6 +112,7 @@ our sub render(Str $lang
                , full-links   => @full-links
                , region-links => @region-links
                , canon-links  => @canon-links
+               , query-params => %query-params
                , query-string => $query-string
                );
 }
