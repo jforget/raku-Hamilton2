@@ -26,6 +26,7 @@ sub fill($at, :$lang, :$mapcode, :%map
       ,     :@fpath-links0
       ,     :@fpath-links1
       ,     :@fpath-links2
+      ,     :%query-params
       , Str :$query-string) {
   $at('title')».content(%map<name>);
   $at('h1'   )».content(%map<name>);
@@ -55,7 +56,12 @@ sub fill($at, :$lang, :$mapcode, :%map
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , path         => %path<path>
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 
@@ -101,6 +107,7 @@ our sub render(Str :$lang
              ,     :@fpath-links0
              ,     :@fpath-links1
              ,     :@fpath-links2
+             ,     :%query-params
              ,     :$query-string) {
   my &filling = anti-template :source("html/region-with-full-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
@@ -116,6 +123,7 @@ our sub render(Str :$lang
                 , fpath-links0   => @fpath-links0
                 , fpath-links1   => @fpath-links1
                 , fpath-links2   => @fpath-links2
+                , query-params   => %query-params
                 , query-string   => $query-string
                 );
 }

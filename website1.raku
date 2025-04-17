@@ -22,8 +22,8 @@ use common;
 use macro-path;
 use region-path;
 use full-path;
+use region-with-full-path;
 #use Hamilton-stat;
-#use region-with-full-path;
 #use deriv-ico-path;
 #use shortest-path-stat;
 
@@ -312,6 +312,70 @@ sub all-routes {
                               , query-params => %query-params
                               , query-string => $query-string
                               );
+    }
+    get -> Str $lng, 'region-with-full-path', Str $map, Str $region, Int $num, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my $query-string = query-from-params(%query-params);
+      my %map     = access-sql::read-map($map);
+      my %region  = access-sql::read-region($map, $region);
+
+      my @areas      = access-sql::list-areas-in-region(   $map, $region);
+      my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+      my @borders    = access-sql::list-borders-for-region($map, $region);
+      @areas.append(@neighbours);
+      for @areas -> $area {
+        if $area<upper> eq $region {
+          $area<url> = '';
+        }
+        else {
+          $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
+        }
+      }
+      my Int $region-num = access-sql::regional-path-of-full($map, $region, $num);
+      my %specific-path;
+      my @links0 = ();
+      my @links1 = ();
+      my @links2 = ();
+      if %map<specific_paths> == 1 {
+        %specific-path = access-sql::read-path($map, 3, '', $num);
+        my $rel0 = access-sql::path-relations($map, $region, $region-num);
+        @links0  =  $rel0.map( { %( txt => "$_", link => "/$lng/full-path/$map/$_$query-string" ) } );
+      }
+      else {
+        %specific-path = access-sql::read-specific-path($map, $num);
+        my @rel  = relations-for-full-path-in-region($map, $region, $num);
+        my $rel1 = @rel[0];
+        my $rel2 = @rel[1];
+        @links1  = $rel1.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+        @links2  = $rel2.map( { %( txt => "$_[0]:$_[1]", link => "/$lng/full-path/$map/$_[1]$query-string" ) } );
+      }
+      my @messages      = access-sql::list-regional-messages($map, $region);
+
+      my @list-paths = list-numbers(%region<nb_region_paths>, $num);
+      my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+
+      my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
+
+
+      content 'text/html'
+           , region-with-full-path::render(lang           => $lng
+                                         , mapcode        => $map
+                                         , map            => %map
+                                         , region         => %region
+                                         , region-num     => $region-num
+                                         , areas          => @areas
+                                         , borders        => @borders
+                                         , path           => %specific-path
+                                         , messages       => @messages
+                                         , rpath-links    => @links
+                                         , fpath-links0   => @links0
+                                         , fpath-links1   => @links1
+                                         , fpath-links2   => @links2
+                                         , query-params   => %query-params
+                                         , query-string   => $query-string
+                                         );
     }
   }
 }
