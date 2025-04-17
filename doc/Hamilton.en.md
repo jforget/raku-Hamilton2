@@ -1333,6 +1333,77 @@ approximately the same as the rendering by `website.raku`.
 A Few Remarks
 -------------
 
+### Bailador or Cro?
+
+In 2017, I worked on a
+[Perl project](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
+using
+[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
+In 2018, when learning Raku (then named Perl 6), I worked on a
+[Raku projet](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
+with the Raku port of Dancer / Dancer2,
+[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
+So  I naturally  chose Bailador  when I  began working  on Hamiltonian
+paths in 2022.
+
+My main computer has the following configuration:
+
+* system Devuan 2 ASCII until January 2023, Devuan 4 Chimera after that
+
+* rakudo v2020.12
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+Since a date I  do not remember, possibly in 2024  but with no further
+precision, program `website.raku` fails  at start-up with segmentation
+errors. At first,  I did not care  much, because I just  had to repeat
+the shell command a few times and `website.raku` would run fine.
+
+On another  computer, program  `website.raku` would give  no problems.
+The configuration of this secondary computer are:
+
+* system xubuntu 22.04 Jammy Jellyfish
+
+* rakudo v2022.02
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+In April  2025, I wanted to  analyse the reasons for  the segmentation
+errors by installing and running  `website.raku` on a virtual machine.
+The configuration is:
+
+* system Fedora 41
+
+* rakudo v2024.12
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+The installation of Bailador failed, because the distribution `Digest`
+contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
+(directly  or indirectly)  by `Bailador.pm`.  This is  written in  the
+`README.md` file  of the Digest  distribution. I could have  written a
+`Digest.rakumod`  module  to act  as  a  proxy for  `Digest::MD5`  and
+`Digest::SHA1`.
+
+For what it is worth, the versions of `Digest` are:
+
+* Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>
+
+* xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>
+
+* Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>
+
+On the other hand, when browsing the documentation for Bailador, I found
+[issue 315](https://github.com/Bailador/Bailador/issues/315)
+which stated that, for now, Bailador is no longer actively developped.
+Therefore, I decided to write a new program `website1.raku` using Cro.
+Since the Bailador-based program  `website.raku` is still operative on
+my xubuntu machine, and since my requirements for the website are very
+basic,   I   will   endeavour    to   update   the   various   modules
+`lib/xxx.rakumod` so  they will be  compatible with both  the Bailador
+version and the Cro version. Yet, if I hit a roadblock, I will forsake
+the Bailador version and keep only the Cro version.
+
 ### What is the projection used when building the maps?
 
 According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"

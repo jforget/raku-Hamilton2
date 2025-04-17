@@ -1389,6 +1389,80 @@ assez bien ressembler aux dessins générés par `website.raku`.
 Quelques remarques
 ------------------
 
+### Bailador ou Cro ?
+
+En 2017, j'ai travaillé sur un
+[projet Perl](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
+utilisant
+[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
+En 2018, pour apprendre Raku (qui s'appelait encore Perl 6), j'ai travaillé sur un
+[projet Raku](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
+utilisant la version Raku de Dancer / Dancer2,
+[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
+C'est donc tout naturellement que j'ai choisi Bailador lorsque
+j'ai commencé à travailler sur les chemins hamiltoniens en 2022.
+
+Ma machine principale a la configuration suivante :
+
+* système Devuan 2 ASCII jusqu'en janvier 2023, Devuan 4 Chimera ensuite
+
+* rakudo v2020.12
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+À partir d'une  date que je n'ai pas notée,  vraisemblablement en 2024
+mais sans  autre précision,  le programme  `website.raku` s'est  mis à
+faire des  erreurs de segmentation au  démarrage. Je ne m'en  suis pas
+inquiété  outre  mesure,  car  au  bout  de  plusieurs  tentatives  il
+démarrait correctement.
+
+Sur une autre  machine, le programme `website.raku`  basé sur Bailador
+continue  à fonctionner  correctement. Les  caractéristiques de  cette
+machine sont :
+
+* système xubuntu 22.04 Jammy Jellyfish
+
+* rakudo v2022.02
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+En avril 2025,  j'ai voulu examiner en détail le  problème des erreurs
+de   segmentation.  Pour   ce   faire,  j'ai   tenté  d'installer   un
+environnement de développement sur une machine virtuelle :
+
+* système Fedora 41
+
+* rakudo v2024.12
+
+* Bailador:ver<0.0.19>:auth<github:Bailador>
+
+L'installation de Bailador a échoué parce que la distribution `Digest`
+version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
+`Digest.pm6`. C'est d'ailleurs écrit dans le fichier `README.md` de la
+distribution.  J'aurais pu  créer le  fichier pour  assurer le  relais
+entre  `Bailador`  d'un côté  et  `Digest::MD5`  et `Digest::SHA1`  de
+l'autre côté.
+
+Pour mémoire, les versions utilisées de `Digest` sont :
+
+* Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>
+
+* xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>
+
+* Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>
+
+Cela dit, en  consultant la documentation de Bailador, je suis tombé sur
+l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
+expliquant que  pour l'instant, le  développement de Bailador  était à
+l'arrêt. J'ai donc décidé d'écrire un nouveau programme de site web en
+utilisant Cro. Comme le programme d'origine continue à fonctionner sur
+la machine xubuntu,  et comme mes besoins pour le  site web sont assez
+élémentaires,  je vais  m'efforcer  d'adapter  les modules  dépendants
+`lib/xxx.rakumod` pour  qu'ils soient  compatibles à  la fois  avec la
+version Bailador  et avec la version  Cro. Toutefois, si je  tombe sur
+une impossibilité,  alors j'abandonnerai  la version Bailador  pour ne
+conserver que la version Cro.
+
 ### Quelle est la projection utilisée pour les cartes ?
 
 D'après [xkcd](https://xkcd.com/977/), il  s'agit de la transformation
