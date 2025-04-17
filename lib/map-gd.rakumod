@@ -51,6 +51,7 @@ our sub draw(@areas, @borders
   my $adjust = %query-params<adj> || adjust-from-query($query-string) || 'nothing';
   my Int $dim-scale =  20;
   my Int $lg-max    = ($width / 2).Int;
+  #say "h $height w $width adj $adjust str $query-string hash {%query-params.raku}";
 
   my %long-of-relay;       # longitude of the relay point of the cross_idl border
   my %lat-of-relay;        #  latitude of the relay point of the cross_idl border
