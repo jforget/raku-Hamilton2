@@ -21,6 +21,7 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
         ,     :@full-links
         ,     :@ico-links
         ,     :%reverse-link
+        ,     :%query-params
         , Str :$query-string) {
 
   common::links($at, lang         => $lang
@@ -45,7 +46,13 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , path         => %path<path>
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
+
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
@@ -86,6 +93,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
             ,     :@full-links
             ,     :@ico-links
             ,     :%reverse-link
+            ,     :%query-params
             , Str :$query-string) {
   my &filling = anti-template :source("html/macro-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
@@ -99,6 +107,7 @@ our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
                 , full-links     => @full-links
                 , ico-links      => @ico-links
                 , reverse-link   => %reverse-link
+                , query-params   => %query-params
                 , query-string   => $query-string
                 );
 }

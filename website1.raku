@@ -18,9 +18,9 @@ use Cro::HTTP::Server;
 use access-sql;
 use map-list-page;
 use map;
-#use common;
+use common;
 #use full-path;
-#use macro-path;
+use macro-path;
 #use Hamilton-stat;
 #use region-path;
 #use region-with-full-path;
@@ -176,9 +176,54 @@ sub all-routes {
                        , full-links   => @full-links
                        , region-links => @path-links
                        , canon-links  => @canon-links
-                       , query-string => $query-string
+                       , query-params => %query-params
                        , query-string => $query-string
                        );
+    }
+    get -> Str $lng, 'macro-path', Str $map, Int $num, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my $query-string = query-from-params(%query-params);
+      my %map     = access-sql::read-map($map);
+      my @areas   = access-sql::list-big-areas($map);
+      my @borders = access-sql::list-big-borders($map);
+      for @areas -> $area {
+        $area<url> = "/$lng/region-map/$map/$area<code>$query-string";
+      }
+      my %path     = access-sql::read-path($map, 1, '', $num);
+      my @messages = access-sql::list-messages($map);
+
+      my @list-paths = list-numbers(%map<nb_macro>, $num);
+      my @macro-links = @list-paths.map( { %( txt => $_
+                                            , link => "/$lng/macro-path/$map/$_$query-string"
+                                            , bold => access-sql::bold-macro-path($map, $_)
+                                            ) } );
+
+      my @full-interval = access-sql::full-path-interval($map, $num);
+      my @full-links = ();
+      if @full-interval[0] != 0 {
+        my @nums = list-numbers(@full-interval[1], @full-interval[0] - 1).grep({ $_ ≥ @full-interval[0] });
+        @full-links = @nums.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) });
+      }
+
+      my @ico-links = access-sql::list-ico-paths-for-isom($map, 'Id');
+      my %reverse-link = access-sql::read-path-by-path($map, 1, '', common::rev-path(%path<path>));
+      %reverse-link<link> = "/$lng/macro-path/$map/%reverse-link<num>$query-string";
+
+      content 'text/html'
+           , macro-path::render($lng, $map, %map
+                               , areas          => @areas
+                               , borders        => @borders
+                               , path           => %path
+                               , messages       => @messages
+                               , macro-links    => @macro-links
+                               , full-links     => @full-links
+                               , ico-links      => @ico-links
+                               , reverse-link   => %reverse-link
+                               , query-params   => %query-params
+                               , query-string   => $query-string
+                               );
     }
   }
 }
