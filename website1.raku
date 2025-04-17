@@ -19,10 +19,10 @@ use access-sql;
 use map-list-page;
 use map;
 use common;
-#use full-path;
 use macro-path;
+use region-path;
+#use full-path;
 #use Hamilton-stat;
-#use region-path;
 #use region-with-full-path;
 #use deriv-ico-path;
 #use shortest-path-stat;
@@ -219,6 +219,59 @@ sub all-routes {
                                , messages       => @messages
                                , macro-links    => @macro-links
                                , full-links     => @full-links
+                               , ico-links      => @ico-links
+                               , reverse-link   => %reverse-link
+                               , query-params   => %query-params
+                               , query-string   => $query-string
+                               );
+    }
+    get -> Str $lng, 'region-path', Str $map, Str $region, Int $num, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my $query-string = query-from-params(%query-params);
+      my %map     = access-sql::read-map($map);
+      my %region  = access-sql::read-region($map, $region);
+
+      my @areas      = access-sql::list-areas-in-region(   $map, $region);
+      my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+      my @borders    = access-sql::list-borders-for-region($map, $region);
+      @areas.append(@neighbours);
+      for @areas -> $area {
+        if $area<upper> eq $region {
+          $area<url> = '';
+        }
+        else {
+          $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
+        }
+      }
+      my %path     = access-sql::read-path($map, 2, $region, $num);
+      my @messages = access-sql::list-regional-messages($map, $region);
+
+      my @list-paths = list-numbers(%region<nb_region_paths>, $num);
+      my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+
+      my @full-numbers = access-sql::path-relations($map, $region, $num);
+      my @full-links;
+      for @full-numbers.kv -> $i, $num {
+        push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
+      }
+      my @indices    = list-numbers(@full-numbers.elems, $num) «-» 1;
+      my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+      my %reverse-link = access-sql::read-path-by-path($map, 2, $region, common::rev-path(%path<path>));
+      %reverse-link<link> = "/$lng/region-path/$map/$region/%reverse-link<num>$query-string";
+
+      content 'text/html'
+           , region-path::render(lang           => $lng
+                               , mapcode        => $map
+                               , map            => %map
+                               , region         => %region
+                               , areas          => @areas
+                               , borders        => @borders
+                               , path           => %path
+                               , messages       => @messages
+                               , rpath-links    => @links
+                               , fpath-links    => @full-links[@indices]
                                , ico-links      => @ico-links
                                , reverse-link   => %reverse-link
                                , query-params   => %query-params
