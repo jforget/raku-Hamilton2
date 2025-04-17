@@ -21,7 +21,7 @@ use map;
 use common;
 use macro-path;
 use region-path;
-#use full-path;
+use full-path;
 #use Hamilton-stat;
 #use region-with-full-path;
 #use deriv-ico-path;
@@ -277,6 +277,41 @@ sub all-routes {
                                , query-params   => %query-params
                                , query-string   => $query-string
                                );
+    }
+    get -> Str $lng, 'full-path', Str $map, Int $num, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my $query-string = query-from-params(%query-params);
+      my %map     = access-sql::read-map($map);
+      my @areas   = access-sql::list-small-areas($map);
+      my @borders = access-sql::list-small-borders($map);
+      for @areas -> $area {
+        $area<url> = "/$lng/region-with-full-path/$map/$area<upper>/$num$query-string";
+      }
+      my %path;
+      if %map<specific_paths> == 1 {
+        %path        = access-sql::read-path($map, 3, '', $num);
+      }
+      else {
+        %path        = access-sql::read-specific-path($map, $num);
+      }
+      my @messages   = access-sql::list-messages($map);
+      my @list-paths = list-numbers(%map<nb_full>, $num);
+      my @links      = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+      my @ico-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+      content 'text/html'
+           , full-path::render($lng, $map, %map
+                              , areas        => @areas
+                              , borders      => @borders
+                              , path         => %path
+                              , messages     => @messages
+                              , links        => @links
+                              , ico-links    => @ico-links
+                              , query-params => %query-params
+                              , query-string => $query-string
+                              );
     }
   }
 }

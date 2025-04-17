@@ -18,6 +18,7 @@ use messages-list;
 sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
       ,     :@links
       ,     :@ico-links
+      ,     :%query-params
       , Str :$query-string) {
   my Int $path-number  = %path<num>;
   my Int $macro-number = %path<macro_num>;
@@ -32,7 +33,12 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %path<path>, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , path         => %path<path>
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at.at('a.full-map'  ).attr(href => "/$lang/full-map/$mapcode$query-string");
   $at.at('a.macro-map' ).attr(href => "/$lang/macro-map/$mapcode$query-string");
@@ -62,17 +68,19 @@ sub fill($at, :$lang, :$mapcode, :%map, :@areas, :@borders, :@messages, :%path
 our sub render(Str $lang, Str $map, %map, :@areas, :@borders, :@messages, :%path
              ,     :@links
              ,     :@ico-links
+             ,     :%query-params
              , Str :$query-string) {
   my &filling = anti-template :source("html/full-path.$lang.html".IO.slurp), &fill;
-  return filling( lang     => $lang
-                , mapcode  => $map
-                , map      => %map
-                , areas    => @areas
-                , borders  => @borders
-                , messages => @messages
-                , path     => %path
-                , links    => @links
+  return filling( lang         => $lang
+                , mapcode      => $map
+                , map          => %map
+                , areas        => @areas
+                , borders      => @borders
+                , messages     => @messages
+                , path         => %path
+                , links        => @links
                 , ico-links    => @ico-links
+                , query-params => %query-params
                 , query-string => $query-string
                 );
 }
