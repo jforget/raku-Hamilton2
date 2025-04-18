@@ -1352,7 +1352,12 @@ My main computer has the following configuration:
 
 * rakudo v2020.12
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+
+Note:  because  of the  way  the  char  "less  than" is  processed  by
+Markdown, I have changed some of them  with a char "less than or equal
+to" and  for consistence, I  have changed the balancing  char "greater
+than" with "greater than or equal to".
 
 Since a date I  do not remember, possibly in 2024  but with no further
 precision, program `website.raku` fails  at start-up with segmentation
@@ -1366,7 +1371,7 @@ The configuration of this secondary computer are:
 
 * rakudo v2022.02
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
 
 In April  2025, I wanted to  analyse the reasons for  the segmentation
 errors by installing and running  `website.raku` on a virtual machine.
@@ -1376,22 +1381,29 @@ The configuration is:
 
 * rakudo v2024.12
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
 
 The installation of Bailador failed, because the distribution `Digest`
 contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
 (directly  or indirectly)  by `Bailador.pm`.  This is  written in  the
-`README.md` file  of the Digest  distribution. I could have  written a
-`Digest.rakumod`  module  to act  as  a  proxy for  `Digest::MD5`  and
-`Digest::SHA1`.
+`README.md` file  of the Digest  distribution.
 
 For what it is worth, the versions of `Digest` are:
 
-* Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>
+* Devuan : Digest:ver<0.7.2>:auth≤Lucien Grondin≥
 
-* xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>
+* xubuntu : Digest:ver<0.18.5>:auth≤Lucien Grondin≥
 
-* Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>
+* Fedora : Digest:ver<1.1.0>:auth≤zef:grondilu≥
+
+Using option `--force` does not improve anything. I could overcome the
+problem  in several  ways.  I could  have  written a  `Digest.rakumod`
+module to act as a proxy for `Digest::MD5` and `Digest::SHA1`. I could
+search  the source  files for  Bailador and replace  all `use  Digest`
+statements by `use  Digest::MD5` and `use Digest::SHA1`  (and create a
+pull request). I could download and install an older version of Digest
+from the
+[Raku modules archive](https://github.com/Raku/REA/tree/main).
 
 On the other hand, when browsing the documentation for Bailador, I found
 [issue 315](https://github.com/Bailador/Bailador/issues/315)
@@ -1403,6 +1415,43 @@ basic,   I   will   endeavour    to   update   the   various   modules
 `lib/xxx.rakumod` so  they will be  compatible with both  the Bailador
 version and the Cro version. Yet, if I hit a roadblock, I will forsake
 the Bailador version and keep only the Cro version.
+
+In retrospect: the migration was a rather easy task. There were just a
+few minor problems. For example, to display the list of maps, Bailador
+accepts both adresses below:
+
+```
+http://localhost:3000/en/list
+http://localhost:3000/en/list/
+```
+
+On the other side, Cro accepts the following address:
+
+```
+http://localhost:10000/en/list
+```
+
+but on the  other hand, the following address, with  a trailing slash,
+is refused:
+
+```
+http://localhost:10000/en/list/
+```
+
+Paradoxically, another  problem comes from  a feature present  in Cro,
+but   missing  from   Bailador.   The  display   parameters  such   as
+`?h=600&w=800` are  parsed by Cro  and provided as a  hashtable, while
+Bailador  just provides  the raw  string,  which requires  the use  of
+another module  `PostCocoon::Url`. As  a consequence, the  Cro program
+`website1.raku`  uses the  elements from  the hashtable,  rebuilds the
+parameter string and calls the  modules generating responses with both
+the  parameter  hashtable  and   the  parameter  string.  The  modules
+generating reponses use the hashtable to control the generation of the
+image and they use the string to generate URLs. On the other hand, the
+Bailador program `website.raku`  calls the same modules  with only the
+string, and  thanks to  the default  value declaration,  these modules
+receive an empty hashtable, which signals them that they need to parse
+the parameter string with `PostCocoon::Url`.
 
 ### What is the projection used when building the maps?
 

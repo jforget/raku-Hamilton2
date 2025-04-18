@@ -1408,7 +1408,13 @@ Ma machine principale a la configuration suivante :
 
 * rakudo v2020.12
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+
+Remarque : compte tenu  de la façon dont  les caractères « inférieur »
+sont  traités  par  Markdown,  j'ai changé  certains  d'entre  eux  en
+« inférieur  ou  égal ».  Pour  assurer une  certaine  cohérence,  les
+caractères  « supérieur »  associés  sont changés  en  « supérieur  ou
+égal ».
 
 À partir d'une  date que je n'ai pas notée,  vraisemblablement en 2024
 mais sans  autre précision,  le programme  `website.raku` s'est  mis à
@@ -1424,7 +1430,7 @@ machine sont :
 
 * rakudo v2022.02
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
 
 En avril 2025,  j'ai voulu examiner en détail le  problème des erreurs
 de   segmentation.  Pour   ce   faire,  j'ai   tenté  d'installer   un
@@ -1434,22 +1440,30 @@ environnement de développement sur une machine virtuelle :
 
 * rakudo v2024.12
 
-* Bailador:ver<0.0.19>:auth<github:Bailador>
+* Bailador:ver<0.0.19>:auth≤github:Bailador≥
 
 L'installation de Bailador a échoué parce que la distribution `Digest`
 version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
 `Digest.pm6`. C'est d'ailleurs écrit dans le fichier `README.md` de la
-distribution.  J'aurais pu  créer le  fichier pour  assurer le  relais
-entre  `Bailador`  d'un côté  et  `Digest::MD5`  et `Digest::SHA1`  de
-l'autre côté.
+distribution. 
 
 Pour mémoire, les versions utilisées de `Digest` sont :
 
-* Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>
+* Devuan : Digest:ver<0.7.2>:auth≤Lucien Grondin≥
 
-* xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>
+* xubuntu : Digest:ver<0.18.5>:auth≤Lucien Grondin≥
 
-* Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>
+* Fedora : Digest:ver<1.1.0>:auth≤zef:grondilu≥
+
+L'utilisation  de  l'option  `--force`  n'y  fait  rien.  J'aurais  pu
+m'arranger  de diverses  façons  pour installer  quand même  Bailador.
+J'aurais pu créer  le fichier `Config.rakumod` pour  assurer le relais
+entre  `Bailador`  d'un côté  et  `Digest::MD5`  et `Digest::SHA1`  de
+l'autre  côté.  J'aurais pu  fouiller  dans  les fichiers  sources  de
+Bailador  pour  remplacer  les  instructions  `use  Digest`  par  `use
+Digest::MD5`  et `use  Digest::SHA1`  (et créer  une _pull  request_).
+J'aurais pu récupérer une ancienne version de Digest dans
+[l'archive des modules Raku](https://github.com/Raku/REA/tree/main).
 
 Cela dit, en  consultant la documentation de Bailador, je suis tombé sur
 l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
@@ -1462,6 +1476,42 @@ la machine xubuntu,  et comme mes besoins pour le  site web sont assez
 version Bailador  et avec la version  Cro. Toutefois, si je  tombe sur
 une impossibilité,  alors j'abandonnerai  la version Bailador  pour ne
 conserver que la version Cro.
+
+Après coup : la migration s'est  faite relativement facilement. Il y a
+eu quelques  problèmes mineurs. Par  exemple, pour avoir la  liste des
+cartes, Bailador autorisait les deux syntaxes :
+
+```
+http://localhost:3000/fr/list
+http://localhost:3000/fr/list/
+```
+
+En revanche, si Cro accepte
+
+```
+http://localhost:10000/fr/list
+```
+
+en revanche, le lien suivant, avec un slash final, est interdit :
+
+```
+http://localhost:10000/fr/list/
+```
+
+Paradoxalement, un autre problème vient d'une facilité offerte par Cro
+mais   pas  par   Bailador.  Les   paramètres  d'affichage   du  genre
+`?h=600&w=800` sont  analysés par Cro  et fournis sous la  forme d'une
+table de hachage,  tandis qu'elle est transmise  sans modification par
+Bailador, ce qui nécessite  l'utilisation du module `PostCocoon::Url`.
+Du  coup,  le  programme  Cro `website1.raku`  reconstitue  la  chaîne
+contenant les paramètres et transmet à  la fois la table de hachage et
+la chaîne reconstituée aux modules  générant les réponses. Ces modules
+utilisent la table de hachage pour  construire les images et la chaîne
+de  caractères pour  générer les  URL. De  l'autre côté,  le programme
+Bailador `website.raku` transmet seulement  la chaîne de paramètres et
+les modules reçoivent cette chaîne, plus une table de hachage vide, ce
+qui  les amène  à analyser  la chaîne  avec `PostCocoon::Url`  pour en
+extraire les paramètres.
 
 ### Quelle est la projection utilisée pour les cartes ?
 
