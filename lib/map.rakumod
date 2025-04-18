@@ -3,7 +3,7 @@
 #
 #     Génération de la page HTML détaillant une carte de la base de données Hamilton.db
 #     Generating the HTML pages rendering a map from the Hamilton.db database
-#     Copyright (C) 2022, 2023, 2024 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2025 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -133,7 +133,7 @@ Hamilton SQLite database. It is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.
