@@ -3,7 +3,7 @@
 #
 #     Génération de la page HTML détaillant un chemin régional de la base de données Hamilton.db
 #     Generating the HTML pages rendering a regional path from the Hamilton.db database
-#     Copyright (C) 2022, 2023, 2024 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2025 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -28,6 +28,7 @@ sub fill($at, :$lang
         ,     :@cpath-links
         ,     :@ipath-links
         ,     :%isometries
+        ,     :%query-params
         , Str :$query-string) {
   my $step = $at.at('ol li.step1');
   my Str $before      = %isometries<Id><transform>;
@@ -54,7 +55,12 @@ sub fill($at, :$lang
     $at.at('span.cyclic')».remove;
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, path => %actual-path<path>, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , path         => %actual-path<path>
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
   $at('map')».content($imagemap);
 
@@ -124,6 +130,7 @@ our sub render(Str :$lang
              ,     :@ipath-links
              ,     :@cpath-links
              ,     :%isometries
+             ,     :%query-params
              , Str :$query-string) {
   my &filling = anti-template :source("html/deriv-ico-path.$lang.html".IO.slurp), &fill;
   return filling( lang           => $lang
@@ -139,6 +146,7 @@ our sub render(Str :$lang
                 , ipath-links    => @ipath-links
                 , cpath-links    => @cpath-links
                 , isometries     => %isometries
+                , query-params   => %query-params
                 , query-string   => $query-string
                 );
 }
@@ -160,7 +168,7 @@ C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

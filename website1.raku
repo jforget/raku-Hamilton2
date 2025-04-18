@@ -23,8 +23,8 @@ use macro-path;
 use region-path;
 use full-path;
 use region-with-full-path;
+use deriv-ico-path;
 #use Hamilton-stat;
-#use deriv-ico-path;
 #use shortest-path-stat;
 
 my @languages = ( 'en', 'fr' );
@@ -358,7 +358,6 @@ sub all-routes {
 
       my @full-numbers   = access-sql::path-relations($map, $region, $region-num);
 
-
       content 'text/html'
            , region-with-full-path::render(lang           => $lng
                                          , mapcode        => $map
@@ -376,6 +375,66 @@ sub all-routes {
                                          , query-params   => %query-params
                                          , query-string   => $query-string
                                          );
+    }
+    get -> Str $lng, 'deriv-ico-path', Str $map, Int $num, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my Str $query-string = query-from-params(%query-params);
+      my Str $region = $map.uc;
+      my %map        = access-sql::read-map($map);
+      my %region     = access-sql::read-region($map, $region);
+
+      my @areas      = access-sql::list-areas-in-region(   $map, $region);
+      my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+      my @borders    = access-sql::list-borders-for-region($map, $region);
+      @areas.append(@neighbours);
+      for @areas -> $area {
+        if $area<upper> eq $region {
+          $area<url> = '';
+        }
+        else {
+          $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
+        }
+      }
+      my %deriv-path  = access-sql::read-deriv($map, $num);
+      my %actual-path = access-sql::read-path( $map, 2, $region, $num);
+      my %canon-path  = access-sql::read-path( $map, 2, $region, %deriv-path<canonical_num>);
+      my @messages    = access-sql::list-regional-messages($map, $region);
+
+      my @list-paths  = list-numbers(%region<nb_region_paths>, $num);
+      my @links       = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+
+      my @full-numbers = access-sql::path-relations($map, $region, $num);
+      my @full-links;
+      for @full-numbers.kv -> $i, $num {
+        push @full-links, %(txt => "{$i + 1}:$num", link => "http:/$lng/full-path/$map/$num$query-string");
+      }
+      my @indices = list-numbers(@full-numbers.elems, $num) «-» 1;
+      my @ipaths  = access-sql::list-ico-paths-same-isom( $map, $num);
+      my @cpaths  = access-sql::list-ico-paths-same-canon($map, $num);
+      my %isometries;
+      for access-sql::list-isometries($map) -> $isometry {
+        %isometries{$isometry<isometry>} = $isometry;
+      }
+
+      content 'text/html'
+           , deriv-ico-path::render(lang           => $lng
+                                  , mapcode        => $map
+                                  , map            => %map
+                                  , region         => %region
+                                  , areas          => @areas
+                                  , borders        => @borders
+                                  , deriv          => %deriv-path
+                                  , canon-path     => %canon-path
+                                  , actual-path    => %actual-path
+                                  , messages       => @messages
+                                  , ipath-links    => @ipaths
+                                  , cpath-links    => @cpaths
+                                  , isometries     => %isometries
+                                  , query-params   => %query-params
+                                  , query-string   => $query-string
+                                  );
     }
   }
 }
