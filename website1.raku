@@ -24,8 +24,8 @@ use region-path;
 use full-path;
 use region-with-full-path;
 use deriv-ico-path;
-use Hamilton-stat;
-#use shortest-path-stat;
+#use Hamilton-stat;
+use shortest-path-stat;
 
 my @languages = ( 'en', 'fr' );
 
@@ -491,6 +491,46 @@ sub all-routes {
                                  , query-params => %query-params
                                  , variant      => False
                                  );
+    }
+    get -> Str $lng, 'shortest-path', 'macro', Str $map, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my Str $query-string = query-from-params(%query-params);
+      my %map     = access-sql::read-map($map);
+      my @areas   = access-sql::list-big-areas($map);
+      my @borders = access-sql::list-big-borders($map);
+      for @areas -> $area {
+        $area<url>     = "/$lng/shortest-path/region/$map/$area<code>$query-string";
+        $area<tbl-url> = "/$lng/shortest-paths-from/macro/$map/$area<code>$query-string";
+        $area<stat>    = $area<full_eccentricity>;
+      }
+      %map<diameter> = %map<macro_diameter>;
+      %map<radius  > = %map<macro_radius  >;
+      my @messages = access-sql::list-messages($map);
+
+      my @list-paths  = list-numbers(%map<nb_macro>, 0);
+      my @macro-links = @list-paths.map( { %( txt => $_
+                                            , link => "/$lng/macro-path/$map/$_$query-string"
+                                            , bold => access-sql::bold-macro-path($map, $_)
+                                            ) } );
+
+      @list-paths     = list-numbers(%map<nb_full>, 0);
+      my @full-links  = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+      my @canon-links = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+      content 'text/html'
+           , shortest-path-stat::render($lng, $map, %map, %()
+                               , areas        => @areas
+                               , borders      => @borders
+                               , messages     => @messages
+                               , macro-links  => @macro-links
+                               , full-links   => @full-links
+                               , canon-links  => @canon-links
+                               , region-links => ()
+                               , query-string => $query-string
+                               , query-params => %query-params
+                               );
     }
   }
 }

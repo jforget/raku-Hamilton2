@@ -3,7 +3,7 @@
 #
 #     Génération de la page HTML détaillant les statistiques sur les plus courts chemoins
 #     Generating the HTML pages rendering a map with statistics on shortest paths
-#     Copyright (C) 2024 Jean Forget
+#     Copyright (C) 2024, 2025 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -28,6 +28,7 @@ sub fill($at, :$lang
         ,     :@full-links
         ,     :@region-links
         ,     :@canon-links
+        ,     :%query-params
         , Str :$query-string) {
 
   common::links($at, lang         => $lang
@@ -140,7 +141,11 @@ sub fill($at, :$lang
       $border<color> = 'Black';
     }
   }
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
   $at('map')».content($imagemap);
   $at.at('img').attr(src => "data:image/png;base64," ~ MIME::Base64.encode($png));
 
@@ -165,6 +170,7 @@ our sub render(Str $lang
              ,     :@full-links
              ,     :@region-links
              ,     :@canon-links
+             ,     :%query-params
              , Str :$query-string) {
   my &filling = anti-template :source("html/shortest-path-stat.$lang.html".IO.slurp), &fill;
   return filling( lang         => $lang
@@ -178,6 +184,7 @@ our sub render(Str $lang
                 , full-links   => @full-links
                 , region-links => @region-links
                 , canon-links  => @canon-links
+                , query-params => %query-params
                 , query-string => $query-string
                 );
 }
@@ -194,6 +201,7 @@ our sub render-from(Str $lang
                   ,     :@full-links
                   ,     :@region-links
                   ,     :@canon-links
+                  ,     :%query-params
                   , Str :$query-string) {
   my &filling = anti-template :source("html/shortest-paths-from.$lang.html".IO.slurp), &fill;
   return filling( lang         => $lang
@@ -208,6 +216,7 @@ our sub render-from(Str $lang
                 , full-links   => @full-links
                 , region-links => @region-links
                 , canon-links  => @canon-links
+                , query-params => %query-params
                 , query-string => $query-string
                 );
 }
@@ -228,7 +237,7 @@ Hamilton SQLite database. It is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.
