@@ -24,7 +24,7 @@ use region-path;
 use full-path;
 use region-with-full-path;
 use deriv-ico-path;
-#use Hamilton-stat;
+use Hamilton-stat;
 #use shortest-path-stat;
 
 my @languages = ( 'en', 'fr' );
@@ -435,6 +435,62 @@ sub all-routes {
                                   , query-params   => %query-params
                                   , query-string   => $query-string
                                   );
+    }
+    get -> Str $lng, 'region-stat', Str $map, Str $region, :%query-params {
+      if $lng !~~ /^ @languages $/ {
+        content 'text/html', slurp('html/unknown-language.html');
+      }
+      my Str $query-string = query-from-params(%query-params);
+      my %map        = access-sql::read-map($map);
+      my %region     = access-sql::read-region(            $map, $region);
+      my @areas      = access-sql::list-areas-in-region(   $map, $region);
+      my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
+      my @borders    = access-sql::list-borders-for-region($map, $region);
+
+      @areas.append(@neighbours);
+      for @areas -> $area {
+        if $area<upper> eq $region {
+          $area<url> = "/$lng/region-map/$map/$area<upper>$query-string";
+          $area<nb_paths_stat> = $area<nb_region_paths>;
+        }
+        else {
+          $area<url> = "/$lng/region-stat/$map/$area<upper>$query-string";
+        }
+      }
+      for @borders -> $border {
+        if $border<color> ne 'Black' {
+          $border<nb_paths_stat> = $border<nb_paths>;
+        }
+      }
+
+      my @list-paths  = list-numbers(%map<nb_macro>, 0);
+      my @macro-links = @list-paths.map( { %( txt  => $_
+                                            , link => "/$lng/macro-path/$map/$_$query-string"
+                                            , bold => access-sql::bold-macro-path($map, $_)
+                                            ) } );
+
+      @list-paths      = list-numbers(%map<nb_full>, 0);
+      my @full-links   = @list-paths.map( { %( txt => $_, link => "/$lng/full-path/$map/$_$query-string" ) } );
+      @list-paths      = list-numbers(%region<nb_region_paths>, 0);
+      my @region-links = @list-paths.map( { %( txt => $_, link => "/$lng/region-path/$map/$region/$_$query-string" ) } );
+      my @canon-links  = access-sql::list-ico-paths-for-isom($map, 'Id');
+
+      my @messages = access-sql::list-regional-messages($map, $region);
+      content 'text/html'
+           , Hamilton-stat::render($lng, $map
+                                 , map          => %map
+                                 , region       => %region
+                                 , areas        => @areas
+                                 , borders      => @borders
+                                 , messages     => @messages
+                                 , macro-links  => @macro-links
+                                 , full-links   => @full-links
+                                 , region-links => @region-links
+                                 , canon-links  => @canon-links
+                                 , query-string => $query-string
+                                 , query-params => %query-params
+                                 , variant      => False
+                                 );
     }
   }
 }

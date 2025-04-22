@@ -3,7 +3,7 @@
 #
 #     Génération de la page HTML présentant les statistiques sur les chemins hamiltoniens
 #     Generating the HTML pages showing stats on Hamiltonian paths
-#     Copyright (C) 2022, 2023, 2024 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2025 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -32,6 +32,7 @@ sub fill($at,  :$lang
         ,      :@canon-links
         ,      :%reverse-link
         , Str  :$query-string
+        ,      :%query-params
         , Bool :$variant
         , Bool :$squeeze-zero = False
         ) {
@@ -222,7 +223,11 @@ sub fill($at,  :$lang
     }
   }
 
-  my ($png, Str $imagemap) = map-gd::draw(@areas, @borders, query-string => $query-string, with_scale => %map<with_scale>);
+  my ($png, Str $imagemap) = map-gd::draw(@areas
+                                        , @borders
+                                        , query-string => $query-string
+                                        , query-params => %query-params
+                                        , with_scale   => %map<with_scale>);
 
   if %region<code>:!exists {
     $at.at('div.region'         ).content('');
@@ -264,9 +269,11 @@ our sub render(Str  $lang
              ,      :@region-links
              ,      :@canon-links
              , Str  :$query-string
+             ,      :%query-params
              , Bool :$variant
              ) {
   my &filling = anti-template :source("html/Hamilton-stat.$lang.html".IO.slurp), &fill;
+
   return filling(lang         => $lang
                , mapcode      => $map
                , map          => %map
@@ -279,6 +286,7 @@ our sub render(Str  $lang
                , region-links => @region-links
                , canon-links  => @canon-links
                , query-string => $query-string
+               , query-params => %query-params
                , variant      => $variant
                );
 }
@@ -299,6 +307,7 @@ our sub render-from-to(Str  $lang
                      ,      :@canon-links
                      ,      :%reverse-link
                      , Str  :$query-string
+                     ,      :%query-params
                      ) {
   my &filling = anti-template :source("html/shortest-paths-from-to.$lang.html".IO.slurp), &fill;
 
@@ -433,6 +442,7 @@ our sub render-from-to(Str  $lang
                , canon-links  => @canon-links
                , reverse-link => %reverse-link
                , query-string => $query-string
+               , query-params => %query-params
                , variant      => False
                , squeeze-zero => True
                );
@@ -454,7 +464,7 @@ Hamilton SQLite database. It is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

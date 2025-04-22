@@ -1453,6 +1453,12 @@ string, and  thanks to  the default  value declaration,  these modules
 receive an empty hashtable, which signals them that they need to parse
 the parameter string with `PostCocoon::Url`.
 
+Another remark  in retrospect:  the migration  to Cro  was successful,
+until  I   migrated  the  `Hamilton-stat.rakumod`  module.   Then  the
+segmentation errors appeared in  program `website1.raku` using Cro. So
+the cause for these errors does not seem to be in Bailador, but rather
+in the module computing statistics on Hamiltonian paths.
+
 ### What is the projection used when building the maps?
 
 According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"

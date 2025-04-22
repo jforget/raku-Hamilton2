@@ -1445,7 +1445,7 @@ environnement de développement sur une machine virtuelle :
 L'installation de Bailador a échoué parce que la distribution `Digest`
 version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
 `Digest.pm6`. C'est d'ailleurs écrit dans le fichier `README.md` de la
-distribution. 
+distribution.
 
 Pour mémoire, les versions utilisées de `Digest` sont :
 
@@ -1512,6 +1512,13 @@ Bailador `website.raku` transmet seulement  la chaîne de paramètres et
 les modules reçoivent cette chaîne, plus une table de hachage vide, ce
 qui  les amène  à analyser  la chaîne  avec `PostCocoon::Url`  pour en
 extraire les paramètres.
+
+Deuxième commentaire  après coup :  la migration  vers Cro  s'est bien
+passée,    jusqu'au     moment    où    j'ai    migré     le    module
+`Hamilton-stat.rakumod`.  À  ce  moment-là,  j'ai eu  des  erreurs  de
+segmentation  dans  le  programme `website1.raku`  utilisant  Cro.  Le
+problème vient donc, vraisemblablement,  du module de statistiques sur
+les chemins hamiltoniens.
 
 ### Quelle est la projection utilisée pour les cartes ?
 
