@@ -488,8 +488,8 @@ sub all-routes {
                                  , full-links   => @full-links
                                  , region-links => @region-links
                                  , canon-links  => @canon-links
-                                 , query-string => $query-string
                                  , query-params => %query-params
+                                 , query-string => $query-string
                                  , variant      => False
                                  );
     }
@@ -498,8 +498,8 @@ sub all-routes {
         content 'text/html', slurp('html/unknown-language.html');
       }
       my Str $query-string = query-from-params(%query-params);
-      my %map     = access-sql::read-map($map);
-      my @areas   = access-sql::list-big-areas($map);
+      my %map     = access-sql::read-map(        $map);
+      my @areas   = access-sql::list-big-areas(  $map);
       my @borders = access-sql::list-big-borders($map);
       for @areas -> $area {
         $area<url> = "/$lng/region-stat/$map/$area<code>$query-string";
@@ -540,8 +540,8 @@ sub all-routes {
         content 'text/html', slurp('html/unknown-language.html');
       }
       my Str $query-string = query-from-params(%query-params);
-      my %map     = access-sql::read-map($map);
-      my @areas   = access-sql::list-big-areas($map);
+      my %map     = access-sql::read-map(        $map);
+      my @areas   = access-sql::list-big-areas(  $map);
       my @borders = access-sql::list-big-borders($map);
       for @areas -> $area {
         $area<url> = "/$lng/region-stat/$map/$area<code>$query-string";
@@ -582,8 +582,8 @@ sub all-routes {
         content 'text/html', slurp('html/unknown-language.html');
       }
       my Str $query-string = query-from-params(%query-params);
-      my %map     = access-sql::read-map($map);
-      my @areas   = access-sql::list-big-areas($map);
+      my %map     = access-sql::read-map(        $map);
+      my @areas   = access-sql::list-big-areas(  $map);
       my @borders = access-sql::list-big-borders($map);
       for @areas -> $area {
         $area<url>     = "/$lng/shortest-path/region/$map/$area<code>$query-string";
@@ -881,6 +881,7 @@ sub all-routes {
       my %map     = access-sql::read-map($map);
       my @areas   = access-sql::list-big-areas($map);
       my @borders = access-sql::list-big-borders($map);
+      my @edges   = access-sql::list-map-edges(  $map, 1);
 
       for @areas -> $area {
         $area<url    > = "/$lng/shortest-path/region/$map/$area<code>$query-string";
@@ -910,6 +911,7 @@ sub all-routes {
                                , region       => %()
                                , areas        => @areas
                                , borders      => @borders
+                               , edges        => @edges
                                , neighbours   => ()
                                , messages     => @messages
                                , macro-links  => @macro-links
@@ -926,9 +928,10 @@ sub all-routes {
         content 'text/html', slurp('html/unknown-language.html');
       }
       my Str $query-string = query-from-params(%query-params);
-      my %map     = access-sql::read-map($map);
+      my %map     = access-sql::read-map(          $map);
       my @areas   = access-sql::list-small-areas(  $map);
       my @borders = access-sql::list-small-borders($map);
+      my @edges   = access-sql::list-map-edges(    $map, 2);
 
       for @areas -> $area {
         $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
@@ -958,6 +961,7 @@ sub all-routes {
                                , region       => %()
                                , areas        => @areas
                                , borders      => @borders
+                               , edges        => @edges
                                , neighbours   => ()
                                , messages     => @messages
                                , macro-links  => @macro-links
@@ -979,6 +983,7 @@ sub all-routes {
       my @areas      = access-sql::list-areas-in-region(   $map, $region);
       my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
       my @borders    = access-sql::list-borders-for-region($map, $region);
+      my @edges      = access-sql::list-region-edges(      $map, $region);
 
       for @areas -> $area {
         $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
@@ -1013,6 +1018,7 @@ sub all-routes {
                                , region       => %region
                                , areas        => @areas
                                , borders      => @borders
+                               , edges        => @edges
                                , neighbours   => @neighbours
                                , messages     => @messages
                                , macro-links  => @macro-links

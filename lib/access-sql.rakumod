@@ -3,7 +3,7 @@
 #
 #     Partie "modèle" du serveur web permettant de consulter la base Hamilton.db des chemins doublement hamiltoniens
 #     Model part of the MVC web server which displays the database storing doubly-Hamiltonian paths
-#     Copyright (C) 2022, 2023, 2024 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2025 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -164,6 +164,34 @@ our sub list-borders-in-region(Str $map, Str $region) {
   and   B.upper_to   = B.upper_from
   SQL
   my @val = $sth.execute($map, $region).allrows(:array-of-hash);
+  return @val;
+}
+
+# These two routines extract the borders and format them as an array of
+# edges, as required by Raku module Graph.
+our sub list-map-edges(Str $map, Int $level) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select from_code, to_code, 1 as weight
+  from Borders
+  where map        = ?
+  and   level      = ?
+  and   from_code  < to_code
+  SQL
+  my @val = $sth.execute($map, $level).allrows.map( -> $x { %( from => $x[0], to => $x[1], weight => $x[2] ) } );
+  return @val;
+}
+
+our sub list-region-edges(Str $map, Str $region) {
+  my $sth = $dbh.prepare(q:to/SQL/);
+  select from_code, to_code, 1 as weight
+  from Borders
+  where map        = ?
+  and   level      = 2
+  and   upper_from = ?
+  and   upper_to   = upper_from
+  and   from_code  < to_code
+  SQL
+  my @val = $sth.execute($map, $region).allrows.map( -> $x { %( from => $x[0], to => $x[1], weight => $x[2] ) } );
   return @val;
 }
 
@@ -415,7 +443,7 @@ is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

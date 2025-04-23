@@ -15,7 +15,7 @@ use map-gd;
 use MIME::Base64;
 use messages-list;
 use common;
-use Graph:from<Perl5>;
+use Graph;
 
 sub fill($at,  :$lang
         ,      :$mapcode
@@ -31,8 +31,8 @@ sub fill($at,  :$lang
         ,      :@region-links
         ,      :@canon-links
         ,      :%reverse-link
-        , Str  :$query-string
         ,      :%query-params
+        , Str  :$query-string
         , Bool :$variant
         , Bool :$squeeze-zero = False
         ) {
@@ -268,8 +268,8 @@ our sub render(Str  $lang
              ,      :@full-links
              ,      :@region-links
              ,      :@canon-links
-             , Str  :$query-string
              ,      :%query-params
+             , Str  :$query-string
              , Bool :$variant
              ) {
   my &filling = anti-template :source("html/Hamilton-stat.$lang.html".IO.slurp), &fill;
@@ -285,8 +285,8 @@ our sub render(Str  $lang
                , full-links   => @full-links
                , region-links => @region-links
                , canon-links  => @canon-links
-               , query-string => $query-string
                , query-params => %query-params
+               , query-string => $query-string
                , variant      => $variant
                );
 }
@@ -299,6 +299,7 @@ our sub render-from-to(Str  $lang
                      ,      :%region
                      ,      :@areas
                      ,      :@borders
+                     ,      :@edges
                      ,      :@neighbours
                      ,      :@messages
                      ,      :@macro-links
@@ -306,8 +307,8 @@ our sub render-from-to(Str  $lang
                      ,      :@region-links
                      ,      :@canon-links
                      ,      :%reverse-link
-                     , Str  :$query-string
                      ,      :%query-params
+                     , Str  :$query-string
                      ) {
   my &filling = anti-template :source("html/shortest-paths-from-to.$lang.html".IO.slurp), &fill;
 
@@ -324,10 +325,8 @@ our sub render-from-to(Str  $lang
     }
   }
 
-  my $graph = Graph.new(undirected => 1
-                      , vertices   => @area-codes
-                      , edges      => @border-codes);
-  my $apsp = $graph.APSP_Floyd_Warshall;
+  my $graph = Graph.new;
+  $graph.add-edges(@edges);
 
   # step zero: initialise the statistics for discarded areas, for their borders and for transverse borders
   # the statistics are initialised to zero for the used areas and the used borders, but it does not matter
@@ -348,14 +347,14 @@ our sub render-from-to(Str  $lang
   }
 
   # first step, compute the total distance
-  my Int $dist = $apsp.path_length($from, $to);
+  my Int $dist = 0 max -1 + $graph.find-shortest-path($from, $to).elems;
 
   # second step, fill the buckets
   my Array @node-buckets = [] xx ($dist + 1);
   my %bucket-of-node;
   for @area-codes -> $area-code {
-    my $d1 = $apsp.path_length($from, $area-code);
-    my $d2 = $apsp.path_length($to  , $area-code);
+    my $d1 = 0 max -1 + $graph.find-shortest-path($from, $area-code).elems;
+    my $d2 = 0 max -1 + $graph.find-shortest-path($to  , $area-code).elems;
     if $d1 + $d2 == $dist {
       @node-buckets[$d1].push($area-code);
       %bucket-of-node{$area-code} = $d1;
@@ -441,8 +440,8 @@ our sub render-from-to(Str  $lang
                , region-links => @region-links
                , canon-links  => @canon-links
                , reverse-link => %reverse-link
-               , query-string => $query-string
                , query-params => %query-params
+               , query-string => $query-string
                , variant      => False
                , squeeze-zero => True
                );
