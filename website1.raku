@@ -26,7 +26,7 @@ use region-with-full-path;
 use deriv-ico-path;
 use Hamilton-stat;
 use shortest-path-stat;
-use Graph:from<Perl5>;
+use Graph;
 
 my @languages = ( 'en', 'fr' );
 
@@ -714,6 +714,7 @@ sub all-routes {
       my %map     = access-sql::read-map($map);
       my @areas   = access-sql::list-big-areas($map);
       my @borders = access-sql::list-big-borders($map);
+      my @edges   = access-sql::list-map-edges(  $map, 1);
 
       my @area-codes = @areas.map( { $_<code> } );
       my @border-codes = ();
@@ -722,14 +723,12 @@ sub all-routes {
           @border-codes.push([$border<code_f>, $border<code_t>]);
         }
       }
-      my $graph = Graph.new(undirected => 1
-                          , vertices   => @area-codes
-                          , edges      => @border-codes);
-      my $apsp = $graph.APSP_Floyd_Warshall;
+      my Graph $graph .= new;
+      $graph.add-edges(@edges);
 
       for @areas -> $area {
-        $area<url>  = "/$lng/shortest-path/region/$map/$area<code>$query-string";
-        $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+        $area<url    > = "/$lng/shortest-path/region/$map/$area<code>$query-string";
+        $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
         $area<tbl-url> = "/$lng/shortest-paths-from-to/macro/$map/$area-code/$area<code>$query-string";
       }
       my @messages = access-sql::list-messages($map);
@@ -763,9 +762,10 @@ sub all-routes {
         content 'text/html', slurp('html/unknown-language.html');
       }
       my Str $query-string = query-from-params(%query-params);
-      my %map     = access-sql::read-map($map);
+      my %map     = access-sql::read-map(          $map);
       my @areas   = access-sql::list-small-areas(  $map);
       my @borders = access-sql::list-small-borders($map);
+      my @edges   = access-sql::list-map-edges(    $map, 2);
 
       my @area-codes = @areas.map( { $_<code> } );
       my @border-codes = ();
@@ -774,14 +774,12 @@ sub all-routes {
           @border-codes.push([$border<code_f>, $border<code_t>]);
         }
       }
-      my $graph = Graph.new(undirected => 1
-                          , vertices   => @area-codes
-                          , edges      => @border-codes);
-      my $apsp = $graph.APSP_Floyd_Warshall;
+      my Graph $graph .= new;
+      $graph.add-edges(@edges);
 
       for @areas -> $area {
-        $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
-        $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+        $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
+        $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
         $area<tbl-url> = "/$lng/shortest-paths-from-to/full/$map/$area-code/$area<code>$query-string";
       }
       my @messages = access-sql::list-messages($map);
@@ -820,6 +818,7 @@ sub all-routes {
       my @areas      = access-sql::list-areas-in-region(   $map, $region);
       my @neighbours = access-sql::list-neighbour-areas(   $map, $region);
       my @borders    = access-sql::list-borders-for-region($map, $region);
+      my @edges      = access-sql::list-region-edges(      $map, $region);
 
       my @area-codes = @areas.map( { $_<code> } );
       my @border-codes = gather {
@@ -829,16 +828,14 @@ sub all-routes {
           }
         }
       }
-      my $graph = Graph.new(undirected => 1
-                          , vertices   => @area-codes
-                          , edges      => @border-codes);
-      my $apsp = $graph.APSP_Floyd_Warshall;
+      my Graph $graph .= new;
+      $graph.add-edges(@edges);
 
       @areas.append(@neighbours);
       for @areas -> $area {
         if $area<upper> eq $region {
-          $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
-          $area<stat> = $apsp.path_length($area-code, $area<code>) // @areas.elems;
+          $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
+          $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
           $area<tbl-url> = "/$lng/shortest-paths-from-to/region/$map/$area<upper>/$area-code/$area<code>$query-string";
         }
         else {
