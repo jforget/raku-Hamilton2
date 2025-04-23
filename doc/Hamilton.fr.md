@@ -1520,6 +1520,17 @@ segmentation  dans  le  programme `website1.raku`  utilisant  Cro.  Le
 problème vient donc, vraisemblablement,  du module de statistiques sur
 les chemins hamiltoniens.
 
+J'ai alors  enchaîné avec  une migration du  programme `website1.raku`
+(Cro) depuis le module Perl
+[`Graph.pm`](https://metacpan.org/search?q=graph)
+vers le module Raku
+[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
+Les  erreurs  de  segmentation  ont disparu.  J'ai  effectué  la  même
+migration pour le programme Bailador  `website.raku` et, là aussi, les
+erreurs de  segmentation ont  dispary. Je me  retrouve donc  avec deux
+versions séparées  du site  web et  en foulant  aux pieds  le principe
+«_DRY_» (_Don't Repeat Yourself_). Tant pis.
+
 ### Quelle est la projection utilisée pour les cartes ?
 
 D'après [xkcd](https://xkcd.com/977/), il  s'agit de la transformation

@@ -13,7 +13,7 @@ use lib 'lib';
 use DBIish;
 use db-conf-sql;
 use access-sql;
-use Graph:from<Perl5>;
+use Graph;
 
 my $dbh = DBIish.connect('SQLite', database => dbname());
 
@@ -87,15 +87,17 @@ sub compute-metrics(Str $map, Int $level, Str $region, @areas, @borders) {
   }
   my @area-codes = @areas.map( { $_<code> } );
   my @border-codes = ();
+  my @edges        = ();
   for @borders -> $border {
     if $border<code_f> lt $border<code_t> {
       @border-codes.push([$border<code_f>, $border<code_t>]);
+      @edges.push( %( from => $border<code_f>, to => $border<code_t>, weight => 1 ) );
     }
   }
-  my $graph = Graph.new(undirected => 1
-                      , vertices   => @area-codes
-                      , edges      => @border-codes);
-  unless $graph.is_connected {
+  my Graph $graph .= new;
+  $graph.vertex-add(@area-codes);
+  $graph.add-edges(@edges);
+  unless $graph.is-weakly-connected {
     for @area-codes -> Str $code {
       if $region eq '' {
         $upd-full-eccentricity.execute(-1, $map, $level, $code);
@@ -113,7 +115,7 @@ sub compute-metrics(Str $map, Int $level, Str $region, @areas, @borders) {
     @nodes-per-ecc[$i] = [ ];
   }
   for @area-codes -> Str $code {
-    my Int $ecc = $graph.vertex_eccentricity($code);
+    my Int $ecc = $graph.vertex-eccentricity($code);
     if $region eq '' {
       $upd-full-eccentricity.execute($ecc, $map, $level, $code);
     }
@@ -178,7 +180,7 @@ out-of-bounds value -1.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright (C) 2024 Jean Forget, all rights reserved
+Copyright (C) 2024, 2025 Jean Forget, all rights reserved
 
 This programme  is published  under the same  conditions as  Raku: the
 Artistic License version 2.0.

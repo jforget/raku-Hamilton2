@@ -1459,6 +1459,16 @@ segmentation errors appeared in  program `website1.raku` using Cro. So
 the cause for these errors does not seem to be in Bailador, but rather
 in the module computing statistics on Hamiltonian paths.
 
+Then I migrated the Cro program `website1.raku` from Perl module
+[`Graph.pm`](https://metacpan.org/search?q=graph)
+to Raku module
+[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
+The  segmentation  errors  disappeared.  After that,  I  migrated  the
+Bailador   program   `website.raku`   and  the   segmentation   errors
+disappeared in this program also. Now  I have two separate versions of
+the website and  I trample the DRY principle  (Don't Repeat Yourself).
+Never mind.
+
 ### What is the projection used when building the maps?
 
 According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"
