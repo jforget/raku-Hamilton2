@@ -761,8 +761,11 @@ get '/:ln/shortest-paths-from/macro/:map/:area' => sub ($lng_parm, $map_parm, $a
 
   for @areas -> $area {
     $area<url    > = "/$lng/shortest-path/region/$map/$area<code>$query-string";
-    $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
+    $area<stat   > = -1 + $graph.find-shortest-path($area-code, $area<code>).elems // @areas.elems;
     $area<tbl-url> = "/$lng/shortest-paths-from-to/macro/$map/$area-code/$area<code>$query-string";
+    if $area<code> eq $area-code {
+      $area<stat > = 0;
+    }
   }
   my @messages = access-sql::list-messages($map);
 
@@ -815,8 +818,11 @@ get '/:ln/shortest-paths-from/full/:map/:area' => sub ($lng_parm, $map_parm, $ar
 
   for @areas -> $area {
     $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
-    $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
+    $area<stat   > = -1 + $graph.find-shortest-path($area-code, $area<code>).elems // @areas.elems;
     $area<tbl-url> = "/$lng/shortest-paths-from-to/full/$map/$area-code/$area<code>$query-string";
+    if $area<code> eq $area-code {
+      $area<stat > = 0;
+    }
   }
   my @messages = access-sql::list-messages($map);
 
@@ -875,8 +881,11 @@ get '/:ln/shortest-paths-from/region/:map/:region/:area' => sub ($lng_parm, $map
   for @areas -> $area {
     if $area<upper> eq $region {
       $area<url    > = "/$lng/shortest-path/region/$map/$area<upper>$query-string";
-      $area<stat   > = (0 max -1 + $graph.find-shortest-path($area-code, $area<code>).elems) // @areas.elems;
+      $area<stat   > = -1 + $graph.find-shortest-path($area-code, $area<code>).elems // @areas.elems;
       $area<tbl-url> = "/$lng/shortest-paths-from-to/region/$map/$area<upper>/$area-code/$area<code>$query-string";
+      if $area<code> eq $area-code {
+        $area<stat > = 0;
+      }
     }
     else {
       $area<url>  = "/$lng/shortest-path/region/$map/$area<upper>$query-string";

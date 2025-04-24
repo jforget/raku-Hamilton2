@@ -16,6 +16,8 @@ use MIME::Base64;
 use messages-list;
 use common;
 
+my Int $infinity = 99999;
+
 sub fill($at, :$lang
         ,     :$mapcode
         , Str :$from = ''
@@ -57,8 +59,8 @@ sub fill($at, :$lang
     $at.at('span.start-stop-number')».content(2 × %map<nb_macro>.Str);
   }
 
-  my Int $diameter = %region<diameter> // %map<diameter> // 999;
-  my Int $radius   = %region<radius  > // %map<radius  > // 999;
+  my Int $diameter = %region<diameter> // %map<diameter> // $infinity;
+  my Int $radius   = %region<radius  > // %map<radius  > // $infinity;
   if $diameter ≥ 0 {
     $at.at('span.diameter')».content($diameter.Str);
   }
@@ -90,10 +92,21 @@ sub fill($at, :$lang
   else {
     @colours = @colours-full;
   }
+  my %palette = map-gd::palette-sample(@colours);
+  if $diameter == $infinity || $diameter < 0 {
+    # unconnected graph: colour Red is assigned to unconnected nodes only
+    @colours = @colours.grep( { $_ ne 'Red' } );
+  }
   my $colour-max = @colours.elems;
-  my %palette    = map-gd::palette-sample(@colours);
 
-  my Int $low-stat = %node-histo.keys.map( { $_.Int } ).min;
+  my Int $low-stat;
+  my @all-stats = %node-histo.keys.grep( { $_.Int ≥ 0 } ).map( { $_.Int } );
+  if @all-stats.elems == 0 {
+    $low-stat = 0;
+  }
+  else {
+    $low-stat = @all-stats.min;
+  }
   my Str $list = '';
   my $node-line = $at.at('table.node-table tr.node-line');
   $at('table.node-table tr.node-line')».remove;
