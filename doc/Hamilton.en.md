@@ -12,7 +12,10 @@ Hamiltonian path  is an hamiltonian path  crossing each one of  the 94
 departments, with  the additional  constraint that when  narrowing the
 view on any single region, the partial path is still Hamiltonian.
 
-(On the right, zomm on Île-de-France, which is too much cluttered on the left side of the picture)
+Here is an example starting in  Nord (59) and stopping in Hautes-Alpes
+(05). The region  layout is the layout  of 1970, not the  2015 one. On
+the right side, zoom on Île-de-France,  which is too much cluttered on
+the left side of the picture.
 
 ![Example with French departments and year 1970 regions](fr1970-1.png)
 
@@ -59,6 +62,7 @@ for storage,
 [Raku](https://raku.org/)
 for computations and Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
+or Raku / [Cro](https://cro.raku.org/).
 for display with a web browser.
 
 A Few Words about Graph Theory
@@ -1247,6 +1251,10 @@ http://localhost:3000/en/region-path/fr2015/HDF/1
 * A regional map with a (truncated) full path. URL
 http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
 
+The port  number is 3000 because  this is the default  port number for
+Bailador. If you use the Cro version, change the addresses to use port
+number 10000 instead.
+
 ### Parameters For The Picture Size
 
 For each page, you can add parameters `h` and `w` to tweak the heights
@@ -1457,7 +1465,8 @@ Another remark  in retrospect:  the migration  to Cro  was successful,
 until  I   migrated  the  `Hamilton-stat.rakumod`  module.   Then  the
 segmentation errors appeared in  program `website1.raku` using Cro. So
 the cause for these errors does not seem to be in Bailador, but rather
-in the module computing statistics on Hamiltonian paths.
+in the  module computing statistics  on Hamiltonian paths, or  in some
+compatibility problem between `Inline::Perl5` and `Graph.pm`.
 
 Then I migrated the Cro program `website1.raku` from Perl module
 [`Graph.pm`](https://metacpan.org/search?q=graph)
@@ -3896,6 +3905,12 @@ graph `AY3` is similar to octahedron (or `PL8`).
 
 ![Special elementary Graphs](Special-graphs.png)
 
+A last remark. In the same way I have built the list of isometries for
+Platonic solids, I could have built  the list of isomorphisms for each
+elementary graph. I  did not do this. Not yet.  The biggest problem is
+that the table name is `isometry`. The beginning of the name can apply
+to "isomorphism", but not the end.
+
 Statistics
 ==========
 
@@ -3930,7 +3945,8 @@ has been generated for the big  area (unconnected graph, three or more
 dead-ends,  other   reason),  then  the  statistics   will  give  zero
 everywhere.  If the  big area  contains one  or two  small areas,  the
 statistics will not  give interesting results. And in the  case of the
-icosian game's dodecahedron,  all nodes are equivalent  to each other,
+icosian  game's dodecahedron  and in  the case  of the  other Platonic
+solids, all nodes are equivalent to each other,
 all edges are equivalent to each  other, so the statistics will give a
 constant value for the nodes and another constant value for the edges.
 
@@ -4192,9 +4208,10 @@ you learn some standard notions such as
 and [vertex eccentricity](https://mathworld.wolfram.com/GraphEccentricity.html).
 These notions are readily accessible in the
 [Perl 5 module `Graph.pm`](https://metacpan.org/dist/Graph/view/lib/Graph.pod).
+and its [Raku equivalent](https://raku.land/zef:antononcube/Graph).
 
 In  this project,  the Raku  programme `shortest-path-statistics.raku`
-calls this Perl  module, computes the path statistics  and stores them
+calls this module, computes the path statistics  and stores them
 into  tables `Maps`  and `Areas`.  These statistics  are displayed  in
 another webpage.  The eccentricities are  displayed both in  the graph
 picture (as colours) and in a  table, like it was done for Hamiltonian
@@ -4218,7 +4235,8 @@ the eccentricity, diameter and radius values for a graph with only one
 node  and zero  edges.  Yet,  these values  could  be  given as  zero.
 Actually, programme `shortest-path-statistics.raku` takes this special
 case in account and stores  zeroes into the statistics without calling
-`Graph.pm`.
+`Graph.pm`. And  when I migrated  to `Graph.rakumod`, I kept  the same
+program logic, I did not check the behaviour of the new module.
 
 On  the  other  hand,  with   unconnected  graphs,  I  understand  why
 `Graph.pm` returns `undef` or `Inf`  (infinity) for these graphs. This
@@ -4236,7 +4254,7 @@ their scope:
 
 Another series  of webpages lists the  distances from a given  area to
 all other areas  in the same graph. These distances  are not stored in
-the database, they are computed on-the-fly by `Graph.pm`. Here are the
+the database, they are computed on-the-fly by `Graph.rakumod`. Here are the
 webpages for big area `BOU` and small area `21`:
 
 * http://localhost:3000/en/shortest-paths-from/full/fr1970/21
@@ -4263,9 +4281,11 @@ from  area A  to area  B  are not  stored  in the  database, they  are
 computed  each time  a webpage  is accessed.  Here is  the computation
 method, using the `HDF` to `OCC` shortest paths in map `fr2015`.
 
-The first step is computing the  distance from `HDF` to `OCC`. This is
-a standard  function of `Graph.pm`.  The distance is 4,  therefore the
-shortest paths follow the pattern `HDF → X → Y → Z → OCC`.
+The first step  is computing the distance from `HDF`  to `OCC`. We use
+the standard function of `Graph.rakumod`  that finds one shortest path
+among all  possible shortest paths  from a  node to another  node. The
+distance is 4, therefore the shortest  paths follow the pattern `HDF →
+X → Y → Z → OCC`.
 
 As you can  see, all possible `X`  nodes are at distance  1 from `HDF`
 and at distance 3 from `OCC`, all possible `Y` nodes are at distance 2
@@ -4474,20 +4494,6 @@ still possible.
 4. Upgrade Raku module `GD.pm`, by renaming is `GD.rakumod` and adding
 line thicknesses and  text display. This update seems easy,  but I may
 be mistaken.
-
-5. Similary, port Perl module `Graph.pm`  to Raku. This task will most
-certainly be a lengthy  one, but I do not know  the difficulty. I must
-understand some technical peculiarities of `Graph.pm`.
-
-Except that I has just discovered
-[two](https://raku.land/zef:antononcube/Graph)
-[modules](https://raku.land/zef:titsuki/Algorithm::Kruskal)
-written by
-[other](https://raku.land/zef:antononcube)
-[people](https://raku.land/zef:titsuki)
-These modules might fulfill my requirements and they will be ready for
-use faster than if  I write my own pure-Raku version.  So I guess that
-this point is void now.
 
 License
 =======

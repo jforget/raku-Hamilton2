@@ -13,7 +13,10 @@ hamiltonien  entre les  94 départements  continentaux, tel  que chaque
 fois  que   le  chemin  traverse   une  région,  le  bout   de  chemin
 correspondant est lui aussi hamiltonien.
 
-(À droite, zoom sur l'Île-de-France, qui est un peu trop confuse sur la partie gauche du dessin)
+Voici un exemple qui commence dans  le Nord (59) pour se terminer dans
+les Hautes-Alpes (05).  Le découpage par régions est celui  de 1970. À
+droite, zoom sur  l'Île-de-France, qui est un peu trop  confuse sur la
+partie gauche du dessin.
 
 ![Exemple avec les départements français et les régions de 1970](fr1970-1.png)
 
@@ -62,7 +65,8 @@ des programmes
 [Raku](https://raku.org/)
 lancés en ligne de commande pour alimenter cette base de données et un
 affichage en mode web avec des programmes Raku /
-[Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT).
+[Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
+ou des programmes Raku / [Cro](https://cro.raku.org/).
 
 Quelques rappels sur la théorie des graphes
 ===========================================
@@ -1302,6 +1306,10 @@ http://localhost:3000/fr/region-path/fr2015/HDF/3
 * L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
 http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
 
+Le numéro de port  3000 est le numéro de port  par défaut de Bailador.
+Si vous  utilisez Cro, il faut  adapter ces adresses pour  utiliser le
+numéro de port 10000.
+
 ### Paramètres de taille de l'image
 
 Pour chacune  de ces pages,  il est possible d'ajouter  des paramètres
@@ -1518,7 +1526,8 @@ passée,    jusqu'au     moment    où    j'ai    migré     le    module
 `Hamilton-stat.rakumod`.  À  ce  moment-là,  j'ai eu  des  erreurs  de
 segmentation  dans  le  programme `website1.raku`  utilisant  Cro.  Le
 problème vient donc, vraisemblablement,  du module de statistiques sur
-les chemins hamiltoniens.
+les  chemins  hamiltoniens ou  d'un  problème  de compatibilité  entre
+`Inline::Perl5` et `Graph.pm`.
 
 J'ai alors  enchaîné avec  une migration du  programme `website1.raku`
 (Cro) depuis le module Perl
@@ -4101,6 +4110,12 @@ l'antiprisme `AY03` est l'octaèdre que j'ai appelé `PL8`.
 
 ![Graphes élémentaire particuliers](Special-graphs.png)
 
+Une  dernière  remarque. De  même  que  l'on  détermine la  liste  des
+isométries pour  les solides platoniciens, on  pourrait déterminer les
+isomorphismes dans les graphes élémentaires.  Je ne l'ai pas fait. Pas
+encore. Le plus  gros problème est que la  table s'appelle `isometry`.
+Le début `isom` pourrait coller à « isomorphisme », mais pas la fin.
+
 Statistiques
 ============
 
@@ -4136,7 +4151,8 @@ généré  pour une  région  (le graphe  n'est pas  connexe,  il a  trois
 impasses, ou autre raison), alors les statistiques sont toutes à zéro.
 Lorsque  la  région  ne  contient   qu'un  département  ou  deux,  les
 statistiques ne sont  pas très intéressantes non plus. Et  dans le cas
-du dodécaèdre du jeu icosien,  tous les sommets sont équivalents entre
+du  dodécaèdre du  jeu  icosien  et dans  le  cas  des autres  solides
+platoniciens, tous les sommets sont équivalents entre
 eux  et toutes  les  arêtes  sont équivalentes  entre  elles, donc  la
 statistique est uniforme sur les sommets, ainsi que sur les arêtes.
 
@@ -4402,10 +4418,11 @@ on découvre rapidement les notions de
 [rayon](https://progresser-en-maths.com/le-vocabulaire-des-graphes/#Rayon)
 et [excentricité d'un sommet](https://progresser-en-maths.com/le-vocabulaire-des-graphes/#Excentricite).
 Ces notions sont directement accessibles dans le
-[module Perl 5 `Graph.pm`](https://metacpan.org/dist/Graph/view/lib/Graph.pod).
+[module Perl 5 `Graph.pm`](https://metacpan.org/dist/Graph/view/lib/Graph.pod)
+et dans son [équivalent Raku](https://raku.land/zef:antononcube/Graph).
 
 Dans  ce  projet,  le programme  Raku  `shortest-path-statistics.raku`
-appelle ce module  Perl 5, calcule les statistiques  sur les métriques
+appelle ce module, calcule les statistiques  sur les métriques
 et  les stocke  dans la  table `Maps`  et dans  la table  `Areas`. Ces
 statistiques   sont  affichées   dans  une   nouvelle  page   web.  En
 particulier,  les excentricités  sont affichées  avec un  code couleur
@@ -4433,7 +4450,9 @@ de calculer les valeurs d'excentricité, de diamètre et de rayon sur un
 graphe contenant un seul sommet et aucune arête, alors que ces valeurs
 pourraient   être  alimentées   à  zéro.   D'ailleurs,  le   programme
 `shortest-path-statistics.raku`  prévoit ce  cas particulier  et évite
-d'appeler `Graph.pm` dans ce cas particulier.
+d'appeler `Graph.pm`  dans ce cas  particulier. Quand j'ai  migré vers
+`Graph.rakumod`, j'ai  conservé la logique  du programme, je  n'ai pas
+vérifié le comportement du nouveau module.
 
 En revanche, il  est très compréhensible que le  calcul n'aboutira pas
 pour un  graphe qui n'est  pas connexe.  Ce cas particulier  est prévu
@@ -4452,7 +4471,7 @@ d'un tableau aux adresses :
 Une autre série  de pages web donne les distances  à partir d'une zone
 donnée, vers  les autres  zones du  domaine envisagé  (carte complète,
 macro-carte, carte régionale). Ces distances ne sont pas stockées dans
-la base  de données, elles  sont calculées par `Graph.pm`  chaque fois
+la base  de données, elles  sont calculées par `Graph.rakumod` chaque fois
 que l'on  demande l'affichage de la  page. Voici les adresses  pour la
 région `BOU` et le département `21` :
 
@@ -4481,9 +4500,10 @@ calculé à  chaque affichage.  Voici comment cela  se fait,  en prenant
 l'exemple des chemins de `HDF` à `OCC` dans la carte `fr2015`.
 
 La  première étape  consiste à  calculer  la distance  entre `HDF`  et
-`OCC`, ce  qui se  fait par  une fonction  standard de  `Graph.pm`. On
-obtient 4,  donc tous les  chemins les  plus courts suivent  le schéma
-`HDF → X → Y → Z → OCC`.
+`OCC`, ce  qui se  fait avec la  fonction standard  de `Graph.rakumod`
+permettant de  trouver l'un des  plus courts  chemins d'un point  à un
+autre. On obtient 4, donc tous  les chemins les plus courts suivent le
+schéma `HDF → X → Y → Z → OCC`.
 
 Comme vous pouvez le constater, toutes  les zones possibles `X` sont à
 distance  1 de  `HDF`  et à  distance  3 de  `OCC`,  toutes les  zones
@@ -4702,20 +4722,6 @@ difficile, mais possible.
 `GD.rakumod`, pour y ajouter les  épaisseurs de trait et l'écriture de
 chaînes de caractères.  La réalisation semble facile, mais  je ne suis
 pas à l'abri de mauvaises surprises.
-
-5. De la même manière, porter  le module Perl `Graph.pm` vers Raku. La
-réalisation  sera longue  à coup  sûr, encore  faut-il que  j'arrive à
-comprendre les particularités techniques de `Graph.pm`.
-
-Sauf que je viens de découvrir
-[deux](https://raku.land/zef:antononcube/Graph)
-[modules](https://raku.land/zef:titsuki/Algorithm::Kruskal)
-écrits par
-d'[autres](https://raku.land/zef:antononcube)
-[personnes](https://raku.land/zef:titsuki).
-Ces  modules peuvent  répondre à  mes besoins  et ils  seront prêts  à
-l'emploi beaucoup plus  rapidement que si j'écris ma  version Raku. Je
-considère donc ce dernier point comme caduc.
 
 LICENCE
 =======
