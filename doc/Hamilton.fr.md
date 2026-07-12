@@ -1438,7 +1438,7 @@ machine sont :
 
 * rakudo v2022.02
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 En avril 2025,  j'ai voulu examiner en détail le  problème des erreurs
 de   segmentation.  Pour   ce   faire,  j'ai   tenté  d'installer   un
