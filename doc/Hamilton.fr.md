@@ -1416,13 +1416,7 @@ Ma machine principale a la configuration suivante :
 
 * rakudo v2020.12
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
-
-Remarque : compte tenu  de la façon dont  les caractères « inférieur »
-sont  traités  par  Markdown,  j'ai changé  certains  d'entre  eux  en
-« inférieur  ou  égal ».  Pour  assurer une  certaine  cohérence,  les
-caractères  « supérieur »  associés  sont changés  en  « supérieur  ou
-égal ».
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 À partir d'une  date que je n'ai pas notée,  vraisemblablement en 2024
 mais sans  autre précision,  le programme  `website.raku` s'est  mis à
@@ -1448,7 +1442,7 @@ environnement de développement sur une machine virtuelle :
 
 * rakudo v2024.12
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 L'installation de Bailador a échoué parce que la distribution `Digest`
 version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
@@ -1457,11 +1451,11 @@ distribution.
 
 Pour mémoire, les versions utilisées de `Digest` sont :
 
-* Devuan : Digest:ver<0.7.2>:auth≤Lucien Grondin≥
+* `Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>`
 
-* xubuntu : Digest:ver<0.18.5>:auth≤Lucien Grondin≥
+* `xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>`
 
-* Fedora : Digest:ver<1.1.0>:auth≤zef:grondilu≥
+* `Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>`
 
 L'utilisation  de  l'option  `--force`  n'y  fait  rien.  J'aurais  pu
 m'arranger  de diverses  façons  pour installer  quand même  Bailador.

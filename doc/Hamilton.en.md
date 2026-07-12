@@ -1362,11 +1362,6 @@ My main computer has the following configuration:
 
 * Bailador:ver<0.0.19>:auth≤github:Bailador≥
 
-Note:  because  of the  way  the  char  "less  than" is  processed  by
-Markdown, I have changed some of them  with a char "less than or equal
-to" and  for consistence, I  have changed the balancing  char "greater
-than" with "greater than or equal to".
-
 Since a date I  do not remember, possibly in 2024  but with no further
 precision, program `website.raku` fails  at start-up with segmentation
 errors. At first,  I did not care  much, because I just  had to repeat
@@ -1379,7 +1374,7 @@ The configuration of this secondary computer are:
 
 * rakudo v2022.02
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 In April  2025, I wanted to  analyse the reasons for  the segmentation
 errors by installing and running  `website.raku` on a virtual machine.
@@ -1389,7 +1384,7 @@ The configuration is:
 
 * rakudo v2024.12
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 The installation of Bailador failed, because the distribution `Digest`
 contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
@@ -1398,11 +1393,11 @@ contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
 
 For what it is worth, the versions of `Digest` are:
 
-* Devuan : Digest:ver<0.7.2>:auth≤Lucien Grondin≥
+* `Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>`
 
-* xubuntu : Digest:ver<0.18.5>:auth≤Lucien Grondin≥
+* `xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>`
 
-* Fedora : Digest:ver<1.1.0>:auth≤zef:grondilu≥
+* `Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>`
 
 Using option `--force` does not improve anything. I could overcome the
 problem  in several  ways.  I could  have  written a  `Digest.rakumod`
