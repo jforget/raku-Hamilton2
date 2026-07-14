@@ -379,7 +379,7 @@ les départements  au sein  d'une région et  chemins complets  pour les
 départements dans la carte complète. La clé est constituée de :
 
 * `map` le code de la carte (table `Maps`),
-* `level` valant `1` pour les macro-chemins, `2` pour les chemins régionaux, `3` pour les chemins complets et `4` pour les chemins régionaux génériques,
+* `level` valant `1` pour les macro-chemins, `2` pour les chemins régionaux, `3` pour les chemins complets et `4` pour les chemins régionaux génériques (décrits dans la [quatrième version du logiciel](#user-content-quatrième-tentative)),
 * `area`, champ vide pour les macro-chemins et les chemins complets, le code de la région concernée pour les chemins régionaux.
 * `num`, un numéro séquentiel.
 
@@ -502,9 +502,10 @@ Départements français
 ---------------------
 
 Pour  des  raisons  de  copyright,   je  ne  livre  pas  de  programme
-d'initialisation pour  les jeux comme Risk  ou War on Terror.  Le seul
-programme  d'initialisation concerne  les  régions  françaises et  les
-départements français.
+d'initialisation pour les jeux comme Risk  ou War on Terror. Les seuls
+programmes  d'initialisation concerne  les régions  françaises et  les
+départements français  décrit ci-dessous, la  carte de la RATP  et les
+graphes abstraits comme les polyèdres platoniciens.
 
 Ce  programme  est  plus compliqué  qu'un  programme  d'initialisation
 standard, car il est prévu pour traiter trois niveaux hiérarchiques au
@@ -1055,7 +1056,7 @@ Sans optimisation, il y a 104  chemins régionaux commençant en `77` et
 select max(P.from_code), max(A.exterior), count(*)
 from Region_Paths P
 join Small_Areas  A
-  on A.map   = P.Map
+  on  A.map  = P.Map
   and A.code = P.to_code
 where P.map  = 'fr2015'
 and   P.area = 'IDF'
@@ -1451,11 +1452,11 @@ distribution.
 
 Pour mémoire, les versions utilisées de `Digest` sont :
 
-* `Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>`
+* Devuan : `Digest:ver<0.7.2>:auth<Lucien Grondin>`
 
-* `xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>`
+* xubuntu : `Digest:ver<0.18.5>:auth<Lucien Grondin>`
 
-* `Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>`
+* Fedora : `Digest:ver<1.1.0>:auth<zef:grondilu>`
 
 L'utilisation  de  l'option  `--force`  n'y  fait  rien.  J'aurais  pu
 m'arranger  de diverses  façons  pour installer  quand même  Bailador.
@@ -1494,7 +1495,7 @@ En revanche, si Cro accepte
 http://localhost:10000/fr/list
 ```
 
-en revanche, le lien suivant, avec un slash final, est interdit :
+le lien suivant, avec un slash final, est interdit :
 
 ```
 http://localhost:10000/fr/list/
@@ -1616,7 +1617,7 @@ ne fait rien, c'est une carte abstraite.
 
 Puis j'ai  ajouté des  cartes réelles  avec une  seule région.  Pas de
 problème. Puis j'ai ajouté la carte de
-[Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
+[Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon).
 Cette carte  représente quatre rues  ainsi que le saloon  délimité par
 ces rues,  soit pifométriquement  un carré  de 40 m  × 40 m.  Faute de
 mieux,  j'ai arbitrairement  localisé cet  endroit à  Tombstone, ville

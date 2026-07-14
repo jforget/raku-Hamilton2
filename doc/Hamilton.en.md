@@ -1,6 +1,6 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
-This  project  aims  at   extracting  doubly  hamiltonian  paths  from
+This  project  aims  at   extracting  doubly  Hamiltonian  paths  from
 administrative maps. In a connected unoriented graph, an
 [Hamiltonian path](https://mathworld.wolfram.com/HamiltonianPath.html)
 is a  path crossing each vertex  exactly once. But what  is a _doubly_
@@ -8,7 +8,7 @@ Hamiltonian path?  Let us consider  the administrative map  of France.
 France  is  split  into  _régions_,  which  are  in  turn  split  into
 _départements_. For the purpose of  this project, we put aside Corsica
 and overseas  regions, so the  resulting graph is connected.  A doubly
-Hamiltonian path  is an hamiltonian path  crossing each one of  the 94
+Hamiltonian path  is an Hamiltonian path  crossing each one of  the 94
 departments, with  the additional  constraint that when  narrowing the
 view on any single region, the partial path is still Hamiltonian.
 
@@ -102,7 +102,7 @@ the  Pyrénées-Atlantiques  department is  no  longer  linked to  other
 departments within the Aquitaine / Nouvelle Aquitaine region.
 
 Articulation points are not always  associated with dead ends. See for
-example the Maine-et-Loire department  in the Pays-de-la-Loire region.
+example the Maine-et-Loire department (49) in the Pays-de-la-Loire region.
 If removed,  the region  is split into  two connected  components, one
 with Loire-Atlantique  (44) and  Vendée (85),  the other  with Mayenne
 (53) and Sarthe (72).
@@ -298,7 +298,7 @@ a far-east area  on the map right  side to a far-west area  on the map
 left  side. The  `cross_idl`  field is  set to  `1`  so the  graphical
 routine will deal  with this special case.  "idl" means "International
 Date Line", even if in some cases the map is not cut along this line, like in
-[this example]s(https://boardgamegeek.com/image/476132/risk).
+[this example](https://boardgamegeek.com/image/476132/risk).
 
 Most of the time,  the longitude and latitude will be  zero and in the
 picture  of the  map, the  edge  will be  shown as  a single  straight
@@ -349,7 +349,7 @@ departments (small  areas) belonging to  the same big area  and lastly
 full paths linking all small areas. The key is:
 
 * `map` the key from table `Maps`,
-* `level` with `1` for macro-paths, `2` for regional paths, `3` for full paths and `4` for generic regional paths,
+* `level` with `1` for macro-paths, `2` for regional paths, `3` for full paths and `4` for generic regional paths (described in the [fourth version of the software](#user-content-fourth-attempt)),
 * `area` empty for macro-paths and full paths, the code of the big area for regional paths,
 * `num` a sequential number.
 
@@ -468,10 +468,12 @@ Initialisation
 French Maps
 -----------
 
-For copyright  reasons, I  do not provide  initialisation programmes
-for  the  maps of  Risk,  War  on Terror  and  other  games. The  only
-initialisation  programme is the  programme dealing  with French
-regions and departments.
+For copyright reasons, I do  not provide initialisation programmes for
+the  maps  of   Risk,  War  on  Terror  and  other   games.  The  only
+initialisation  programmes  are  the  programme  dealing  with  French
+regions and departments, the initialisation programme for the RATP map
+(subway lines in Paris) and the initialisation programmes for abstract
+graphs (Platonic solids).
 
 This  initialisation  programme  is  more complicated  than  a  normal
 initialisation  programme, because  it deals  with three  hierarchical
@@ -591,7 +593,7 @@ projection.
 Special Cases
 -------------
 
-For the [naval operation map] (https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+For the [naval operation map](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
 of _Operation Mercury_ and for the
 [map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
 the mapedges are not oriented west →  east and north → south as usual.
@@ -922,7 +924,7 @@ takes one of them and processes the next big area.
 
 This process may encounter blocked situations. This is the case if we continue
 the example above with a `... → 62  →→ GES → ...` path. We can find no
-departments which are simultaneously  neighbour of the `62` department
+departments which simultaneously are  neighbour of the `62` department
 and belong to the  `GES` region. In this case, no  new partial path is
 stored into the `to-do` list after  the previous partial path has been
 removed.
@@ -1011,7 +1013,7 @@ paths into the `to-do` list.
 select max(P.from_code), max(A.exterior), count(*)
 from Region_Paths P
 join Small_Areas  A
-  on A.map   = P.Map
+  on  A.map  = P.Map
   and A.code = P.to_code
 where P.map  = 'fr2015'
 and   P.area = 'IDF'
@@ -1324,7 +1326,7 @@ Other Possibilities
 
 A programme `export.raku`  allows you to export various  graphs to the
 `.dot` format. Then, you can create graphical files with
-[Graphviz}(https://graphviz.org/)
+[Graphviz](https://graphviz.org/)
 (`neato`) or use them interactively with
 [`tulip`](https://tulip.labri.fr/site/).
 
@@ -1360,7 +1362,7 @@ My main computer has the following configuration:
 
 * rakudo v2020.12
 
-* Bailador:ver<0.0.19>:auth≤github:Bailador≥
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
 
 Since a date I  do not remember, possibly in 2024  but with no further
 precision, program `website.raku` fails  at start-up with segmentation
@@ -1393,11 +1395,11 @@ contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
 
 For what it is worth, the versions of `Digest` are:
 
-* `Devuan : Digest:ver<0.7.2>:auth<Lucien Grondin>`
+* Devuan: `Digest:ver<0.7.2>:auth<Lucien Grondin>`
 
-* `xubuntu : Digest:ver<0.18.5>:auth<Lucien Grondin>`
+* xubuntu: `Digest:ver<0.18.5>:auth<Lucien Grondin>`
 
-* `Fedora : Digest:ver<1.1.0>:auth<zef:grondilu>`
+* Fedora: `Digest:ver<1.1.0>:auth<zef:grondilu>`
 
 Using option `--force` does not improve anything. I could overcome the
 problem  in several  ways.  I could  have  written a  `Digest.rakumod`
