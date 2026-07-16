@@ -16,16 +16,17 @@ use PostCocoon::Url;
 use db-conf-sql;
 
 sub colors {
-  my %color = Black      => [  0,   0,   0]
-            , Blue       => [  0,   0, 255]
-            , Cyan       => [  0, 255, 255]
-            , Green      => [  0, 191,   0]
-            , Chartreuse => [127, 255,   0]
-            , Yellow     => [223, 150,  23] # darkish, poor contrast with Orange
-            , Yellow1    => [255, 255,   0] # light, good contrast with Orange
-            , Orange     => [255, 127,   0]
-            , Pink       => [255,  79,   0] # poor contrast with Orange and with Red
-            , Red        => [255,   0,   0];
+  my %color = Black      => 0x000000 # [  0,   0,   0]
+            , Blue       => 0x0000FF # [  0,   0, 255]
+            , Cyan       => 0x00FFFF # [  0, 255, 255]
+            , Green      => 0x00BF00 # [  0, 191,   0]
+            , Chartreuse => 0x7FFF00 # [127, 255,   0]
+            , Yellow     => 0xDF9617 # [223, 150,  23] # darkish, poor contrast with Orange
+            , Yellow1    => 0xFFFF00 # [255, 255,   0] # light, good contrast with Orange
+            , Orange     => 0xFF7F00 # [255, 127,   0]
+            , Pink       => 0xFF5F00 # [255,  79,   0] # poor contrast with Orange and with Red
+            , Red        => 0xFF0000 # [255,   0,   0]
+            ;
   return %color;
 }
 
@@ -35,7 +36,7 @@ our sub palette-sample(@palette) {
   my %color = colors();
   for @palette -> $palette {
     my $sample = GD::Image.new($size, $size);
-    $sample.colorAllocate(|%color{$palette});
+    $sample.colorAllocate(%color{$palette});
     %samples{$palette} = $sample.png;
   }
   return %samples;
@@ -150,13 +151,13 @@ our sub draw(@areas, @borders
   }
 
   my $image = GD::Image.new($width + $dim-scale, $height + $dim-scale);
-  my $white = $image.colorAllocate(255, 255, 255);
-  my $black = $image.colorAllocate(  0,   0,   0);
+  my $white = $image.colorAllocate(0xFFFFFF);
+  my $black = $image.colorAllocate(0x000000);
   my %rgb   = colors();
   my %color = Black => $black; # $black is already allocated, so it must be entered into %color without being allocated twice
   for %rgb.keys -> $color {
     if $color ne 'Black' {
-      %color{$color} = $image.colorAllocate(|%rgb{$color});
+      %color{$color} = $image.colorAllocate(%rgb{$color});
     }
   }
 
