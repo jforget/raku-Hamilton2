@@ -10,7 +10,7 @@
 
 unit package map-gd;
 
-use GD:from<Perl5>;
+use GD;
 use List::Util;
 use PostCocoon::Url;
 use db-conf-sql;
@@ -171,7 +171,7 @@ our sub draw(@areas, @borders
     my $scale-label = "$scale-distance km";
     my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
     $image.line($width, conv-y($lat-min), $width, $top-scale, $black);
-    $image.string(gdSmallFont, $x-scale, $top-scale - 20, $scale-label, $black);
+    $image.string(GD-small-font, $x-scale, $top-scale - 20, $scale-label, $black);
 
     my $left-scale;
     # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
@@ -184,7 +184,7 @@ our sub draw(@areas, @borders
     $scale-label = "$scale-distance km";
     $x-scale     = $left-scale - 6 × $scale-label.chars;
     $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
-    $image.string(gdSmallFont, $x-scale, $height, $scale-label, $black);
+    $image.string(GD-small-font, $x-scale, $height, $scale-label, $black);
   }
 
   my Str $imagemap = '';
@@ -251,8 +251,8 @@ sub draw-border($img, Int $x-from
   my $title-text = '';
   my $style;
   if $fruitless {
-    $img.setStyle($color, $color, gdTransparent, gdTransparent);
-    $style = gdStyled;
+    $img.setStyle($color, $color, GD-transparent, GD-transparent);
+    $style = GD-styled;
   }
   else {
     $style = $color;
@@ -276,7 +276,7 @@ sub draw-border($img, Int $x-from
   }
   if $name ne '' {
     my ($dx, $dy) = ( 2.5 × $name.chars,  5);
-    $img.string(gdSmallFont, $x-mid - $dx, $y-mid - $dy, $name, $ink);
+    $img.string(GD-small-font, $x-mid - $dx, $y-mid - $dy, $name, $ink);
     $title-text = "<area coords='{$x-mid - $dx}"
                              ~ ",{$y-mid - $dy}"
                              ~ ",{$x-mid + $dx}"
@@ -312,7 +312,7 @@ sub draw-area($img, Int $x, Int $y
     $img.ellipse(      $x, $y, $diameter, $diameter, $color);
   }
   $img.setThickness(1);
-  $img.string(gdSmallFont, $x - $dx, $y - $dy, $txt, $ink);
+  $img.string(GD-small-font, $x - $dx, $y - $dy, $txt, $ink);
   $name ~~ s:g/\'/\&\#039;/;
   if $url eq '' {
     return "<area shape='circle' coords='$x,$y,$radius' title='$name' />\n";
