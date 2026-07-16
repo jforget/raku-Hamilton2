@@ -115,7 +115,7 @@ internally by the rendering modules of C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2026 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

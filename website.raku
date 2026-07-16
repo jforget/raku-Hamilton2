@@ -4,7 +4,7 @@
 #
 #     Serveur web permettant de consulter la base Hamilton.db des chemins doublement hamiltoniens
 #     Web server to display the database storing doubly-Hamitonian paths
-#     Copyright (C) 2022, 2023, 2024 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2026 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -1181,7 +1181,7 @@ webserver was lauched.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2026 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

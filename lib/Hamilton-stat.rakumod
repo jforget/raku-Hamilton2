@@ -3,7 +3,7 @@
 #
 #     Génération de la page HTML présentant les statistiques sur les chemins hamiltoniens
 #     Generating the HTML pages showing stats on Hamiltonian paths
-#     Copyright (C) 2022, 2023, 2024, 2025 Jean Forget
+#     Copyright (C) 2022, 2023, 2024, 2025, 2026 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -463,7 +463,7 @@ Hamilton SQLite database. It is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025, 2026 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.

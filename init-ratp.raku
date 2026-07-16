@@ -191,7 +191,7 @@ running the F<init-ratp.raku> program.
 
 =head1 COPYRIGHT and LICENCE
 
-Copyright (C) 2024 Jean Forget, all rights reserved
+Copyright (C) 2024, 2026 Jean Forget, all rights reserved
 
 This  program is  published under  the  same conditions  as Raku:  the
 Artistic License version 2.0.

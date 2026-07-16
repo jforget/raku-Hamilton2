@@ -1,9 +1,9 @@
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #
-#     Génération de la page HTML détaillant les statistiques sur les plus courts chemoins
+#     Génération de la page HTML détaillant les statistiques sur les plus courts chemins
 #     Generating the HTML pages rendering a map with statistics on shortest paths
-#     Copyright (C) 2024, 2025 Jean Forget
+#     Copyright (C) 2024, 2025, 2026 Jean Forget
 #
 #     Voir la licence dans la documentation incluse ci-dessous.
 #     See the license in the embedded documentation below.
@@ -250,7 +250,7 @@ Hamilton SQLite database. It is used internally by C<website.raku>.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright 2022, 2023, 2024, 2025 Jean Forget, all rights reserved
+Copyright 2022, 2023, 2024, 2025, 2026 Jean Forget, all rights reserved
 
 This program  is published under  the same conditions as  Raku: the
 Artistic License version 2.0.
