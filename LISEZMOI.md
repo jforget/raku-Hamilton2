@@ -30,15 +30,15 @@ diamètre d'un graphe et le rayon d'un graphe.
 Installation
 ============
 
-Vous aurez besoin de Raku, SQLite et GD, ainsi que des modules suivants :
+Vous aurez besoin de Raku, SQLite et `libgd`, ainsi que des modules suivants :
 
 * DBIish
-* Bailador
+* Bailador ou Cro
 * Template::Anti
 * Inline::Perl5
 * List::Util
-
-et les modules Graph.pm et GD.pm pour Perl 5 (pas le module GD pour Raku).
+* GD
+* Graph
 
 Il y a  un peu de paramétrage à faire.  Notamment, vous devrez changer
 le chemin  d'accès de  la base SQLite  dans `lib/db-conf-sql.rakumod`.
@@ -78,11 +78,27 @@ Pour afficher les cartes en HTML, lancez le serveur web :
 ./website.raku
 ```
 
-et dans votre navigateur préféré, demandez l'adresse :
+si vous avez installé Bailador, ou bien
+
+```
+./website1.raku
+```
+
+si vous  avez installé  Cro. Dans  votre navigateur  préféré, demandez
+l'adresse :
 
 ```
 http://localhost:3000/
 ```
+
+si vous avez installé Bailador, ou bien
+
+```
+http://localhost:10000/
+```
+
+si vous avez installé Cro.
+
 
 Vous pouvez  également utiliser les graphes  correspondant aux solides
 platoniciens avec  `init-ico.raku` (dodécaèdre)  et `init-platon.raku`

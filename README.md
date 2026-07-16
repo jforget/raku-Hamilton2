@@ -27,15 +27,15 @@ plus related notions such as graph radius and graph diameter.
 Installation
 ============
 
-You will need Raku, SQLite and GD, plus the following modules:
+You will need Raku, SQLite and `libgd`, plus the following modules:
 
 * DBIish
-* Bailador
+* Bailador or Cro
 * Template::Anti
 * Inline::Perl5
 * List::Util
-
-and the Perl 5 Graph.pm and GD.pm modules (not the Raku GD module).
+* GD
+* Graph
 
 Some assembly required. After downloading  the project, you must enter
 the  pathname of  the  SQLite  database in  `lib/db-conf-sql.rakumod`.
@@ -74,11 +74,26 @@ Display the maps as HTML pages by running the webserver:
 ./website.raku
 ```
 
-and in your favourite web browser, display the site at:
+if you have installed Bailador, or
+
+```
+./website1.raku
+```
+
+if you have installed Cro. In  your favourite web browser, display the
+site at:
 
 ```
 http://localhost:3000/
 ```
+
+if you have installed Bailador, or
+
+```
+http://localhost:10000/
+```
+
+if you have installed Cro.
 
 You  can also  use the  graphs  associated with  Platonic solids  with
 `init-ico.raku` (for the dodecahedron) and `init-platon.raku` (for the
