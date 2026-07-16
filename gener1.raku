@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #     Génération des macro-chemins hamiltoniens et des chemins hamiltoniens régionaux

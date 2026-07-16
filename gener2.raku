@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #     Génération des chemins hamiltoniens complets à partir des macro-chemins et des chemins régionaux génériques

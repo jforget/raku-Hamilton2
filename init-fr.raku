@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #     Initialisation des cartes de France avec les départements, les régions de 2015 et les régions de 1970

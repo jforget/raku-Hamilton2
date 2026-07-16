@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 #     Pour les cartes suffisamment simples, mise à plat des chemins complets génériques en chemins spécifiques
