@@ -53,6 +53,8 @@ our sub draw(@areas, @borders
   my Int $dim-scale =  20;
   my Int $lg-max    = ($width / 2).Int;
   #say "h $height w $width adj $adjust str $query-string hash {%query-params.raku}";
+  $height = $height.Int;
+  $width  = $width.Int;
 
   my %long-of-relay;       # longitude of the relay point of the cross_idl border
   my %lat-of-relay;        #  latitude of the relay point of the cross_idl border
@@ -268,7 +270,10 @@ sub draw-border($img, Int $x-from
             , end   => ($x-to  , $y-to  )
             , color => $style);
     if $color-name eq 'Black' {
-      ###$img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
+      $img.ellipse(center => ( (($x-from + $x-to) / 2).Int, (($y-from + $y-to) / 2).Int )
+                 , axes   => (4 × $thickness, 4 × $thickness)
+                 , color  => $color
+                 , fill   => True);
     }
     $x-mid = (($x-from + $x-to) / 2).Int;
     $y-mid = (($y-from + $y-to) / 2).Int;
@@ -282,7 +287,10 @@ sub draw-border($img, Int $x-from
             , color => $style);
     if $color-name eq 'Black' {
       # do not bother to compute the middle of the line, just use the turning point
-      ###$img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
+      $img.ellipse( center => ($x-mid, $y-mid)
+                 ,  axes   => (4 × $thickness, 4 × $thickness)
+                 ,  color  => $color
+                 ,  fill   => True);
     }
   }
   if $name ne '' {
@@ -315,12 +323,12 @@ sub draw-area($img, Int $x, Int $y
   my Int $diameter =  2 × $radius;
   $img.setThickness(3);
   if $shadow {
-    ###$img.filledRectangle($x - $radius, $y - $radius, $x + $radius, $y + $radius, $backg);
-    ###$img.rectangle(      $x - $radius, $y - $radius, $x + $radius, $y + $radius, $color);
+    $img.rectangle(center => ($x, $y), half-size => ($radius, $radius), color => $backg, fill => True );
+    $img.rectangle(center => ($x, $y), half-size => ($radius, $radius), color => $color, fill => False);
   }
   else {
-    ###$img.filledEllipse($x, $y, $diameter, $diameter, $backg);
-    ###$img.ellipse(      $x, $y, $diameter, $diameter, $color);
+    $img.ellipse(center => ($x, $y), axes => ($diameter, $diameter), color => $backg, fill => True );
+    $img.ellipse(center => ($x, $y), axes => ($diameter, $diameter), color => $color, fill => False);
   }
   $img.setThickness(1);
   ###$img.string(GD-small-font, $x - $dx, $y - $dy, $txt, $ink);
