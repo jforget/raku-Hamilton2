@@ -171,12 +171,13 @@ our sub draw(@areas, @borders
       $top-scale =  conv-y($lat-min + $scale-distance / 111);
       last if conv-y($lat-min) - $top-scale < $lg-max;
     }
-    my $scale-label = "$scale-distance km";
-    my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
-    $image.line(start => ($width, conv-y($lat-min).UInt)
-              , end   => ($width, $top-scale      .UInt)
+    my Str $scale-label = "$scale-distance km";
+    my Int $x-scale     = $width;
+    my Int $y-scale     = conv-y($lat-min).Int;
+    $image.line(start => ($width, $y-scale)
+              , end   => ($width, $top-scale.UInt)
               , color => $black);
-    $image.string(font => GD-small-font, location => ($x-scale, $top-scale - 20), text => $scale-label, color => $black, up => True);
+    $image.string(font => GD-small-font, location => ($x-scale, $y-scale), text => $scale-label, color => $black, up => True);
 
     my $left-scale;
     # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
@@ -187,11 +188,12 @@ our sub draw(@areas, @borders
       last if conv-x($long-max) - $left-scale < $lg-max;
     }
     $scale-label = "$scale-distance km";
-    $x-scale     = $left-scale - 6 × $scale-label.chars;
-    $image.line(start => ($left-scale.UInt      , ($height + $dim-scale / 2).UInt)
-              , end   => (conv-x($long-max).UInt, ($height + $dim-scale / 2).UInt)
+    $x-scale     = $left-scale;
+    $y-scale     = ($height + $dim-scale / 2).UInt;
+    $image.line(start => ($left-scale.UInt      , $y-scale)
+              , end   => (conv-x($long-max).UInt, $y-scale)
               , color => $black);
-    $image.string(font => GD-small-font, location => ($x-scale, $height), text => $scale-label, color => $black);
+    $image.string(font => GD-small-font, location => ($x-scale, $y-scale), text => $scale-label, color => $black);
   }
 
   my Str $imagemap = '';
