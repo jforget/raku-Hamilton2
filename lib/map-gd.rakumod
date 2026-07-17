@@ -176,7 +176,7 @@ our sub draw(@areas, @borders
     $image.line(start => ($width, conv-y($lat-min).UInt)
               , end   => ($width, $top-scale      .UInt)
               , color => $black);
-    ###$image.string(GD-small-font, $x-scale, $top-scale - 20, $scale-label, $black);
+    $image.string(font => GD-small-font, location => ($x-scale, $top-scale - 20), text => $scale-label, color => $black, up => True);
 
     my $left-scale;
     # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
@@ -191,7 +191,7 @@ our sub draw(@areas, @borders
     $image.line(start => ($left-scale.UInt      , ($height + $dim-scale / 2).UInt)
               , end   => (conv-x($long-max).UInt, ($height + $dim-scale / 2).UInt)
               , color => $black);
-    ###$image.string(GD-small-font, $x-scale, $height, $scale-label, $black);
+    $image.string(font => GD-small-font, location => ($x-scale, $height), text => $scale-label, color => $black);
   }
 
   my Str $imagemap = '';
@@ -295,7 +295,7 @@ sub draw-border($img, Int $x-from
   }
   if $name ne '' {
     my ($dx, $dy) = ( 2.5 × $name.chars,  5);
-    $img.string(GD-small-font, $x-mid - $dx, $y-mid - $dy, $name, $ink);
+    $img.string(font => GD-small-font, location => ( ($x-mid - $dx).Int, ($y-mid - $dy).Int ), text => $name, color => $ink);
     $title-text = "<area coords='{$x-mid - $dx}"
                              ~ ",{$y-mid - $dy}"
                              ~ ",{$x-mid + $dx}"
@@ -331,7 +331,7 @@ sub draw-area($img, Int $x, Int $y
     $img.ellipse(center => ($x, $y), axes => ($diameter, $diameter), color => $color, fill => False);
   }
   $img.setThickness(1);
-  ###$img.string(GD-small-font, $x - $dx, $y - $dy, $txt, $ink);
+  $img.string(font => GD-small-font, location => ( ($x - $dx).Int, ($y - $dy).Int ), text => $txt, color => $ink);
   $name ~~ s:g/\'/\&\#039;/;
   if $url eq '' {
     return "<area shape='circle' coords='$x,$y,$radius' title='$name' />\n";
