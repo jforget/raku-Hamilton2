@@ -171,8 +171,10 @@ our sub draw(@areas, @borders
     }
     my $scale-label = "$scale-distance km";
     my $x-scale     = $width + $dim-scale - 6 × $scale-label.chars;
-    $image.line($width, conv-y($lat-min), $width, $top-scale, $black);
-    $image.string(GD-small-font, $x-scale, $top-scale - 20, $scale-label, $black);
+    $image.line(start => ($width, conv-y($lat-min).UInt)
+              , end   => ($width, $top-scale      .UInt)
+              , color => $black);
+    ###$image.string(GD-small-font, $x-scale, $top-scale - 20, $scale-label, $black);
 
     my $left-scale;
     # 111 : the length (in kilometers) of a degree of latitude, either 60 nautical miles at 1852 m each, or 10_000 km divided by 90
@@ -184,8 +186,10 @@ our sub draw(@areas, @borders
     }
     $scale-label = "$scale-distance km";
     $x-scale     = $left-scale - 6 × $scale-label.chars;
-    $image.line($left-scale, $height + $dim-scale / 2, conv-x($long-max), $height + $dim-scale / 2, $black);
-    $image.string(GD-small-font, $x-scale, $height, $scale-label, $black);
+    $image.line(start => ($left-scale.UInt      , ($height + $dim-scale / 2).UInt)
+              , end   => (conv-x($long-max).UInt, ($height + $dim-scale / 2).UInt)
+              , color => $black);
+    ###$image.string(GD-small-font, $x-scale, $height, $scale-label, $black);
   }
 
   my Str $imagemap = '';
@@ -252,7 +256,7 @@ sub draw-border($img, Int $x-from
   my $title-text = '';
   my $style;
   if $fruitless {
-    $img.setStyle($color, $color, GD-transparent, GD-transparent);
+    $img.set-style( [$color, $color, GD-transparent, GD-transparent] );
     $style = GD-styled;
   }
   else {
@@ -260,19 +264,25 @@ sub draw-border($img, Int $x-from
   }
   $img.setThickness($thickness);
   if $x-mid == 0 && $y-mid == 0 {
-    $img.line($x-from, $y-from, $x-to , $y-to , $style);
+    $img.line(start => ($x-from, $y-from)
+            , end   => ($x-to  , $y-to  )
+            , color => $style);
     if $color-name eq 'Black' {
-      $img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
+      ###$img.filledEllipse( ($x-from + $x-to) / 2, ($y-from + $y-to) / 2, 4 × $thickness, 4 × $thickness, $color);
     }
     $x-mid = (($x-from + $x-to) / 2).Int;
     $y-mid = (($y-from + $y-to) / 2).Int;
   }
   else {
-    $img.line($x-from, $y-from, $x-mid, $y-mid, $style);
-    $img.line($x-mid , $y-mid , $x-to , $y-to , $style);
+    $img.line(start => ($x-from, $y-from)
+            , end   => ($x-mid , $y-mid )
+            , color => $style);
+    $img.line(start => ($x-mid, $y-mid)
+            , end   => ($x-to , $y-to )
+            , color => $style);
     if $color-name eq 'Black' {
       # do not bother to compute the middle of the line, just use the turning point
-      $img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
+      ###$img.filledEllipse( $x-mid, $y-mid, 4 × $thickness, 4 × $thickness, $color);
     }
   }
   if $name ne '' {
@@ -305,15 +315,15 @@ sub draw-area($img, Int $x, Int $y
   my Int $diameter =  2 × $radius;
   $img.setThickness(3);
   if $shadow {
-    $img.filledRectangle($x - $radius, $y - $radius, $x + $radius, $y + $radius, $backg);
-    $img.rectangle(      $x - $radius, $y - $radius, $x + $radius, $y + $radius, $color);
+    ###$img.filledRectangle($x - $radius, $y - $radius, $x + $radius, $y + $radius, $backg);
+    ###$img.rectangle(      $x - $radius, $y - $radius, $x + $radius, $y + $radius, $color);
   }
   else {
-    $img.filledEllipse($x, $y, $diameter, $diameter, $backg);
-    $img.ellipse(      $x, $y, $diameter, $diameter, $color);
+    ###$img.filledEllipse($x, $y, $diameter, $diameter, $backg);
+    ###$img.ellipse(      $x, $y, $diameter, $diameter, $color);
   }
   $img.setThickness(1);
-  $img.string(GD-small-font, $x - $dx, $y - $dy, $txt, $ink);
+  ###$img.string(GD-small-font, $x - $dx, $y - $dy, $txt, $ink);
   $name ~~ s:g/\'/\&\#039;/;
   if $url eq '' {
     return "<area shape='circle' coords='$x,$y,$radius' title='$name' />\n";
