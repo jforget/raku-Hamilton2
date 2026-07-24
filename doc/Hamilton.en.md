@@ -65,6 +65,195 @@ for computations and Raku /
 or Raku / [Cro](https://cro.raku.org/).
 for display with a web browser.
 
+Installation
+============
+
+I describe the  installation on a virtual machine with  Devuan 6. This
+is a barebones VM with a small development toolkit:
+
+* curl
+
+* my favorite source editor (5 letters, starts with "E", but not `edlin`)
+
+* gcc
+
+* g++
+
+* gitk (which implies git)
+
+* make
+
+Of course,  your computer  is different from  my VM.  The installation
+procedure cannot  be a  rigid procedure that  must be  obeyed blindly.
+This  is rather  a list  of suggestions,  you have  to understand  the
+purpose  of  these instructions  and  adapt  them to  your  computer's
+architecture. The buck stops with you.
+
+Using Synaptic (or any package  manager), check the following packages
+and, if necessary, install them
+
+* libgd3
+
+* raku-zef
+
+* sqlite3
+
+For some reasons  I do not grasp, you must  run the following updates.
+Run these commands with `su` or `sudo`.
+
+```
+cd /usr/lib/x86_64-linux-gnu
+ln -s libssl.so.3         libssl.so
+ln -s libcrypto.so.3      libcrypto.so
+ln -s libffi.so.8.1.4     libffi.so
+ln -s libtommath.so.1.3.0 libtommath.so
+ln -s libuv.so.1.0.0      libuv.so
+```
+
+In the  future, beware  when you upgrade  your computer.  For example,
+when library `libssl.so.3` is upgraded to `libssl.so.4`.
+
+Some Raku  modules have a  few problems.  They must be  installed with
+`zef install --force-test`. These are:
+
+* [`Bailador`](https://raku.land/cpan:UFOBAT/Bailador)
+
+* [`Digest`](https://raku.land/zef:grondilu/Digest)
+
+* [`NativeHelpers::Blob`](https://raku.land/zef:raku-community-modules/NativeHelpers::Blob)
+
+* [`DBIish`](https://raku.land/zef:raku-community-modules/DBIish)
+
+In addition, the current version  of `Bailador` is not compatible with
+the recent versions of `Digest`. You need an older version of `Digest`
+in addition of not taking tests into account. This translates to:
+
+```
+zef install --force-test Bailador
+zef uninstall Digest
+zef install --force-test "Digest:ver<0.18.5>"
+zef install --force-test NativeHelpers::Blob
+zef install --force-test DBIish
+```
+
+(do not forget the double quotes for `Digest:ver<0.18.5>`).
+
+Another possibility (which  I have not tested) consists  in cloning or
+forking the
+[Github repo for Bailador](https://github.com/Bailador/Bailador),
+fixing 
+[file `lib/Bailador/Sessions.pm`](https://github.com/Bailador/Bailador/blob/master/lib/Bailador/Sessions.pm)
+to  remove the  line `use  Digest;` and  installing Bailador  from the
+local repo.  And while  you are at  it, submit a  pull request  to the
+module maintainers. Yet, as stated in
+[issue 315](https://github.com/Bailador/Bailador/issues/315),
+Bailador is dormant, so do not expect an answer anytime soon.
+
+A  third possibility  (which I  have  not tested  either) consists  in
+forsaking Bailador and using only Cro. In this case, no need to tinker
+with the installation of `Digest`.
+
+The following modules are installed in the usual fashion:
+
+* [`GD`](https://raku.land/zef:raku-community-modules/GD)
+
+* [`Graph`](https://raku.land/zef:antononcube/Graph)
+
+* [`List::Util`](https://raku.land/zef:lizmat/List::Util)
+
+* [`Template::Anti`](https://raku.land/cpan:HANENKAMP/Template::Anti)
+
+* [`MIME::Base64`](https://raku.land/zef:raku-community-modules/MIME::Base64)
+
+* [`PostCocoon::Url`](https://raku.land/zef:raku-community-modules/PostCocoon::Url)
+
+* [`Cro::HTTP`](https://raku.land/zef:cro/Cro::HTTP)
+
+In a web browser, display the
+[project page](https://github.com/jforget/raku-Hamilton2/tree/master),
+and click on `Code → Download ZIP`. Then, on a command line:
+
+```
+cd Documents
+unzip ../Téléchargements/raku-Hamilton2-master.zip
+```
+
+If you have enough room on  your disk, another possibility consists in
+cloning the project with its full history:
+
+```
+cd Documents
+git clone https://github.com/jforget/raku-Hamilton2.git
+```
+
+In file  `lib/db-conf-sql.rakumod`, fill  variable `$dbname`  with the
+pathname of the SQLite database, with a directory hierarchy compatible
+with your computer instead of compatible with mine.
+
+Create the database and fill it with:
+
+```
+sqlite3 Hamilton.db < cr.sqlite
+./init-fr.raku
+./init-ico.raku
+./init-platon.raku
+./init-ratp.raku
+./init-risk-extract.raku
+./init-risk-extract2.raku
+for i in fr1970 fr2015 frreg ico PL4 PL8 PL20 ratp x-risk x-risk-2
+do
+  ./shortest-path-statistics.raku --map=$i
+done
+```
+
+To display the maps stored in the database, run the command line:
+
+```
+./website1.raku
+```
+
+and in  a web  browser, display  `http://localhost:10000`. If  you use
+Bailador instead of Cro, the  command line is `./website.raku` and the
+browser address is `http://localhost:3000`.
+
+The database contains the maps, but no Hamiltonian paths. To get these
+Hamiltonian paths, allocate some time and launch:
+
+```
+for i in fr1970 fr2015 frreg ico PL4 PL6 PL8 ratp x-risk x-risk-2
+do
+  ./gener1.raku --map=$i
+done
+```
+
+Then, allocate a new timespan and generate the full path by running:
+
+```
+for i in fr1970 frreg ico PL4 PL6 PL8 x-risk x-risk-2
+do
+  ./gener2.raku --map=$i
+  ./gener3.raku --map=$i
+done
+```
+
+You may notice  that maps `fr2015` and `ratp` have  been omitted. This
+is a deliberate decision, the processing time would be huge.
+
+You can  create elementary  graphs, which are  used when  studying the
+mathematical aspects of graphs. For example, run:
+
+```
+./init-elem --nb=4
+for i in P4 C4 Y4 AY4 W5 S5
+do
+  ./shortest-path-statistics.raku --map=$i
+  ./gener1.raku --map=$i
+  ./gener2.raku --map=$i
+  ./gener3.raku --map=$i
+done
+```
+
+
 A Few Words about Graph Theory
 ==============================
 

@@ -51,7 +51,7 @@ db-conf-sql.rakumod -- hard-coded values for the Hamilton database
 
 This module  gives hard-coded  values related  to the  SQLite Hamilton
 database: the  database pathname, and  the commit interval  (number of
-inserts  /  updates  betwee  two   successive  commits).  It  is  used
+inserts  /  updates  between two   successive  commits).  It  is  used
 internally   by   C<init-fr.raku>,   C<gener1.raku>,   C<gener2.raku>,
 C<website.raku> and C<access-sql.rakumod>.
 

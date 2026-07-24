@@ -68,6 +68,200 @@ affichage en mode web avec des programmes Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
 ou des programmes Raku / [Cro](https://cro.raku.org/).
 
+Installation
+============
+
+Je prends  pour exemple une  machine virtuelle Devuan-6,  sur laquelle
+j'ai installé quelques outils de programmation :
+
+* curl
+
+* mon éditeur de source préféré (5 lettres, commence avec un « E », mais ce n'est pas `edlin`)
+
+* gcc
+
+* g++
+
+* gitk (installe implicitement git)
+
+* make
+
+Évidemment,  votre   machine  diffère  de  la   mienne.  La  procédure
+d'installation  ne doit  pas forcément  être  suivie à  la lettre.  Il
+s'agit plutôt  d'indications génériques ou  de suggestions, à  vous de
+comprendre comment adapter ces indications au cas de votre machine.
+
+Dans Synaptic (ou autre gestionnaire de paquets), vérifiez les paquets
+suivants et, si nécessaire, installez les paquets absents.
+
+* libgd3
+
+* raku-zef
+
+* sqlite3
+
+Pour des raisons que je ne  comprends pas, il faut effectuer les mises
+à jour suivantes. À effectuer avec les habilitations appropriées (donc
+`su` ou `sudo`).
+
+```
+cd /usr/lib/x86_64-linux-gnu
+ln -s libssl.so.3         libssl.so
+ln -s libcrypto.so.3      libcrypto.so
+ln -s libffi.so.8.1.4     libffi.so
+ln -s libtommath.so.1.3.0 libtommath.so
+ln -s libuv.so.1.0.0      libuv.so
+```
+
+Et à  l'avenir, faites attention  lorsque vous mettez votre  système à
+niveau  et  que,  par   exemple,  la  bibliothèque  `libssl.so.3`  est
+remplacée par `libssl.so.4`.
+
+Certains modules Raku ont quelques  problèmes « de jeunesse ». Il faut
+les installer avec `zef install --force-test`. Ce sont :
+
+* [`Bailador`](https://raku.land/cpan:UFOBAT/Bailador)
+
+* [`Digest`](https://raku.land/zef:grondilu/Digest)
+
+* [`NativeHelpers::Blob`](https://raku.land/zef:raku-community-modules/NativeHelpers::Blob)
+
+* [`DBIish`](https://raku.land/zef:raku-community-modules/DBIish)
+
+De plus, le  module `Bailador` est incompatible  (pour l'instant) avec
+les  versions  récentes  de  `Digest`. Il  faut  choisir  une  version
+ancienne du module `Digest` et en  plus ne pas tenir compte des tests.
+Cela donne :
+
+```
+zef install --force-test Bailador
+zef uninstall Digest
+zef install --force-test "Digest:ver<0.18.5>"
+zef install --force-test NativeHelpers::Blob
+zef install --force-test DBIish
+```
+
+(n'oubliez pas les doubles quotes pour `Digest:ver<0.18.5>`).
+
+Une autre possibilité (que je n'ai pas testée) consiste à cloner ou forker le
+[dépôt Github de Bailador](https://github.com/Bailador/Bailador),
+à corriger le
+[fichier `lib/Bailador/Sessions.pm`](https://github.com/Bailador/Bailador/blob/master/lib/Bailador/Sessions.pm)
+pour enlever la  ligne `use Digest;` et à installer  Bailador à partir
+de votre clone. Profitez-en pour  créer une _pull request_. Mais comme
+il est indiqué dans
+l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
+Bailador est en sommeil, donc n'espérez pas un retour rapide sur votre
+_pull request_.
+
+Une  troisième possibilité  (pas  testée non  plus)  consiste à  faire
+l'impasse  sur Bailador  et à  utiliser uniquement  Cro. Du  coup, pas
+besoin de bidouiller l'installation de `Digest`.
+
+Installation normale des modules Raku suivants :
+
+* [`GD`](https://raku.land/zef:raku-community-modules/GD)
+
+* [`Graph`](https://raku.land/zef:antononcube/Graph)
+
+* [`List::Util`](https://raku.land/zef:lizmat/List::Util)
+
+* [`Template::Anti`](https://raku.land/cpan:HANENKAMP/Template::Anti)
+
+* [`MIME::Base64`](https://raku.land/zef:raku-community-modules/MIME::Base64)
+
+* [`PostCocoon::Url`](https://raku.land/zef:raku-community-modules/PostCocoon::Url)
+
+* [`Cro::HTTP`](https://raku.land/zef:cro/Cro::HTTP)
+
+Dans un navigateur web, accédez à la
+[page du projet](https://github.com/jforget/raku-Hamilton2/tree/master),
+cliquez sur `Code → Download ZIP`.
+
+En ligne de commande :
+
+```
+cd Documents
+unzip ../Téléchargements/raku-Hamilton2-master.zip
+```
+
+ou  bien,  selon  la  place disque  disponible,  vous  pouvez  charger
+l'historique complet :
+
+```
+cd Documents
+git clone https://github.com/jforget/raku-Hamilton2.git
+```
+
+Dans `lib/db-conf-sql.rakumod`, alimentez la  valeur de `$dbname` avec
+un nom de chemin correspondant à votre machine plutôt qu'à la mienne.
+
+Créez la base de données et alimentez-la avec :
+
+```
+sqlite3 Hamilton.db < cr.sqlite
+./init-fr.raku
+./init-ico.raku
+./init-platon.raku
+./init-ratp.raku
+./init-risk-extract.raku
+./init-risk-extract2.raku
+for i in fr1970 fr2015 frreg ico PL4 PL8 PL20 ratp x-risk x-risk-2
+do
+  ./shortest-path-statistics.raku --map=$i
+done
+```
+
+Puis affichez les cartes de la base de données en tapant en ligne de commande
+
+```
+./website1.raku
+```
+
+puis en affichant `http://localhost:10000`  dans un navigateur web. Si
+vous utilisez  Bailador, c'est  `./website.raku` qu'il faut  lancer et
+c'est `http://localhost:3000` qu'il faut afficher.
+
+Attention, la base de données  ne contient pour l'instant aucun chemin
+hamiltonien. Pour  les générer, commencez  par prévoir du  temps, puis
+générez les chemins régionaux et les macro-chemins avec :
+
+```
+for i in fr1970 fr2015 frreg ico PL4 PL6 PL8 ratp x-risk x-risk-2
+do
+  ./gener1.raku --map=$i
+done
+```
+
+et, avec de  nouveau beaucoup de temps à prévoir,  générez les chemins
+complets avec
+
+```
+for i in fr1970 frreg ico PL4 PL6 PL8 x-risk x-risk-2
+do
+  ./gener2.raku --map=$i
+  ./gener3.raku --map=$i
+done
+```
+
+Vous avez  peut-être remarqué  que les cartes  `fr2015` et  `ratp` ont
+disparu de la liste. C'est volontaire, le temps de traitement pour ces
+deux cartes étant rédhibitoire.
+
+Vous pouvez  créer des  graphes élémentaires  utiles pour  l'étude des
+graphes en mathématiques. Lancez par exemple les commandes :
+
+```
+./init-elem --nb=4
+for i in P4 C4 Y4 AY4 W5 S5
+do
+  ./shortest-path-statistics.raku --map=$i
+  ./gener1.raku --map=$i
+  ./gener2.raku --map=$i
+  ./gener3.raku --map=$i
+done
+```
+
 Quelques rappels sur la théorie des graphes
 ===========================================
 
