@@ -1,5 +1,8 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
+Introduction and Historical Notes
+=================================
+
 This  project  aims  at   extracting  doubly  Hamiltonian  paths  from
 administrative maps. In a connected unoriented graph, an
 [Hamiltonian path](https://mathworld.wolfram.com/HamiltonianPath.html)
@@ -64,6 +67,47 @@ for computations and Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
 or Raku / [Cro](https://cro.raku.org/).
 for display with a web browser.
+
+Later, I read
+[tome 2 of Mathematical Recreations by Édouard Lucas](https://gallica.bnf.fr/ark:/12148/bpt6k39443/)
+which includes a
+[chapter](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
+describing Hamilton's  icosian game, a  simple game which  allowed Sir
+William Rowan Hamilton to define a  new concept in graph theory, a new
+concept  which   would  later   be  named  "Hamiltonian   cycles"  and
+"Hamiltonian paths" to honor him.
+
+Lucas' chapter explains that each Hamiltonian path in the icosian game
+can be mapped to  a canonical path starting with "B → C  → D", using a
+cascade of  rotations and symmetries.  So I added the  dodecahedron to
+the list of maps,  even if this is not a map  split into regions, each
+region being in  turn split into departments. I also  added new tables
+to implement the isometries.
+
+![Rotations κ then λ](Kappa-Lambda-new.png)
+
+Adding the  dodecahedron led the  way to including the  other Platonic
+solids and then other abstract graphs not based on a geographical map,
+such as star graphs or wheel graphs.
+
+![Elementary graphs for n=5](Elementary-graphs.png)
+
+I added  isometries for  the other  Platonic solids,  but not  for the
+elementary  graphs.  First,  the  proper   name  would  no  longer  be
+"isometries"  but  "isomorphisms",  then for  the  elementary  graphs,
+isomorphisms are trivial and boring and,  in some cases, there are too
+many of them.
+
+Then, after reading the documentation for
+[Perl module Graph.pm](https://metacpan.org/dist/Graph)
+and for
+[Raku module Graph.rakumod](https://raku.land/zef:antononcube/Graph),
+I took  interest in the  building of shortest  paths from node  "A" to
+node "B", with  the derived concepts (radius and diameter  of a graph,
+eccentricity of  a node,  etc). Because  of that,  I added  new graphs
+which, up to now, were useless  because they obviously did not contain
+any Hamiltonian path or because the search for Hamiltonian paths would
+require too much computer time.
 
 Installation
 ============
@@ -3958,7 +4002,7 @@ cities  the initial  of  which is  a  consonant, the  6  nodes of  the
 octahedral graph are named after cities  the name of which begins with
 a vowel. In addition,  I have tried to set up these  cities in a place
 consistent with their real  geographical locations: Anchorage near the
-North pole, Ushuaia near the  South pole, Edmonton, Yaounde; Islamabad
+North pole, Ushuaia near the  South pole, Edmonton, Yaounde, Islamabad
 and Osaka roughly near the equator.
 
 For tetrahedron PL4, I took cities with initials A, B, C and D, set-up

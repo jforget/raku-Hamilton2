@@ -1,5 +1,8 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
+Introduction et historique
+==========================
+
 Le but de ce projet est de trouver des chemins doublement hamiltoniens
 dans une carte administrative. Dans un graphe connexe non orienté, un
 [chemin hamiltonien](https://mathworld.wolfram.com/HamiltonianPath.html)
@@ -67,6 +70,49 @@ lancés en ligne de commande pour alimenter cette base de données et un
 affichage en mode web avec des programmes Raku /
 [Bailador](https://modules.raku.org/dist/Bailador:cpan:UFOBAT)
 ou des programmes Raku / [Cro](https://cro.raku.org/).
+
+Quelque temps plus tard, j'ai lu le
+[tome 2 des Récréations mathématiques d'Édouard Lucas](https://gallica.bnf.fr/ark:/12148/bpt6k39443/)
+dont un
+[chapitre](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
+présente le jeu  icosien d'Hamilton, qui a permis à  Sir William Rowan
+Hamilton de définir un nouveau concept en théorie des graphes, concept
+appelé ultérieurement « cycle  hamiltonien » ou « chemin hamiltonien »
+en hommage à son créateur.
+
+Le chapitre de Lucas expliquait  également que tout chemin hamiltonien
+du jeu icosien pouvait se ramener grâce à une série de rotations et de
+symétries à  un chemin canonique  commençant par « B  → C →  D ». J'ai
+donc ajouté le dodécaèdre à la liste des cartes traitées, même si cela
+ne  correspond  plus  à  une carte  découpée  en  régions  elles-mêmes
+découpées  en départements.  J'ai  ajouté de  nouvelles  tables et  un
+traitement annexe pour implémenter les isométries.
+
+![Enchaînement κ puis λ](Kappa-Lambda-new.png)
+
+L'inclusion  du dodécaèdre  a  ouvert  la voie  à  l'ajout des  autres
+solides platoniciens, puis à  d'autres graphes abstraits, c'est-à-dire
+qui ne  sont pas basés sur  une carte géographique :  graphe en ligne,
+graphe en étoile, etc.
+
+![Graphes élémentaires pour n=5](Elementary-graphs.png)
+
+J'ai ajouté les isométries pour  les autres solides platoniciens, mais
+pas  pour  les  graphes  élémentaires. D'une  part,  j'aurais  dû  les
+renommer « isomorphismes » au lieu de « isométries », d'autre part les
+isomorphismes sont habituellement  un peu trop évidents  et parfois un
+peu trop nombreux.
+
+Ensuite, après avoir consulté la documentation du
+[module Perl Graph.pm](https://metacpan.org/dist/Graph)
+puis le
+[module Raku Graph.rakumod](https://raku.land/zef:antononcube/Graph),
+je me  suis intéressé à  la construction  des chemins les  plus courts
+d'un  sommet « A »  à  un  sommet « B »,  avec  les concepts  associés
+(diamètre et rayon d'un graphe,  excentricité d'un sommet...). À cette
+occasion,  j'ai ajouté  à la  base de  données plusieurs  graphes pour
+lesquels la recherche de chemins hamiltoniens était vouée à l'échec ou
+nécessitait un temps rédhibitoire.
 
 Installation
 ============
