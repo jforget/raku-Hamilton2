@@ -394,6 +394,40 @@ with Hamiltonian cycles and they ignore Hamiltonian paths. This is not
 the opposite here,  I deal with Hamiltonian paths and  I nearly ignore
 Hamiltonian cycles.
 
+Technical Debt
+==============
+
+I have no commitment to ensure compatibility with older versions, so I
+can overhaul my code each time I think it needs an overhaul. Yet, I am
+wary doing the same on the database schema. The technical debt applies
+almost only to the names I use in the project.
+
+The  first  wrong  name  is  the project  name.  My  initial  aim  was
+restricted to  finding doubly  Hamiltonian paths, so  I named  my repo
+"raku-Hamilton2". Then,  as I  add isometries, finding  shortest paths
+from "A" to "B",  plus other future topics I do not  know about yet, I
+think I should have named this repo "raku-fun-with-graphs".
+
+Then, there  are table  names, view  names and  column names.  Since I
+began  with  graphs representing  a  geographical  area, I  have  used
+geographical words instead of mathematical words:
+
+| mathematics               | program        |
+|:--------------------------|:---------------|
+| graph                     | map            |
+| node, vertex              | area           |
+| edge                      | border         |
+| abscissa, x-coordinate, x | longitude, lon |
+| ordinate, y-coordinate, y | latitude, lat  |
+
+About  the  code,  I do  not  rule  out  any  errors or  any  possible
+improvements. Yet, when  I am aware of such errors  or improvements, I
+fix the errors and I apply  the improvements. The only technical debts
+that I could leave  could be some columns that I  first added to table
+TA and that later I added to  table TB instead. The column would still
+be present  in the schema  of table TA,  while the programs  no longer
+feed it neither read it.
+
 Database
 ========
 

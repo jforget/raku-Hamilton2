@@ -423,6 +423,44 @@ délaissent les chemins hamiltoniens (ou chaînes hamiltoniennes). C'est
 l'inverse  ici, je  m'intéresse aux  chemins hamiltoniens  et j'ignore
 presque totalement les cycles hamiltoniens.
 
+Dette technique
+===============
+
+N'ayant pas de contrainte de  compatibilité ascendante, je peux revoir
+de fond en comble le codage, mais j'hésite à le faire sur le schéma de
+la base  de données. La  dette technique concerne  essentiellement les
+noms utilisés dans le projet.
+
+À commencer  par le nom du  dépôt Github. Comme mon  but initial était
+uniquement  de rechercher  des chemins  doublement hamiltoniens,  j'ai
+appelé mon dépôt « raku-Hamilton2 ». Avec l'ajout des isométries, avec
+l'ajout des  chemins les plus courts  d'un sommet à un  autre, avec ce
+que je vais ajouter à  l'avenir, sans réellement savoir aujourd'hui de
+quoi  il  s'agit,  je  me  rends  compte  que  j'aurais  dû  l'appeler
+« raku-fun-with-graphs ».
+
+Ensuite, il  y a le  nom des tables, des  vues et des  colonnes. Comme
+j'ai commencé  par des graphes représentant  des cartes géographiques,
+j'ai  utilisé   des  termes   géographiques  plutôt  que   des  termes
+mathématiques :
+
+| math francophones | mathématiques anglophones | programme      |
+|:------------------|:--------------------------|:---------------|
+| graphe            | graph                     | map            |
+| sommet            | node, vertex              | area           |
+| arête             | edge                      | border         |
+| abscisse, x       | abscissa, x-coordinate, x | longitude, lon |
+| ordonnée, y       | ordinate, y-coordinate, y | latitude, lat  |
+
+Pour en  revenir au code, il  se peut qu'il  y ait des erreurs  ou des
+passages à améliorer. Cela dit, si je suis conscient de telles erreurs
+ou de  telles améliorations, je  les corrige  (les erreurs) ou  je les
+applique  (améliorations).  Les  seuls  éléments  de  dette  technique
+pourraient être des colonnes que  j'aurais initialement ajoutées à une
+première table  et que  j'aurais ensuite  réattribuées à  une deuxième
+table. La colonne  peut rester présente dans la  première table, alors
+que le programmes ne l'alimentent plus et ne l'utilisent plus.
+
 Base de données
 ===============
 
