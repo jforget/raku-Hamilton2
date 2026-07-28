@@ -141,7 +141,7 @@ zef install --force-test DBIish
 Another possibility (which  I have not tested) consists  in cloning or
 forking the
 [Github repo for Bailador](https://github.com/Bailador/Bailador),
-fixing 
+fixing
 [file `lib/Bailador/Sessions.pm`](https://github.com/Bailador/Bailador/blob/master/lib/Bailador/Sessions.pm)
 to  remove the  line `use  Digest;` and  installing Bailador  from the
 local repo.  And while  you are at  it, submit a  pull request  to the
@@ -185,6 +185,9 @@ cloning the project with its full history:
 cd Documents
 git clone https://github.com/jforget/raku-Hamilton2.git
 ```
+
+Or you can even fork my repo in Github and clone this new repo instead
+of mine.
 
 In file  `lib/db-conf-sql.rakumod`, fill  variable `$dbname`  with the
 pathname of the SQLite database, with a directory hierarchy compatible
@@ -4674,12 +4677,14 @@ of generic regional paths. A side benefit would be that for these
 maps, the contents of table `Path_Relations` would be accurate, even
 if not fixed (see previous point). The website will be able to deal
 with both full paths with a "specific" `path` column and full paths
-with a "generic" `path` column. Somewhat difficult to implement, but
-still possible.
+with a "generic" `path` column.
+[Done](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku)
 
 4. Upgrade Raku module `GD.pm`, by renaming is `GD.rakumod` and adding
-line thicknesses and  text display. This update seems easy,  but I may
-be mistaken.
+line thicknesses and  text display.
+[Done](https://github.com/jforget/raku-sandbox-GD/blob/master/Description.en.md).
+
+5. Overhaul the documentation, to deal separately with each subject. In progress.
 
 License
 =======

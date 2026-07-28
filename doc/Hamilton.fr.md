@@ -150,7 +150,7 @@ Une autre possibilité (que je n'ai pas testée) consiste à cloner ou forker le
 pour enlever la  ligne `use Digest;` et à installer  Bailador à partir
 de votre clone. Profitez-en pour  créer une _pull request_. Mais comme
 il est indiqué dans
-l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
+l'[issue 315](https://github.com/Bailador/Bailador/issues/315),
 Bailador est en sommeil, donc n'espérez pas un retour rapide sur votre
 _pull request_.
 
@@ -193,6 +193,9 @@ cd Documents
 git clone https://github.com/jforget/raku-Hamilton2.git
 ```
 
+Vous pouvez même  forker mon dépôt et cloner votre  version au lieu de
+la mienne.
+
 Dans `lib/db-conf-sql.rakumod`, alimentez la  valeur de `$dbname` avec
 un nom de chemin correspondant à votre machine plutôt qu'à la mienne.
 
@@ -212,7 +215,7 @@ do
 done
 ```
 
-Puis affichez les cartes de la base de données en tapant en ligne de commande
+Affichez les cartes de la base de données en tapant en ligne de commande
 
 ```
 ./website1.raku
@@ -4904,13 +4907,16 @@ non  pas  par  des  chemins  régionaux  génériques.  Cela  permettrait
 d'obtenir pour ces cartes un contenu  fiable de la table des relations
 entres  chemins  régionaux et  chemins  complets.  Le site  web  devra
 traiter aussi bien des chemins  complets en version « spécifique » que
-des  chemins  complets  en version  « générique ».  Réalisation  assez
-difficile, mais possible.
+des  chemins  complets  en version  « générique ».
+[Fait](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku)
 
 4.  Mettre  à jour  le  module  Raku  `GD.pm`,  déjà en  le  renommant
 `GD.rakumod`, pour y ajouter les  épaisseurs de trait et l'écriture de
-chaînes de caractères.  La réalisation semble facile, mais  je ne suis
-pas à l'abri de mauvaises surprises.
+chaînes de caractères.
+[Fait](https://github.com/jforget/raku-sandbox-GD/blob/master/Description.fr.md).
+
+5. Réorganiser  la documentation  pour bien identifier  les différents
+problèmes à traiter. En cours.
 
 LICENCE
 =======
