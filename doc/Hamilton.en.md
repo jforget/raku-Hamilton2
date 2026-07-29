@@ -645,6 +645,59 @@ The filling of the `exterior` column  of table `Areas` and the purpose
 of  columns  `lon`,  `lat`  and   `cross_idl`  will  be  explained  is
 subsequent chapters.
 
+Initialisation of the French maps, `init-fr.raku`
+-------------------------------------------------
+
+The  program initialising  the French  maps is  more complicated  than
+`init-risk-extract2.raku`, because there are actually three levels for
+the areas: departments, regions created in 1970 and regions overhauled
+in 2015.  This gives  three maps,  each one using  two of  these three
+levels. According to the DRY principle, it is better to write a single
+program  `init-fr.raku`  and  a  single data  file  `fr-depts.txt`  to
+initialise all three maps.
+
+The data file `fr-depts.txt` contains four different line types:
+
+* `A` for Y2015 regions,
+* `B` for Y1970 regions,
+* `AB` for Y1970 regions which were not altered in 2015,
+* `C` for departments.
+
+Beyond the area code and the area name, lines `A` and `AB` contain the
+color scheme for maps `fr2015` and `frreg`, lines `AB` and `B` contain
+the color scheme for map `fr1970`.  Lines `C` contain the latitude and
+longitude   for  the   individual  departments,   plus  the   list  of
+neighbouring departments.
+
+On the other hand, there is a small simplification because there is no
+need to convert pixel-coordinates into longitude and latitude.
+
+I have written the text file in the following fashion. I have displayed the
+[Géo Portail](https://www.geoportail.gouv.fr/)
+website   and  selected   only  the   _limites  administratives_   map
+(administrative borders). For  each department, I have  clicked at the
+approximate  center  of  the department,  right-clicked  and  selected
+_adresse /  coordonnées du  lieu_ (location address  and coordinates).
+Then I  have copied-pasted  the latitude and  longitude into  the text
+file. When copying-pasting the values, I  have kept all 5 digits after
+the decimal point. If you bother  to check, one latitude degree is 111
+km and, at  latitude 45, one longitude  degree is 78 km.  So the fifth
+decimal digit  means that the  values have  a precision of  one meter,
+more or less.  This is excessive. I could have  truncated to 2 decimal
+digits.
+
+Also, I  have listed  all neighbouring departments.  In some  cases, I
+have zoomed to know if two  departments are really neighbours. See for
+example the  4-way point  between Vaucluse, Bouches-du-Rhône,  Var and
+Alpes de Haute-Provence, at 43.72°N and 5.75°E.
+
+![4-way point in the South of France](point-quadruple.png)
+
+There is another  simplification because this was the  first program I
+wrote. At this time, I was  not bothered by the numerous useless error
+messages when running a partial map generation. Therefore, the program
+has no `%seen` hashtable and no `--complet` command-line parameter.
+
 Database
 ========
 
@@ -944,75 +997,6 @@ initialisation  programmes  are  the  programme  dealing  with  French
 regions and departments, the initialisation programme for the RATP map
 (subway lines in Paris) and the initialisation programmes for abstract
 graphs (Platonic solids).
-
-This  initialisation  programme  is  more complicated  than  a  normal
-initialisation  programme, because  it deals  with three  hierarchical
-levels  instead  of  just  two:   Y1970  regions,  Y2015  regions  and
-departments.  It  initialises  three  maps  simultaneously:  `fr1970`,
-`fr2015` and `frreg`.
-
-In a  first phase,  the programme  reads a  sequential text  file with
-different line types:
-
-* `A` for Y2015 regions,
-* `B` for Y1970 regions,
-* `AB` for Y1970 regions which were not altered in 2015,
-* `C` for departments.
-
-Beyond the area code and the area name, lines `A` and `AB` contain the
-color scheme for maps `fr2015` and `frreg`, lines `AB` and `B` contain
-the color scheme for map `fr1970`.  Lines `C` contain the latitude and
-longitude   for  the   individual  departments,   plus  the   list  of
-neighbouring departments.
-
-I have written the text file in the following fashion. I have displayed the
-[Géo Portail](https://www.geoportail.gouv.fr/)
-website   and  selected   only  the   _limites  administratives_   map
-(administrative borders). For  each department, I have  clicked at the
-approximate  center  of  the department,  right-clicked  and  selected
-_adresse /  coordonnées du  lieu_ (location address  and coordinates).
-Then I  have copied-pasted  the latitude and  longitude into  the text
-file. When copying-pasting the values, I  have kept all 5 digits after
-the decimal point. If you bother  to check, one latitude degree is 111
-km and, at  latitude 45, one longitude  degree is 78 km.  So the fifth
-decimal digit  means that the  values have  a precision of  one meter,
-more or less.  This is excessive. I could have  truncated to 2 decimal
-digits.
-
-Also, I  have listed  all neighbouring departments.  In some  cases, I
-have zoomed to know if two  departments are really neighbours. See for
-example the  4-way point  between Vaucluse, Bouches-du-Rhône,  Var and
-Alpes de Haute-Provence, at 43.72°N and 5.75°E.
-
-![4-way point in the South of France](point-quadruple.png)
-
-Another  point, illustrated  by  the same  picture. Theorically,  each
-border between departments  is specified twice in the  input file. For
-example, the Var department (83) and the Vaucluse department (84) have
-a  common   border.  Therefore,  the  `C ; 83`   line  should  mention
-department 84 and the `C ; 84`  line should mention department 83. The
-initialisation programme will check the symmetry.
-
-During the first phase, the  departments records, that is records with
-keys `fr1970`+`2` and `fr2015`+`2` are  created with all their fields.
-On  the  other  hand,  in  the regions  records,  that  is  with  keys
-`fr1970`+`1`, `fr2015`+`1`  `frreg`+`1` and `frreg`+`2`,  the latitude
-and the longitude will not be filled, and no `Borders` records will be
-created.
-
-You  will have  to wait  for the  second phase  to finish  the regions
-records. For each  region, the programme extracts  all the departments
-within  this  region,  computes  the  average  of  the  latitudes  and
-longitudes of  these departments  and updates  the region  record with
-these computed values.
-
-Likewise,  the  programme  creates  the `Borders`  records  with  keys
-`fr1970`+`1`  and `frreg`+`2`  by extracting  all departments  borders
-`fr1970`+`2`  lying  between  two different  regions,  discarding  all
-duplicates region-wise  and store the  result in the  `Borders` table.
-And  it creates  in  the  same way  the  `Borders`  records with  keys
-`fr2015`+`1`  and `frreg`+`1`  by extracting  all departments  borders
-`fr2015`+`2` lying between two different regions.
 
 Other Maps
 ----------

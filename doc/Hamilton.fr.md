@@ -688,6 +688,60 @@ L'initialisation de la  colonne `exterior` due la table  `Areas` et le
 rôle des  colonnes `lon`, `lat`  et `cross_idl` de la  table `Borders`
 seront expliqués dans des paragraphes ultérieurs.
 
+Programme d'initialisation des cartes françaises, `init-fr.raku`
+----------------------------------------------------------------
+
+Le programme d'initialisation des cartes françaises est plus compliqué
+que  `init-risk-extract2.raku`,  parce  qu'il  y a  en  réalité  trois
+niveaux de zones,  les départements, les régions du  découpage de 1970
+et  les régions  du  découpage  de 2015.  Donc  trois cartes,  chacune
+utilisant deux de ces trois  niveaux. Tant qu'à faire, autant utiliser
+le  même  programme  `init-fr.raku`  et le  même  fichier  de  données
+`fr-depts.txt` pour créer ces trois cartes.
+
+Ce fichier `fr-depts.txt` contien des lignes de différents types :
+
+* lignes `A` pour les régions de 2015,
+* lignes `B` pour les régions de 1970,
+* lignes `AB` pour les régions de 1970 qui ont été reprises telles quelles dans le découpage de 2015,
+* lignes `C` pour les départements.
+
+Outre le code et le nom en clair  de la région, les lignes `A` et `AB`
+contiennent  le  schéma  de  coloriage pour  les  cartes  `fr2015`  et
+`frreg`. Les  lignes `AB`  et `B` contiennent  le schéma  de coloriage
+pour la carte  `fr1970`. Les lignes `C` contiennent la  latitude et la
+longitude  des  départements,  pour  les positionner  sur  les  cartes
+générées, ainsi que la liste des départements limitrophes.
+
+En revanche, il y a une simplification  dans la mesure où il n'y a pas
+besoin de conversion des coordonnées pixel en longiture et latitude.
+
+J'ai constitué  le fichier texte  de la façon suivante.  J'ai consulté
+[Géo Portail](https://www.geoportail.gouv.fr/)
+en n'affichant que le fond  de carte « limites administratives ». Pour
+chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
+droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
+copié-collé la latitude et la longitude dans le fichier. J'ai pris les
+valeurs telles quelles, avec cinq  décimales. Or, un degré de latitude
+fait  111 km et,  à la  latitude de  45°, un  degré de  longitude fait
+78 km.  La  cinquième  décimale  sur   la  longitude  et  la  latitude
+représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
+contenter de deux décimales. Tant pis.
+
+Par moment,  j'ai dû  zoomer au voisinage  des points  quadruples pour
+vérifier   quels  départements   sont  contigus   avec  quels   autres
+départements.  Voir  par exemple  la  limite  entre le  Vaucluse,  les
+Bouches-du-Rhône, le  Var et  les Alpes  de Haute-Provence,  par 43,72
+degrés de latitude nord et 5,75 degrés de longitude est.
+
+![Point quadruple au sud de la France](point-quadruple.png)
+
+Il y  a une autre  simplification dans la  mesure où c'est  le premier
+programme d'initialisation que j'ai écrit et qu'à l'époque, je n'étais
+pas  gêné par  l'affichage de  nombreux messages  d'erreur lorsque  je
+demandais une  génération partielle du  graphe. Donc, pas de  table de
+hachage `%seen` et pas de paramètre `--complet`.
+
 Base de données
 ===============
 
@@ -997,76 +1051,6 @@ d'initialisation pour les jeux comme Risk  ou War on Terror. Les seuls
 programmes  d'initialisation concerne  les régions  françaises et  les
 départements français  décrit ci-dessous, la  carte de la RATP  et les
 graphes abstraits comme les polyèdres platoniciens.
-
-Ce  programme  est  plus compliqué  qu'un  programme  d'initialisation
-standard, car il est prévu pour traiter trois niveaux hiérarchiques au
-lieu de deux : les régions de 2015, puis les régions de 1970, puis les
-départements. Il charge à la  fois les trois cartes `fr1970`, `fr2015`
-et `frreg`.
-
-Dans un premier temps, le programme lit un fichier séquentiel avec des
-lignes de différents types :
-
-* lignes `A` pour les régions de 2015,
-* lignes `B` pour les régions de 1970,
-* lignes `AB` pour les régions de 1970 qui ont été reprises telles quelles dans le découpage de 2015,
-* lignes `C` pour les départements.
-
-Outre le code et le nom en clair  de la région, les lignes `A` et `AB`
-contiennent  le  schéma  de  coloriage pour  les  cartes  `fr2015`  et
-`frreg`. Les  lignes `AB`  et `B` contiennent  le schéma  de coloriage
-pour la carte  `fr1970`. Les lignes `C` contiennent la  latitude et la
-longitude  des  départements,  pour  les positionner  sur  les  cartes
-générées, ainsi que la liste des départements limitrophes.
-
-J'ai constitué  le fichier texte  de la façon suivante.  J'ai consulté
-[Géo Portail](https://www.geoportail.gouv.fr/)
-en n'affichant que le fond  de carte « limites administratives ». Pour
-chaque département,  j'ai cliqué  en plein milieu,  j'ai fait  un clic
-droit et j'ai sélectionné « adresse / coordonnées du lieu ». Puis j'ai
-copié-collé la latitude et la longitude dans le fichier. J'ai pris les
-valeurs telles quelles, avec cinq  décimales. Or, un degré de latitude
-fait  111 km et,  à la  latitude de  45°, un  degré de  longitude fait
-78 km.  La  cinquième  décimale  sur   la  longitude  et  la  latitude
-représente  donc une  précision de  l'ordre du  mètre. J'aurais  pu me
-contenter de deux décimales. Tant pis.
-
-Par  moment,  j'ai  zoomé  au voisinage  des  points  quadruples  pour
-vérifier   quels  départements   sont  contigus   avec  quels   autres
-départements.  Voir  par exemple  la  limite  entre le  Vaucluse,  les
-Bouches-du-Rhône, le  Var et  les Alpes  de Haute-Provence,  par 43,72
-degrés de latitude nord et 5,75 degrés de longitude est.
-
-![Point quadruple au sud de la France](point-quadruple.png)
-
-Autre  sujet,  illustré par  le  même  dessin ci-dessus.  Normalement,
-chaque frontière entre deux départements  est spécifiée deux fois dans
-le fichier en entrée. Par exemple,  il y a une frontière commune entre
-le Var (83)
-et le Vaucluse (84). La  ligne `C ; 83` doit mentionner le département
-84  et  la  ligne  `C ; 84`  doit mentionner  le  département  83.  Le
-programme  d'initialisation testera  que  les  déclarations sont  bien
-symétriques.
-
-Lors  de  la première  étape,  les  enregistrements des  départements,
-c'est-à-dire  avec des  clés `fr1970`+`2`  et `fr2015`+`2`  sont créés
-avec toutes les valeurs renseignées, mais pour les enregistrements des
-régions,  avec  des  clés `fr1970`+`1`,  `fr2015`+`1`  `frreg`+`1`  et
-`frreg`+`2`, la latitude et la  longitude seront laissées vides et les
-enregistrements   de  la   table   `Borders`  ne   seront  pas   créés
-immédiatement.
-
-C'est seulement lors  d'une seconde étape que  les enregistrements des
-régions sont complétés. Le programme calcule la moyenne des longitudes
-et des  latitudes des départements  appartenant à chaque  région, puis
-stocke  ces   deux  moyennes   dans  l'enregistrement  de   la  région
-correspondante.
-
-De même,  le programme  alimente les enregistrements  `fr1970`+`1`, et
-`frreg`+`2` de la table `Borders` en  faisant une synthèse de tous les
-enregistrements `fr1970`+`2` de `Borders` qui se trouvent à cheval sur
-deux régions.  Il alimente également les  enregistrements `fr2015`+`1`
-et `frreg`+`1` à partir des enregistrements `fr2015`+`2` de `Borders`.
 
 Autres cartes
 -------------
