@@ -428,6 +428,95 @@ TA and that later I added to  table TB instead. The column would still
 be present  in the schema  of table TA,  while the programs  no longer
 feed it neither read it.
 
+Creating and Displaying the Graphs
+==================================
+
+In a first time, we discuss about the creation of maps in the database
+and their display  into a webpage, without  bothering with Hamiltonian
+paths, shortest paths and the like.
+
+Database
+--------
+
+### Maps
+
+The first table is the `Maps` table. The record key is:
+
+* `map` the key of the whole map (URL-friendly, no special characters).
+
+Other fields required for map display are:
+
+* `name` a user-intelligible designation,
+* `with_scale` flag controlling the display  of a scale in the various
+  pictures,  meaning that  the graph  nodes are  locations on  Earth's
+  surface,
+
+### Areas
+
+The second  table, `Areas`, contains  the nodes  of the graphs.  For a
+map,  that means  that the  table contains  both the  regions and  the
+departments. The record key is:
+
+* `map` the key of the whole map,
+* `level` an integer with values `1` for regions and `2` for departments,
+* `code` the last element of the key.
+
+In France, departments  are associated with a  2-digit number (3-digit
+for overseas departments, but they are out of the scope). This 2-digit
+number will be used for `code`. For regions (the 2015 variant), I have
+used the last 3 characters of ISO 3166-2, as seen
+[on this page](https://en.wikipedia.org/wiki/ISO_3166-2:FR#First-level_metropolitan_subdivisions).
+For regions (the 1970 variant),  I have used unofficial 3-letter codes
+similar to the  codes for the 2015-variant regions.  For other graphs,
+the codes follow what my inspiration told me when I added the graph.
+
+Other fields for map display are:
+
+* `name` the standard designation of the region / department,
+* `long` and `lat`, approximate longitude and latitude of the area,
+* `color` the color used when drawing the map,
+* `upper` for departments, it is the  code of the region it belongs to
+  (for regions this field is unused),
+
+### Borders
+
+The `Borders` table lists the edges of the graphs, identified by pairs
+of graph  nodes. In the map  of France, that means  pairs of neighbour
+departments and pairs of neighbour regions. The key contains:
+
+* `map` the key from table `Maps`,
+* `level` with `1` for neighbouring regions and `2` for neighbouring departments,
+* `from_code` for the first area,
+* `to_code` for the second area.
+
+Other fields:
+
+* `upper_from` the code of the region for departments' edges, empty for regions' edges,
+* `upper_to` similar,
+* `long`, an optional longitude,
+* `lat`, an optional latitude,
+* `color`,
+* `cross_idl`
+
+### Messages
+
+This table stores  some informations from the programs  working on the
+graphs, especially the  path generation processes. It  will remind the
+users why this  or that path generation produced no  paths. The record
+key is:
+
+* `map` the key from table `Maps`,
+* `dh` the datetime stamp of the message.
+
+Other data are:
+
+* `errcode` the code of the error,
+* `area` the code of the area to which the error applies,
+* `nb`  the number  associated  with  the error  or  the message,  for
+  example the number of generated paths.
+* `data` some data giving further explanation on the error, for
+  example the list of dead-end areas
+
 Database
 ========
 
@@ -714,23 +803,6 @@ these columns refer to generic full paths and generic regional paths.
 
 The use of fields `range1`, `coef1` et `coef2` is explained in
 [fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
-
-Messages
---------
-
-This  table  stores  some   informations  about  the  path  generation
-processes. It will  remind the users why this or  that path generation
-produced no paths. The record key is:
-
-* `map` the key from table `Maps`,
-* `dh` the datetime stamp of the message.
-
-Other data are:
-
-* `errcode` the code of the error,
-* `area` the code of the area to which the error applies,
-* `nb` the number associated with the error or the message, for example the number of generated paths.
-* `data` some data giving further explanation on the error, for example the list of dead-end areas
 
 Initialisation
 ==============

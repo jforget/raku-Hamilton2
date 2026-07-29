@@ -461,6 +461,101 @@ première table  et que  j'aurais ensuite  réattribuées à  une deuxième
 table. La colonne  peut rester présente dans la  première table, alors
 que le programmes ne l'alimentent plus et ne l'utilisent plus.
 
+Création et affichage des graphes
+=================================
+
+Dans un premier temps, examinons comment  stocker un graphe en base de
+données  et  comment  l'afficher  dans  une page  web.  Nous  ne  nous
+intéressons pas  aux chemins hamiltoniens  ni aux plus  courts chemins
+d'un point à un autre.
+
+Base de données
+---------------
+
+### Maps
+
+La  première  table  est  la   table  `Maps`  (Cartes).  La  clé  d'un
+enregistrement est :
+
+* `map` le code de la carte (sans caractère spécial, pour faciliter la
+  constitution et l'analyse des URL).
+
+Les informations nécessaires pour afficher la carte sont :
+
+* `name` une désignation compréhensible pour cette carte,
+* `with_scale`  indicateur spécifiant  si le  graphe correspond  à des
+  points  situés à  la surface  de la  Terre, auquel  cas les  dessins
+  devront afficher une échelle,
+
+### Areas
+
+La  deuxième table,  `Areas`  (Zones), contient  les informations  des
+sommets du graphe.  Pour la carte de France, il  s'agit des régions et
+des départements. La clé d'un enregistrement est :
+
+* `map` le code de la carte (table `Maps`),
+* `level` valant `1` pour les régions et `2` pour les départements,
+* `code` permettant d'identifier la zone.
+
+Pour un département, le code est le numéro à deux chiffres (pas trois,
+parce que  les DOM ne  sont pas repris). Pour  une région de  2015, il
+s'agit des trois dernières lettres du  code ISO 3166-2, tel qu'on peut
+le voir
+[dans cette page](https://fr.wikipedia.org/wiki/R%C3%A9gion_fran%C3%A7aise#Liste_et_codification_ISO_3166-2_des_r%C3%A9gions_actuelles).
+Pour les régions de 1970, il  s'agit de codes à trois lettres inspirés
+de ceux des régions de 2015.  Ces codes de 1970 n'ont rien d'officiel.
+Pour les autres cartes, c'est selon le bon vouloir de mon inspiration.
+
+Les informations nécessaires pour afficher la carte sont :
+
+* `name`, la désignation standard de la région ou du département,
+* `long` et `lat`, une longitude et une latitude approximatives,
+* `color`, la couleur qui sera utilisée pour l'affichage des cartes,
+* `upper`, pour les départements, le  code de la région d'appartenance
+  (champ vide pour les régions),
+
+### Borders
+
+La table `Borders` (Frontières) énumère  les arêtes du graphe, sous la
+forme  de paires  de codes  sommets. Pour  la carte  de la  France, il
+s'agit de paires  de départements limitrophes et de  paires de régions
+limitrophes. La clé est constituée de :
+
+* `map` le code de la carte (table `Maps`),
+* `level` valant `1` pour les régions et `2` pour les départements,
+* `from_code` le code de la première zone,
+* `to_code` le code de la deuxième zone.
+
+Autres champs :
+
+* `upper_from` le code du supérieur hiérarchique de `from`,
+* `upper_to`  le code du supérieur hiérarchique de `to`,
+* `long`, une longitude facultative,
+* `lat`, une latitude facultative,
+* `color`,
+* `cross_idl`
+
+### Messages
+
+Cette table  permet de conserver  la trace des  programmes travaillant
+sur la carte,  comme la génération des chemins.  Elle permet notamment
+de rappeler pourquoi telle ou telle  génération de chemin a échoué. La
+clé d'un enregistrements est :
+
+* `map` le code de la carte (table `Maps`),
+* `dh` la date et l'heure de génération du message.
+
+Les autres informations sont :
+
+* `errcode` code du message ou de l'erreur,
+* `area` code de la zone concernée par l'erreur,
+* `nb` nombre associé à l'erreur ou  au message, par exemple le nombre
+  de chemins générés.
+* `data`  des  données  fournissant  un  complément  d'information  au
+  message, par exemple la liste des zones en impasse.
+
+
+
 Base de données
 ===============
 
@@ -758,23 +853,6 @@ chemins complets génériques et à des chemins régionaux génériques
 
 L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
 [quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
-
-Messages
---------
-
-Cette table permet de conserver la trace de la génération des chemins.
-Elle  permettra   notamment  de  rappeler  pourquoi   telle  ou  telle
-génération de chemin a échoué. La clé d'un enregistrements est :
-
-* `map` le code de la carte (table `Maps`),
-* `dh` la date et l'heure de génération du message.
-
-Les autres informations sont :
-
-* `errcode` code du message ou de l'erreur,
-* `area` code de la zone concernée par l'erreur,
-* `nb` nombre associé à l'erreur ou au message, par exemple le nombre de chemins générés.
-* `data` des données fournissant un complément d'information au message, par exemple la liste des zones en impasse.
 
 Initialisation
 ==============
