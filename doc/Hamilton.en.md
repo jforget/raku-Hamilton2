@@ -517,6 +517,134 @@ Other data are:
 * `data` some data giving further explanation on the error, for
   example the list of dead-end areas
 
+Example of Initialisation Program, `init-risk-extract2.raku`
+------------------------------------------------------------
+
+I  do not  use the  program initialising  maps `fr1970`,  `fr2015` and
+`frreg`  as  a first  example,  but  the program  `init-risk-extract2`
+loading `x-risk2`, because it is simpler.
+
+With this program,  we should not talk about  regions and departments,
+but about continents  and countries (more or less).  Yet, as explained
+in the  chapter about the technical  debt, I will still  use the words
+"regions"  and "department"  (or sometimes,  level-1 area  and level-2
+area).
+
+To  initialise  the graph,  I  load  from  Internet a  graphical  file
+displaying the map,  I open it with  the Gimp, I point  to the various
+areas with my mouse and for each one, I write the pixel coordinates in
+the text file. To compute the real longitude, I choose two points wide
+apart on the  map, I search the Internet to  find the real longitudes.
+For example, for  the Risk map, I  choose Kodiak Island and  a cape in
+Australia.  With both  longitudes and  both X  coordinates, I  write a
+conversion function  `y = ax +  b` converting a pixel  coordinate to a
+longitude. Same thing with the latitude.
+
+For the games I own, I do not use _The Gimp_, I take a 30-cm ruler and
+I compile  the list of  X-Y coordinates, respective to  the lower-left
+angle of the gameboard. Except for that, the process is similar.
+
+The record  in table `Maps` is  created with values hard-coded  in the
+program.
+
+For areas, I use a CSV file. The first three lines of this file are:
+
+```
+A ; AS  ; Asia                  ; Green
+B ; MON ; Mongolia              ; 616 ; 181 ; mea, ura, kam, jap
+B ; JAP ; Japan                 ; 692 ; 193 ; mon, kam
+```
+
+The first  field shows  whether the line  describes a  "region" (value
+`A`) or  a "department" (value `B`).  The second and third  fields are
+the code and the label of the  area. Then, a `A`-line gives the colour
+of the region (and its departments),  while a `B`-line gives the pixel
+coordinates and  the list of  neighbouring departments of  the current
+department. Thus, we learn that Japan has two neighbours, Mongolia and
+Kamchatka,  while   Mongolia  has   4:  Japan,  Kamchatka,   Ural  and
+Middle-East.
+
+When the program  reads an `A`-line, it stores the  region record into
+the `Areas`  table, with the  colour filled but with  empty longitudes
+and latitudes.
+
+When the program reads a `B`-line,  it insert into the `Areas` table a
+record for the department, with  the longitude and latitude (converted
+from  pixel coordinates),  and  with the  colour  (inherited from  the
+latest `A`-line). The `upper` field is also inherited from the code of
+the `A`-line. Thus, we implicitly know that Japan and Mongolia will be
+drawn in green and that they are part of Asia.
+
+The list of neighbour areas is  not used for the immediate creation of
+records in the `Borders` table. Instead,  the data are stored into the
+`%borders` hashtable.
+
+`X`-lines and `Y`-lines will be described later.
+
+After reaching  the end-of-file, the  program fills the  missing data,
+starting  with the  longitudes  and latitudes  of  the regions.  These
+values  are  filled with  the  average  longitude  / latitude  of  the
+departments within the region.
+
+Then  the  program deals  with  the  `%borders` hashtable.  First,  it
+creates  the  department borders.  But  before  creating a  department
+border, the program  checks that the border has  been specified twice,
+in a "There  and back again" fashion. For  example, the Japan-Mongolia
+border is specified in:
+
+```
+B ; MON ; [...] ; [...], jap
+B ; JAP ; [...] ; mon, [...]
+```
+
+If this is  not the case, the  program triggers an error  to warn that
+there is maybe a typo. Let us suppose that the file contains:
+
+```
+B ; MON ; [...] ; [...], jap
+B ; JAP ; [...] ; mng, [...]
+```
+
+In this case,  the program warns about a incorrect  `MON → JAP` border
+and an incorrect `MNG → JAP` border.
+
+Yet, when I type a data file such as `Risk-extract2`, I do not type it
+in a single run.  From time to time, I run the  graph generation and I
+display  the partial  map in  a web  browser. Suppose  that I  run the
+generation with the following three lines (with a typo):
+
+```
+A ; AS  ; Asia                  ; Green
+B ; MON ; Mongolia              ; 616 ; 181 ; mea, ura, kam, jap
+B ; JAP ; Japan                 ; 692 ; 193 ; mng, kam
+```
+
+Warning  me that  the  borders with  Middle-East,  Ural and  Kamchatka
+appear only once in the incomplete file instead of twice does not help
+me. The only error I am interested  in is the border `MON → JAP` which
+should  already appear  twice.  This  is why  the  error messages  are
+filtered with  the `%seen` hashtable. On  the other hand, when  I have
+typed the whole file, the hashtable  `%seen` is no longer useful, so I
+disable its  filter with the command-line  parameter `--complet` (yes,
+this is a  French word, instead of the English  word "complete", sorry
+about that).
+
+If  there are  no  errors,  the program  creates  two  records in  the
+`Borders` table,  one for the  direct `MON →  JAP`, the other  for the
+reverse `JAP →  MON`. Since both areas are drawn  in green, the border
+will  be drawn  in green  too. If  the two  departments belong  to two
+different regions, the border will be drawn in black.
+
+Then  the program  creates  regional  borders. If  there  is a  border
+between two departments belonging to two different regions, then there
+is  a regional  border between  these regions.  But only  one regional
+border will  be created,  even if several  departments from  the first
+region are neighbours to several departments from the second region.
+
+The filling of the `exterior` column  of table `Areas` and the purpose
+of  columns  `lon`,  `lat`  and   `cross_idl`  will  be  explained  is
+subsequent chapters.
+
 Database
 ========
 

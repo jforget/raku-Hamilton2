@@ -554,7 +554,139 @@ Les autres informations sont :
 * `data`  des  données  fournissant  un  complément  d'information  au
   message, par exemple la liste des zones en impasse.
 
+Exemple de programme d'initialisation, `init-risk-extract2.raku`
+----------------------------------------------------------------
 
+Je ne prends  pas comme premier exemple le  programme initialisant les
+cartes   `fr1970`,   `fr2015`   et    `frreg`,   mais   le   programme
+`init-risk-extract2` car il est plus simple.
+
+Ici, on ne  devrait pas parler de régions et  de départements, mais de
+continents  et  de pays  (ou  presque).  Néanmoins, comme  indiqué  au
+chapitre  sur  la  dette  technique,   je  parlerai  à  l'occasion  de
+départements (ou de zones  de niveau 2) et de régions  (ou de zones de
+niveau 1).
+
+Pour  initialiser  le graphe,  je  récupère  sur Internet  un  fichier
+graphique contenant la carte de Risk et je l'ouvre avec _The Gimp_, je
+promène  mon curseur  de zone  en  zone et  je note  pour chacune  les
+coordonnées pixels. Pour calculer la longitude réelle, je choisis deux
+points écartés en largeur et je  cherche dans Internet la longitude de
+ces deux points. Par exemple, pour Risk, je choisis l'île Kodiak et un
+cap de  l'Australie. En combinant  les longitudes réelles de  ces deux
+points et les  coordonnées pixel sur la carte,  j'obtiens une fonction
+de type `y = ax +  b` convertissant une coordonnée pixel en longitude.
+Je fais de même pour la latitude.
+
+Pour les  jeux que je  possède, je n'utilise  pas _The Gimp_,  mais un
+triple décimètre  et je mesure  les coordonnées  X-Y à partir  du coin
+inférieur gauche  du plateau de jeu.  À part cela, le  principe est le
+même.
+
+L'enregistrement de  la table `Maps` est  créé dès le début,  avec des
+valeurs en dur dans le programme `init-risk-extract2`.
+
+Pour les zones, j'utilise un fichier CSV dont voici les trois premières
+lignes :
+
+```
+A ; AS  ; Asia                  ; Green
+B ; MON ; Mongolia              ; 616 ; 181 ; mea, ura, kam, jap
+B ; JAP ; Japan                 ; 692 ; 193 ; mon, kam
+```
+
+Le premier champ indique s'il  s'agit d'une « région » (valeur `A`) ou
+d'un « département »  (valeur `B`).  Les deuxième et  troisième champs
+contiennent le  code et la désignation  en clair de la  zone. Ensuite,
+les enregistrements  `A` contiennent  la couleur,  les enregistrements
+`B` contiennent les coordonnées pixel et la liste des « départements »
+reliés au « département » courant. Ainsi, nous savons que le Japon est
+relié à la Mongolie et au Kamtchatka  et que la Mongolie est reliée au
+Japon, au Kamtchatka, à l'Oural (`URA`) et au Moyen-Orient (`MEA`).
+
+Lorsque   le   programme   lit   un  enregistrement   `A`,   il   crée
+l'enregistrement de la  région dans la table `Areas`,  avec la couleur
+mais sans la longitude ni la latitude.
+
+Lorsque   le   programme   lit   un  enregistrement   `B`,   il   crée
+l'enregistrement  du  département  dans  la  table  `Areas`,  avec  la
+longitude  et la  latitude  (obtenues par  conversion des  coordonnées
+pixel), ainsi que la couleur et  le code de la région englobante, tous
+deux hérités de la ligne  `A` précédente. Ainsi, on sait implicitement
+que la  Mongolie et  le Japon  seront dessinés en  vert et  qu'il font
+partie de l'Asie.
+
+La  liste des  zones voisines  ne donne  pas immédiatement  lieu à  la
+création des frontières dans la table  `Borders`. Au lieu de cela, les
+informations sont stockées dans une table de hachage `%borders`.
+
+L'utilisation des lignes `X` et `Y` sera décrite plus tard.
+
+Une fois  le fichier  parcouru en totalité,  le programme  définit les
+valeurs manquantes,  à commencer par  la longitude et la  latitude des
+régions. Pour ceci, on fait la moyenne des longitudes et latitudes des
+départements dépendants.
+
+Ensuite, le  programme traite le  hachage `%borders`, dans  un premier
+temps pour créer les frontières entre « départements ». Il vérifie que
+chaque  frontière a  été  spécifiée  deux fois  dans  le fichier.  Par
+exemple, la frontière entre le Japon et la Mongolie est spécifiée dans :
+
+```
+B ; MON ; [...] ; [...], jap
+B ; JAP ; [...] ; mon, [...]
+```
+
+Si ce n'est  pas le cas, alors le programme  déclenche une erreur pour
+signaler une faute de frappe. Par exemple, si le fichier avait contenu :
+
+```
+B ; MON ; [...] ; [...], jap
+B ; JAP ; [...] ; mng, [...]
+```
+
+le programme aurait  signalé une erreur pour la frontière  `MON → JAP`
+ainsi que pour la frontière `MNG → JAP`.
+
+Cela  dit, lorsque  je remplis  le fichier  `Risk-extract2`, je  ne le
+remplis pas d'un seul trait. De  temps à autre, je lance la génération
+du graphe avec la version courante, mais incomplète de ce fichier puis
+j'affiche   le  graphe   partiel  obtenu.   Supposons  que   je  lance
+l'initialisation avec  seulement les trois premières  lignes (dont une
+faute de frappe) :
+
+```
+A ; AS  ; Asia                  ; Green
+B ; MON ; Mongolia              ; 616 ; 181 ; mea, ura, kam, jap
+B ; JAP ; Japan                 ; 692 ; 193 ; mng, kam
+```
+
+C'est  normal que  les frontières  avec le  Kamtchatka, l'Oural  et le
+Moyen-Orient apparaissent  une seule  fois dans le  fichier incomplet.
+L'erreur  à réellement  signaler concerne  la frontière  `MON →  JAP`.
+C'est pour cela  que l'on filtre les messages d'erreur  avec une table
+de hachage `%seen`. En revanche, lorsque le fichier est complet, alors
+la table de  hachage `%seen` ne sert  plus à rien et  il faut afficher
+toutes  les erreurs  sans  partir  du principe  que  tel  ou tel  code
+manquant sera ajouté dans la suite du fichier. D'où l'utilisation d'un
+paramètre de ligne de commande `--complet`.
+
+S'il n'y a  pas d'erreur, le programme crée  deux enregistrements dans
+la  table `Borders`,  un pour  le sens  `MON →  JAP`, l'autre  pour la
+frontière  dans le  sens  `JAP →  MON`. Puisque  les  deux zones  sont
+coloriées en  vert, l'arête sera elle  aussi coloriée en vert.  Si les
+deux  départements  appartenaient  à   deux  régions  différentes,  la
+frontière serait coloriée en noir.
+
+Ensuite, le programme  crée les frontières entre  régions. S'il existe
+une  frontière  entre deux  départements  appartenant  à deux  régions
+différentes, alors les régions seront  reliées par une frontière. Mais
+une seule frontière  régionale, même si cette  frontière régionale est
+obtenue avec plusieurs frontières départementales.
+
+L'initialisation de la  colonne `exterior` due la table  `Areas` et le
+rôle des  colonnes `lon`, `lat`  et `cross_idl` de la  table `Borders`
+seront expliqués dans des paragraphes ultérieurs.
 
 Base de données
 ===============
