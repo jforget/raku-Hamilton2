@@ -56,7 +56,7 @@ sub MAIN (
   my Str $colour = 'Blue';
   my %borders;
   my Num $ε = 1e-8; # to prevent SQLite from storing and retrieving Num's as Int's
-  my Str $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+  my Str $alphabet    = 'ABCDEFGHIJKLMNOPQRSTUVWXY'; # Z is a hard-coded value for the centre of star and wheel graphs
   my Str $first-ring  = $alphabet.substr(0  , $nb);
   my Str $second-ring = $alphabet.substr($nb, $nb);
 
@@ -99,13 +99,13 @@ sub MAIN (
     my Str $code1 = $second-ring.substr($angle, 1);
     $long = $prism-radius.Num × cos( $angle.Num × 2 × π / $nb + π / 2) + $ε;
     $lat  = $prism-radius.Num × sin( $angle.Num × 2 × π / $nb + π / 2) + $ε;
-    $sto-area.execute(%map<Y>, 2, $code1, $code, $long, $lat, $colour, %map<Y>);
+    $sto-area.execute(%map<Y>, 2, $code1, $code1, $long, $lat, $colour, %map<Y>);
     %borders<Y>{$code }{$code1}++;
     %borders<Y>{$code1}{$code }++;
 
     $long = $prism-radius.Num × cos( ($angle.Num × 2 + 1) × π / $nb + π / 2) + $ε;
     $lat  = $prism-radius.Num × sin( ($angle.Num × 2 + 1) × π / $nb + π / 2) + $ε;
-    $sto-area.execute(%map<AY>, 2, $code1, $code, $long, $lat, $colour, %map<AY>);
+    $sto-area.execute(%map<AY>, 2, $code1, $code1, $long, $lat, $colour, %map<AY>);
     %borders<AY>{$code }{$code1}++;
     %borders<AY>{$code1}{$code }++;
 
