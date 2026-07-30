@@ -884,6 +884,74 @@ artificielle pour  que SQLite fournisse effectivement  du `Num`. Cette
 partie fractionnaire est appelée `$ε`  pour rappeler que sa valeur est
 infime, mais différente de zéro.
 
+Autres programmes d'initialisation
+----------------------------------
+
+Ainsi que je l'ai déjà écrit,  je ne diffuse pas les autres programmes
+d'initialisation, car cela pourrait être considéré comme une violation
+du  copyright  sur  les  jeux  concernés.  Néanmoins,  voici  quelques
+considérations intéressantes.
+
+Pour la [carte d'opération navale](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+de  _Operation Mercury_, pour la
+[carte de _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
+et pour la
+[carte de _Mosby's Raiders_](https://boardgamegeek.com/image/8577363/mosbys-raiders-guerilla-warfare-in-the-civil-war),
+les bords  ne respectent pas  l'orientation habituelle ouest →  est et
+nord  →  sud. Dans  le  cas  de _Raid  on  St.  Nazaire_, je  conserve
+l'orientation de la  carte de jeu, avec  le sud à gauche et  le nord à
+droite, pour permettre l'affichage de  cette carte en mode « paysage »
+sur mon  écran en  mode « paysage ». Les  longitudes et  les latitudes
+n'auront aucune signification réelle, tant pis.
+
+En revanche, pour _Operation Mercury_, je fusionne la carte navale (en
+biais)  avec  la  carte  des   zones  terrestres  de  l'île  de  Crète
+(orientation  traditionnelle). Les  fonctions  de  conversion pour  la
+carte navale prennent alors la forme :
+
+```
+sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
+sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
+```
+
+Je « redresse »  également la carte  de _Mosby's Raiders_, même  si je
+n'ai pas besoin  de la fusionner avec une  carte orientée normalement.
+Au moins, les longitudes et les latitudes sont vraisemblables.
+
+Le calcul  des coefficients  `$lon0`, `$x-lon`,  `$y-lon` et  de leurs
+équivalents pour  la latitude n'est  pas beaucoup plus  mystérieux que
+dans le  cas des cartes  orientées correctement ouest  → est +  nord →
+sud. Il  faut prendre  trois points  de référence au  lieu de  deux et
+résoudre ainsi trois  équations à trois inconnues  pour les longitudes
+puis pour  les latitudes. Ce  n'est pas mystérieux, mais  les formules
+sont nettement plus compliquées.
+
+Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
+inappropriée. Dans  ce cas, le  champ `with_scale` de la  table `Maps`
+est positionné à  zéro (faux). C'est le cas avec  le dodécaèdre du jeu
+icosien, c'est le cas également pour certains jeux comme
+[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
+où la  carte représente un vaisseau  spatial en plein vol  et long de,
+disons, une centaine de  mètres (à moins que ce soit  50 mètres ou 200
+mètres, je n'ai pas moyen de  me rendre compte). Dans ce deuxième cas,
+je prends les coordonnées X-Y en  centimètres et je les utilise telles
+quelles dans les  champs longitude et latitude.  Enfin, presque telles
+quelles,  j'applique la  même  correction `$ε`  que  pour les  graphes
+élémentaires.  L'affichage des  graphes  ne  comportera pas  d'échelle
+contrairement  aux  cartes  géographiques  terrestres.  Cette  échelle
+n'aurait  pas  de  signification   pour  le  dodécaèdre,  elle  serait
+fallacieuse pour le
+[vaisseau _Znutar_](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
+de _The Awful Green Things From Outer Space_.
+
+Dans certains cas, comme pour la
+[carte de _History of the World_](https://boardgamegeek.com/image/308717/history-of-the-world),
+la  carte est  présentée avec  une  projection polaire  au lieu  d'une
+projection  cylindrique  (Mercator,   Peters,  plate-carrée).  Il  est
+difficile de convertir  des coordonnées X-Y en  longitude et latitude,
+donc  le  champ `with_scale`  est  alimenté  à  zéro, alors  que  cela
+représente le globe terrestre.
+
 Base de données
 ===============
 
@@ -1239,59 +1307,6 @@ sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
 
 ne  respecte  pas  la  distribution des  latitudes  en  projection  de
 Mercator.
-
-Cas particuliers
-----------------
-
-Pour la [carte d'opération navale](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
-de  _Operation Mercury_, et pour la
-[carte de _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
-les bords  ne respectent pas  l'orientation habituelle ouest →  est et
-nord  →  sud. Dans  le  cas  de _Raid  on  St.  Nazaire_, je  conserve
-l'orientation de la  carte de jeu, avec  le sud à gauche et  le nord à
-droite, pour permettre l'affichage de  cette carte en mode « paysage »
-sur mon  écran en  mode « paysage ». Les  longitudes et  les latitudes
-n'auront aucune signification réelle, tant pis.
-
-En revanche, pour _Operation Mercury_, je fusionne la carte navale (en
-biais)  avec  la  carte  des   zones  terrestres  de  l'île  de  Crète
-(orientation  traditionnelle). Les  fonctions  de  conversion pour  la
-carte navale prennent alors la forme :
-
-```
-sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
-sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
-```
-
-Le calcul  des coefficients  `$lon0`, `$x-lon`,  `$y-lon` et  de leurs
-équivalents pour  la latitude n'est  pas beaucoup plus  mystérieux que
-dans le  cas des cartes  orientées correctement ouest  → est +  nord →
-sud. Il  faut prendre  trois points  de référence au  lieu de  deux et
-résoudre ainsi trois  équations à trois inconnues  pour les longitudes
-puis pour  les latitudes. Ce  n'est pas mystérieux, mais  les formules
-sont nettement plus compliquées.
-
-Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
-inappropriée. Dans  ce cas, le  champ `with_scale` de la  table `Maps`
-est positionné à  zéro (faux). C'est le cas avec  le dodécaèdre du jeu
-icosien, c'est le cas également pour certains jeux comme
-[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
-où la  carte représente un vaisseau  spatial en plein vol  et long de,
-disons, une centaine de  mètres (à moins que ce soit  50 mètres ou 200
-mètres, je n'ai pas moyen de  me rendre compte). Dans ce deuxième cas,
-je prends les coordonnées X-Y en  centimètres et je les utilise telles
-quelles dans les  champs longitude et latitude.  Enfin, presque telles
-quelles.  En effet,  si l'on  stocke dans  une base  SQLite un  nombre
-flottant dont  la partie  fractionnaire est  nulle, lors  des lectures
-ultérieures SQLite  fournira des valeurs entières,  donc incompatibles
-avec le type `Num` de  Raku. Donc le programme d'initialisation ajoute
-une  partie  fractionnaire  artificielle  pour  que  SQLite  fournisse
-effectivement  du `Num`.  L'affichage  des graphes  ne comportera  pas
-d'échelle  contrairement aux  cartes  géographiques terrestres.  Cette
-échelle n'aurait pas de signification  pour le dodécaèdre, elle serait
-fallacieuse pour le
-[vaisseau _Znutar_](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
-de _The Awful Green Things From Outer Space_.
 
 Extraction des chemins hamiltoniens
 ===================================

@@ -834,6 +834,70 @@ afterwards,  SQLite will  give  you floating  numbers compatible  with
 Raku's `Num`.  In some initialisation programs,  this fractional value
 is named `$ε` to remind you that it is a very low value, but not zero.
 
+Other Initialisation Programs
+-----------------------------
+
+As I have  already written, I do not publish  the other initialisation
+programs,   because  this   could  be   interpreted  as   a  copyright
+infringement. Yet,  here are  a few  interesting subjects  about these
+programs.
+
+For the [naval operation map](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
+of _Operation Mercury_, for the
+[map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472)
+and for the
+[_Mosby's Raiders_ map](https://boardgamegeek.com/image/8577363/mosbys-raiders-guerilla-warfare-in-the-civil-war),
+the mapedges are not oriented west →  east and north → south as usual.
+For _Raid  on St. Nazaire_, I  keep the map orientation  with south on
+the left  and north  on the  right, so  the map  will be  displayed in
+"landscape" orientation on my  "landscape" computer screen. Longitudes
+and latitudes will have no significance.
+
+On the other hand, with _Operation Mercury_, I rotate the naval map so
+it can be  merged with the map  giving the land areas  of Crete island
+(set-up in the  usual way, north on  top and south at  the bottom). So
+the conversion functions for the naval map look like:
+
+```
+sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
+sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
+```
+
+I also "straighten"  the _Mosby's Raiders_ map, even if  I do not need
+to merge it with another map, with a traditional orientation. At least
+the longitudes and latitudes are consistent with the reality.
+
+Computing the  values of coefficients `$lon0`,  `$x-lon`, `$y-lon` and
+similar for the latitudes is not much more mysterious than in the case
+of properly oriented maps. You have  to choose three points instead of
+two  and  solve   three  equations  with  three   unkowns,  first  for
+longitudes, then for latitudes. It is not mysterious, but the formulas
+are much more cumbersome.
+
+In some cases, the concept of longitude and latitude is irrelevant. In
+these  cases,  field `with_scale`  of  table  `Maps`  is set  to  zero
+(False). This is  the case with the dodecahedron of  the Icosian game,
+this is the case with some games such as
+[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
+in which the mapboard represents  a spacecraft roaming the outer space
+and, say, about 100-m long (or maybe 50  m, or 200 m, I have no way to
+get  a precise  value).  In  this case,  I  took  the X-Y  centimetric
+coordinates as-is  to fill  the longitude  and latitude  fields. Well,
+nearly as-is, I  apply the same `$ε` fudge as  with elementary graphs.
+When displaying the graphs, the kilometer-scale will not be displayed.
+This  scale would  have been  irrelevant for  the dodecahedron  and it
+would have been misleading for the
+[_Znutar_ spaceship](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
+of _The Awful Green Things From Outer Space_.
+
+In some cases, such as
+[_History of the World_](https://boardgamegeek.com/image/308717/history-of-the-world),
+the map is drawn with a polar projection, not a cylindrical projection
+(Mercator, Peters, plate-carrée / equirectangular). There is no simple
+way  to convert  gameboard  X-Y  coordinates into  a  longitude and  a
+latitude.  Therefore, the  `with_scale` columns  is filled  with zero,
+although the map represents the Earth.
+
 Database
 ========
 
@@ -1179,56 +1243,6 @@ sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
 
 will not reproduce the variation of latitudes as given by the Mercator
 projection.
-
-Special Cases
--------------
-
-For the [naval operation map](https://boardgamegeek.com/image/308459/operation-mercury-german-airborne-assault-crete-19)
-of _Operation Mercury_ and for the
-[map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
-the mapedges are not oriented west →  east and north → south as usual.
-For _Raid  on St. Nazaire_, I  keep the map orientation  with south on
-the left  and north  on the  right, so  the map  will be  displayed in
-"landscape" orientation on my  "landscape" computer screen. Longitudes
-and latitudes will have no significance.
-
-On the other hand, with _Operation Mercury_, I rotate the naval map so
-it can be  merged with the map  giving the land areas  of Crete island
-(set-up in the  usual way, north on  top and south at  the bottom). So
-the conversion functions for the naval map look like:
-
-```
-sub conv-lon(Num $x, Num $y --> Num) { return $lon0 + $x-lon × $x + $y-lon × $y }
-sub conv-lat(Num $x, Num $y --> Num) { return $lat0 + $x-lat × $x + $y-lat × $y }
-```
-
-Computing the  values of coefficients `$lon0`,  `$x-lon`, `$y-lon` and
-similar for the latitudes is not much more mysterious than in the case
-of properly oriented maps. You have  to choose three points instead of
-two  and  solve   three  equations  with  three   unkowns,  first  for
-longitudes, then for latitudes. It is not mysterious, but the formulas
-are much more cumbersome.
-
-In some cases, the concept of longitude and latitude is irrelevant. In
-these  cases,  field `with_scale`  of  table  `Maps`  is set  to  zero
-(False). This is  the case with the dodecahedron of  the Icosian game,
-this is the case with some games such as
-[_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
-in which the mapboard represents  a spacecraft roaming the outer space
-and, say, about 100-m long (or maybe 50  m, or 200 m, I have no way to
-get  a precise  value).  In  this case,  I  took  the X-Y  centimetric
-coordinates as-is  to fill  the longitude  and latitude  fields. Well,
-nearly  as-is. The  reason  is  that when  you  store floating  values
-without a fractional part in SQLite,  when you read these values back,
-SQLite gives you integer values,  incompatible with Raku's `Num` type.
-Therefore, the  initialisation programme adds a  small fractional part
-so that  when you  read the  values afterwards,  SQLite will  give you
-floating  numbers compatible  with Raku's  `Num`. When  displaying the
-graphs, the  kilometer-scale will not  be displayed. This  scale would
-have  been irrelevant  for the  dodecahedron  and it  would have  been
-misleading for the
-[_Znutar_ spaceship](https://boardgamegeek.com/image/1153757/awful-green-things-outer-space)
-of _The Awful Green Things From Outer Space_.
 
 Extracting Hamiltonian Paths
 ============================
