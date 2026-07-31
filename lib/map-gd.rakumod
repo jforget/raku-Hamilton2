@@ -108,7 +108,7 @@ our sub draw(@areas, @borders
 
   my Num $coef-x  = ($width  - 2 × $margin) / $delta-long;
   my Num $coef-y  = ($height - 2 × $margin) / $delta-lat;
-  my Num $mid-lat = π / 180 × ($lat-max + $lat-min) / 2; # medium latitude in radians
+  my Num $mid-lat = π / 180 × ($lat-max + $lat-min) / 2; # median latitude in radians
   if $with_scale != 1 {
     $mid-lat = 0e0; # so its cosinus is 1
   }

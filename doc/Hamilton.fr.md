@@ -701,8 +701,8 @@ le  même  programme  `init-fr.raku`  et le  même  fichier  de  données
 
 Ce fichier `fr-depts.txt` contien des lignes de différents types :
 
-* lignes `A` pour les régions de 2015,
-* lignes `B` pour les régions de 1970,
+* lignes `A` pour les régions apparues en 2015,
+* lignes `B` pour les régions de 1970 disparues en 2015,
 * lignes `AB` pour les régions de 1970 qui ont été reprises telles quelles dans le découpage de 2015,
 * lignes `C` pour les départements.
 
@@ -951,6 +951,89 @@ projection  cylindrique  (Mercator,   Peters,  plate-carrée).  Il  est
 difficile de convertir  des coordonnées X-Y en  longitude et latitude,
 donc  le  champ `with_scale`  est  alimenté  à  zéro, alors  que  cela
 représente le globe terrestre.
+
+Dessin d'une carte
+------------------
+
+Le projet  comporte un aspect  graphique. Pour générer  des graphiques
+par programme, j'utilise de préférence l'interpréteur
+[Metapost](https://www.gutenberg-asso.fr/MetaPost)
+inclus dans le programme
+[LuaL<sup>A</sup>T<sub>E</sub>X](https://lataix-sebastien.developpez.com/tutoriels/latex/un-guide-pour-lualatex/).
+Dans le cas présent, je vois mal comment intégrer
+LuaL<sup>A</sup>T<sub>E</sub>X  avec le  fonctionnement d'un  serveur
+web. J'utilise donc le
+[module GD pour Raku](https://github.com/raku-community-modules/GD).
+
+Remarque :  au début du  projet, le module  Raku ne disposait  pas des
+fonctionnalités dont j'avais besoin. La solution temporaire a consisté
+à utiliser la
+[version Perl 5 du module GD](https://metacpan.org/pod/GD).
+avec
+[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE),
+Puis, après avoir
+[ajouté les fonctionnalités nécessaires](https://github.com/jforget/raku-sandbox-GD/blob/master/Description.fr.md),
+j'ai abandonné `GD.pm` et `Inline::Perl5` pour utiliser `GD.rakumod`.
+
+Compte  tenu de  la  combinatoire  du problème,  il  est illusoire  de
+conserver  les graphiques  dans des  fichiers permanents.  Les chemins
+sont stockés en  format caractères dans la base de  données, cela fait
+déjà beaucoup.  Les graphiques sont  générés à  la demande lors  de la
+consultation du  site web. Ils ne  sont pas stockés dans  des fichiers
+temporaires, ils sont  insérés directement dans le  source HTML, après
+encodage en
+[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
+
+Un  seul module  s'occupe  de  dessiner des  cartes,  c'est le  module
+`map-gd.rakumod`, qu'il  s'agisse du  dessin d'une carte  complète, du
+dessin d'un chemin hamiltonien régional ou du dessin de la répartition
+des  chemins les  plus courts  entre  un point  A  et un  point B.  La
+différence se fait dans les paramètres d'appel : liste des zones avec,
+entre  autres, un  champ  donnant la  couleur,  liste des  frontières,
+chaîne de caractères contenant le chemin à dessiner en gras (ou chaîne
+vide s'il n'y a pas de chemin à dessiner).
+
+La première  partie de  cette routine consiste  à calculer  la hauteur
+totale  et la  largeur  totale  du dessin,  aussi  bien  en termes  de
+longitude  et  de  latitude  qu'en  termes  de  pixels  (ce  qui  peut
+nécessiter  le  décodage  de   la  _query  string_  `?h=500&w=800`  ou
+`?w=800&adj=w` ou similaire).
+
+À l'issue  de cette  première partie, la  routine définit  la fonction
+convertissant  une longitude  en  largueur de  pixels  et la  fonction
+convertissant  la  latitude  en  une  hauteur  de  pixels.  Elle  crée
+également l'objet `GD::Image` avec les couleurs nécessaires.
+
+La  deuxième partie  consiste à  dessiner  l'échelle de  la carte  (si
+nécessaire,  voir  la colonne  `with_scale`).  Il  y  a en  fait  deux
+échelles, l'une verticale et l'autre  horizontale. La routine tente de
+tracer un trait de 10 000 km. Si le trait ne tient pas dans le dessin,
+elle tente  de tracer  un trait  de 1000 km, puis  100 km et  ainsi de
+suite, jusqu'à  ce que cela  rentre dans  le dessin. Si  la conversion
+d'un  degré de  latitude en  kilomètres ne  pose pas  de problème,  la
+conversion d'un degré de longitude en kilomètres est plus délicate.
+
+Prenons l'exemple  de la carte  de la  France, qui s'étend  de 42°36'N
+jusqu'à 50°27'N. Au sud de la France, un degré de longitude représente
+82 km, tandis qu'au nord, cela  fait 70 km. L'échelle horizontale sera
+déterminée  par rapport  à  la latitude  médiane,  soit 46°31'N,  pour
+laquelle un degré de longitude fait  76 km. Dans ce cas, la distorsion
+est assez faible.
+
+Prenons maintenant l'exemple  de la carte `x-risk2`  extraite de Risk.
+La carte s'étend de la latitude  16°41'S (106 km par degré) jusqu'à la
+latitude 69°9'N  (40 km par degré)  en passant par  l'équateur (111 km
+par  degré). La  routine trace  l'échelle  par rapport  à la  latitude
+médiane  26°13'N,  soit  99 km  par  degré.  La  distorsion  est  plus
+prononcée.
+
+La  troisième étape  consiste à  dérouler le  tableau `@borders`  et à
+dessiner les lignes correspondant à ces frontières. La quatrième étape
+consiste  à dérouler  le tableau  `@areas` et  à dessiner  les cercles
+correspondant  à  ces  zones.  L'ordre   entre  ces  deux  étapes  est
+important,  car  les cercles  représentant  les  étapes recouvrent  en
+partie les lignes représentant les frontières. Il est essentiel que le
+dessin des frontières ne « pourisse » pas le dessin des zones.
 
 Base de données
 ===============
@@ -1871,38 +1954,6 @@ car le  langage de _templating_  est tout simplement HTML  sans aucune
 extension  et  sans  syntaxe  bizarre. Je  dirais  même  « sans  sucre
 syntaxique  rajouté ».  J'ai  donc utilisé  `Template::Anti`  dans  ce
 projet.
-
-Le projet  comporte également  un aspect  graphique. Pour  générer des
-graphiques par programme, j'utilise de préférence l'interpréteur
-[Metapost](https://www.gutenberg-asso.fr/MetaPost)
-inclus dans le programme
-[LuaL<sup>A</sup>T<sub>E</sub>X](https://lataix-sebastien.developpez.com/tutoriels/latex/un-guide-pour-lualatex/).
-Dans le cas présent, je vois mal comment intégrer
-LuaL<sup>A</sup>T<sub>E</sub>X  avec le  fonctionnement d'un  serveur
-web.
-
-Le plan B, c'est d'utiliser
-[GD](https://linux.die.net/man/3/gd).
-Ça tombe bien, il existe un
-[module GD pour Raku](https://github.com/raku-community-modules/GD).
-Hélas,   ce  module   est   embryonnaire  et   il   lui  manque   deux
-fonctionnalités  essentielles, l'affichage  de  chaînes de  caractères
-dans le  graphique et le  choix de  l'épaisseur des traits,  alors que
-c'est disponible avec la
-[version Perl 5 du module GD](https://metacpan.org/pod/GD).
-
-La solution adoptée est de passer par
-[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE),
-qui permet d'appeler des modules Perl 5 dans des programmes Raku.
-
-Compte  tenu de  la  combinatoire  du problème,  il  est illusoire  de
-conserver  les graphiques  dans des  fichiers permanents.  Les chemins
-sont stockés en  format caractères dans la base de  données, cela fait
-déjà beaucoup.  Les graphiques sont  générés à  la demande lors  de la
-consultation du  site web. Ils ne  sont pas stockés dans  des fichiers
-temporaires, ils sont  insérés directement dans le  source HTML, après
-encodage en
-[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
 
 Organisation du site web
 ------------------------

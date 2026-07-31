@@ -659,8 +659,8 @@ initialise all three maps.
 The data file `fr-depts.txt` contains four different line types:
 
 * `A` for Y2015 regions,
-* `B` for Y1970 regions,
-* `AB` for Y1970 regions which were not altered in 2015,
+* `B` for Y1970 regions which were not kept in 2015,
+* `AB` for Y1970 regions which were kept unaltered in 2015,
 * `C` for departments.
 
 Beyond the area code and the area name, lines `A` and `AB` contain the
@@ -897,6 +897,84 @@ the map is drawn with a polar projection, not a cylindrical projection
 way  to convert  gameboard  X-Y  coordinates into  a  longitude and  a
 latitude.  Therefore, the  `with_scale` columns  is filled  with zero,
 although the map represents the Earth.
+
+Drawing a Map
+-------------
+
+The project includes a graphic component. My preference to
+programmatically generate graphics is the
+[Metapost](https://www.tug.org/metapost.html)
+interpreter embedded within the
+[LuaL<sup>A</sup>T<sub>E</sub>X](http://luatex.org/)
+program. In this case, I do not see how
+LuaL<sup>A</sup>T<sub>E</sub>X can integrate with a web server.
+So I use the
+[Raku module GD](https://github.com/raku-community-modules/GD).
+
+Note: at  the beginning  of the  project, the Raku  module GD  did not
+provide  all the  necessary features.  So a  provisional solution  was
+using the
+[Perl 5 version of the GD module](https://metacpan.org/pod/GD).
+with
+[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE).
+Then, after I
+[added the features](https://github.com/jforget/raku-sandbox-GD/blob/master/Description.en.md)
+to the Raku module, I discarded `GD.pm` and `Inline::Perl5` and I used
+`GD.rakumod`.
+
+Because of  the expected number  of Hamiltonian paths,  generating all
+graphic representations for all Hamiltonian  paths and storing them in
+permanent files  is a big no-no.  The Hamiltonian paths are  stored as
+character strings  inside the database,  that is enough.  Graphics are
+generated on the fly when browsing the website. They are not stored in
+temporary files, they are directly inserted in HTML source after being
+encoded with
+[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
+
+A  single  module  `map-gd.rakumod`  processes  all  variants  of  map
+drawing, no matter if it is a  complete map, the drawing of a regional
+Hamiltonian path, or the statistics on  shortest paths from point A to
+point  B. The  difference  comes  from what  parameters  are given  to
+subroutine `draw`: the list of areas  (with a `color` field), the list
+of borders,  a string containing the  path being drawn in  bold (or an
+empty string if there is no Hamiltonian path to draw).
+
+The first  part of  the subroutine  computes the  total width  and the
+total height of the drawing, both in terms of longitudes and latitudes
+and in  terms of pixels (which  may require decoding the  query string
+`?h=500&w=800` or `?w=800&adj=w` or similar).
+
+After this first  part, the routine defines the  function converting a
+longitude into  a pixel width  and the function converting  a latitude
+into a pixel height. In  addition, the routine creates the `GD::Image`
+object with the required colours.
+
+The second part consists in  drawing the km-per-pixel scale (according
+to column  `with_scale`). Actually, there  are two scales,  a vertical
+scale and an horizontal scale. The routine attempts to draw a 10000-km
+long line. Failing that, it attempts to draw a 1000-km long line, or a
+100-km long line, and so on,  until it succeeds. Converting a latitude
+degree  into kilometers  needs  no further  explanation. Converting  a
+longitude degree is more convoluted.
+
+Let us  take a  look at the  map of France,  spanning from  42°36'N to
+50°27'N. Down south, one longitude degree is 82 km, while up north, it
+is 70 km. The  routine uses the median longitude, 46°31'N,  with 76 km
+per degree. In this case the distorsion is rather small.
+
+Now  consider map  `x-risk2` inspired  from Risk.  The map  spans from
+latitude 16°41'S  (106 km per  degree) to  latitude 69°9'N  (40 km per
+degree), via the equator (111 km per  degree). The routine draws a map
+for the median latitude, 26°13'N,  which gives about 99 km per degree.
+The distorsion is much higher.
+
+The third step is drawing the lines representing the borders listed in
+the  `@borders`  array  and  the  fourth step  is  drawing  the  nodes
+representing areas  listed in  the `@areas`  array. The  order between
+these  two steps  is  important: the  circles  representing the  areas
+overlap the lines  representing the borders. It is  important that the
+lines do not "spoil" the drawing  of circles, which is why the borders
+are drawn before the areas.
 
 Database
 ========
@@ -1790,37 +1868,6 @@ that I do not like templating modules. The only templating module I like is
 because its templating language is vanilla HTML, without any extension
 and without  any specific syntax.  So I used `Template::Anti`  in this
 project.
-
-The  project  includes also  a  graphic  component. My  preference  to
-programmatically generate graphics is the
-[Metapost](https://www.tug.org/metapost.html)
-interpreter embedded inside the
-[LuaL<sup>A</sup>T<sub>E</sub>X](http://luatex.org/)
-programme. In this case, I do not see how
-LuaL<sup>A</sup>T<sub>E</sub>X can integrate with a web server.
-
-Plan B is using the
-[GD](https://linux.die.net/man/3/gd)
-library. Fortunately, there is a
-[GD module for Raku](https://github.com/raku-community-modules/GD).
-Unfortunately, this  module misses  many features, including  two that
-are essential to my project: displaying some text within the graphics,
-and  changing the  thickness  when drawing  lines,  features that  are
-available in the
-[Perl 5 version of the GD module](https://metacpan.org/pod/GD).
-
-The final solution is to use
-[Inline::Perl5](https://modules.raku.org/dist/Inline::Perl5:cpan:NINE),
-which allows using Perl 5 modules in Raku programmes.
-
-Because of  the expected number  of Hamiltonian paths,  generating all
-graphic representations for all Hamiltonian  paths and storing them in
-permanent files  is a big no-no.  The Hamiltonian paths are  stored as
-character strings  inside the database,  that is enough.  Graphics are
-generated on the fly when browsing the website. They are not stored in
-temporary files, they are directly inserted in HTML source after being
-encoded with
-[MIME::Base64](https://modules.raku.org/dist/MIME::Base64:zef:zef:raku-community-modules).
 
 Website Organisation
 --------------------
