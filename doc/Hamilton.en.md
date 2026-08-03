@@ -36,8 +36,8 @@ region). Lastly,  I concatenate micro-paths while  following a pattern
 given by a macro-path.
 
 I do not study  only the map of France with  the departments from 1965
-and the  regions from  2015. I  will do the  same experiment  with the
-regions from  1970 and the  departments, ot  even with the  regions of
+and the regions from 2015. As seen in the picture above, I do the same experiment with the
+regions from  1970 and the  departments, or  even with the  regions of
 2015 as the big  areas and the regions of 1970 as  the small areas. In
 this case,  there are several big  areas which contain only  one small
 area, so this  set of data, in  which some big areas  contain only one
@@ -73,8 +73,8 @@ Later, I read
 which includes a
 [chapter](https://gallica.bnf.fr/ark:/12148/bpt6k39443/f206.item)
 describing Hamilton's  icosian game, a  simple game which  allowed Sir
-William Rowan Hamilton to define a  new concept in graph theory, a new
-concept  which   would  later   be  named  "Hamiltonian   cycles"  and
+William Rowan Hamilton to define a  new concept in graph theory,
+which   would  later   be  named  "Hamiltonian   cycles"  and
 "Hamiltonian paths" to honor him.
 
 Lucas' chapter explains that each Hamiltonian path in the icosian game
@@ -370,7 +370,7 @@ and  an exterior  area is  a  small area  with at  least one  exterior
 border.  Thus, in  the  `fr2015`  map, department  `60`  (Oise) is  an
 exterior department, linked  to two departments from  Normandy and two
 departments  from  Île-de-France  and  department `59`  (Nord)  is  an
-interior department, although adjacent to Belgium.
+interior department, even if adjacent to Belgium in real life.
 
 Another  interesting  notion  is Hamiltonian  cycles.  In  Hamiltonian
 cycles, the end node  is the same as the begin  node, which means that
@@ -390,7 +390,7 @@ be four different paths `29 → 56 → 35  → 22`, `22 → 29 → 56 → 35`, `
 other, running along the cycle in the opposite direction.
 
 When I  read texts about  graphs, I notice  that most often  they deal
-with Hamiltonian cycles and they ignore Hamiltonian paths. This is not
+with Hamiltonian cycles and they ignore Hamiltonian paths. This is
 the opposite here,  I deal with Hamiltonian paths and  I nearly ignore
 Hamiltonian cycles.
 
@@ -579,7 +579,9 @@ The list of neighbour areas is  not used for the immediate creation of
 records in the `Borders` table. Instead,  the data are stored into the
 `%borders` hashtable.
 
-`X`-lines and `Y`-lines will be described later.
+`X`-lines and  `Y`-lines feed the columns  `cross_idl`, `lon` and`lat`
+in  table  `Borders`  (and   hashtable  `%borders`).  Their  usage  is
+described later.
 
 After reaching  the end-of-file, the  program fills the  missing data,
 starting  with the  longitudes  and latitudes  of  the regions.  These
@@ -644,6 +646,11 @@ region are neighbours to several departments from the second region.
 The filling of the `exterior` column  of table `Areas` and the purpose
 of  columns  `lon`,  `lat`  and   `cross_idl`  will  be  explained  is
 subsequent chapters.
+
+Program   `init-risk-extract.raku`   is   very  similar   to   program
+`init-risk-extract2.raku`.  The  main  differences   are  the  use  of
+`X`-lines and `Y`-lines  and the filtering of  messages with hashtable
+`%seen` and CLI parameter `--complet`.
 
 Initialisation of the French maps, `init-fr.raku`
 -------------------------------------------------
@@ -946,10 +953,12 @@ and in  terms of pixels (which  may require decoding the  query string
 
 After this first  part, the routine defines the  function converting a
 longitude into  a pixel width  and the function converting  a latitude
-into a pixel height. In  addition, the routine creates the `GD::Image`
-object with the required colours.
+into a pixel height.
 
-The second part consists in  drawing the km-per-pixel scale (according
+In the  second step, the  routine creates the `GD::Image`  object with
+the required colours.
+
+The third part  consists in drawing the  km-per-pixel scale (according
 to column  `with_scale`). Actually, there  are two scales,  a vertical
 scale and an horizontal scale. The routine attempts to draw a 10000-km
 long line. Failing that, it attempts to draw a 1000-km long line, or a
@@ -968,13 +977,15 @@ degree), via the equator (111 km per  degree). The routine draws a map
 for the median latitude, 26°13'N,  which gives about 99 km per degree.
 The distorsion is much higher.
 
-The third step is drawing the lines representing the borders listed in
-the  `@borders`  array  and  the  fourth step  is  drawing  the  nodes
+The fourth step  is drawing the lines representing  the borders listed
+in  the `@borders`  array  and the  fifth step  is  drawing the  nodes
 representing areas  listed in  the `@areas`  array. The  order between
 these  two steps  is  important: the  circles  representing the  areas
 overlap the lines  representing the borders. It is  important that the
 lines do not "spoil" the drawing  of circles, which is why the borders
-are drawn before the areas.
+are drawn  before the areas. On  the other hand, drawing  the mapscale
+could have been done between the drawing of borders and the drawing of
+areas, or even after the drawing of areas.
 
 Database
 ========
@@ -5027,7 +5038,7 @@ maps, the contents of table `Path_Relations` would be accurate, even
 if not fixed (see previous point). The website will be able to deal
 with both full paths with a "specific" `path` column and full paths
 with a "generic" `path` column.
-[Done](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku)
+[Done](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku).
 
 4. Upgrade Raku module `GD.pm`, by renaming is `GD.rakumod` and adding
 line thicknesses and  text display.

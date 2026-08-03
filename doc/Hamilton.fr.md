@@ -39,7 +39,8 @@ construire un chemin complet par  la concaténation de micro-chemins en
 se basant sur le canevas d'un macro-chemin.
 
 Je ne me limite  pas à la carte de la France  avec les départements de
-1965 et  les régions de  2015. J'envisage de  faire le même  calcul en
+1965  et les  régions  de 2015.  Comme cela  apparaît  dans le  dessin
+ci-dessus, je fais le même calcul en
 adoptant  le découpage  des régions  de  1970. Et  même le  cas où  je
 remplace le découpage en départements  par le découpage des régions de
 1970 au sein des régions de 2015. Ce cas  de figure, avec des régions groupes  ne contenant qu'une
@@ -528,8 +529,8 @@ limitrophes. La clé est constituée de :
 
 Autres champs :
 
-* `upper_from` le code du supérieur hiérarchique de `from`,
-* `upper_to`  le code du supérieur hiérarchique de `to`,
+* `upper_from` le code du supérieur hiérarchique de `from_code`,
+* `upper_to`  le code du supérieur hiérarchique de `to_code`,
 * `long`, une longitude facultative,
 * `lat`, une latitude facultative,
 * `color`,
@@ -620,7 +621,9 @@ La  liste des  zones voisines  ne donne  pas immédiatement  lieu à  la
 création des frontières dans la table  `Borders`. Au lieu de cela, les
 informations sont stockées dans une table de hachage `%borders`.
 
-L'utilisation des lignes `X` et `Y` sera décrite plus tard.
+Les lignes  `X` et `Y`  servent à alimenter les  colonnes `cross_idl`,
+`lon`  et `lat`  de la  table  `Borders` (et  de la  table de  hachage
+`%borders`). Le rôle de ces colonnes sera décrit plus tard.
 
 Une fois  le fichier  parcouru en totalité,  le programme  définit les
 valeurs manquantes,  à commencer par  la longitude et la  latitude des
@@ -687,6 +690,11 @@ obtenue avec plusieurs frontières départementales.
 L'initialisation de la  colonne `exterior` due la table  `Areas` et le
 rôle des  colonnes `lon`, `lat`  et `cross_idl` de la  table `Borders`
 seront expliqués dans des paragraphes ultérieurs.
+
+Le  proramme  `init-risk-extract.raku`   est  semblable  au  programme
+`init-risk-extract2.raku`, à part en ce qui concerne l'utilisation des
+lignes `X` et  `Y` et le filtrage des messages  d'erreur avec la table
+de hachage `%seen` et le paramètre de ligne de commande `--complet`.
 
 Programme d'initialisation des cartes françaises, `init-fr.raku`
 ----------------------------------------------------------------
@@ -1001,10 +1009,12 @@ nécessiter  le  décodage  de   la  _query  string_  `?h=500&w=800`  ou
 
 À l'issue  de cette  première partie, la  routine définit  la fonction
 convertissant  une longitude  en  largueur de  pixels  et la  fonction
-convertissant  la  latitude  en  une  hauteur  de  pixels.  Elle  crée
-également l'objet `GD::Image` avec les couleurs nécessaires.
+convertissant  la  latitude  en  une  hauteur  de  pixels.
 
-La  deuxième partie  consiste à  dessiner  l'échelle de  la carte  (si
+La  deuxième  étape consiste  à  créer  l'objet `GD::Image`  avec  les
+couleurs nécessaires.
+
+La  troisième partie  consiste à  dessiner l'échelle  de la  carte (si
 nécessaire,  voir  la colonne  `with_scale`).  Il  y  a en  fait  deux
 échelles, l'une verticale et l'autre  horizontale. La routine tente de
 tracer un trait de 10 000 km. Si le trait ne tient pas dans le dessin,
@@ -1027,13 +1037,16 @@ par  degré). La  routine trace  l'échelle  par rapport  à la  latitude
 médiane  26°13'N,  soit  99 km  par  degré.  La  distorsion  est  plus
 prononcée.
 
-La  troisième étape  consiste à  dérouler le  tableau `@borders`  et à
-dessiner les lignes correspondant à ces frontières. La quatrième étape
+La  quatrième étape  consiste à  dérouler le  tableau `@borders`  et à
+dessiner les lignes correspondant à ces frontières. La cinquième étape
 consiste  à dérouler  le tableau  `@areas` et  à dessiner  les cercles
 correspondant  à  ces  zones.  L'ordre   entre  ces  deux  étapes  est
 important,  car  les cercles  représentant  les  étapes recouvrent  en
 partie les lignes représentant les frontières. Il est essentiel que le
-dessin des frontières ne « pourisse » pas le dessin des zones.
+dessin des  frontières ne  « pourrisse » pas le  dessin des  zones. En
+revanche, la  troisième étape  dessinant les  échelles aurait  pu être
+codée entre le dessin des frontières  et le dessin des zones, ou après
+le dessin des zones.
 
 Base de données
 ===============
@@ -5255,9 +5268,6 @@ donc `CVL` obtient un 4.
 On  peut remarquer  que sur  chaque  ligne horizontale,  la somme  des
 compteurs `n2` est constante.
 
-Carte du métro de la RATP
--------------------------
-
 RESTE À FAIRE
 =============
 
@@ -5282,7 +5292,7 @@ d'obtenir pour ces cartes un contenu  fiable de la table des relations
 entres  chemins  régionaux et  chemins  complets.  Le site  web  devra
 traiter aussi bien des chemins  complets en version « spécifique » que
 des  chemins  complets  en version  « générique ».
-[Fait](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku)
+[Fait](https://github.com/jforget/raku-Hamilton2/blob/3cb4e90023fa5b43269c05182b52d22359784e23/gener3.raku).
 
 4.  Mettre  à jour  le  module  Raku  `GD.pm`,  déjà en  le  renommant
 `GD.rakumod`, pour y ajouter les  épaisseurs de trait et l'écriture de
