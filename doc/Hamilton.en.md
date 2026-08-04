@@ -905,6 +905,48 @@ way  to convert  gameboard  X-Y  coordinates into  a  longitude and  a
 latitude.  Therefore, the  `with_scale` columns  is filled  with zero,
 although the map represents the Earth.
 
+Website Organisation
+--------------------
+
+I have already explained in a
+[previous project](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-en.md#user-content-templateanti)
+that I do not like templating modules. The only templating module I like is
+[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
+because its templating language is vanilla HTML, without any extension
+and without  any specific syntax.  So I used `Template::Anti`  in this
+project.
+
+The  website is  bilingual  and  can scale  easily  to a  multilingual
+status. For  the moment,  only English and  French are  available. The
+language code is the first element of the URLs.
+
+The front page  is nothing more than the list  of all available maps.
+By default, it is displayed in  English, but by typing the proper URL,
+you can have the list in French.
+
+```
+http://localhost:10000/
+http://localhost:10000/en/list
+http://localhost:10000/fr/list
+```
+
+For each map, we have:
+
+* The full map with all its departments. URL
+http://localhost:10000/en/full-map/fr2015
+
+* The reduced map, or macro-map, with only the regions. URL
+http://localhost:10000/en/macro-map/fr2015
+
+* A regional map, showing all departments inside a region, plus all
+neighbouring departments. URL
+http://localhost:10000/en/region-map/fr2015/HDF
+
+The port number  is 10000 because this is the  default port number for
+Cro. If you use the Bailador version, change the addresses to use port
+number 3000 instead. Likewise, if you change the port number or if you
+use an external HTTP server, you have to use the proper port number.
+
 Drawing a Map
 -------------
 
@@ -986,6 +1028,719 @@ lines do not "spoil" the drawing  of circles, which is why the borders
 are drawn  before the areas. On  the other hand, drawing  the mapscale
 could have been done between the drawing of borders and the drawing of
 areas, or even after the drawing of areas.
+
+A Few Remarks
+-------------
+
+### Bailador or Cro?
+
+In 2017, I worked on a
+[Perl project](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
+using
+[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
+In 2018, when learning Raku (then named Perl 6), I worked on a
+[Raku projet](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
+with the Raku port of Dancer / Dancer2,
+[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
+So  I naturally  chose Bailador  when I  began working  on Hamiltonian
+paths in 2022.
+
+My main computer has the following configuration:
+
+* system Devuan 2 ASCII until January 2023, Devuan 4 Chimera after that
+
+* rakudo v2020.12
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+Since a date I  do not remember, possibly in 2024  but with no further
+precision, program `website.raku` fails  at start-up with segmentation
+errors. At first,  I did not care  much, because I just  had to repeat
+the shell command a few times and `website.raku` would run fine.
+
+On another  computer, program  `website.raku` would give  no problems.
+The configuration of this secondary computer are:
+
+* system xubuntu 22.04 Jammy Jellyfish
+
+* rakudo v2022.02
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+In April  2025, I wanted to  analyse the reasons for  the segmentation
+errors by installing and running  `website.raku` on a virtual machine.
+The configuration is:
+
+* system Fedora 41
+
+* rakudo v2024.12
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+The installation of Bailador failed, because the distribution `Digest`
+contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
+(directly  or indirectly)  by `Bailador.pm`.  This is  written in  the
+`README.md` file  of the Digest  distribution.
+
+For what it is worth, the versions of `Digest` are:
+
+* Devuan: `Digest:ver<0.7.2>:auth<Lucien Grondin>`
+
+* xubuntu: `Digest:ver<0.18.5>:auth<Lucien Grondin>`
+
+* Fedora: `Digest:ver<1.1.0>:auth<zef:grondilu>`
+
+Using option `--force` does not improve anything. I could overcome the
+problem  in several  ways.  I could  have  written a  `Digest.rakumod`
+module to act as a proxy for `Digest::MD5` and `Digest::SHA1`. I could
+search  the source  files for  Bailador and replace  all `use  Digest`
+statements by `use  Digest::MD5` and `use Digest::SHA1`  (and create a
+pull request). I could download and install an older version of Digest
+from the
+[Raku modules archive](https://github.com/Raku/REA/tree/main).
+
+On the other hand, when browsing the documentation for Bailador, I found
+[issue 315](https://github.com/Bailador/Bailador/issues/315)
+which stated that, for now, Bailador is no longer actively developped.
+Therefore, I decided to write a new program `website1.raku` using Cro.
+Since the Bailador-based program  `website.raku` is still operative on
+my xubuntu machine, and since my requirements for the website are very
+basic,   I   will   endeavour    to   update   the   various   modules
+`lib/xxx.rakumod` so  they will be  compatible with both  the Bailador
+version and the Cro version. Yet, if I hit a roadblock, I will forsake
+the Bailador version and keep only the Cro version.
+
+In retrospect: the migration was a rather easy task. There were just a
+few minor problems. For example, to display the list of maps, Bailador
+accepts both adresses below:
+
+```
+http://localhost:3000/en/list
+http://localhost:3000/en/list/
+```
+
+On the other side, Cro accepts the following address:
+
+```
+http://localhost:10000/en/list
+```
+
+but on the  other hand, the following address, with  a trailing slash,
+is refused:
+
+```
+http://localhost:10000/en/list/
+```
+
+Paradoxically, another  problem comes from  a feature present  in Cro,
+but   missing  from   Bailador.   The  display   parameters  such   as
+`?h=600&w=800` are  parsed by Cro  and provided as a  hashtable, while
+Bailador  just provides  the raw  string,  which requires  the use  of
+another module  `PostCocoon::Url`. As  a consequence, the  Cro program
+`website1.raku`  uses the  elements from  the hashtable,  rebuilds the
+parameter string and calls the  modules generating responses with both
+the  parameter  hashtable  and   the  parameter  string.  The  modules
+generating reponses use the hashtable to control the generation of the
+image and they use the string to generate URLs. On the other hand, the
+Bailador program `website.raku`  calls the same modules  with only the
+string, and  thanks to  the default  value declaration,  these modules
+receive an empty hashtable, which signals them that they need to parse
+the parameter string with `PostCocoon::Url`.
+
+Another remark  in retrospect:  the migration  to Cro  was successful,
+until  I   migrated  the  `Hamilton-stat.rakumod`  module.   Then  the
+segmentation errors appeared in  program `website1.raku` using Cro. So
+the cause for these errors does not seem to be in Bailador, but rather
+in the  module computing statistics  on Hamiltonian paths, or  in some
+compatibility problem between `Inline::Perl5` and `Graph.pm`.
+
+Then I migrated the Cro program `website1.raku` from Perl module
+[`Graph.pm`](https://metacpan.org/search?q=graph)
+to Raku module
+[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
+The  segmentation  errors  disappeared.  After that,  I  migrated  the
+Bailador   program   `website.raku`   and  the   segmentation   errors
+disappeared in this program also. Now  I have two separate versions of
+the website and  I trample the DRY principle  (Don't Repeat Yourself).
+Never mind.
+
+### Parameters For The Picture Size
+
+For each page, you can add parameters `h` and `w` to tweak the heights
+and widths of the drawings. For example, if we want to display the map
+in a 500 by 700 pixel rectangle:
+
+  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
+
+This is the basic  idea. A first exception is a map  with a single big
+area. To  avoid a huge blank  page when displaying the  macro-map, the
+canvas size  is reduced to  the minimal  size that allows  drawing the
+single area.  The programme does  not use  the values from  the string
+`?h=700&w=500`.
+
+Another case  is when you are  bothered by the fact  that the vertical
+scale and the horizontal scale are much different. So there is a third
+parameter to overload the `h` and `w` parameters. Possible values are:
+
+* `adj=h`, the `w`  parameter for the horizontal scale  is ignored and
+its value is updated to give the same pixel-per-kilometre scale as the
+`h` parameter.
+
+* `adj=w`, the `h` parameter for the vertical scale is ignored and its
+value is updated to give the same pixel-per-kilometre scale as the `w`
+parameter.
+
+* `adj=max`, the programme compares the vertical and horizontal scales
+(in pixels-per-kilometre) and keeps the higher.
+
+* `adj=min`, the programme compares the vertical and horizontal scales
+(in pixels-per-kilometre) and keeps the lower.
+
+Of course, this is relevant only for maps of the surface of Earth with
+a  cylindrical  projection,  in   other  words  maps  with  attributes
+`with_scale=1`.  For abstract  maps,  the adjustment  is  done on  the
+"pixels-per-pseudo-degree" values.
+
+Let us use the example of Britanny and its neighbour departments.
+
+![Bretagne](Bretagne.png)
+
+The  latitudes range  from  47.36°N (Loire-Atlantique  44) to  49.15°N
+(Manche 50),  which gives 1.79° or  200 km. The longitudes  range from
+0.95°W (Maine-et-Loire 49)  to 4.01°W (Finistère 29),  which gives 257
+km.
+
+With  parameter  string  `?h=700&w=500`,  we get  3.5  pixels  per  km
+vertically and 1.94 pixel per km horizontally.
+
+With  string `?h=700&w=500&adj=h`,  the picture  height overloads  its
+width, so we have  3.5 pixels per km in both  directions and the width
+is extended to 900 pixels.
+
+With  string `?h=700&w=500&adj=w`,  the  picture  width overloads  its
+height, so we have  1.94 pixels per km and the  height is shortened to
+388 pixels.
+
+With parameter  string `?h=700&w=500&adj=min`, the  programme compares
+both scales 3.5 pixels / km and  1.94 pixels / km and keeps the second
+one, which gives in this case the same result as `?h=700&w=500&adj=w`.
+On the  other hand,  the parameter string  `?h=700&w=500&adj=max` will
+result in the programme choosing the bigger scale, 3.5 pixels / km and
+will adjust the width to 900 pixels.
+
+### What is the projection used when building the maps?
+
+According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"
+(or "equirectangular")  transformation. In  a first  step, I  take the
+longitude and latitude  values and I use them  directly as rectangular
+coordinates.  This gives  some  shrinking at  low  latitudes and  some
+stretching at  high latitudes.  One longitude degree  is 81 km  in the
+South of  France and only 70 km  in the North of  France, but latitude
+degrees are  not altered. This distorsion  is much less than  what you
+get with the Mercator projection at high latitudes.
+
+In  a second  step, the  geographical dimensions  are adjusted  to the
+canvas  dimensions,  that  is,  1000 × 1000  pixels, later reduced to 800 × 800.  For  continental
+France, which  is 950 km in the  E-W direction and 1000 km  in the N-S
+direction, there is no distorsion, because  the scale is about 1 pixel
+per km in both directions. This  is different with, say, Britanny. The
+four  points  showing Britanny  are  separated  by  63 km in  the  N-S
+direction and by 172 km  in the E-W direction (if I  had used the real
+geographical maps,  showing the  full extent of  the 4  departments, I
+would have found 152 km N-S and  273 km E-W). The distorsion is higher
+than  previously,  because  the  scale  is 6  pixels  per  km  in  the
+horizontal  direction and  about  16  pixels per  km  in the  vertical
+direction.
+
+Actually, I  have decided to  add a  vertical scale and  an horizontal
+scale in the  map drawings. They were not part  of the initial design,
+but I think it has some usefulness.
+
+### Why do the region maps show the neighbouring departments?
+
+The first  reason is  displaying a  full path in  a region.  Since the
+neighbouring departments are displayed, we  can show how the full path
+enters  the  region   and  how  it  exits  the   region.  Without  the
+neighbouring  departments, the  graphics would  have been  exactly the
+same  as displaying  a region  path  strictly within  said region.  In
+addition,  with visible  neighbouring departments,  it is  possible to
+specify an `imagemap` with hyperlinks to neighbouring regions.
+
+The second reason is the coordinates  distorsion I have shown above. I
+have taken the example of Britanny.  I could have taken the example of
+Nord-Pas-de-Calais   or   Haute-Normandie   in   the   `fr1970`   map.
+Nord-Pas-de-Calais contains only two  departments, nearly aligned on a
+E-W horizontal  line. The vertical  gap is  0.21° or 23 km,  while the
+horizontal gap  is 1.3°, that is,  92 km. Yet, because of  the way the
+coordinates adjustment is  computed, both points would  be on opposite
+corners of the canvas  and the scale would be 43 pixels  per km on the
+vertical direction and  11 pixels per km on  the horizontal direction.
+By adding the  neighbouring Somme and Aisne, the  vertical gap extends
+to  0.82° or  91 km, which  gives  11 pixels  per km  on the  vertical
+direction. In this case, the distorsion is nearly eliminated. In other
+cases, it is just reduced.
+
+For Haute-Normandie, the two departments are aligned on a N-S vertical
+line. The horizontal gap is only  0.05° or 3.62 km, while the vertical
+gap  is  0.59° or  65.5 km.  So  the scale  would  be  216 pixels  per
+horizontal km and 15 pixels per vertical km.
+
+There  is worse.  There is  the  `frreg` map,  with the  Y2015-regions
+Britanny,  Île-de-France,  Centre-Val-de-Loire,  Pays-de-la-Loire  and
+Provence-Alpes-Côte-d'Azur.   Each   of   them   contains   only   one
+Y1970-region. The max  longitude and the min longitude  are equal, and
+the same thing  happens with latitudes. In this  case, the coordinates
+adjustment triggers two divisions zero-on-zero. By adding neighbouring
+Y1970-regions, the divisions by zero are avoided.
+
+### What about maps with only one big area?
+
+Actually, I had a division-by-zero once. When I added the Icosian game
+to the  list of test  data, when working  on version 5,  the macro-map
+would display a single Big Area, so the min-to-max difference was zero
+for  both longitudes  and  latitudes. Therefore,  I  added a  positive
+number, yet a very small one, to the min-to-max differences.
+
+Then I  added more maps  with a single  Big Area each,  including real
+maps located on Earth. Still no problems. Then I added the map for
+[Shoot-out at the Saloon](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
+which represents  four streets enclosing  a single saloon.  This would
+very roughly represent  a 40 m × 40 m square. Having  no indication of
+the location where the game takes  place, I adopted the coordinates of
+Tombstone, the famous town where the
+[Gunfight at the O.K. Corral](https://en.wikipedia.org/wiki/Gunfight_at_the_O.K._Corral)
+took place.
+
+The macro-map would display as usual  for maps with a single Big Area.
+But the  full map and  the regional map would  be awkward, with  a few
+points in  the upper-left corner and  an empty strip on  the right and
+another empty strip on the bottom. Why did this happen? When computing
+the  min-max  difference,   I  used  an  initial   value  `1e-3`.  One
+milli-degree represents a length of 111 m  in the NS direction and, at
+Tombstone's latitude,  a length of  95 m in  the EW direction.  So the
+picture would  display a  71 m empty  strip at the  bottom and  a 55 m
+empty strip on the right.
+
+So I changed this value to `1e-6`, which fixes the problem for
+[Shootout at the Saloon](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
+without any  side effect for  the other  maps. The problem  will arise
+again if  I find  a concrete  map which  fits inside  a 11 cm  × 11 cm
+square. For the moment, no such example comes to my mind.
+
+### Storing latitudes and longitudes in SQLite
+
+In Raku  programmes, latitudes  and longitudes  are `Num`  values, not
+`Int`. Yet, it may  happen that a latitude or a  longitude has a value
+[with a fractional part equal to zero](https://confluence.org/).
+It happens especially with abstract graphs such as the Icosian game or
+the  Platonic solids.  In this  case,  even if  you use  a `Num`  when
+storing the  longitude and  latitude into SQLite,  when you  read back
+these values,  they are retrieved  as `Int`'s. And the  Raku programme
+refuses to load these values into `Num` variables.
+
+The workaround  is to always add  a very small value,  such as `1e-8`.
+Thus,  the longitude  or latitude  is stored  into SQLite  as a  float
+number  and when  it  is retrieved,  it  can be  stored  into a  `Num`
+variable. Since  1 degree is 111  km (for latitude) or  less than that
+(for  longitude),  the bias  is  about  1  millimeter on  the  ground,
+therefore invisible on the map.
+
+### About the average longitude and the average latitude
+
+Giving to a big  area a longitude and a latitude  equal to the average
+longitude and latitude  of the small areas inside seems  to be a smart
+thing to do. But could this produce some glitches?
+
+In theory, yes. With the actual maps, no. At least for the French maps.
+
+With a rigid  mathematical point of view, no area  is a convex domain.
+The border  is always  zigzagging at  one point  or at  another, which
+prevents the  area from being convex.  The only exceptions I  know are
+Colorado and Wyoming in the USA.  Yet, we can consider that some areas
+are nearly convex  and others are definitely concave.  See for example
+Cantal  and Moselle.  Each  one  has an  inward  "dent"  that is  more
+important than  in any other  department. If  this dent was  even more
+important, it could happen that the geometric centre of the department
+would be in this dent, that is, outside the department's borders.
+
+In the picture below, which are hard-copies from
+[Géoportail](https://www.geoportail.gouv.fr/),
+you can see the  south-east dent on the Moselle and  the south dent on
+Cantal.  For comparison  purposes,  the picture  includes  the map  of
+Mayenne, a  department with a  more regular  shape and which  may seem
+nearly convex when seen from some distance.
+
+![Maps of Mayenne, Moselle and Cantal](Mayenne-Moselle-Cantal.png)
+
+With the method I used to  initialise the longitudes and latitudes for
+the departements,  a department  could not be  represented by  a point
+outside the  geographical limits of  the department. Even with  a very
+deep dent, I would have chosen a point within the department. But if a
+region  had a  dent similar  in proportions  to Cantal's  or Moselle's
+dent, the average longitude and the average latitude could have placed
+the centre  of the  region inside  the dent  and outside  the region's
+borders. This is not the case  with the French regions (both the Y1970
+ones and the Y2015 ones).
+
+On the other hand, it happens with
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
+if we includes the three sea areas  and the six foreign areas as a sea
+region and  a foreign region.  The average latitude and  longitude for
+the sea  areas could place the  sea region within South  India and the
+average latitude and the average  longitude of the foreign areas could
+place the foreign region within North India.
+
+This is even worse with
+[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
+if we decide  to keep the sea  areas and group them into  a single sea
+region. Since the sea areas are all around Great Britain, the computed
+centre of  the region will  most certainly be  near the centre  of the
+map, well within the borders of England.
+
+![Britannia: regional map for the sea areas and macro-map](Britannia-mer.webp)
+
+In the  programmes which  load the Maharadjah  data and  the Britannia
+data into the database, I could have  coded a special case for the sea
+regions. I did not do it. I  am fine with a macro-map showing a glitch
+when displaying the sea region in a wrong place.
+
+### Why the dots on the region borders?
+
+For  most  people,  the   borders  between  departments  belonging  to
+different  regions are  black, while  the borders  between departments
+belonging to the same region  are coloured. Colour-blind people cannot
+rely  on this  difference. So  the  dots allow  them to  differentiate
+between both kinds of borders.
+
+On the other hand, in the webpages associated with the "shortest paths
+from A  to B", coulours are  used to convey information  and the black
+dot on  black-drwan borders is no  longer useful. Yet, I  have no idea
+how  to draw  this informations  in a  useful and  convenient way  for
+colour-blind people.
+
+### Crossing the International Date Line
+
+#### First Version
+
+Some maps show  the whole Earth and they include  links from a western
+area  to an  eastern area,  across  the International  Date Line.  For
+example, Alaska → Kamtchatka in
+[Risk](https://boardgamegeek.com/image/79615/risk)
+or Alaska  → Northern Russia in
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+In this  case, both nodes  should be  displayed twice: main  Alaska at
+longitude 152 W and shadow Alaska  at longitude 208 E, main Kamtchatka
+at longitude 130 E and shadow  Kamtchatka at longitude 230 W. The edge
+would be drawn  twice, a first time from  152 W to 230 W  and a second
+time from 208 E to 130 E.
+
+I thought it  would be easy to  implement. It was not.  It was neither
+easy,  nor  difficult,  but  kind  of average.  It  still  deserves  a
+description, which you will find below. This description will be based
+on an reduced Risk map, as shown below.
+
+![Extracts from Risk showing the crossing of the International Date Line](cross-idl.webp)
+
+The needs are different for full maps (and macro-maps) on one side and
+for regional maps on the other side.
+
+On full maps, both areas must appear twice:
+
+* Main Alaska at longitude 152 W
+
+* Shadow Alaska at longitude 208 E (208 = -152 + 360)
+
+* Main Kamtchatka at longitude 130 E
+
+* Shadow Kamtchatka at longitude 230 W (-230 = 130 - 360)
+
+and the horizontal scale must use the full range 230 W → 208 E.
+
+On a Northern America regional map, both areas appear only once:
+
+* Main Alaska at longitude 152 W
+
+* Shadow Kamtchatka at longitude 230 W
+
+and the horizontal scale must use a range limited to 230 W (shadow Kamtchatka) → 32 W (Iceland).
+
+On an Asia regional map, both areas appear only once:
+
+* Shadow Alaska at longitude 208 E
+
+* Main Kamtchatka at longitude 130 E
+
+and the horizontal scale must use a range limited to 5 W (Europe) → 208 E (shadow Alaska).
+
+Regional maps, full  maps and macro-maps are rendered  as PNG pictures
+by the same  module, `map-gd.rakumod`. How can this  module tell apart
+regional maps from  full maps and macro-maps?  The `@borders` variable
+gives the answer. Inner borders appear  twice in the list, for example
+`ALB → NWT` and `NWT → ALB`, while the outer borders appear only once.
+Thus, when rendering the Northern  America regional map, you will have
+`ALA → KAM` but  not `KAM → ALA` and when  rendering the Asia regional
+map, you will have `KAM → ALA` but not `ALA → KAM`. When rendering the
+full map, this border is an inner border (respective to the full map),
+so the list will contain both `ALA → KAM` and `KAM → ALA`.
+
+Let us see the questions separately.
+
+In which circumstances is a shadow  area drawn?
+
+A shadow area is drawn when it appears as the `to_code` of a cross-IDL
+border.  This fact  is memorised  in variable  `%long-of-shadow-area`,
+which is used both as a boolean  and a numeric (the longitude where it
+will be  drawn). If both `ALA  → KAM` and  `KAM → ALA` appear  in list
+`@borders`, that means we are drawing a full map and both "shadow ALA"
+and "shadow KAM" will be displayed.  If only `ALA → KAM` appears, that
+means that we are drawing the  region map of Northern America and that
+"shadow KAM"  will be drawn,  but not "shadow  ALA". By the  way, that
+`Bool+Num` convention means that no longitude can be strictly equal to
+zero. So  if an  area needs a  zero longitude, it  will be  amended to
+`1e-8` or the like.
+
+In which circumstances is a main area drawn?
+
+There are three  criteria. The most frequent criterion is  that a main
+area is drawn if it appears in  a border with `cross_idl == 0`, either
+as `from_code` or as `to_code`. Another  criterion is that it is drawn
+if  it appears  in a  cross IDL  border as  its `from_code`.  With the
+example above, if  the `ALA → KAM` border appears,  that means that we
+are drawing either a full map, or a regional map for Northern America.
+In both cases, "main ALA" must be drawn. A last case is if the area is
+an isolated area  (big area `ICO` in map `ico`,  or island areas `HEB`
+and `ORK` in Britannia's map when  using only the ground borders). You
+will have to draw this isolated  area. This fact is stored in variable
+`%must-display-main`: if the value is  `False`, the "main area" is not
+displayed; if the value is `True` _or if it is missing_, the main area
+is displayed.  This is why  I used the `//=  True` code. If  the value
+does not exist, that means the area  does not appear in any border, so
+this  is  an  isolated  node  (island), and  its  (missing)  entry  in
+`%must-display-main`  is  upgraded  to  `True`. If  the  value  exists
+already,  it is  not upgraded,  so `True`  remains `True`  and `False`
+remains `False`.
+
+How do we compute the longitude range for the horizontal scale?
+
+As all borders  then all areas are examined, each  time we decide that
+the  area  must  be  drawn,  we   store  its  longitude  into  a  list
+`@longitudes`.  Of course,  if both  "shadow ALA"  and "main  ALA" are
+displayed, we store both longitudes `-152` (main) and `+208` (shadow).
+Then, when all borders have been examined and when all areas have been
+examined, we extract the `min` and the `max` from this list and we get
+the longitude range.
+
+Remaining problems:
+
+Two special  cases for borders will  not work well together:  a border
+both crossing IDL and having a waypoint.  I have not tested and I fear
+some silly behaviour.
+
+We suppose  that no big  area straddles the  IDL. If the  case appears
+(think Alaska before  1867, under the Russian rule), we  might have to
+split the big area  in two parts. We can bet that  in this case, there
+would be  only one cross-IDL  `Small_Border`. In this  case, splitting
+the `Big_Area` will not change  the generated Hamiltonian paths. Since
+there  is only  one such  border,  that means  that its  two ends  are
+articulation  points (or  dead-ends),  which  channel the  Hamiltonian
+paths.  A  real problem  would  occur  if  there  were _two_  or  more
+cross-IDL borders, such as  both `KAM → ALA` and `JAP  → ALA`. In this
+case, splitting big area "pre-1867 Russia" into two parts could change
+the list of generated Hamiltonian paths.  But let's face it: this will
+happen once in a blue moon.
+
+Here is the macro-map for
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle).
+The longitude scale and the latitude scale are equal.
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v1.png)
+
+As you can see,  the link from USA to big area  `ASI` (Asia) spans one
+third  of the  picture.  And  since it  is  drawn  twice, it  occupies
+actually two thirds of the picture. The explanation is this: longitude
+of area `USA` is 84°W (near  Albany, in Georgia) and longitude of area
+`ASI` is  103°E (between Thailand  and Cambodia). So the  shadow areas
+are at 276°E  and 257°W respectively, which gives an  overall width of
+533°. This overall width has twice 173° for the `USA → ASI` border and
+only 187° for the inner part of the map. Therefore, a second version
+
+#### Second Version
+
+We discard the notion  of "shadow area" and we add  a new use-case for
+the waypoint  in the border record.  If a border crosses  the IDL, the
+initialisation  programme  feeds  the  `long` and  `lat`  fields  when
+storing a  `Borders` record. The  latitude can  be computed, as  it is
+done in the `init-risk-extract.raku` programme, or it can be extracted
+from the init file,  like it is done for other reasons  with the `93 →
+95` border  in the `fr1970` and  `fr2015` maps, or several  borders in
+the `ratp` map.  The longitude is either 180°E or  180°W, according to
+the border `from_code` area. For example,  in the `ASI → USA` border ,
+the  longitude will  be +180  (or  180°E), while  in the  `USA →  ASI`
+border,  the longitude  will be  -180 (or  180°W). With,  as explained
+above, a fractional part.
+
+Then, when the  drawing programme deals with this border,  it draws it
+in  two segments,  one reaching  longitude 180°E,  the other  reaching
+longitude 180°W.
+
+The result is more balanced than the previous version:
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
+
+Only  the  initialisation programmes  and  the  drawing programme  are
+affected. The programmes  which compute the Hamiltonian  paths and the
+programme which computes the statistics for the shortest paths are not
+modified.
+
+#### Examples of Initialisation Programmes
+
+The Git repository provides two initialisation programmes for the Risk
+extract  map. In  the first  example, the  data file  is used  only to
+declare that  such and such big  borders cross the IDL.  The programme
+propagates the  `cross_idl` indicator to the  `Small_Borders` records.
+Also, it computes the latitude where the borders cross the IDL (linear
+variation with  respect to  the longitude)  and updates  all `Borders`
+records with this latitude and the associated longitude.
+
+In the  second example, all cross-IDL  borders are listed in  the data
+file,  both  `Big_Borders`  records and  `Small_Borders`  records.  In
+addition, these  borders must be declared  on two lines, one  line for
+the East relay point, the other for the West relay point.
+
+Using  longitudes 180°E  and 180°W  is not  mandatory. You  may use  a
+shorter longitude range  which will generate a  more detailed drawing.
+Let us use the example of
+[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
+In the West → East direction,
+[the map](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
+spans from Senegal (15°W) to Philippines (120°E). The locations
+of Canada and United States are
+[adjusted](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
+to fit within this range, which gives 9°W and 17°W respectively. There
+is a  border from  the USA  to Philippines. Drawing  a relay  point at
+180°W would be silly, with a  153° shift from the (relocated) USA. The
+relay point is  drawn at 22°W, which  is enough. In the  same way, the
+other relay point is drawn at 130°E instead of 180°E.
+
+As for the second programme for the Risk extract, the relay points for
+the `ALA → KAM` border are at 158°E and 170°W.
+
+### Performances
+
+While  running the  `gener1.raku` programme  on the  Britannia map,  I
+faced a big problem when generating the Hamiltonian regional paths for
+England (20  areas and 40  inner borders, that  is, 80 records  in the
+`Borders`  table).  Usually,  the  `gener1.raku`  programme  writes  a
+progress message with  a timestamp every 100 complete  paths and every
+10000 partial paths. When generating paths for England, I noticed that
+the delay between  two messages was increasing. At the  same time, the
+task manager on my computer was  showing that the percentage of active
+memory was steadily increasing. A memory leak!
+
+After  some  checking,   I  found  the  reason.  There   is  a  `begin
+transaction`  when the  programme  begins processing  a  region and  a
+`commit` when this  processing ends. To keep the size  of the database
+journal low, there  is also a `commit` immediately  followed by `begin
+transaction` every 100 complete paths.  Because of an error, there was
+also  a  `commit`  +  `begin  transaction`  each  time  the  programme
+processed  a partial  path.  The English  Hamiltonian path  generation
+would produce 16 182 complete paths after processing 3 562 769 partial
+paths. So there were more than 3 millions commits instead of just 162.
+
+I removed the superfluous `commit`  + `begin transaction`. The leak is
+not plugged, but it happens 162 times instead of 3 millions, so it has
+no visible effects.
+
+### SQL Syntax
+
+When we  join several tables,  it is  advised to qualify  every column
+name  with the  table name,  or to  give an  alias to  each table  and
+qualify each column name with this alias.
+
+First, the wrong example:
+
+```
+select num, path, area, to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Then the right example:
+
+```
+select B.num, B.path, B.area, B.to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Yet, this  SQL statement has  a problem. When I  ran it on  a computer
+with the parameter `:array-of-hash`, the programme gave:
+
+```
+({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
+```
+
+and when I ran it on  another computer, with a different Raku version,
+a  different  DBIish  version  and a  different  SQLite  version,  the
+programme gave:
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+How can  we avoid  this problem?  By giving an  attribute also  to the
+columns:
+
+```
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+On both computers, I obtained:
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+Other Possibilities
+-------------------
+
+A programme `export.raku`  allows you to export various  graphs to the
+`.dot` format. Then, you can create graphical files with
+[Graphviz](https://graphviz.org/)
+(`neato`) or use them interactively with
+[`tulip`](https://tulip.labri.fr/site/).
+
+The  export programme  allows you  to choose  the directory  where the
+`.dot` files will be created.  Other command line parameters allow you
+to choose  which graphs  are exported  for a given  map: the  full map
+graph, the  macro-map graph or the  regional maps graphs (all  or only
+those specified in the command line).
+
+Nodes and edges are exported with their colours and their longitudes /
+latitudes,  so   the  rendering  by   Graphviz  or  Tulip   should  be
+approximately the same as the rendering by `website.raku`.
 
 Database
 ========
@@ -1871,760 +2626,6 @@ keep the `Borders_With_Star` simple.
 
 Displaying the Results
 ======================
-
-I have already explained in a
-[previous project](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-en.md#user-content-templateanti)
-that I do not like templating modules. The only templating module I like is
-[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
-because its templating language is vanilla HTML, without any extension
-and without  any specific syntax.  So I used `Template::Anti`  in this
-project.
-
-Website Organisation
---------------------
-
-The  website is  bilingual  and  can scale  easily  to a  multilingual
-status. For  the moment,  only English and  French are  available. The
-language code is the first element of the URLs.
-
-The front page  is nothing more than the list  of all available maps.
-By default, it is displayed in  English, but by typing the proper URL,
-you can have the list in French.
-
-For each map, we have:
-
-* The full map with all its departments. URL
-http://localhost:3000/en/full-map/fr2015
-
-* The full map, showing a full path. URL
-http://localhost:3000/en/full-path/fr2015/2
-
-* The reduced map, or macro-map, with only the regions. URL
-http://localhost:3000/en/macro-map/fr2015
-
-* The reduced map, showing a macro-path. URL
-http://localhost:3000/en/macro-path/fr2015/2
-
-* A regional map, showing all departments inside a region, plus all
-neighbouring departments. URL
-http://localhost:3000/en/region-map/fr2015/HDF
-
-* A regional map with a regional path. URL
-http://localhost:3000/en/region-path/fr2015/HDF/1
-
-* A regional map with a (truncated) full path. URL
-http://localhost:3000/en/region-with-full-path/fr2015/HDF/3
-
-The port  number is 3000 because  this is the default  port number for
-Bailador. If you use the Cro version, change the addresses to use port
-number 10000 instead.
-
-### Parameters For The Picture Size
-
-For each page, you can add parameters `h` and `w` to tweak the heights
-and widths of the drawings. For example, if we want to display the map
-in a 500 by 700 pixel rectangle:
-
-  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
-
-This is the basic  idea. A first exception is a map  with a single big
-area. To  avoid a huge blank  page when displaying the  macro-map, the
-canvas size  is reduced to  the minimal  size that allows  drawing the
-single area.  The programme does  not use  the values from  the string
-`?h=700&w=500`.
-
-Another case  is when you are  bothered by the fact  that the vertical
-scale and the horizontal scale are much different. So there is a third
-parameter to overload the `h` and `w` parameters. Possible values are:
-
-* `adj=h`, the `w`  parameter for the horizontal scale  is ignored and
-its value is updated to give the same pixel-per-kilometre scale as the
-`h` parameter.
-
-* `adj=w`, the `h` parameter for the vertical scale is ignored and its
-value is updated to give the same pixel-per-kilometre scale as the `w`
-parameter.
-
-* `adj=max`, the programme compares the vertical and horizontal scales
-(in pixels-per-kilometre) and keeps the higher.
-
-* `adj=min`, the programme compares the vertical and horizontal scales
-(in pixels-per-kilometre) and keeps the lower.
-
-Of course, this is relevant only for maps of the surface of Earth with
-a  cylindrical  projection,  in   other  words  maps  with  attributes
-`with_scale=1`.  For abstract  maps,  the adjustment  is  done on  the
-"pixels-per-pseudo-degree" values.
-
-Let us use the example of Britanny and its neighbour departments.
-
-![Bretagne](Bretagne.png)
-
-The  latitudes range  from  47.36°N (Loire-Atlantique  44) to  49.15°N
-(Manche 50),  which gives 1.79° or  200 km. The longitudes  range from
-0.95°W (Maine-et-Loire 49)  to 4.01°W (Finistère 29),  which gives 257
-km.
-
-With  parameter  string  `?h=700&w=500`,  we get  3.5  pixels  per  km
-vertically and 1.94 pixel per km horizontally.
-
-With  string `?h=700&w=500&adj=h`,  the picture  height overloads  its
-width, so we have  3.5 pixels per km in both  directions and the width
-is extended to 900 pixels.
-
-With  string `?h=700&w=500&adj=w`,  the  picture  width overloads  its
-height, so we have  1.94 pixels per km and the  height is shortened to
-388 pixels.
-
-With parameter  string `?h=700&w=500&adj=min`, the  programme compares
-both scales 3.5 pixels / km and  1.94 pixels / km and keeps the second
-one, which gives in this case the same result as `?h=700&w=500&adj=w`.
-On the  other hand,  the parameter string  `?h=700&w=500&adj=max` will
-result in the programme choosing the bigger scale, 3.5 pixels / km and
-will adjust the width to 900 pixels.
-
-Other Possibilities
--------------------
-
-A programme `export.raku`  allows you to export various  graphs to the
-`.dot` format. Then, you can create graphical files with
-[Graphviz](https://graphviz.org/)
-(`neato`) or use them interactively with
-[`tulip`](https://tulip.labri.fr/site/).
-
-The  export programme  allows you  to choose  the directory  where the
-`.dot` files will be created.  Other command line parameters allow you
-to choose  which graphs  are exported  for a given  map: the  full map
-graph, the  macro-map graph or the  regional maps graphs (all  or only
-those specified in the command line).
-
-Nodes and edges are exported with their colours and their longitudes /
-latitudes,  so   the  rendering  by   Graphviz  or  Tulip   should  be
-approximately the same as the rendering by `website.raku`.
-
-A Few Remarks
--------------
-
-### Bailador or Cro?
-
-In 2017, I worked on a
-[Perl project](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
-using
-[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
-In 2018, when learning Raku (then named Perl 6), I worked on a
-[Raku projet](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
-with the Raku port of Dancer / Dancer2,
-[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
-So  I naturally  chose Bailador  when I  began working  on Hamiltonian
-paths in 2022.
-
-My main computer has the following configuration:
-
-* system Devuan 2 ASCII until January 2023, Devuan 4 Chimera after that
-
-* rakudo v2020.12
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-Since a date I  do not remember, possibly in 2024  but with no further
-precision, program `website.raku` fails  at start-up with segmentation
-errors. At first,  I did not care  much, because I just  had to repeat
-the shell command a few times and `website.raku` would run fine.
-
-On another  computer, program  `website.raku` would give  no problems.
-The configuration of this secondary computer are:
-
-* system xubuntu 22.04 Jammy Jellyfish
-
-* rakudo v2022.02
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-In April  2025, I wanted to  analyse the reasons for  the segmentation
-errors by installing and running  `website.raku` on a virtual machine.
-The configuration is:
-
-* system Fedora 41
-
-* rakudo v2024.12
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-The installation of Bailador failed, because the distribution `Digest`
-contains   no  module   `Digest.rakumod`  or   `Digest.pm6`,  required
-(directly  or indirectly)  by `Bailador.pm`.  This is  written in  the
-`README.md` file  of the Digest  distribution.
-
-For what it is worth, the versions of `Digest` are:
-
-* Devuan: `Digest:ver<0.7.2>:auth<Lucien Grondin>`
-
-* xubuntu: `Digest:ver<0.18.5>:auth<Lucien Grondin>`
-
-* Fedora: `Digest:ver<1.1.0>:auth<zef:grondilu>`
-
-Using option `--force` does not improve anything. I could overcome the
-problem  in several  ways.  I could  have  written a  `Digest.rakumod`
-module to act as a proxy for `Digest::MD5` and `Digest::SHA1`. I could
-search  the source  files for  Bailador and replace  all `use  Digest`
-statements by `use  Digest::MD5` and `use Digest::SHA1`  (and create a
-pull request). I could download and install an older version of Digest
-from the
-[Raku modules archive](https://github.com/Raku/REA/tree/main).
-
-On the other hand, when browsing the documentation for Bailador, I found
-[issue 315](https://github.com/Bailador/Bailador/issues/315)
-which stated that, for now, Bailador is no longer actively developped.
-Therefore, I decided to write a new program `website1.raku` using Cro.
-Since the Bailador-based program  `website.raku` is still operative on
-my xubuntu machine, and since my requirements for the website are very
-basic,   I   will   endeavour    to   update   the   various   modules
-`lib/xxx.rakumod` so  they will be  compatible with both  the Bailador
-version and the Cro version. Yet, if I hit a roadblock, I will forsake
-the Bailador version and keep only the Cro version.
-
-In retrospect: the migration was a rather easy task. There were just a
-few minor problems. For example, to display the list of maps, Bailador
-accepts both adresses below:
-
-```
-http://localhost:3000/en/list
-http://localhost:3000/en/list/
-```
-
-On the other side, Cro accepts the following address:
-
-```
-http://localhost:10000/en/list
-```
-
-but on the  other hand, the following address, with  a trailing slash,
-is refused:
-
-```
-http://localhost:10000/en/list/
-```
-
-Paradoxically, another  problem comes from  a feature present  in Cro,
-but   missing  from   Bailador.   The  display   parameters  such   as
-`?h=600&w=800` are  parsed by Cro  and provided as a  hashtable, while
-Bailador  just provides  the raw  string,  which requires  the use  of
-another module  `PostCocoon::Url`. As  a consequence, the  Cro program
-`website1.raku`  uses the  elements from  the hashtable,  rebuilds the
-parameter string and calls the  modules generating responses with both
-the  parameter  hashtable  and   the  parameter  string.  The  modules
-generating reponses use the hashtable to control the generation of the
-image and they use the string to generate URLs. On the other hand, the
-Bailador program `website.raku`  calls the same modules  with only the
-string, and  thanks to  the default  value declaration,  these modules
-receive an empty hashtable, which signals them that they need to parse
-the parameter string with `PostCocoon::Url`.
-
-Another remark  in retrospect:  the migration  to Cro  was successful,
-until  I   migrated  the  `Hamilton-stat.rakumod`  module.   Then  the
-segmentation errors appeared in  program `website1.raku` using Cro. So
-the cause for these errors does not seem to be in Bailador, but rather
-in the  module computing statistics  on Hamiltonian paths, or  in some
-compatibility problem between `Inline::Perl5` and `Graph.pm`.
-
-Then I migrated the Cro program `website1.raku` from Perl module
-[`Graph.pm`](https://metacpan.org/search?q=graph)
-to Raku module
-[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
-The  segmentation  errors  disappeared.  After that,  I  migrated  the
-Bailador   program   `website.raku`   and  the   segmentation   errors
-disappeared in this program also. Now  I have two separate versions of
-the website and  I trample the DRY principle  (Don't Repeat Yourself).
-Never mind.
-
-### What is the projection used when building the maps?
-
-According to [xkcd](https://xkcd.com/977/), this is the "plate-carrée"
-(or "equirectangular")  transformation. In  a first  step, I  take the
-longitude and latitude  values and I use them  directly as rectangular
-coordinates.  This gives  some  shrinking at  low  latitudes and  some
-stretching at  high latitudes.  One longitude degree  is 81 km  in the
-South of  France and only 70 km  in the North of  France, but latitude
-degrees are  not altered. This distorsion  is much less than  what you
-get with the Mercator projection at high latitudes.
-
-In  a second  step, the  geographical dimensions  are adjusted  to the
-canvas  dimensions,  that  is,  1000 × 1000  pixels, later reduced to 800 × 800.  For  continental
-France, which  is 950 km in the  E-W direction and 1000 km  in the N-S
-direction, there is no distorsion, because  the scale is about 1 pixel
-per km in both directions. This  is different with, say, Britanny. The
-four  points  showing Britanny  are  separated  by  63 km in  the  N-S
-direction and by 172 km  in the E-W direction (if I  had used the real
-geographical maps,  showing the  full extent of  the 4  departments, I
-would have found 152 km N-S and  273 km E-W). The distorsion is higher
-than  previously,  because  the  scale  is 6  pixels  per  km  in  the
-horizontal  direction and  about  16  pixels per  km  in the  vertical
-direction.
-
-Actually, I  have decided to  add a  vertical scale and  an horizontal
-scale in the  map drawings. They were not part  of the initial design,
-but I think it has some usefulness.
-
-### Why do the region maps show the neighbouring departments?
-
-The first  reason is  displaying a  full path in  a region.  Since the
-neighbouring departments are displayed, we  can show how the full path
-enters  the  region   and  how  it  exits  the   region.  Without  the
-neighbouring  departments, the  graphics would  have been  exactly the
-same  as displaying  a region  path  strictly within  said region.  In
-addition,  with visible  neighbouring departments,  it is  possible to
-specify an `imagemap` with hyperlinks to neighbouring regions.
-
-The second reason is the coordinates  distorsion I have shown above. I
-have taken the example of Britanny.  I could have taken the example of
-Nord-Pas-de-Calais   or   Haute-Normandie   in   the   `fr1970`   map.
-Nord-Pas-de-Calais contains only two  departments, nearly aligned on a
-E-W horizontal  line. The vertical  gap is  0.21° or 23 km,  while the
-horizontal gap  is 1.3°, that is,  92 km. Yet, because of  the way the
-coordinates adjustment is  computed, both points would  be on opposite
-corners of the canvas  and the scale would be 43 pixels  per km on the
-vertical direction and  11 pixels per km on  the horizontal direction.
-By adding the  neighbouring Somme and Aisne, the  vertical gap extends
-to  0.82° or  91 km, which  gives  11 pixels  per km  on the  vertical
-direction. In this case, the distorsion is nearly eliminated. In other
-cases, it is just reduced.
-
-For Haute-Normandie, the two departments are aligned on a N-S vertical
-line. The horizontal gap is only  0.05° or 3.62 km, while the vertical
-gap  is  0.59° or  65.5 km.  So  the scale  would  be  216 pixels  per
-horizontal km and 15 pixels per vertical km.
-
-There  is worse.  There is  the  `frreg` map,  with the  Y2015-regions
-Britanny,  Île-de-France,  Centre-Val-de-Loire,  Pays-de-la-Loire  and
-Provence-Alpes-Côte-d'Azur.   Each   of   them   contains   only   one
-Y1970-region. The max  longitude and the min longitude  are equal, and
-the same thing  happens with latitudes. In this  case, the coordinates
-adjustment triggers two divisions zero-on-zero. By adding neighbouring
-Y1970-regions, the divisions by zero are avoided.
-
-### What about maps with only one big area?
-
-Actually, I had a division-by-zero once. When I added the Icosian game
-to the  list of test  data, when working  on version 5,  the macro-map
-would display a single Big Area, so the min-to-max difference was zero
-for  both longitudes  and  latitudes. Therefore,  I  added a  positive
-number, yet a very small one, to the min-to-max differences.
-
-Then I  added more maps  with a single  Big Area each,  including real
-maps located on Earth. Still no problems. Then I added the map for
-[Shoot-out at the Saloon](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon),
-which represents  four streets enclosing  a single saloon.  This would
-very roughly represent  a 40 m × 40 m square. Having  no indication of
-the location where the game takes  place, I adopted the coordinates of
-Tombstone, the famous town where the
-[Gunfight at the O.K. Corral](https://en.wikipedia.org/wiki/Gunfight_at_the_O.K._Corral)
-took place.
-
-The macro-map would display as usual  for maps with a single Big Area.
-But the  full map and  the regional map would  be awkward, with  a few
-points in  the upper-left corner and  an empty strip on  the right and
-another empty strip on the bottom. Why did this happen? When computing
-the  min-max  difference,   I  used  an  initial   value  `1e-3`.  One
-milli-degree represents a length of 111 m  in the NS direction and, at
-Tombstone's latitude,  a length of  95 m in  the EW direction.  So the
-picture would  display a  71 m empty  strip at the  bottom and  a 55 m
-empty strip on the right.
-
-So I changed this value to `1e-6`, which fixes the problem for
-[Shootout at the Saloon](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
-without any  side effect for  the other  maps. The problem  will arise
-again if  I find  a concrete  map which  fits inside  a 11 cm  × 11 cm
-square. For the moment, no such example comes to my mind.
-
-### Storing latitudes and longitudes in SQLite
-
-In Raku  programmes, latitudes  and longitudes  are `Num`  values, not
-`Int`. Yet, it may  happen that a latitude or a  longitude has a value
-[with a fractional part equal to zero](https://confluence.org/).
-It happens especially with abstract graphs such as the Icosian game or
-the  Platonic solids.  In this  case,  even if  you use  a `Num`  when
-storing the  longitude and  latitude into SQLite,  when you  read back
-these values,  they are retrieved  as `Int`'s. And the  Raku programme
-refuses to load these values into `Num` variables.
-
-The workaround  is to always add  a very small value,  such as `1e-8`.
-Thus,  the longitude  or latitude  is stored  into SQLite  as a  float
-number  and when  it  is retrieved,  it  can be  stored  into a  `Num`
-variable. Since  1 degree is 111  km (for latitude) or  less than that
-(for  longitude),  the bias  is  about  1  millimeter on  the  ground,
-therefore invisible on the map.
-
-### About the average longitude and the average latitude
-
-Giving to a big  area a longitude and a latitude  equal to the average
-longitude and latitude  of the small areas inside seems  to be a smart
-thing to do. But could this produce some glitches?
-
-In theory, yes. With the actual maps, no. At least for the French maps.
-
-With a rigid  mathematical point of view, no area  is a convex domain.
-The border  is always  zigzagging at  one point  or at  another, which
-prevents the  area from being convex.  The only exceptions I  know are
-Colorado and Wyoming in the USA.  Yet, we can consider that some areas
-are nearly convex  and others are definitely concave.  See for example
-Cantal  and Moselle.  Each  one  has an  inward  "dent"  that is  more
-important than  in any other  department. If  this dent was  even more
-important, it could happen that the geometric centre of the department
-would be in this dent, that is, outside the department's borders.
-
-In the picture below, which are hard-copies from
-[Géoportail](https://www.geoportail.gouv.fr/),
-you can see the  south-east dent on the Moselle and  the south dent on
-Cantal.  For comparison  purposes,  the picture  includes  the map  of
-Mayenne, a  department with a  more regular  shape and which  may seem
-nearly convex when seen from some distance.
-
-![Maps of Mayenne, Moselle and Cantal](Mayenne-Moselle-Cantal.png)
-
-With the method I used to  initialise the longitudes and latitudes for
-the departements,  a department  could not be  represented by  a point
-outside the  geographical limits of  the department. Even with  a very
-deep dent, I would have chosen a point within the department. But if a
-region  had a  dent similar  in proportions  to Cantal's  or Moselle's
-dent, the average longitude and the average latitude could have placed
-the centre  of the  region inside  the dent  and outside  the region's
-borders. This is not the case  with the French regions (both the Y1970
-ones and the Y2015 ones).
-
-On the other hand, it happens with
-[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
-if we includes the three sea areas  and the six foreign areas as a sea
-region and  a foreign region.  The average latitude and  longitude for
-the sea  areas could place the  sea region within South  India and the
-average latitude and the average  longitude of the foreign areas could
-place the foreign region within North India.
-
-This is even worse with
-[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
-if we decide  to keep the sea  areas and group them into  a single sea
-region. Since the sea areas are all around Great Britain, the computed
-centre of  the region will  most certainly be  near the centre  of the
-map, well within the borders of England.
-
-![Britannia: regional map for the sea areas and macro-map](Britannia-mer.webp)
-
-In the  programmes which  load the Maharadjah  data and  the Britannia
-data into the database, I could have  coded a special case for the sea
-regions. I did not do it. I  am fine with a macro-map showing a glitch
-when displaying the sea region in a wrong place.
-
-### Why the dots on the region borders?
-
-For  most  people,  the   borders  between  departments  belonging  to
-different  regions are  black, while  the borders  between departments
-belonging to the same region  are coloured. Colour-blind people cannot
-rely  on this  difference. So  the  dots allow  them to  differentiate
-between both kinds of borders.
-
-### Crossing the International Date Line
-
-#### First Version
-
-Some maps show  the whole Earth and they include  links from a western
-area  to an  eastern area,  across  the International  Date Line.  For
-example, Alaska → Kamtchatka in
-[Risk](https://boardgamegeek.com/image/79615/risk)
-or Alaska  → Northern Russia in
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-In this  case, both nodes  should be  displayed twice: main  Alaska at
-longitude 152 W and shadow Alaska  at longitude 208 E, main Kamtchatka
-at longitude 130 E and shadow  Kamtchatka at longitude 230 W. The edge
-would be drawn  twice, a first time from  152 W to 230 W  and a second
-time from 208 E to 130 E.
-
-I thought it  would be easy to  implement. It was not.  It was neither
-easy,  nor  difficult,  but  kind  of average.  It  still  deserves  a
-description, which you will find below. This description will be based
-on an reduced Risk map, as shown below.
-
-![Extracts from Risk showing the crossing of the International Date Line](cross-idl.webp)
-
-The needs are different for full maps (and macro-maps) on one side and
-for regional maps on the other side.
-
-On full maps, both areas must appear twice:
-
-* Main Alaska at longitude 152 W
-
-* Shadow Alaska at longitude 208 E (208 = -152 + 360)
-
-* Main Kamtchatka at longitude 130 E
-
-* Shadow Kamtchatka at longitude 230 W (-230 = 130 - 360)
-
-and the horizontal scale must use the full range 230 W → 208 E.
-
-On a Northern America regional map, both areas appear only once:
-
-* Main Alaska at longitude 152 W
-
-* Shadow Kamtchatka at longitude 230 W
-
-and the horizontal scale must use a range limited to 230 W (shadow Kamtchatka) → 32 W (Iceland).
-
-On an Asia regional map, both areas appear only once:
-
-* Shadow Alaska at longitude 208 E
-
-* Main Kamtchatka at longitude 130 E
-
-and the horizontal scale must use a range limited to 5 W (Europe) → 208 E (shadow Alaska).
-
-Regional maps, full  maps and macro-maps are rendered  as PNG pictures
-by the same  module, `map-gd.rakumod`. How can this  module tell apart
-regional maps from  full maps and macro-maps?  The `@borders` variable
-gives the answer. Inner borders appear  twice in the list, for example
-`ALB → NWT` and `NWT → ALB`, while the outer borders appear only once.
-Thus, when rendering the Northern  America regional map, you will have
-`ALA → KAM` but  not `KAM → ALA` and when  rendering the Asia regional
-map, you will have `KAM → ALA` but not `ALA → KAM`. When rendering the
-full map, this border is an inner border (respective to the full map),
-so the list will contain both `ALA → KAM` and `KAM → ALA`.
-
-Let us see the questions separately.
-
-In which circumstances is a shadow  area drawn?
-
-A shadow area is drawn when it appears as the `to_code` of a cross-IDL
-border.  This fact  is memorised  in variable  `%long-of-shadow-area`,
-which is used both as a boolean  and a numeric (the longitude where it
-will be  drawn). If both `ALA  → KAM` and  `KAM → ALA` appear  in list
-`@borders`, that means we are drawing a full map and both "shadow ALA"
-and "shadow KAM" will be displayed.  If only `ALA → KAM` appears, that
-means that we are drawing the  region map of Northern America and that
-"shadow KAM"  will be drawn,  but not "shadow  ALA". By the  way, that
-`Bool+Num` convention means that no longitude can be strictly equal to
-zero. So  if an  area needs a  zero longitude, it  will be  amended to
-`1e-8` or the like.
-
-In which circumstances is a main area drawn?
-
-There are three  criteria. The most frequent criterion is  that a main
-area is drawn if it appears in  a border with `cross_idl == 0`, either
-as `from_code` or as `to_code`. Another  criterion is that it is drawn
-if  it appears  in a  cross IDL  border as  its `from_code`.  With the
-example above, if  the `ALA → KAM` border appears,  that means that we
-are drawing either a full map, or a regional map for Northern America.
-In both cases, "main ALA" must be drawn. A last case is if the area is
-an isolated area  (big area `ICO` in map `ico`,  or island areas `HEB`
-and `ORK` in Britannia's map when  using only the ground borders). You
-will have to draw this isolated  area. This fact is stored in variable
-`%must-display-main`: if the value is  `False`, the "main area" is not
-displayed; if the value is `True` _or if it is missing_, the main area
-is displayed.  This is why  I used the `//=  True` code. If  the value
-does not exist, that means the area  does not appear in any border, so
-this  is  an  isolated  node  (island), and  its  (missing)  entry  in
-`%must-display-main`  is  upgraded  to  `True`. If  the  value  exists
-already,  it is  not upgraded,  so `True`  remains `True`  and `False`
-remains `False`.
-
-How do we compute the longitude range for the horizontal scale?
-
-As all borders  then all areas are examined, each  time we decide that
-the  area  must  be  drawn,  we   store  its  longitude  into  a  list
-`@longitudes`.  Of course,  if both  "shadow ALA"  and "main  ALA" are
-displayed, we store both longitudes `-152` (main) and `+208` (shadow).
-Then, when all borders have been examined and when all areas have been
-examined, we extract the `min` and the `max` from this list and we get
-the longitude range.
-
-Remaining problems:
-
-Two special  cases for borders will  not work well together:  a border
-both crossing IDL and having a waypoint.  I have not tested and I fear
-some silly behaviour.
-
-We suppose  that no big  area straddles the  IDL. If the  case appears
-(think Alaska before  1867, under the Russian rule), we  might have to
-split the big area  in two parts. We can bet that  in this case, there
-would be  only one cross-IDL  `Small_Border`. In this  case, splitting
-the `Big_Area` will not change  the generated Hamiltonian paths. Since
-there  is only  one such  border,  that means  that its  two ends  are
-articulation  points (or  dead-ends),  which  channel the  Hamiltonian
-paths.  A  real problem  would  occur  if  there  were _two_  or  more
-cross-IDL borders, such as  both `KAM → ALA` and `JAP  → ALA`. In this
-case, splitting big area "pre-1867 Russia" into two parts could change
-the list of generated Hamiltonian paths.  But let's face it: this will
-happen once in a blue moon.
-
-Here is the macro-map for
-[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle).
-The longitude scale and the latitude scale are equal.
-
-![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v1.png)
-
-As you can see,  the link from USA to big area  `ASI` (Asia) spans one
-third  of the  picture.  And  since it  is  drawn  twice, it  occupies
-actually two thirds of the picture. The explanation is this: longitude
-of area `USA` is 84°W (near  Albany, in Georgia) and longitude of area
-`ASI` is  103°E (between Thailand  and Cambodia). So the  shadow areas
-are at 276°E  and 257°W respectively, which gives an  overall width of
-533°. This overall width has twice 173° for the `USA → ASI` border and
-only 187° for the inner part of the map. Therefore, a second version
-
-#### Second Version
-
-We discard the notion  of "shadow area" and we add  a new use-case for
-the waypoint  in the border record.  If a border crosses  the IDL, the
-initialisation  programme  feeds  the  `long` and  `lat`  fields  when
-storing a  `Borders` record. The  latitude can  be computed, as  it is
-done in the `init-risk-extract.raku` programme, or it can be extracted
-from the init file,  like it is done for other reasons  with the `93 →
-95` border  in the `fr1970` and  `fr2015` maps, or several  borders in
-the `ratp` map.  The longitude is either 180°E or  180°W, according to
-the border `from_code` area. For example,  in the `ASI → USA` border ,
-the  longitude will  be +180  (or  180°E), while  in the  `USA →  ASI`
-border,  the longitude  will be  -180 (or  180°W). With,  as explained
-above, a fractional part.
-
-Then, when the  drawing programme deals with this border,  it draws it
-in  two segments,  one reaching  longitude 180°E,  the other  reaching
-longitude 180°W.
-
-The result is more balanced than the previous version:
-
-![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
-
-Only  the  initialisation programmes  and  the  drawing programme  are
-affected. The programmes  which compute the Hamiltonian  paths and the
-programme which computes the statistics for the shortest paths are not
-modified.
-
-#### Examples of Initialisation Programmes
-
-The Git repository provides two initialisation programmes for the Risk
-extract  map. In  the first  example, the  data file  is used  only to
-declare that  such and such big  borders cross the IDL.  The programme
-propagates the  `cross_idl` indicator to the  `Small_Borders` records.
-Also, it computes the latitude where the borders cross the IDL (linear
-variation with  respect to  the longitude)  and updates  all `Borders`
-records with this latitude and the associated longitude.
-
-In the  second example, all cross-IDL  borders are listed in  the data
-file,  both  `Big_Borders`  records and  `Small_Borders`  records.  In
-addition, these  borders must be declared  on two lines, one  line for
-the East relay point, the other for the West relay point.
-
-Using  longitudes 180°E  and 180°W  is not  mandatory. You  may use  a
-shorter longitude range  which will generate a  more detailed drawing.
-Let us use the example of
-[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
-In the West → East direction,
-[the map](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
-spans from Senegal (15°W) to Philippines (120°E). The locations
-of Canada and United States are
-[adjusted](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
-to fit within this range, which gives 9°W and 17°W respectively. There
-is a  border from  the USA  to Philippines. Drawing  a relay  point at
-180°W would be silly, with a  153° shift from the (relocated) USA. The
-relay point is  drawn at 22°W, which  is enough. In the  same way, the
-other relay point is drawn at 130°E instead of 180°E.
-
-As for the second programme for the Risk extract, the relay points for
-the `ALA → KAM` border are at 158°E and 170°W.
-
-### Performances
-
-While  running the  `gener1.raku` programme  on the  Britannia map,  I
-faced a big problem when generating the Hamiltonian regional paths for
-England (20  areas and 40  inner borders, that  is, 80 records  in the
-`Borders`  table).  Usually,  the  `gener1.raku`  programme  writes  a
-progress message with  a timestamp every 100 complete  paths and every
-10000 partial paths. When generating paths for England, I noticed that
-the delay between  two messages was increasing. At the  same time, the
-task manager on my computer was  showing that the percentage of active
-memory was steadily increasing. A memory leak!
-
-After  some  checking,   I  found  the  reason.  There   is  a  `begin
-transaction`  when the  programme  begins processing  a  region and  a
-`commit` when this  processing ends. To keep the size  of the database
-journal low, there  is also a `commit` immediately  followed by `begin
-transaction` every 100 complete paths.  Because of an error, there was
-also  a  `commit`  +  `begin  transaction`  each  time  the  programme
-processed  a partial  path.  The English  Hamiltonian path  generation
-would produce 16 182 complete paths after processing 3 562 769 partial
-paths. So there were more than 3 millions commits instead of just 162.
-
-I removed the superfluous `commit`  + `begin transaction`. The leak is
-not plugged, but it happens 162 times instead of 3 millions, so it has
-no visible effects.
-
-### SQL Syntax
-
-When we  join several tables,  it is  advised to qualify  every column
-name  with the  table name,  or to  give an  alias to  each table  and
-qualify each column name with this alias.
-
-First, the wrong example:
-
-```
-select num, path, area, to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-
-Then the right example:
-
-```
-select B.num, B.path, B.area, B.to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-
-Yet, this  SQL statement has  a problem. When I  ran it on  a computer
-with the parameter `:array-of-hash`, the programme gave:
-
-```
-({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
-```
-
-and when I ran it on  another computer, with a different Raku version,
-a  different  DBIish  version  and a  different  SQLite  version,  the
-programme gave:
-
-```
-({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
-```
-
-How can  we avoid  this problem?  By giving an  attribute also  to the
-columns:
-
-```
-select B.num     as num
-     , B.path    as path
-     , B.area    as area
-     , B.to_code as to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-On both computers, I obtained:
-
-```
-({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
-```
 
 First Attempt
 =============

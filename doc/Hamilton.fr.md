@@ -960,6 +960,49 @@ difficile de convertir  des coordonnées X-Y en  longitude et latitude,
 donc  le  champ `with_scale`  est  alimenté  à  zéro, alors  que  cela
 représente le globe terrestre.
 
+Organisation du site web
+------------------------
+
+Pour des raisons exposées dans un
+[projet précédent](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-fr.md#user-content-templateanti),
+le seul module de _templating_ qui trouve grâce à mes yeux est
+[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
+car le  langage de _templating_  est tout simplement HTML  sans aucune
+extension  et  sans  syntaxe  bizarre. Je  dirais  même  « sans  sucre
+syntaxique  rajouté ».  J'ai  donc utilisé  `Template::Anti`  dans  ce
+projet.
+
+Le  site est  prévu  pour  être multilingue.  Pour  l'instant, il  est
+bilingue, disponible en anglais et  en français. Le code langue figure
+en première position de l'URL.
+
+La  page  d'accueil  est  juste   une  liste  en  anglais  des  cartes
+disponibles  (liste  disponible  en  français, à  condition  de  taper
+l'URL complet).
+
+```
+http://localhost:10000/
+http://localhost:10000/en/list
+http://localhost:10000/fr/list
+```
+
+Pour chaque carte, nous avons :
+
+* L'affichage détaillé de la carte complète, avec tous
+les départements. URL :
+http://localhost:10000/fr/full-map/fr2015
+
+* L'affichage réduit, qui affiche seulement les régions. URL :
+http://localhost:10000/fr/macro-map/fr2015
+
+* L'affichage d'une région, avec les départements limitrophes. URL :
+http://localhost:10000/fr/region-map/fr2015/HDF
+
+Le numéro de  port 10000 est le  numéro de port par défaut  de Cro. Si
+vous utilisez Bailador, il faut  adapter ces adresses pour utiliser le
+numéro de port 3000.  De même si vous changez le numéro  de port ou si
+vous utilisez un serveur HTTP externe.
+
 Dessin d'une carte
 ------------------
 
@@ -1047,6 +1090,778 @@ dessin des  frontières ne  « pourrisse » pas le  dessin des  zones. En
 revanche, la  troisième étape  dessinant les  échelles aurait  pu être
 codée entre le dessin des frontières  et le dessin des zones, ou après
 le dessin des zones.
+
+Quelques remarques
+------------------
+
+### Bailador ou Cro ?
+
+En 2017, j'ai travaillé sur un
+[projet Perl](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
+utilisant
+[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
+En 2018, pour apprendre Raku (qui s'appelait encore Perl 6), j'ai travaillé sur un
+[projet Raku](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
+utilisant la version Raku de Dancer / Dancer2,
+[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
+C'est donc tout naturellement que j'ai choisi Bailador lorsque
+j'ai commencé à travailler sur les chemins hamiltoniens en 2022.
+
+Ma machine principale a la configuration suivante :
+
+* système Devuan 2 ASCII jusqu'en janvier 2023, Devuan 4 Chimera ensuite
+
+* rakudo v2020.12
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+À partir d'une  date que je n'ai pas notée,  vraisemblablement en 2024
+mais sans  autre précision,  le programme  `website.raku` s'est  mis à
+faire des  erreurs de segmentation au  démarrage. Je ne m'en  suis pas
+inquiété  outre  mesure,  car  au  bout  de  plusieurs  tentatives  il
+démarrait correctement.
+
+Sur une autre  machine, le programme `website.raku`  basé sur Bailador
+continue  à fonctionner  correctement. Les  caractéristiques de  cette
+machine sont :
+
+* système xubuntu 22.04 Jammy Jellyfish
+
+* rakudo v2022.02
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+En avril 2025,  j'ai voulu examiner en détail le  problème des erreurs
+de   segmentation.  Pour   ce   faire,  j'ai   tenté  d'installer   un
+environnement de développement sur une machine virtuelle :
+
+* système Fedora 41
+
+* rakudo v2024.12
+
+* `Bailador:ver<0.0.19>:auth<github:Bailador>`
+
+L'installation de Bailador a échoué parce que la distribution `Digest`
+version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
+`Digest.pm6`. C'est d'ailleurs écrit dans le fichier `README.md` de la
+distribution.
+
+Pour mémoire, les versions utilisées de `Digest` sont :
+
+* Devuan : `Digest:ver<0.7.2>:auth<Lucien Grondin>`
+
+* xubuntu : `Digest:ver<0.18.5>:auth<Lucien Grondin>`
+
+* Fedora : `Digest:ver<1.1.0>:auth<zef:grondilu>`
+
+L'utilisation  de  l'option  `--force`  n'y  fait  rien.  J'aurais  pu
+m'arranger  de diverses  façons  pour installer  quand même  Bailador.
+J'aurais pu créer  le fichier `Config.rakumod` pour  assurer le relais
+entre  `Bailador`  d'un côté  et  `Digest::MD5`  et `Digest::SHA1`  de
+l'autre  côté.  J'aurais pu  fouiller  dans  les fichiers  sources  de
+Bailador  pour  remplacer  les  instructions  `use  Digest`  par  `use
+Digest::MD5`  et `use  Digest::SHA1`  (et créer  une _pull  request_).
+J'aurais pu récupérer une ancienne version de Digest dans
+[l'archive des modules Raku](https://github.com/Raku/REA/tree/main).
+
+Cela dit, en  consultant la documentation de Bailador, je suis tombé sur
+l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
+expliquant que  pour l'instant, le  développement de Bailador  était à
+l'arrêt. J'ai donc décidé d'écrire un nouveau programme de site web en
+utilisant Cro. Comme le programme d'origine continue à fonctionner sur
+la machine xubuntu,  et comme mes besoins pour le  site web sont assez
+élémentaires,  je vais  m'efforcer  d'adapter  les modules  dépendants
+`lib/xxx.rakumod` pour  qu'ils soient  compatibles à  la fois  avec la
+version Bailador  et avec la version  Cro. Toutefois, si je  tombe sur
+une impossibilité,  alors j'abandonnerai  la version Bailador  pour ne
+conserver que la version Cro.
+
+Après coup : la migration s'est  faite relativement facilement. Il y a
+eu quelques  problèmes mineurs. Par  exemple, pour avoir la  liste des
+cartes, Bailador autorisait les deux syntaxes :
+
+```
+http://localhost:3000/fr/list
+http://localhost:3000/fr/list/
+```
+
+En revanche, si Cro accepte
+
+```
+http://localhost:10000/fr/list
+```
+
+le lien suivant, avec un slash final, est interdit :
+
+```
+http://localhost:10000/fr/list/
+```
+
+Paradoxalement, un autre problème vient d'une facilité offerte par Cro
+mais   pas  par   Bailador.  Les   paramètres  d'affichage   du  genre
+`?h=600&w=800` sont  analysés par Cro  et fournis sous la  forme d'une
+table de hachage,  tandis qu'elle est transmise  sans modification par
+Bailador, ce qui nécessite  l'utilisation du module `PostCocoon::Url`.
+Du  coup,  le  programme  Cro `website1.raku`  reconstitue  la  chaîne
+contenant les paramètres et transmet à  la fois la table de hachage et
+la chaîne reconstituée aux modules  générant les réponses. Ces modules
+utilisent la table de hachage pour  construire les images et la chaîne
+de  caractères pour  générer les  URL. De  l'autre côté,  le programme
+Bailador `website.raku` transmet seulement  la chaîne de paramètres et
+les modules reçoivent cette chaîne, plus une table de hachage vide, ce
+qui  les amène  à analyser  la chaîne  avec `PostCocoon::Url`  pour en
+extraire les paramètres.
+
+Deuxième commentaire  après coup :  la migration  vers Cro  s'est bien
+passée,    jusqu'au     moment    où    j'ai    migré     le    module
+`Hamilton-stat.rakumod`.  À  ce  moment-là,  j'ai eu  des  erreurs  de
+segmentation  dans  le  programme `website1.raku`  utilisant  Cro.  Le
+problème vient donc, vraisemblablement,  du module de statistiques sur
+les  chemins  hamiltoniens ou  d'un  problème  de compatibilité  entre
+`Inline::Perl5` et `Graph.pm`.
+
+J'ai alors  enchaîné avec  une migration du  programme `website1.raku`
+(Cro) depuis le module Perl
+[`Graph.pm`](https://metacpan.org/search?q=graph)
+vers le module Raku
+[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
+Les  erreurs  de  segmentation  ont disparu.  J'ai  effectué  la  même
+migration pour le programme Bailador  `website.raku` et, là aussi, les
+erreurs de  segmentation ont  dispary. Je me  retrouve donc  avec deux
+versions séparées  du site  web et  en foulant  aux pieds  le principe
+«_DRY_» (_Don't Repeat Yourself_). Tant pis.
+
+### Paramètres de taille de l'image
+
+Pour chaque  page affichant une  carte, il est possible  d'ajouter des
+paramètres `h` et `w` pour ajuster les dimensions des graphiques : `h`
+pour la hauteur et `w` pour  la largeur (_width_ en anglais). Exemple,
+pour avoir un rectangle de 500 pixels sur 700 :
+
+  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
+
+C'est  l'idée  de  base.  Une  première exception  est  le  cas  d'une
+macro-carte  avec  une  seule  région. Pour  éviter  une  grande  page
+blanche,  le dessin  de  la  carte est  réduit  à  la taille  minimale
+permettant  d'afficher  l'unique zone.  On  ne  tient pas  compte  des
+paramètres fournis par une éventuelle chaîne `?h=700&w=500`.
+
+Un autre cas de  figure est que l'on peut être  gêné par la distorsion
+de  la  carte,  avec  les  échelles  nettement  différentes  entre  la
+direction horizontale et la direction verticale. Aussi est-il prévu un
+troisième paramètre, `adj` pour  « ajustement ». Les valeurs possibles
+sont :
+
+* `adj=h`, l'échelle  horizontale `w` est ajustée  pour coïncider avec
+l'échelle verticale, exprimée en pixels par kilomètre.
+
+* `adj=w`  le symétrique  du  précédent, l'échelle  verticale `h`  est
+ajustée pour coïncider avec  l'échelle horizontale, exprimée en pixels
+par kilomètre.
+
+* `adj=max`,  le  programme compare  les  deux  échelles verticale  et
+horizontale ; la plus petite des deux est ajustée à la plus grande.
+
+* `adj=min`, le symétrique du précédent, le programme compare les deux
+échelles  verticale  et horizontale ;  la  plus  grande des  deux  est
+ajustée à la plus petite.
+
+Évidemment, c'est valable uniquement  pour les cartes représentant une
+portion   de  la   surface   terrestre   en  projection   cylindrique,
+c'est-à-dire  les  cartes  avec l'attribut  `with_scale=1`.  Lorsqu'il
+s'agit d'une carte  abstraite, l'ajustement se fait  simplement sur la
+valeur des paramètres `h` et `w` exprimés en pixels par « pseudo-degré ».
+
+Prenons l'exemple de la Bretagne et des départements voisins.
+
+![Bretagne](Bretagne.png)
+
+La plage de valeurs des latitudes s'étend de 47,36°N (Loire-Atlantique
+44) à 49,15°N (Manche  50), soit 1,79° ou 200 km.  La plage de valeurs
+des  longitudes  s'étend  de   0,95°W  (Maine-et-Loire  49)  à  4,01°W
+(Finistère 29), soit 257 km.
+
+Avec la  chaîne paramètre  `?h=700&w=500`, on aura  3,5 pixels  par km
+dans le sens vertical et 1,94 pixel par km dans le sens horizontal.
+
+Avec la chaîne `?h=700&w=500&adj=h`, la hauteur de l'image prime, donc
+on aura 3,5 pixels par km et la largeur sera étendue à 900 pixels.
+
+Avec la chaîne `?h=700&w=500&adj=w`, la largeur de l'image prime, donc
+on aura 1,94 pixel par km et la hauteur sera réduite à 388 pixels.
+
+Pour   la  chaîne   paramètre  `?h=700&w=500&adj=min`,   le  programme
+comparera les  deux échelles  3,5 pixels /  km et 1,94  pixel /  km et
+choisira la seconde, ce qui donne dans ce cas un résultat équivalent à
+`?h=700&w=500&adj=w`. À l'inverse, le paramètre `?h=700&w=500&adj=max`
+fera que le programme choisira l'échelle  la plus grande, 3,5 pixels /
+km et ajustera la largeur à 900 pixels.
+
+### Quelle est la projection utilisée pour les cartes ?
+
+D'après [xkcd](https://xkcd.com/977/), il  s'agit de la transformation
+« plate-carrée » (ou  _equirectangular_ en  anglais). Dans  un premier
+temps, je prends la longitude et  la latitude et je les utilise telles
+quelles  en tant  que coordonnées  rectangulaires. Cela  conduit à  un
+rétrécissement au niveau  des basses latitudes et à  une dilatation du
+côté des hautes latitudes. Un degré de longitude représente 81 km dans
+le sud de la  France, mais seulement 70 km dans le  nord de la France.
+En  revanche,  les  degrés  de  latitude  ne  sont  pas  affectés.  La
+distorsion est donc moindre qu'avec la projection de Mercator.
+
+Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
+du  graphique  de  1000 × 1000  pixels, réduite ultérieurement à 800 × 800.  Dans  le  cas  de  la  France
+continentale, qui  fait 950 km d'ouest  en est  et 1000 km du  nord au
+sud, cet ajustement  ne provoque pas de distorsion. Dans  le cas de la
+Bretagne, par exemple, les quatre points  représentant les quatre départements sont
+séparés  de 63 km  dans la  direction nord-sud  et de  172 km dans  la
+direction est-ouest (si j'avais pris  la carte réelle et déterminé les
+points extrêmes, cela aurait donné 273 km  d'ouest en est et 152 km du
+nord au sud). La distorsion est plus sensible, car cela fait presque 6
+pixels par km  dans la direction horizontale et presque  16 pixels par
+km dans la direction verticale.
+
+Finalement, j'ai décidé d'ajouter une échelle verticale et une échelle
+horizontale  sur le  dessin  des cartes.  Ces  échelles n'étaient  pas
+prévues dans ma vision initiale du projet. Je pense néanmoins qu'elles
+ont une certaine utilité.
+
+### Pourquoi les cartes régionales montrent les départements voisins ?
+
+La  première  raison  est  l'affichage d'une  région  avec  un  chemin
+complet.  En affichant  les départements  voisins, on  voit par  où le
+chemin arrive dans la région et par  où il en sort. S'il n'y avait pas
+les  départements  voisins,  l'affichage   du  chemin  complet  serait
+identique à l'affichage du chemin régional (ou micro-chemin). De plus,
+la  présence des  départements voisins  permet d'avoir  une `imagemap`
+avec des liens hypertextes vers les régions voisines.
+
+La seconde raison est la distorsion due à l'ajustement des coordonnées
+telle  que  je l'ai  décrite  ci-dessus.  J'ai  pris l'exemple  de  la
+Bretagne.    J'aurais   pu    prendre   l'exemple    de   la    région
+Nord-Pas-de-Calais  ou  de la  région  Haute-Normandie  dans la  carte
+`fr1970`. Le Nord-Pas-de-Calais  comporte seulement deux départements,
+quasiment alignés sur une ligne  horizontale E-O. L'écart vertical est
+de 0,21°, soit 23 km, tandis que  l'écart horizontal est de 1,3°, soit
+92 km. Mais de  la façon dont les coordonnées sont  ajustées, les deux
+points se seraient retrouvés dans  des coins diamétralement opposés du
+graphique, avec  une échelle  de 43  pixels par  km dans  la direction
+verticale et  de 11 pixels  par km  dans la direction  horizontale. En
+ajoutant  les  voisins,  c'est-à-dire  la Somme  et  l'Aisne,  l'écart
+vertical passe à 0,82°, soit 91 km, ce qui donne une échelle verticale
+de  11  pixels par  km.  Dans  ce  cas,  la distorsion  est  quasiment
+éliminée. Dans d'autres cas elle est simplement réduite.
+
+Dans le cas de la  Haute-Normandie, les deux départements sont alignés
+sur  une  ligne verticale  N-S.  L'écart  horizontal est  0,05°,  soit
+3,62 km  et l'écart  vertical est  0,59° soit  65,5 km, ce  qui aurait
+donné une échelle de 216 pixels par  km horizontal et 15 pixels par km
+vertical.
+
+Il y a pis.  Il y a la carte `frreg`,  avec les régions-2015 Bretagne,
+Île-de-France,      Centre-Val-de-Loire,      Pays-de-la-Loire      et
+Provence-Alpes-Côte-d'Azur,   qui   contiennent  chacune   une   seule
+région-1970.  Dans  ce cas,  la  longitude  maximale  est égale  à  la
+longitude minimale,  ce qui  est le  cas aussi  pour les  latitudes et
+l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
+zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
+sont évitées.
+
+### Le cas des cartes à une seule région
+
+En fait, il  y a un cas de  figure où j'ai quand même  eu une division
+par zéro. Lorsque j'ai ajouté le jeu  icosien à la liste des graphes à
+tester, à l'occasion de la cinquième version, la macro-carte contenait
+une seule région,  donc l'écart min-max sur les longitudes  et sur les
+latitudes était égal  à zéro. J'ai donc été obligé  d'ajouter un terme
+positif, néanmoins très bas, pour éviter cette division par zéro. Cela
+ne fait rien, c'est une carte abstraite.
+
+Puis j'ai  ajouté des  cartes réelles  avec une  seule région.  Pas de
+problème. Puis j'ai ajouté la carte de
+[Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon).
+Cette carte  représente quatre rues  ainsi que le saloon  délimité par
+ces rues,  soit pifométriquement  un carré  de 40 m  × 40 m.  Faute de
+mieux,  j'ai arbitrairement  localisé cet  endroit à  Tombstone, ville
+rendue célèbre par la
+[fusillade de O.K. Corral](https://fr.wikipedia.org/wiki/Fusillade_d%27O.K._Corral).
+
+La macro-carte s'affichait sans problème, mais la carte complète et la
+carte  régionale montraient  quelques points  en haut  à gauche  et un
+large espace vide à droite et  en bas. Pourquoi ? L'écart min-max pour
+les longitudes et les latitudes est initialisé à `1e-3`. Un millidegré
+correspond à 111 m  dans le sens nord-sud et, à cette latitude, à 95 m
+dans le sens est-ouest. Le programme  affichait donc une bande vide de
+71 m en bas et une bande vide de 55 m sur la droite.
+
+En adaptant  cette valeur  initiale à `1e-6`,  cela règle  le problème
+pour
+[le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
+sans rien  changer pour les  autres cartes.  Le problème se  posera de
+nouveau si j'ai  une carte concrète représentant un carré  de 11 cm de
+côté. Je n'ai pas d'exemple en tête.
+
+### Le stockage des longitudes et des latitudes dans SQLite
+
+Dans  les programmes  Raku, les  longitudes et  les latitudes sont des
+nombres  à virgule,  c'est-à-dire des  `Num`. Il  peut arriver  que la
+[partie fractionnaire de la valeur soit nulle](https://confluence.org/).
+Notamment,  cela se  produit  fréquemment avec  les graphes  abstraits
+comme le jeu icosien ou les  graphes des solides platoniciens. Dans ce
+cas, même si vous utilisez un  `Num` dans votre programme Raku, SQLite
+stocke cette longitude  ou cette latitude en  tant qu'entier. Ensuite,
+lorsqu'un  autre  programme lit  cette  longitude  ou cette  latitude,
+SQLite lui transmet une valeur entière et Raku refuse de stocker cette
+valeur dans un `Num`.
+
+La solution  de contournement consiste à  systématiquement additionner
+une  très  faible valeur,  genre  `1e-8`.  Ainsi,  la latitude  et  la
+longitude sont stockées  dans SQLite en tant que  nombres flottants et
+lors des lectures ultérieures, les valeurs pourront être stockées dans
+des `Num`. Étant donné qu'un degré  fait 111 km (en latitude) ou moins
+(en longitude), l'erreur systématique est de l'ordre du millimètre sur
+le terrain, donc invisible sur la carte.
+
+### Faire la moyenne des longitudes et latitudes pour situer une région
+
+Attribuer  à une  région une  latitude et  une longitude  égales à  la
+moyenne  des  coordonnées  des  départements de  cette  région,  c'est
+séduisant. Mais ne risque-t-il pas d'y avoir des effets curieux ?
+
+Dans  l'absolu, oui.  En  pratique,  non, au  moins  pour les  régions
+françaises.
+
+En  toute  rigueur  mathématique, aucun  département,  aucune  région,
+aucune  zone  n'est  mathématiquement  convexe (à  part  peut-être  le
+Colorado  et le  Wyoming aux  États-Unis). Il  y a  toujours un  léger
+zig-zag sur les frontières, ce qui rend la zone concave. Néanmoins, il
+y  a des  zones concaves presque  convexes  et il  y a  des zones concaves franchement
+concaves. Ainsi,  la Moselle et le  Cantal ont un creux  beaucoup plus
+prononcé que  les autres départements.  Si le creux était  encore plus
+prononcé, il se pourrait que le centre géométrique du département soit
+à  l'extérieur des limites du  département.
+
+Dans les cartes ci-dessous, des copies d'écran de
+[Géoportail](https://www.geoportail.gouv.fr/),
+vous pouvez voir le creux au sud-est  de la Moselle et le creux au sud
+du Cantal.  À titre de  comparaison, le dessin comporte  également une
+carte de  la Mayenne,  un département  qui, vu  d'assez loin,  a l'air
+d'être à peu près convexe.
+
+![Cartes de la Mayenne, de la Moselle et du Cantal](Mayenne-Moselle-Cantal.png)
+
+Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
+les coordonnées  des départements,  les départements ne  pouvaient pas
+être représentés  par un point  à l'extérieur. Même si  un département
+avait eu  un creux encore plus  prononcé que le Cantal  ou la Moselle,
+j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
+avait eu une  région avec un creux  proportionnellement aussi prononcé
+que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
+des latitudes des départements aurait pu aboutir à un centre dans le creux, donc à
+l'extérieur de la frontière de la  région. Ce n'est pas le cas, aucune
+région française n'a un creux bien prononcé.
+
+En revanche, c'est le cas pour
+[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
+si  l'on inclut  les trois  zones maritimes  dans le  graphe pour  une
+« région maritime » et les six  zones extérieures pour une « région de
+l'étranger ». Le  calcul de  moyenne pour ces  deux régions  risque de
+placer la  région maritime au  sein de l'Inde du  Sud et la  région de
+l'étranger à l'intérieur de l'Inde du Nord.
+
+C'est pis avec
+[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
+si l'on tient compte des six  zones maritimes. Les six zones maritimes
+forment un  cercle autour des  zones terrestres  et la latitude  et la
+longitude  attribuées à  la région  maritime placent  cette région  au
+centre  de  la  carte,  nettement  à  l'intérieur  des  frontières  de
+l'Angleterre.
+
+![Britannia, carte régionale des zones maritimes et macro-carte](Britannia-mer.webp)
+
+Dans  le  programme  d'initialisation  de  la  base  de  données  pour
+Maharadjah et  dans celui pour  Britannia, j'aurais pu prévoir  un cas
+particulier pour la  région maritime. Je ne l'ai pas  fait. Cela ne me
+dérange  pas de  voir  une  macro-carte (ou  carte  réduite) avec  une
+bizarrerie d'affichage.
+
+### Pourquoi y a-t-il des points sur les frontières entre régions ?
+
+Pour  la plupart  des  gens, les  frontières  entre deux  départements
+appartenant  à deux  régions différentes  sont noires,  alors que  les
+frontières entre deux départements de  la même région sont en couleur.
+Les daltoniens ne peuvent pas  toujours percevoir cette différence. La
+présence d'un point sur les frontières inter-régionales leur permet de
+faire la différence entre les deux types de frontières.
+
+D'un autre côté, dans les cartes associées aux chemins les plus courts
+d'un point à un autre, les couleurs sont porteuses d'information et le
+point noir  des frontières représentées en  noir ne sert plus  à grand
+chose. Je  ne vois pas comment  obtenir un dessin assimilable  par les
+daltoniens.
+
+### La traversée de la ligne de changement de date
+
+#### Première version
+
+Certaines  cartes montrent  la totalité  du globe  terrestre et  elles
+comportent  des liens  entre une  zone extrême-orientale  et une  zone
+extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
+[carte de Risk](https://boardgamegeek.com/image/79615/risk)
+ou Alaska → Northern Russia dans
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
+l'Alaska basique à  la longitude 152 W et l'Alaska  bis à la longitude
+208 E, le Kamtchatka basique à la longitude 130 E et le Kamtchatka bis
+à la longitude 230 W. De même, l'arête reliant ces zones sera affichée
+deux fois, une première  fois entre les longitudes 152 W  et 230 W, la
+seconde fois entre les longitudes 130 E et 208 E.
+
+Je pensais que ce serait facile à  réaliser. Ce n'était pas le cas. Ce
+n'était pas  difficile non  plus, c'était  entre les  deux. Néanmoins,
+cela  mérite une  description,  que vous  trouverez ci-dessous.  Cette
+description  s'appuie   sur  une  carte  de   Risk  épurée,  présentée
+ci-dessous.
+
+![Extrait de Risk, montrant la traversée de la ligne de changement de date](cross-idl.webp)
+
+Les   besoins  sont   différents   pour  les   cartes  complètes   (et
+macro-cartes) d'une part et pour les cartes régionales d'autre part.
+
+Sur les cartes complètes, les zones doivent apparaître deux fois chacune :
+
+* Alaska basique à la longitude 152 W
+
+* Alaska bis à la longitude 208 E (208 = -152 + 360)
+
+* Kamtchatka basique à la longitude 130 E
+
+* Kamtchatka bis à la longitude 230 W (-230 = 130 - 360)
+
+et le calcul de l'échelle horizontale doit prendre en compte l'intervalle total 230 W → 208 E.
+
+Sur une carte régionale de l'Amérique du Nord, les zones doivent apparaître une seule fois :
+
+* Alaska basique à la longitude 152 W
+
+* Kamtchatka bis à la longitude 230 W
+
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 230 W → 32 W (Iceland).
+
+Sur une carte régionale de l'Asie, les zones doivent apparaître une seule fois :
+
+* Alaska bis à la longitude 208 E
+
+* Kamtchatka basique à la longitude 130 E
+
+et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 5 W (Europe) → 208 E.
+
+Les cartes régionales,  les cartes complètes et  les cartes régionales
+sont converties  en images  PNG par  le même  module `map-gd.rakumod`.
+Comment  ce  module peut-il  différencier  les  cartes régionales  des
+cartes  complètes et  macro ? La  réponse est  donnée par  la variable
+`@borders`. Les frontières intérieures  apparaissent deux fois dans la
+variable,  dans un  sens puis  dans l'autre.  Par exemple,  `@borders`
+contient  à la  fois `ALB  → NWT`  et `NWT  → ALB`.  À l'inverse,  les
+frontières menant à  l'extérieur apparaissent une seule  fois. Donc si
+vous dessinez la carte de l'Amérique  du Nord, vous aurez `ALA → KAM`,
+mais pas `KAM  → ALA`. Si vous dessinez la  carte régionale de l'Asie,
+vous aurez  `KAM →  ALA`, mais pas  `ALA → KAM`.  Si vous  dessinez la
+carte complète, cette frontière est  une frontière intérieure, donc la
+liste contient à la fois `ALA → KAM` et `KAM → ALA`.
+
+Prenons les questions séparément.
+
+Dans quelles circonstances faut-il dessiner une « zone bis » ?
+
+Une zone  bis est dessinée  quand elle  apparaît dans une  frontière à
+cheval sur  la ligne  de changement  de date (IDL),  en tant  que zone
+d'arrivée `to_code`. Cette information  est mémorisée dans la variable
+`%long-of-shadow-area`  où  elle sert  à  la  fois  de booléen  et  de
+numérique  (la  valeur  de  la  longitude  calculée).  Ainsi,  si  les
+frontières `ALA  → KAM` et `KAM  → ALA` apparaissent toutes  deux dans
+`@borders`, cela signifie que l'on est  en train de dessiner une carte
+complète et  les deux zones  « KAM bis »  et « ALA bis »  devront être
+dessinées. Si seule la frontière `ALA → KAM` apparaît dans `@borders`,
+cela signifie que l'on est en  train de dessiner la carte régionale de
+l'Amérique du Nord et qu'il faut  dessiner « KAM bis », mais pas « ALA
+bis ». À propos,  cette convention d'interpréter un `Num`  en tant que
+`Bool` signifie que l'on s'interdit de  stocker en base de données une
+longitude exactement égale à zéro. Si  le cas se présente, il faudrait
+remplacer cette longitude par `1e-8` ou similaire.
+
+Dans quelles circonstances faut-il dessiner une « zone basique » ?
+
+Il y  a trois  critères. Le  critère le plus  fréquent est  qu'il faut
+dessiner une zone basique si  elle apparaît dans une frontière normale
+c'est-à-dire avec  `cross_idl == 0`,  aussi bien  en tant que  zone de
+départ  `from_code`  qu'en  tant  que  zone  d'arrivée  `to_code`.  Le
+deuxième  critère est  qu'il faut  dessiner  la zone  basique si  elle
+apparaît  dans une  frontière trans-IDL,  en tant  que zone  de départ
+`from_code`. Avec  l'exemple ci-dessus,  si la  frontière `ALA  → KAM`
+apparaît, cela  signifie que l'on  est en  train de dessiner  soit une
+carte complète, soit  la carte régionale d'Amérique du  Nord. Dans les
+deux cas, il faudra dessiner « ALA basique ». Un dernier cas est si la
+zone est isolée (carte à une seule région, comme la région `ICO` de la
+carte `ico`, ou bien  les îles `HEB` et `ORK` de  la carte `brit0` qui
+utilise  uniquement  les  frontières   terrestres).  Alors  il  faudra
+dessiner cette  zone. Cette information  est stockée dans  la variable
+`%must-display-main` : si la valeur est  `False`, alors il ne faut pas
+dessiner la  zone basique ; si  la valeur est  `True` _ou si  elle est
+absente_, alors il faut dessiner  la zone basique. C'est pourquoi j'ai
+utilisé le code  `//= True`. Si la valeur n'existe  pas, cela signifie
+que  la zone  n'apparaît dans  aucune frontière  et qu'il  s'agit d'un
+sommet isolé (île, région unique), auquel  cas il faut faire passer la
+valeur à `True`. Si la valeur existe déjà, cela signifie qu'elle a été
+initialisée lors du traitement d'une frontière et alors elle n'est pas
+touchée. `True` reste `True` et `False` reste `False`.
+
+Comment  calcule-t-on  l'intervalle  de  longitudes,  pour  déterminer
+l'échelle horizontale ?
+
+Au fur et à mesure que l'on examine les frontières et les zones et que
+l'on décide  que telle  ou telle  zone sera  affichée, on  mémorise sa
+longitude dans une liste `@longitudes`.  Bien sûr, si l'on a déterminé
+qu'il faudra dessiner à la fois  « ALA basique » et « ALA bis », alors
+on stockera les deux longitudes  `-152` (basique) et `+208` (bis). Une
+fois que l'on a examiné toutes  les frontières et toutes les zones, on
+extrait le minimum  et le maximum de la liste  pour avoir l'intervalle
+de longitudes.
+
+Il reste quelques problèmes.
+
+Pour les frontières, il y a deux  cas particuliers qui ne font pas bon
+ménage. Si une frontière est à  la fois une frontière trans-IDL et une
+frontière avec point intermédiaire (dessinée en ligne brisée), alors à
+mon avis  il y aura un  problème, genre comportement absurde.  Je n'ai
+pas testé.
+
+Le  programme de  dessin  est basé  sur le  fait  que toute  frontière
+cross-IDL est  une frontière entre  deux régions (`Big_Areas`).  Il ne
+peut pas  y avoir  de région à  cheval sur la  ligne de  changement de
+date. Pensez  par exemple à  l'Alaska avant  1867, à l'époque  où elle
+appartenait  à la  Russie.  Si le  cas devait  se  produire, alors  il
+faudrait  découper artificiellement  la  région en  deux,  de part  et
+d'autre de la ligne de changement de  date. Il y a fort à parier qu'il
+y   aura  une   seule   frontière  entre   les   deux  petites   zones
+(`Small_Areas`) et que  cela ne changera pas  les chemins hamiltoniens
+obtenus. En  effet, comme il  y a  une seule frontière  trans-IDL, ses
+deux extrémités sont  des points d'articulation (ou  des impasses), ce
+qui canalise  les chemins  hamiltoniens. Le véritable  problème serait
+qu'il y ait deux frontières  trans-IDL, par exemple une frontière `KAM
+→ ALA` et  une frontière `JAP →  ALA`. Dans ce cas, la  scission de la
+`Big_Area` « Russie  pré-1867 » pourrait changer la  liste des chemins
+hamiltoniens générés. Mais reconnaissons-le, cela  a peu de chances de
+se produire.
+
+Voici la macro-carte pour
+[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
+L'échelle sur les longitudes et l'échelle sur les latitudes sont les mêmes.
+
+![Macro-carte pour Twilight Struggle](Twilight-Struggle-macro-v1.png)
+
+Comme vous pouvez le voir, le lien des USA vers la région `ASI` (Asie)
+occupe le tiers de  la largeur de la carte et comme  il est en double,
+il occupe en fait  les deux tiers. C'est parce que  la longitude de la
+région  `USA`  est 84°O  (aux  environs  d'Albany  en Georgie)  et  la
+longitude de la  région `ASI` est 103°E (frontière  entre la Thaïlande
+et le Cambodge). Donc les régions bis sont en 276°E et 257°O, pour une
+largeur totale de 533°, qui se décompose  en 2 fois 173° pour les deux
+exemplaires  de  la  frontière  `USA  → ASI`  et  187°  pour  l'espace
+intérieur de la carte. D'où la deuxième version.
+
+#### Deuxième version
+
+On abandonne  le concept  de « zone  bis » et on  la remplace  par une
+nouvelle utilisation du concept  déjà existant de point intermédiaire.
+Lorsqu'une  frontière traverse  la  ligne de  changement  de date,  le
+programme d'initialisation alimente  les champs `long` et  `lat` de la
+table  `Borders`, pour  définir  le point  intermédiaire  où la  ligne
+représentant la  frontière traverse  la ligne  de changement  de date.
+Cela  peut  faire   l'objet  d'un  calcul  comme   dans  le  programme
+`init-risk-extract.raku`  ou cela  peut se  faire par  l'intermédiaire
+d'une ligne  « `X` » dans le  fichier d'initialisation comme  pour les
+autres points intermédiaires,  par exemple la frontière `93  → 95` des
+cartes `fr1970` et `fr2015`, ou  bien plusieurs tronçons dans la carte
+`ratp`. La longitude du point  intermédiaire est 180°E ou 180°O, selon
+l'hémisphère où se trouve le point de départ. Ainsi, pour la frontière
+`ASI →  USA` la  longitude sera  +180 (ou 180°E),  tandis que  pour la
+frontière `USA → ASI`, la longitude  sera -180 (ou 180°O). Avec, comme
+signalé plus haut, une partie fractionnaire.
+
+D'autre  part, le  programme  de  dessin trace  la  frontière en  deux
+tronçons,  l'un aboutissant  à  la  longitude 180°O  et  l'autre à  la
+longitude 180°E.
+
+Comme vous pouvez  le voir, le résultat est moins  déséquilibré que la
+version précédente :
+
+![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
+
+Seuls les programmes d'initialisation et  le module générant le dessin
+PNG sont concernés. Les  programmes calculant les chemins hamiltoniens
+(macro, régional,  complet) ou  les statistiques  sur les  chemins les
+plus courts ne sont pas affectés.
+
+#### Exemples de programmes d'initialisation
+
+Le  dépôt Git  contient deux  exemples de  programmes initialisant  la
+carte  Risk épurée.  Dans le  premier exemple,  le fichier  de données
+indique uniquement que telle ou telle frontière entre régions traverse
+la ligne de  changement de date. Et le  programme reporte l'indicateur
+`cross_idl`  vers les  frontières  entre  départements. Également,  il
+détermine  la  latitude  où  cette  frontière  traverse  la  ligne  de
+changement de date (variation linéaire en fonction de la longitude) et
+met à  jour les  enregistrements `Borders` avec  cette latitude  et la
+longitude.
+
+Dans le deuxième exemple, toutes les frontières traversant la ligne de
+changement de date doivent être  déclarées dans le fichier de données,
+qu'il  s'agisse de  frontières entre  régions ou  de frontières  entre
+départements. De plus, chaque frontière  est déclarée sur deux lignes,
+l'une  contenant le  point intermédiaire  ouest, l'autre  contenant le
+point intermédiaire est.
+
+On n'est  pas tenu d'utiliser les  longitudes 180°O et 180°E,  on peut
+diminuer la  plage de longitudes  pour avoir un dessin  plus détaillé.
+Dans le  cas de  la carte de  Risk, cela ne  se remarque  pas. Prenons
+l'exemple de
+[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
+Dans le sens ouest → est,
+[la carte](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
+s'étend du Sénégal (15°O) jusqu'aux Philippines (120°E).
+La position du Canada et celle des États-Unis sont
+[ajustées](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
+pour rentrer  dans la  carte, ce  qui donne des  longitudes de  9°O et
+17°O. Pour la frontière entre les USA et les Philippines, cela n'a pas
+de sens de placer le point  intermédiaire à la longitude 180°O, ce qui
+créerait un  écart de  153°. Il  est donc placé  à la  longitude 22°O,
+c'est  largement   suffisant.  Dans  la  même   veine,  l'autre  point
+intermédiaire a été placé à la longitude 130°E au lieu de 180°E.
+
+Pour revenir au deuxième programme traitant la carte extraite de Risk,
+les  points intermédiaires  pour la  frontière  `ALA →  KAM` sont  aux
+longitudes 158°E et 170°O.
+
+### Performances
+
+En essayant le programme `gener1.raku` sur la carte de Britannia, j'ai
+recontré un gros problème avec  la génération des chemins hamiltoniens
+régionaux  de  l'Angleterre  (20  « départements »  et  40  frontières
+intérieures,  c'est-à-dire  80  enregistrements `Borders`).  En  règle
+générale,  le programme  `gener1.raku` émet  un message  tous les  100
+chemins entiers et un autre tous les 10000 chemins incomplets. Dans le
+cas de  l'Angleterre, j'ai  observé que le  délai entre  deux messages
+avait tendance  à s'allonger  au fil de  l'exécution du  programme. De
+plus,  le gestionnaire  de  tâches  montrait que  sur  ma machine,  le
+pourcentage   de   mémoire   utilisée   croissait   régulièrement   et
+inexorablement. Il y a une fuite de mémoire quelque part !
+
+Finalement,  j'ai compris.  J'avais  prévu un  `begin transaction`  au
+début  du  traitement  et  un  `commit`  à  la  fin.  Pour  éviter  un
+engorgement   du  journal,   j'avais  prévu   également  un   `commit`
+immédiatement  suivi d'un  `begin  transaction` tous  les 100  chemins
+entiers. Suite  à une erreur,  il y avait  aussi un `commit`  + `begin
+transaction`  pour chaque  chemin partiel  individuellement. Comme  la
+génération des  chemins hamiltoniens  pour l'Angleterre  génère 16 182
+chemins entiers et 3 562 796 chemins partiels, cela faisait 3 millions
+et demi de `commit` au lieu de simplement 162.
+
+J'ai donc  enlevé le couple  `commit` + `begin  transaction` superflu.
+Certes, la fuite mémoire existe  toujours, mais c'est plus supportable
+lorsqu'elle se produit 162 fois  que lorsqu'elle se produit 3 millions
+de fois.
+
+### Syntaxe SQL
+
+Lorsque l'on effectue  une jointure entre plusieurs tables,  il est de
+bon ton  de qualifier chaque  nom de colonne avec  le nom de  la table
+correspondante, ou d'attribuer un alias à chaque table et de qualifier
+chaque nom de colonne avec l'alias de la table associée.
+
+Exemple à ne pas suivre :
+
+```
+select num, path, area, to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Exemple correct :
+
+```
+select B.num, B.path, B.area, B.to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Mais cet  ordre SQL présente  un défaut. Sur une  machine, l'exécution
+avec le paramètre `:array-of-hash` m'a renvoyé :
+
+```
+({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
+```
+
+et sur une autre machine, avec une autre version de Raku, de DBIish et
+de SQLite, j'ai obtenu :
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+Comment  s'affranchir de  cette alternative ?  En attribuant  un alias
+également aux colonnes :
+
+```
+select B.num     as num
+     , B.path    as path
+     , B.area    as area
+     , B.to_code as to_code
+from Borders_With_Star A
+join Region_Paths B
+   on  B.map       = A.map
+   and B.area      = A.upper_to
+   and B.from_code = A.to_code
+where A.map       = ?
+and   A.from_code = ?
+and   A.upper_to  = ?
+```
+
+Et le programme sur les deux machines m'a donné :
+
+```
+({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
+```
+
+Autres possibilités
+-------------------
+
+Un  programme `export.raku`  permet d'exporter  des graphes  au format
+`.dot`. Il est ainsi possible de créer des fichiers graphiques avec
+[Graphviz](https://graphviz.org/)
+(`neato`) ou de visualiser les graphes en interactif avec
+[`tulip`](https://tulip.labri.fr/site/).
+
+Le programme d'export permet de  choisir le répertoire de destination.
+Il  permet  également  de  choisir  si l'on  veut  exporter  la  carte
+complète, la macro-carte ou les cartes régionales (toutes ou seulement
+celles qui sont spécifiées).
+
+Les sommets et les arcs sont  exportés avec leur couleur et avec leurs
+longitude et latitude.  L'affichage par Graphviz et  par Tulip devrait
+assez bien ressembler aux dessins générés par `website.raku`.
 
 Base de données
 ===============
@@ -1958,820 +2773,6 @@ le sens inverse.
 
 Affichage du résultat
 =====================
-
-Pour des raisons exposées dans un
-[projet précédent](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero/blob/master/Description/description-fr.md#user-content-templateanti),
-le seul module de _templating_ qui trouve grâce à mes yeux est
-[`Template::Anti`](https://modules.raku.org/dist/Template::Anti:cpan:HANENKAMP),
-car le  langage de _templating_  est tout simplement HTML  sans aucune
-extension  et  sans  syntaxe  bizarre. Je  dirais  même  « sans  sucre
-syntaxique  rajouté ».  J'ai  donc utilisé  `Template::Anti`  dans  ce
-projet.
-
-Organisation du site web
-------------------------
-
-Le  site est  prévu  pour  être multilingue.  Pour  l'instant, il  est
-bilingue, disponible en anglais et  en français. Le code langue figure
-en première position de l'URL.
-
-La  page  d'accueil  est  juste   une  liste  en  anglais  des  cartes
-disponibles  (liste  disponible  en  français, à  condition  de  taper
-l'URL complet).
-
-Pour chaque carte, nous avons :
-
-* L'affichage détaillé de la carte complète, avec tous
-les départements. URL :
-http://localhost:3000/fr/full-map/fr2015
-
-* L'affichage détaillé avec un chemin complet. URL :
-http://localhost:3000/fr/full-path/fr2015/2
-
-* L'affichage réduit, qui affiche seulement les régions. URL :
-http://localhost:3000/fr/macro-map/fr2015
-
-* L'affichage réduit avec un macro-chemin. URL :
-http://localhost:3000/fr/macro-path/fr2015/2
-
-* L'affichage d'une région, avec les départements limitrophes. URL :
-http://localhost:3000/fr/region-map/fr2015/HDF
-
-* L'affichage d'une région, avec un chemin régional. URL :
-http://localhost:3000/fr/region-path/fr2015/HDF/3
-
-* L'affichage d'une région, avec la partie correspondante du chemin complet. URL :
-http://localhost:3000/fr/region-with-full-path/fr2015/HDF/3
-
-Le numéro de port  3000 est le numéro de port  par défaut de Bailador.
-Si vous  utilisez Cro, il faut  adapter ces adresses pour  utiliser le
-numéro de port 10000.
-
-### Paramètres de taille de l'image
-
-Pour chacune  de ces pages,  il est possible d'ajouter  des paramètres
-`h` et  `w` pour ajuster les  dimensions des graphiques : `h`  pour la
-hauteur et  `w` pour  la largeur (_width_  en anglais).  Exemple, pour
-avoir un rectangle de 500 pixels sur 700 :
-
-  http://localhost:3000/fr/full-map/fr2015?w=500&h=700
-
-C'est  l'idée  de  base.  Une  première exception  est  le  cas  d'une
-macro-carte  avec  une  seule  région. Pour  éviter  une  grande  page
-blanche,  le dessin  de  la  carte est  réduit  à  la taille  minimale
-permettant  d'afficher  l'unique zone.  On  ne  tient pas  compte  des
-paramètres fournis par une éventuelle chaîne `?h=700&w=500`.
-
-Un autre cas de  figure est que l'on peut être  gêné par la distorsion
-de  la  carte,  avec  les  échelles  nettement  différentes  entre  la
-direction horizontale et la direction verticale. Aussi est-il prévu un
-troisième paramètre, `adj` pour  « ajustement ». Les valeurs possibles
-sont :
-
-* `adj=h`, l'échelle  horizontale `w` est ajustée  pour coïncider avec
-l'échelle verticale, exprimée en pixels par kilomètre.
-
-* `adj=w`  le symétrique  du  précédent, l'échelle  verticale `h`  est
-ajustée pour coïncider avec  l'échelle horizontale, exprimée en pixels
-par kilomètre.
-
-* `adj=max`,  le  programme compare  les  deux  échelles verticale  et
-horizontale ; la plus petite des deux est ajustée à la plus grande.
-
-* `adj=min`, le symétrique du précédent, le programme compare les deux
-échelles  verticale  et horizontale ;  la  plus  grande des  deux  est
-ajustée à la plus petite.
-
-Évidemment, c'est valable uniquement  pour les cartes représentant une
-portion   de  la   surface   terrestre   en  projection   cylindrique,
-c'est-à-dire  les  cartes  avec l'attribut  `with_scale=1`.  Lorsqu'il
-s'agit d'une carte  abstraite, l'ajustement se fait  simplement sur la
-valeur des paramètres `h` et `w` exprimés en pixels par « pseudo-degré ».
-
-Prenons l'exemple de la Bretagne et des départements voisins.
-
-![Bretagne](Bretagne.png)
-
-La plage de valeurs des latitudes s'étend de 47,36°N (Loire-Atlantique
-44) à 49,15°N (Manche  50), soit 1,79° ou 200 km.  La plage de valeurs
-des  longitudes  s'étend  de   0,95°W  (Maine-et-Loire  49)  à  4,01°W
-(Finistère 29), soit 257 km.
-
-Avec la  chaîne paramètre  `?h=700&w=500`, on aura  3,5 pixels  par km
-dans le sens vertical et 1,94 pixel par km dans le sens horizontal.
-
-Avec la chaîne `?h=700&w=500&adj=h`, la hauteur de l'image prime, donc
-on aura 3,5 pixels par km et la largeur sera étendue à 900 pixels.
-
-Avec la chaîne `?h=700&w=500&adj=w`, la largeur de l'image prime, donc
-on aura 1,94 pixel par km et la hauteur sera réduite à 388 pixels.
-
-Pour   la  chaîne   paramètre  `?h=700&w=500&adj=min`,   le  programme
-comparera les  deux échelles  3,5 pixels /  km et 1,94  pixel /  km et
-choisira la seconde, ce qui donne dans ce cas un résultat équivalent à
-`?h=700&w=500&adj=w`. À l'inverse, le paramètre `?h=700&w=500&adj=max`
-fera que le programme choisira l'échelle  la plus grande, 3,5 pixels /
-km et ajustera la largeur à 900 pixels.
-
-Autres possibilités
--------------------
-
-Un  programme `export.raku`  permet d'exporter  des graphes  au format
-`.dot`. Il est ainsi possible de créer des fichiers graphiques avec
-[Graphviz](https://graphviz.org/)
-(`neato`) ou de visualiser les graphes en interactif avec
-[`tulip`](https://tulip.labri.fr/site/).
-
-Le programme d'export permet de  choisir le répertoire de destination.
-Il  permet  également  de  choisir  si l'on  veut  exporter  la  carte
-complète, la macro-carte ou les cartes régionales (toutes ou seulement
-celles qui sont spécifiées).
-
-Les sommets et les arcs sont  exportés avec leur couleur et avec leurs
-longitude et latitude.  L'affichage par Graphviz et  par Tulip devrait
-assez bien ressembler aux dessins générés par `website.raku`.
-
-Quelques remarques
-------------------
-
-### Bailador ou Cro ?
-
-En 2017, j'ai travaillé sur un
-[projet Perl](https://github.com/jforget/Perl-fixed-width-char-human-recognition)
-utilisant
-[Dancer2](https://metacpan.org/dist/Dancer2/view/script/dancer2).
-En 2018, pour apprendre Raku (qui s'appelait encore Perl 6), j'ai travaillé sur un
-[projet Raku](https://github.com/jforget/Perl6-Alpha-As-des-As-Zero)
-utilisant la version Raku de Dancer / Dancer2,
-[Bailador](https://raku.land/cpan:UFOBAT/Bailador).
-C'est donc tout naturellement que j'ai choisi Bailador lorsque
-j'ai commencé à travailler sur les chemins hamiltoniens en 2022.
-
-Ma machine principale a la configuration suivante :
-
-* système Devuan 2 ASCII jusqu'en janvier 2023, Devuan 4 Chimera ensuite
-
-* rakudo v2020.12
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-À partir d'une  date que je n'ai pas notée,  vraisemblablement en 2024
-mais sans  autre précision,  le programme  `website.raku` s'est  mis à
-faire des  erreurs de segmentation au  démarrage. Je ne m'en  suis pas
-inquiété  outre  mesure,  car  au  bout  de  plusieurs  tentatives  il
-démarrait correctement.
-
-Sur une autre  machine, le programme `website.raku`  basé sur Bailador
-continue  à fonctionner  correctement. Les  caractéristiques de  cette
-machine sont :
-
-* système xubuntu 22.04 Jammy Jellyfish
-
-* rakudo v2022.02
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-En avril 2025,  j'ai voulu examiner en détail le  problème des erreurs
-de   segmentation.  Pour   ce   faire,  j'ai   tenté  d'installer   un
-environnement de développement sur une machine virtuelle :
-
-* système Fedora 41
-
-* rakudo v2024.12
-
-* `Bailador:ver<0.0.19>:auth<github:Bailador>`
-
-L'installation de Bailador a échoué parce que la distribution `Digest`
-version  1.1.0   ne  contient   pas  de  module   `Digest.rakumod`  ou
-`Digest.pm6`. C'est d'ailleurs écrit dans le fichier `README.md` de la
-distribution.
-
-Pour mémoire, les versions utilisées de `Digest` sont :
-
-* Devuan : `Digest:ver<0.7.2>:auth<Lucien Grondin>`
-
-* xubuntu : `Digest:ver<0.18.5>:auth<Lucien Grondin>`
-
-* Fedora : `Digest:ver<1.1.0>:auth<zef:grondilu>`
-
-L'utilisation  de  l'option  `--force`  n'y  fait  rien.  J'aurais  pu
-m'arranger  de diverses  façons  pour installer  quand même  Bailador.
-J'aurais pu créer  le fichier `Config.rakumod` pour  assurer le relais
-entre  `Bailador`  d'un côté  et  `Digest::MD5`  et `Digest::SHA1`  de
-l'autre  côté.  J'aurais pu  fouiller  dans  les fichiers  sources  de
-Bailador  pour  remplacer  les  instructions  `use  Digest`  par  `use
-Digest::MD5`  et `use  Digest::SHA1`  (et créer  une _pull  request_).
-J'aurais pu récupérer une ancienne version de Digest dans
-[l'archive des modules Raku](https://github.com/Raku/REA/tree/main).
-
-Cela dit, en  consultant la documentation de Bailador, je suis tombé sur
-l'[issue 315](https://github.com/Bailador/Bailador/issues/315)
-expliquant que  pour l'instant, le  développement de Bailador  était à
-l'arrêt. J'ai donc décidé d'écrire un nouveau programme de site web en
-utilisant Cro. Comme le programme d'origine continue à fonctionner sur
-la machine xubuntu,  et comme mes besoins pour le  site web sont assez
-élémentaires,  je vais  m'efforcer  d'adapter  les modules  dépendants
-`lib/xxx.rakumod` pour  qu'ils soient  compatibles à  la fois  avec la
-version Bailador  et avec la version  Cro. Toutefois, si je  tombe sur
-une impossibilité,  alors j'abandonnerai  la version Bailador  pour ne
-conserver que la version Cro.
-
-Après coup : la migration s'est  faite relativement facilement. Il y a
-eu quelques  problèmes mineurs. Par  exemple, pour avoir la  liste des
-cartes, Bailador autorisait les deux syntaxes :
-
-```
-http://localhost:3000/fr/list
-http://localhost:3000/fr/list/
-```
-
-En revanche, si Cro accepte
-
-```
-http://localhost:10000/fr/list
-```
-
-le lien suivant, avec un slash final, est interdit :
-
-```
-http://localhost:10000/fr/list/
-```
-
-Paradoxalement, un autre problème vient d'une facilité offerte par Cro
-mais   pas  par   Bailador.  Les   paramètres  d'affichage   du  genre
-`?h=600&w=800` sont  analysés par Cro  et fournis sous la  forme d'une
-table de hachage,  tandis qu'elle est transmise  sans modification par
-Bailador, ce qui nécessite  l'utilisation du module `PostCocoon::Url`.
-Du  coup,  le  programme  Cro `website1.raku`  reconstitue  la  chaîne
-contenant les paramètres et transmet à  la fois la table de hachage et
-la chaîne reconstituée aux modules  générant les réponses. Ces modules
-utilisent la table de hachage pour  construire les images et la chaîne
-de  caractères pour  générer les  URL. De  l'autre côté,  le programme
-Bailador `website.raku` transmet seulement  la chaîne de paramètres et
-les modules reçoivent cette chaîne, plus une table de hachage vide, ce
-qui  les amène  à analyser  la chaîne  avec `PostCocoon::Url`  pour en
-extraire les paramètres.
-
-Deuxième commentaire  après coup :  la migration  vers Cro  s'est bien
-passée,    jusqu'au     moment    où    j'ai    migré     le    module
-`Hamilton-stat.rakumod`.  À  ce  moment-là,  j'ai eu  des  erreurs  de
-segmentation  dans  le  programme `website1.raku`  utilisant  Cro.  Le
-problème vient donc, vraisemblablement,  du module de statistiques sur
-les  chemins  hamiltoniens ou  d'un  problème  de compatibilité  entre
-`Inline::Perl5` et `Graph.pm`.
-
-J'ai alors  enchaîné avec  une migration du  programme `website1.raku`
-(Cro) depuis le module Perl
-[`Graph.pm`](https://metacpan.org/search?q=graph)
-vers le module Raku
-[`Graph.rakumod`](https://raku.land/zef:antononcube/Graph).
-Les  erreurs  de  segmentation  ont disparu.  J'ai  effectué  la  même
-migration pour le programme Bailador  `website.raku` et, là aussi, les
-erreurs de  segmentation ont  dispary. Je me  retrouve donc  avec deux
-versions séparées  du site  web et  en foulant  aux pieds  le principe
-«_DRY_» (_Don't Repeat Yourself_). Tant pis.
-
-### Quelle est la projection utilisée pour les cartes ?
-
-D'après [xkcd](https://xkcd.com/977/), il  s'agit de la transformation
-« plate-carrée » (ou  _equirectangular_ en  anglais). Dans  un premier
-temps, je prends la longitude et  la latitude et je les utilise telles
-quelles  en tant  que coordonnées  rectangulaires. Cela  conduit à  un
-rétrécissement au niveau  des basses latitudes et à  une dilatation du
-côté des hautes latitudes. Un degré de longitude représente 81 km dans
-le sud de la  France, mais seulement 70 km dans le  nord de la France.
-En  revanche,  les  degrés  de  latitude  ne  sont  pas  affectés.  La
-distorsion est donc moindre qu'avec la projection de Mercator.
-
-Ensuite, les dimensions sont ajustées  pour occuper au mieux la taille
-du  graphique  de  1000 × 1000  pixels, réduite ultérieurement à 800 × 800.  Dans  le  cas  de  la  France
-continentale, qui  fait 950 km d'ouest  en est  et 1000 km du  nord au
-sud, cet ajustement  ne provoque pas de distorsion. Dans  le cas de la
-Bretagne, par exemple, les quatre points  représentant les quatre départements sont
-séparés  de 63 km  dans la  direction nord-sud  et de  172 km dans  la
-direction est-ouest (si j'avais pris  la carte réelle et déterminé les
-points extrêmes, cela aurait donné 273 km  d'ouest en est et 152 km du
-nord au sud). La distorsion est plus sensible, car cela fait presque 6
-pixels par km  dans la direction horizontale et presque  16 pixels par
-km dans la direction verticale.
-
-Finalement, j'ai décidé d'ajouter une échelle verticale et une échelle
-horizontale  sur le  dessin  des cartes.  Ces  échelles n'étaient  pas
-prévues dans ma vision initiale du projet. Je pense néanmoins qu'elles
-ont une certaine utilité.
-
-### Pourquoi les cartes régionales montrent les départements voisins ?
-
-La  première  raison  est  l'affichage d'une  région  avec  un  chemin
-complet.  En affichant  les départements  voisins, on  voit par  où le
-chemin arrive dans la région et par  où il en sort. S'il n'y avait pas
-les  départements  voisins,  l'affichage   du  chemin  complet  serait
-identique à l'affichage du chemin régional (ou micro-chemin). De plus,
-la  présence des  départements voisins  permet d'avoir  une `imagemap`
-avec des liens hypertextes vers les régions voisines.
-
-La seconde raison est la distorsion due à l'ajustement des coordonnées
-telle  que  je l'ai  décrite  ci-dessus.  J'ai  pris l'exemple  de  la
-Bretagne.    J'aurais   pu    prendre   l'exemple    de   la    région
-Nord-Pas-de-Calais  ou  de la  région  Haute-Normandie  dans la  carte
-`fr1970`. Le Nord-Pas-de-Calais  comporte seulement deux départements,
-quasiment alignés sur une ligne  horizontale E-O. L'écart vertical est
-de 0,21°, soit 23 km, tandis que  l'écart horizontal est de 1,3°, soit
-92 km. Mais de  la façon dont les coordonnées sont  ajustées, les deux
-points se seraient retrouvés dans  des coins diamétralement opposés du
-graphique, avec  une échelle  de 43  pixels par  km dans  la direction
-verticale et  de 11 pixels  par km  dans la direction  horizontale. En
-ajoutant  les  voisins,  c'est-à-dire  la Somme  et  l'Aisne,  l'écart
-vertical passe à 0,82°, soit 91 km, ce qui donne une échelle verticale
-de  11  pixels par  km.  Dans  ce  cas,  la distorsion  est  quasiment
-éliminée. Dans d'autres cas elle est simplement réduite.
-
-Dans le cas de la  Haute-Normandie, les deux départements sont alignés
-sur  une  ligne verticale  N-S.  L'écart  horizontal est  0,05°,  soit
-3,62 km  et l'écart  vertical est  0,59° soit  65,5 km, ce  qui aurait
-donné une échelle de 216 pixels par  km horizontal et 15 pixels par km
-vertical.
-
-Il y a pis.  Il y a la carte `frreg`,  avec les régions-2015 Bretagne,
-Île-de-France,      Centre-Val-de-Loire,      Pays-de-la-Loire      et
-Provence-Alpes-Côte-d'Azur,   qui   contiennent  chacune   une   seule
-région-1970.  Dans  ce cas,  la  longitude  maximale  est égale  à  la
-longitude minimale,  ce qui  est le  cas aussi  pour les  latitudes et
-l'ajustement des  coordonnées se traduit  par deux divisions  zéro par
-zéro. En faisant  intervenir les voisins, les divisions  zéro par zéro
-sont évitées.
-
-### Le cas des cartes à une seule région
-
-En fait, il  y a un cas de  figure où j'ai quand même  eu une division
-par zéro. Lorsque j'ai ajouté le jeu  icosien à la liste des graphes à
-tester, à l'occasion de la cinquième version, la macro-carte contenait
-une seule région,  donc l'écart min-max sur les longitudes  et sur les
-latitudes était égal  à zéro. J'ai donc été obligé  d'ajouter un terme
-positif, néanmoins très bas, pour éviter cette division par zéro. Cela
-ne fait rien, c'est une carte abstraite.
-
-Puis j'ai  ajouté des  cartes réelles  avec une  seule région.  Pas de
-problème. Puis j'ai ajouté la carte de
-[Le Shérif et le Hors-la-Loi](https://boardgamegeek.com/image/121547/bounty-hunter-shootout-at-the-saloon).
-Cette carte  représente quatre rues  ainsi que le saloon  délimité par
-ces rues,  soit pifométriquement  un carré  de 40 m  × 40 m.  Faute de
-mieux,  j'ai arbitrairement  localisé cet  endroit à  Tombstone, ville
-rendue célèbre par la
-[fusillade de O.K. Corral](https://fr.wikipedia.org/wiki/Fusillade_d%27O.K._Corral).
-
-La macro-carte s'affichait sans problème, mais la carte complète et la
-carte  régionale montraient  quelques points  en haut  à gauche  et un
-large espace vide à droite et  en bas. Pourquoi ? L'écart min-max pour
-les longitudes et les latitudes est initialisé à `1e-3`. Un millidegré
-correspond à 111 m  dans le sens nord-sud et, à cette latitude, à 95 m
-dans le sens est-ouest. Le programme  affichait donc une bande vide de
-71 m en bas et une bande vide de 55 m sur la droite.
-
-En adaptant  cette valeur  initiale à `1e-6`,  cela règle  le problème
-pour
-[le Shérif et le Hors-la-Loi](https://boardgamegeek.com/boardgame/3089/bounty-hunter-shootout-at-the-saloon)
-sans rien  changer pour les  autres cartes.  Le problème se  posera de
-nouveau si j'ai  une carte concrète représentant un carré  de 11 cm de
-côté. Je n'ai pas d'exemple en tête.
-
-### Le stockage des longitudes et des latitudes dans SQLite
-
-Dans  les programmes  Raku, les  longitudes et  les latitudes sont des
-nombres  à virgule,  c'est-à-dire des  `Num`. Il  peut arriver  que la
-[partie fractionnaire de la valeur soit nulle](https://confluence.org/).
-Notamment,  cela se  produit  fréquemment avec  les graphes  abstraits
-comme le jeu icosien ou les  graphes des solides platoniciens. Dans ce
-cas, même si vous utilisez un  `Num` dans votre programme Raku, SQLite
-stocke cette longitude  ou cette latitude en  tant qu'entier. Ensuite,
-lorsqu'un  autre  programme lit  cette  longitude  ou cette  latitude,
-SQLite lui transmet une valeur entière et Raku refuse de stocker cette
-valeur dans un `Num`.
-
-La solution  de contournement consiste à  systématiquement additionner
-une  très  faible valeur,  genre  `1e-8`.  Ainsi,  la latitude  et  la
-longitude sont stockées  dans SQLite en tant que  nombres flottants et
-lors des lectures ultérieures, les valeurs pourront être stockées dans
-des `Num`. Étant donné qu'un degré  fait 111 km (en latitude) ou moins
-(en longitude), l'erreur systématique est de l'ordre du millimètre sur
-le terrain, donc invisible sur la carte.
-
-### Faire la moyenne des longitudes et latitudes pour situer une région
-
-Attribuer  à une  région une  latitude et  une longitude  égales à  la
-moyenne  des  coordonnées  des  départements de  cette  région,  c'est
-séduisant. Mais ne risque-t-il pas d'y avoir des effets curieux ?
-
-Dans  l'absolu, oui.  En  pratique,  non, au  moins  pour les  régions
-françaises.
-
-En  toute  rigueur  mathématique, aucun  département,  aucune  région,
-aucune  zone  n'est  mathématiquement  convexe (à  part  peut-être  le
-Colorado  et le  Wyoming aux  États-Unis). Il  y a  toujours un  léger
-zig-zag sur les frontières, ce qui rend la zone concave. Néanmoins, il
-y  a des  zones concaves presque  convexes  et il  y a  des zones concaves franchement
-concaves. Ainsi,  la Moselle et le  Cantal ont un creux  beaucoup plus
-prononcé que  les autres départements.  Si le creux était  encore plus
-prononcé, il se pourrait que le centre géométrique du département soit
-à  l'extérieur des limites du  département.
-
-Dans les cartes ci-dessous, des copies d'écran de
-[Géoportail](https://www.geoportail.gouv.fr/),
-vous pouvez voir le creux au sud-est  de la Moselle et le creux au sud
-du Cantal.  À titre de  comparaison, le dessin comporte  également une
-carte de  la Mayenne,  un département  qui, vu  d'assez loin,  a l'air
-d'être à peu près convexe.
-
-![Cartes de la Mayenne, de la Moselle et du Cantal](Mayenne-Moselle-Cantal.png)
-
-Compte tenu  de la façon  dont j'ai constitué le  fichier initialisant
-les coordonnées  des départements,  les départements ne  pouvaient pas
-être représentés  par un point  à l'extérieur. Même si  un département
-avait eu  un creux encore plus  prononcé que le Cantal  ou la Moselle,
-j'aurais choisi  un point  à l'intérieur des  frontières. Mais  s'il y
-avait eu une  région avec un creux  proportionnellement aussi prononcé
-que le Cantal ou la Moselle, le calcul de la moyenne des longitudes et
-des latitudes des départements aurait pu aboutir à un centre dans le creux, donc à
-l'extérieur de la frontière de la  région. Ce n'est pas le cas, aucune
-région française n'a un creux bien prononcé.
-
-En revanche, c'est le cas pour
-[Maharadjah](https://boardgamegeek.com/image/82336/maharaja),
-si  l'on inclut  les trois  zones maritimes  dans le  graphe pour  une
-« région maritime » et les six  zones extérieures pour une « région de
-l'étranger ». Le  calcul de  moyenne pour ces  deux régions  risque de
-placer la  région maritime au  sein de l'Inde du  Sud et la  région de
-l'étranger à l'intérieur de l'Inde du Nord.
-
-C'est pis avec
-[Britannia](https://boardgamegeek.com/image/5640409/britannia-classic-and-new-duel-edition),
-si l'on tient compte des six  zones maritimes. Les six zones maritimes
-forment un  cercle autour des  zones terrestres  et la latitude  et la
-longitude  attribuées à  la région  maritime placent  cette région  au
-centre  de  la  carte,  nettement  à  l'intérieur  des  frontières  de
-l'Angleterre.
-
-![Britannia, carte régionale des zones maritimes et macro-carte](Britannia-mer.webp)
-
-Dans  le  programme  d'initialisation  de  la  base  de  données  pour
-Maharadjah et  dans celui pour  Britannia, j'aurais pu prévoir  un cas
-particulier pour la  région maritime. Je ne l'ai pas  fait. Cela ne me
-dérange  pas de  voir  une  macro-carte (ou  carte  réduite) avec  une
-bizarrerie d'affichage.
-
-### Pourquoi y a-t-il des points sur les frontières entre régions ?
-
-Pour  la plupart  des  gens, les  frontières  entre deux  départements
-appartenant  à deux  régions différentes  sont noires,  alors que  les
-frontières entre deux départements de  la même région sont en couleur.
-Les daltoniens ne peuvent pas  toujours percevoir cette différence. La
-présence d'un point sur les frontières inter-régionales leur permet de
-faire la différence entre les deux types de frontières.
-
-### La traversée de la ligne de changement de date
-
-#### Première version
-
-Certaines  cartes montrent  la totalité  du globe  terrestre et  elles
-comportent  des liens  entre une  zone extrême-orientale  et une  zone
-extrême-occidentale. Par exemple, Alaska → Kamtchatka dans la
-[carte de Risk](https://boardgamegeek.com/image/79615/risk)
-ou Alaska → Northern Russia dans
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-Dans ce  cas, les zones  devraient être affichées deux  fois chacune :
-l'Alaska basique à  la longitude 152 W et l'Alaska  bis à la longitude
-208 E, le Kamtchatka basique à la longitude 130 E et le Kamtchatka bis
-à la longitude 230 W. De même, l'arête reliant ces zones sera affichée
-deux fois, une première  fois entre les longitudes 152 W  et 230 W, la
-seconde fois entre les longitudes 130 E et 208 E.
-
-Je pensais que ce serait facile à  réaliser. Ce n'était pas le cas. Ce
-n'était pas  difficile non  plus, c'était  entre les  deux. Néanmoins,
-cela  mérite une  description,  que vous  trouverez ci-dessous.  Cette
-description  s'appuie   sur  une  carte  de   Risk  épurée,  présentée
-ci-dessous.
-
-![Extrait de Risk, montrant la traversée de la ligne de changement de date](cross-idl.webp)
-
-Les   besoins  sont   différents   pour  les   cartes  complètes   (et
-macro-cartes) d'une part et pour les cartes régionales d'autre part.
-
-Sur les cartes complètes, les zones doivent apparaître deux fois chacune :
-
-* Alaska basique à la longitude 152 W
-
-* Alaska bis à la longitude 208 E (208 = -152 + 360)
-
-* Kamtchatka basique à la longitude 130 E
-
-* Kamtchatka bis à la longitude 230 W (-230 = 130 - 360)
-
-et le calcul de l'échelle horizontale doit prendre en compte l'intervalle total 230 W → 208 E.
-
-Sur une carte régionale de l'Amérique du Nord, les zones doivent apparaître une seule fois :
-
-* Alaska basique à la longitude 152 W
-
-* Kamtchatka bis à la longitude 230 W
-
-et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 230 W → 32 W (Iceland).
-
-Sur une carte régionale de l'Asie, les zones doivent apparaître une seule fois :
-
-* Alaska bis à la longitude 208 E
-
-* Kamtchatka basique à la longitude 130 E
-
-et le calcul de l'échelle horizontale doit prendre en compte un intervalle réduit à 5 W (Europe) → 208 E.
-
-Les cartes régionales,  les cartes complètes et  les cartes régionales
-sont converties  en images  PNG par  le même  module `map-gd.rakumod`.
-Comment  ce  module peut-il  différencier  les  cartes régionales  des
-cartes  complètes et  macro ? La  réponse est  donnée par  la variable
-`@borders`. Les frontières intérieures  apparaissent deux fois dans la
-variable,  dans un  sens puis  dans l'autre.  Par exemple,  `@borders`
-contient  à la  fois `ALB  → NWT`  et `NWT  → ALB`.  À l'inverse,  les
-frontières menant à  l'extérieur apparaissent une seule  fois. Donc si
-vous dessinez la carte de l'Amérique  du Nord, vous aurez `ALA → KAM`,
-mais pas `KAM  → ALA`. Si vous dessinez la  carte régionale de l'Asie,
-vous aurez  `KAM →  ALA`, mais pas  `ALA → KAM`.  Si vous  dessinez la
-carte complète, cette frontière est  une frontière intérieure, donc la
-liste contient à la fois `ALA → KAM` et `KAM → ALA`.
-
-Prenons les questions séparément.
-
-Dans quelles circonstances faut-il dessiner une « zone bis » ?
-
-Une zone  bis est dessinée  quand elle  apparaît dans une  frontière à
-cheval sur  la ligne  de changement  de date (IDL),  en tant  que zone
-d'arrivée `to_code`. Cette information  est mémorisée dans la variable
-`%long-of-shadow-area`  où  elle sert  à  la  fois  de booléen  et  de
-numérique  (la  valeur  de  la  longitude  calculée).  Ainsi,  si  les
-frontières `ALA  → KAM` et `KAM  → ALA` apparaissent toutes  deux dans
-`@borders`, cela signifie que l'on est  en train de dessiner une carte
-complète et  les deux zones  « KAM bis »  et « ALA bis »  devront être
-dessinées. Si seule la frontière `ALA → KAM` apparaît dans `@borders`,
-cela signifie que l'on est en  train de dessiner la carte régionale de
-l'Amérique du Nord et qu'il faut  dessiner « KAM bis », mais pas « ALA
-bis ». À propos,  cette convention d'interpréter un `Num`  en tant que
-`Bool` signifie que l'on s'interdit de  stocker en base de données une
-longitude exactement égale à zéro. Si  le cas se présente, il faudrait
-remplacer cette longitude par `1e-8` ou similaire.
-
-Dans quelles circonstances faut-il dessiner une « zone basique » ?
-
-Il y  a trois  critères. Le  critère le plus  fréquent est  qu'il faut
-dessiner une zone basique si  elle apparaît dans une frontière normale
-c'est-à-dire avec  `cross_idl == 0`,  aussi bien  en tant que  zone de
-départ  `from_code`  qu'en  tant  que  zone  d'arrivée  `to_code`.  Le
-deuxième  critère est  qu'il faut  dessiner  la zone  basique si  elle
-apparaît  dans une  frontière trans-IDL,  en tant  que zone  de départ
-`from_code`. Avec  l'exemple ci-dessus,  si la  frontière `ALA  → KAM`
-apparaît, cela  signifie que l'on  est en  train de dessiner  soit une
-carte complète, soit  la carte régionale d'Amérique du  Nord. Dans les
-deux cas, il faudra dessiner « ALA basique ». Un dernier cas est si la
-zone est isolée (carte à une seule région, comme la région `ICO` de la
-carte `ico`, ou bien  les îles `HEB` et `ORK` de  la carte `brit0` qui
-utilise  uniquement  les  frontières   terrestres).  Alors  il  faudra
-dessiner cette  zone. Cette information  est stockée dans  la variable
-`%must-display-main` : si la valeur est  `False`, alors il ne faut pas
-dessiner la  zone basique ; si  la valeur est  `True` _ou si  elle est
-absente_, alors il faut dessiner  la zone basique. C'est pourquoi j'ai
-utilisé le code  `//= True`. Si la valeur n'existe  pas, cela signifie
-que  la zone  n'apparaît dans  aucune frontière  et qu'il  s'agit d'un
-sommet isolé (île, région unique), auquel  cas il faut faire passer la
-valeur à `True`. Si la valeur existe déjà, cela signifie qu'elle a été
-initialisée lors du traitement d'une frontière et alors elle n'est pas
-touchée. `True` reste `True` et `False` reste `False`.
-
-Comment  calcule-t-on  l'intervalle  de  longitudes,  pour  déterminer
-l'échelle horizontale ?
-
-Au fur et à mesure que l'on examine les frontières et les zones et que
-l'on décide  que telle  ou telle  zone sera  affichée, on  mémorise sa
-longitude dans une liste `@longitudes`.  Bien sûr, si l'on a déterminé
-qu'il faudra dessiner à la fois  « ALA basique » et « ALA bis », alors
-on stockera les deux longitudes  `-152` (basique) et `+208` (bis). Une
-fois que l'on a examiné toutes  les frontières et toutes les zones, on
-extrait le minimum  et le maximum de la liste  pour avoir l'intervalle
-de longitudes.
-
-Il reste quelques problèmes.
-
-Pour les frontières, il y a deux  cas particuliers qui ne font pas bon
-ménage. Si une frontière est à  la fois une frontière trans-IDL et une
-frontière avec point intermédiaire (dessinée en ligne brisée), alors à
-mon avis  il y aura un  problème, genre comportement absurde.  Je n'ai
-pas testé.
-
-Le  programme de  dessin  est basé  sur le  fait  que toute  frontière
-cross-IDL est  une frontière entre  deux régions (`Big_Areas`).  Il ne
-peut pas  y avoir  de région à  cheval sur la  ligne de  changement de
-date. Pensez  par exemple à  l'Alaska avant  1867, à l'époque  où elle
-appartenait  à la  Russie.  Si le  cas devait  se  produire, alors  il
-faudrait  découper artificiellement  la  région en  deux,  de part  et
-d'autre de la ligne de changement de  date. Il y a fort à parier qu'il
-y   aura  une   seule   frontière  entre   les   deux  petites   zones
-(`Small_Areas`) et que  cela ne changera pas  les chemins hamiltoniens
-obtenus. En  effet, comme il  y a  une seule frontière  trans-IDL, ses
-deux extrémités sont  des points d'articulation (ou  des impasses), ce
-qui canalise  les chemins  hamiltoniens. Le véritable  problème serait
-qu'il y ait deux frontières  trans-IDL, par exemple une frontière `KAM
-→ ALA` et  une frontière `JAP →  ALA`. Dans ce cas, la  scission de la
-`Big_Area` « Russie  pré-1867 » pourrait changer la  liste des chemins
-hamiltoniens générés. Mais reconnaissons-le, cela  a peu de chances de
-se produire.
-
-Voici la macro-carte pour
-[Twilight Struggle](https://boardgamegeek.com/boardgame/12333/twilight-struggle),
-L'échelle sur les longitudes et l'échelle sur les latitudes sont les mêmes.
-
-![Macro-carte pour Twilight Struggle](Twilight-Struggle-macro-v1.png)
-
-Comme vous pouvez le voir, le lien des USA vers la région `ASI` (Asie)
-occupe le tiers de  la largeur de la carte et comme  il est en double,
-il occupe en fait  les deux tiers. C'est parce que  la longitude de la
-région  `USA`  est 84°O  (aux  environs  d'Albany  en Georgie)  et  la
-longitude de la  région `ASI` est 103°E (frontière  entre la Thaïlande
-et le Cambodge). Donc les régions bis sont en 276°E et 257°O, pour une
-largeur totale de 533°, qui se décompose  en 2 fois 173° pour les deux
-exemplaires  de  la  frontière  `USA  → ASI`  et  187°  pour  l'espace
-intérieur de la carte. D'où la deuxième version.
-
-#### Deuxième version
-
-On abandonne  le concept  de « zone  bis » et on  la remplace  par une
-nouvelle utilisation du concept  déjà existant de point intermédiaire.
-Lorsqu'une  frontière traverse  la  ligne de  changement  de date,  le
-programme d'initialisation alimente  les champs `long` et  `lat` de la
-table  `Borders`, pour  définir  le point  intermédiaire  où la  ligne
-représentant la  frontière traverse  la ligne  de changement  de date.
-Cela  peut  faire   l'objet  d'un  calcul  comme   dans  le  programme
-`init-risk-extract.raku`  ou cela  peut se  faire par  l'intermédiaire
-d'une ligne  « `X` » dans le  fichier d'initialisation comme  pour les
-autres points intermédiaires,  par exemple la frontière `93  → 95` des
-cartes `fr1970` et `fr2015`, ou  bien plusieurs tronçons dans la carte
-`ratp`. La longitude du point  intermédiaire est 180°E ou 180°O, selon
-l'hémisphère où se trouve le point de départ. Ainsi, pour la frontière
-`ASI →  USA` la  longitude sera  +180 (ou 180°E),  tandis que  pour la
-frontière `USA → ASI`, la longitude  sera -180 (ou 180°O). Avec, comme
-signalé plus haut, une partie fractionnaire.
-
-D'autre  part, le  programme  de  dessin trace  la  frontière en  deux
-tronçons,  l'un aboutissant  à  la  longitude 180°O  et  l'autre à  la
-longitude 180°E.
-
-Comme vous pouvez  le voir, le résultat est moins  déséquilibré que la
-version précédente :
-
-![Macro-map for Twilight Struggle](Twilight-Struggle-macro-v2.png)
-
-Seuls les programmes d'initialisation et  le module générant le dessin
-PNG sont concernés. Les  programmes calculant les chemins hamiltoniens
-(macro, régional,  complet) ou  les statistiques  sur les  chemins les
-plus courts ne sont pas affectés.
-
-#### Exemples de programmes d'initialisation
-
-Le  dépôt Git  contient deux  exemples de  programmes initialisant  la
-carte  Risk épurée.  Dans le  premier exemple,  le fichier  de données
-indique uniquement que telle ou telle frontière entre régions traverse
-la ligne de  changement de date. Et le  programme reporte l'indicateur
-`cross_idl`  vers les  frontières  entre  départements. Également,  il
-détermine  la  latitude  où  cette  frontière  traverse  la  ligne  de
-changement de date (variation linéaire en fonction de la longitude) et
-met à  jour les  enregistrements `Borders` avec  cette latitude  et la
-longitude.
-
-Dans le deuxième exemple, toutes les frontières traversant la ligne de
-changement de date doivent être  déclarées dans le fichier de données,
-qu'il  s'agisse de  frontières entre  régions ou  de frontières  entre
-départements. De plus, chaque frontière  est déclarée sur deux lignes,
-l'une  contenant le  point intermédiaire  ouest, l'autre  contenant le
-point intermédiaire est.
-
-On n'est  pas tenu d'utiliser les  longitudes 180°O et 180°E,  on peut
-diminuer la  plage de longitudes  pour avoir un dessin  plus détaillé.
-Dans le  cas de  la carte de  Risk, cela ne  se remarque  pas. Prenons
-l'exemple de
-[Labyrinth: The War on Terror, 2001 -- ?](https://boardgamegeek.com/boardgame/62227/labyrinth-the-war-on-terror-2001).
-Dans le sens ouest → est,
-[la carte](https://boardgamegeek.com/image/766726/labyrinth-the-war-on-terror-2001)
-s'étend du Sénégal (15°O) jusqu'aux Philippines (120°E).
-La position du Canada et celle des États-Unis sont
-[ajustées](https://tvtropes.org/pmwiki/pmwiki.php/Main/ArtisticLicenseGeography)
-pour rentrer  dans la  carte, ce  qui donne des  longitudes de  9°O et
-17°O. Pour la frontière entre les USA et les Philippines, cela n'a pas
-de sens de placer le point  intermédiaire à la longitude 180°O, ce qui
-créerait un  écart de  153°. Il  est donc placé  à la  longitude 22°O,
-c'est  largement   suffisant.  Dans  la  même   veine,  l'autre  point
-intermédiaire a été placé à la longitude 130°E au lieu de 180°E.
-
-Pour revenir au deuxième programme traitant la carte extraite de Risk,
-les  points intermédiaires  pour la  frontière  `ALA →  KAM` sont  aux
-longitudes 158°E et 170°O.
-
-### Performances
-
-En essayant le programme `gener1.raku` sur la carte de Britannia, j'ai
-recontré un gros problème avec  la génération des chemins hamiltoniens
-régionaux  de  l'Angleterre  (20  « départements »  et  40  frontières
-intérieures,  c'est-à-dire  80  enregistrements `Borders`).  En  règle
-générale,  le programme  `gener1.raku` émet  un message  tous les  100
-chemins entiers et un autre tous les 10000 chemins incomplets. Dans le
-cas de  l'Angleterre, j'ai  observé que le  délai entre  deux messages
-avait tendance  à s'allonger  au fil de  l'exécution du  programme. De
-plus,  le gestionnaire  de  tâches  montrait que  sur  ma machine,  le
-pourcentage   de   mémoire   utilisée   croissait   régulièrement   et
-inexorablement. Il y a une fuite de mémoire quelque part !
-
-Finalement,  j'ai compris.  J'avais  prévu un  `begin transaction`  au
-début  du  traitement  et  un  `commit`  à  la  fin.  Pour  éviter  un
-engorgement   du  journal,   j'avais  prévu   également  un   `commit`
-immédiatement  suivi d'un  `begin  transaction` tous  les 100  chemins
-entiers. Suite  à une erreur,  il y avait  aussi un `commit`  + `begin
-transaction`  pour chaque  chemin partiel  individuellement. Comme  la
-génération des  chemins hamiltoniens  pour l'Angleterre  génère 16 182
-chemins entiers et 3 562 796 chemins partiels, cela faisait 3 millions
-et demi de `commit` au lieu de simplement 162.
-
-J'ai donc  enlevé le couple  `commit` + `begin  transaction` superflu.
-Certes, la fuite mémoire existe  toujours, mais c'est plus supportable
-lorsqu'elle se produit 162 fois  que lorsqu'elle se produit 3 millions
-de fois.
-
-### Syntaxe SQL
-
-Lorsque l'on effectue  une jointure entre plusieurs tables,  il est de
-bon ton  de qualifier chaque  nom de colonne avec  le nom de  la table
-correspondante, ou d'attribuer un alias à chaque table et de qualifier
-chaque nom de colonne avec l'alias de la table associée.
-
-Exemple à ne pas suivre :
-
-```
-select num, path, area, to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-
-Exemple correct :
-
-```
-select B.num, B.path, B.area, B.to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-
-Mais cet  ordre SQL présente  un défaut. Sur une  machine, l'exécution
-avec le paramètre `:array-of-hash` m'a renvoyé :
-
-```
-({B.num => 1, B.area => IDF, B.path => 'xxx → yyy', B.to_code => '77'})
-```
-
-et sur une autre machine, avec une autre version de Raku, de DBIish et
-de SQLite, j'ai obtenu :
-
-```
-({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
-```
-
-Comment  s'affranchir de  cette alternative ?  En attribuant  un alias
-également aux colonnes :
-
-```
-select B.num     as num
-     , B.path    as path
-     , B.area    as area
-     , B.to_code as to_code
-from Borders_With_Star A
-join Region_Paths B
-   on  B.map       = A.map
-   and B.area      = A.upper_to
-   and B.from_code = A.to_code
-where A.map       = ?
-and   A.from_code = ?
-and   A.upper_to  = ?
-```
-
-Et le programme sur les deux machines m'a donné :
-
-```
-({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
-```
 
 Première Tentative
 ==================
