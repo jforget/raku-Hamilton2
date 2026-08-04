@@ -271,12 +271,6 @@ sub draw-border($img, Int $x-from
     $img.line(start => ($x-from, $y-from)
             , end   => ($x-to  , $y-to  )
             , color => $style);
-    if $color-name eq 'Black' {
-      $img.ellipse(center => ( (($x-from + $x-to) / 2).Int, (($y-from + $y-to) / 2).Int )
-                 , axes   => (4 × $thickness, 4 × $thickness)
-                 , color  => $color
-                 , fill   => True);
-    }
     $x-mid = (($x-from + $x-to) / 2).Int;
     $y-mid = (($y-from + $y-to) / 2).Int;
   }
@@ -287,13 +281,13 @@ sub draw-border($img, Int $x-from
     $img.line(start => ($x-mid, $y-mid)
             , end   => ($x-to , $y-to )
             , color => $style);
-    if $color-name eq 'Black' {
-      # do not bother to compute the middle of the line, just use the turning point
-      $img.ellipse( center => ($x-mid, $y-mid)
-                 ,  axes   => (4 × $thickness, 4 × $thickness)
-                 ,  color  => $color
-                 ,  fill   => True);
-    }
+    # do not bother to compute the middle of the line, just use the turning point
+  }
+  if $color-name eq 'Black' {
+    $img.ellipse( center => ($x-mid, $y-mid)
+	       ,  axes   => (4 × $thickness, 4 × $thickness)
+	       ,  color  => $color
+	       ,  fill   => True);
   }
   if $name ne '' {
     my ($dx, $dy) = ( 2.5 × $name.chars,  5);
