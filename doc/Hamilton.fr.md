@@ -584,6 +584,21 @@ triple décimètre  et je mesure  les coordonnées  X-Y à partir  du coin
 inférieur gauche  du plateau de jeu.  À part cela, le  principe est le
 même.
 
+Le résultat est très approximatif. Prenons par exemple la carte de
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+J'ai adopté le  Cap Horn et le Cap Nord  pour étalonner les latitudes.
+Malgré cela, les zones du continent antarctique se retrouvent avec une
+latitude entre 53°S  et 62°S. Certes, il y a  déjà une distorsion dans
+le  dessin de  la carte.  Mais si  l'on suppose  que la  carte est  en
+projection de Mercator, l'utilisation d'une fonction telle que  :
+
+```
+sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
+```
+
+ne  respecte  pas  la  distribution des  latitudes  en  projection  de
+Mercator.
+
 L'enregistrement de  la table `Maps` est  créé dès le début,  avec des
 valeurs en dur dans le programme `init-risk-extract2`.
 
@@ -905,8 +920,8 @@ de  _Operation Mercury_, pour la
 [carte de _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472),
 et pour la
 [carte de _Mosby's Raiders_](https://boardgamegeek.com/image/8577363/mosbys-raiders-guerilla-warfare-in-the-civil-war),
-les bords  ne respectent pas  l'orientation habituelle ouest →  est et
-nord  →  sud. Dans  le  cas  de _Raid  on  St.  Nazaire_, je  conserve
+les bords ne respectent pas l'orientation habituelle ouest → est horizontalement et
+nord → sud verticalement. Dans le cas de _Raid on St. Nazaire_, je  conserve
 l'orientation de la  carte de jeu, avec  le sud à gauche et  le nord à
 droite, pour permettre l'affichage de  cette carte en mode « paysage »
 sur mon  écran en  mode « paysage ». Les  longitudes et  les latitudes
@@ -936,7 +951,7 @@ sont nettement plus compliquées.
 
 Dans  certains  cas,  la  notion  de  longitude  et  de  latitude  est
 inappropriée. Dans  ce cas, le  champ `with_scale` de la  table `Maps`
-est positionné à  zéro (faux). C'est le cas avec  le dodécaèdre du jeu
+est positionné à  zéro (faux). C'est le cas avec les graphes abstraits comme le dodécaèdre du jeu
 icosien, c'est le cas également pour certains jeux comme
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 où la  carte représente un vaisseau  spatial en plein vol  et long de,
@@ -1500,9 +1515,30 @@ point noir  des frontières représentées en  noir ne sert plus  à grand
 chose. Je  ne vois pas comment  obtenir un dessin assimilable  par les
 daltoniens.
 
-### La traversée de la ligne de changement de date
+### Utilisation des colonnes `lon` et `lat` de la table `Borders`, premier cas
+
+La plupart du  temps, la longitude et la latitude  resteront à zéro et
+dans  la représentation  graphique,  l'arête sera  représentée par  un
+unique  segment de  droite. Dans  certains  cas, le  dessin peut  être
+encombré par endroits.  Un moyen pour l'éclaircir peut  être de tracer
+les arêtes avec deux segments de droite  au lieu d'un. Dans ce cas, la
+longitude et  la latitude repèrent  l'endroit où les deux  segments se
+joignent.
+
+Dans  le cas  des départements  français, le  seul cas  de figure  est
+l'arête  entre  la Seine-et-Marne  (77)  et  le Val-d'Oise  (95),  qui
+risquait de se faire masquer  par la Seine-Saint-Denis (93). J'ai donc
+prévu un point intermédiaire un peu au nord de la ligne droite.
+
+![Carte de l'Île de France](Ile-de-France.png)
+
+### Utilisation de `lon` et `lat`, deuxième cas : la traversée de la ligne de changement de date
 
 #### Première version
+
+Cette première version a été en vigueur  du 29 février 2024 au 21 juin
+2024. Extrayez l'historique du dépôt  à une date intermédiaire si vous
+voulez examiner les programmes d'initialisation et de dessin.
 
 Certaines  cartes montrent  la totalité  du globe  terrestre et  elles
 comportent  des liens  entre une  zone extrême-orientale  et une  zone
@@ -1672,6 +1708,9 @@ intérieur de la carte. D'où la deuxième version.
 
 #### Deuxième version
 
+Cette version  est illustrée par  les cartes `x-risk` et  `x-risk2` et
+les programmes `init-risk-extract.raku` et `init-risk-extract2.raku`.
+
 On abandonne  le concept  de « zone  bis » et on  la remplace  par une
 nouvelle utilisation du concept  déjà existant de point intermédiaire.
 Lorsqu'une  frontière traverse  la  ligne de  changement  de date,  le
@@ -1680,7 +1719,9 @@ table  `Borders`, pour  définir  le point  intermédiaire  où la  ligne
 représentant la  frontière traverse  la ligne  de changement  de date.
 Cela  peut  faire   l'objet  d'un  calcul  comme   dans  le  programme
 `init-risk-extract.raku`  ou cela  peut se  faire par  l'intermédiaire
-d'une ligne  « `X` » dans le  fichier d'initialisation comme  pour les
+d'une ligne « `X` »  dans le fichier d'initialisation  ainsi que c'est
+fait dans  le programme  `init-risk-extract2.raku` et ainsi  que c'est
+fait pour les
 autres points intermédiaires,  par exemple la frontière `93  → 95` des
 cartes `fr1970` et `fr2015`, ou  bien plusieurs tronçons dans la carte
 `ratp`. La longitude du point  intermédiaire est 180°E ou 180°O, selon
@@ -2011,21 +2052,6 @@ s'il peut arriver que  la carte ne soit pas découpée  le long de cette
 ligne, comme dans
 [cet exemple](https://boardgamegeek.com/image/476132/risk).
 
-La plupart du  temps, la longitude et la latitude  resteront à zéro et
-dans  la représentation  graphique,  l'arête sera  représentée par  un
-unique  segment de  droite. Dans  certains  cas, le  dessin peut  être
-encombré par endroits.  Un moyen pour l'éclaircir peut  être de tracer
-les arêtes avec deux segments de droite  au lieu d'un. Dans ce cas, la
-longitude et  la latitude repèrent  l'endroit où les deux  segments se
-joignent.
-
-Dans  le cas  des départements  français, le  seul cas  de figure  est
-l'arête  entre  la Seine-et-Marne  (77)  et  le Val-d'Oise  (95),  qui
-risquait de se faire masquer  par la Seine-Saint-Denis (93). J'ai donc
-prévu un point intermédiaire un peu au nord de la ligne droite.
-
-![Carte de l'Île de France](Ile-de-France.png)
-
 Pour  une frontière  entre  deux départements  d'une  même région,  la
 couleur  sera  celle de  la  région.  Pour  une frontière  entre  deux
 départements  de   régions  différentes,  la  couleur   sera  le  noir
@@ -2160,64 +2186,6 @@ chemins complets génériques et à des chemins régionaux génériques
 
 L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
 [quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
-
-Initialisation
-==============
-
-Départements français
----------------------
-
-Pour  des  raisons  de  copyright,   je  ne  livre  pas  de  programme
-d'initialisation pour les jeux comme Risk  ou War on Terror. Les seuls
-programmes  d'initialisation concerne  les régions  françaises et  les
-départements français  décrit ci-dessous, la  carte de la RATP  et les
-graphes abstraits comme les polyèdres platoniciens.
-
-Autres cartes
--------------
-
-Pour  les jeux  que je  possède, j'utilise  un triple-décimètre  et je
-repère  chaque zone  avec  ses  coordonnées X-Y  par  rapport au  coin
-inférieur gauche  de la carte.  Pour les jeux  que je ne  possède pas,
-mais qui  sont décrits dans Internet,  je charge une copie  d'écran de
-cette carte,  je l'affiche avec  the Gimp,  je promène mon  curseur de
-zone en  zone et  je note  pour chacune  les coordonnées  pixels. Pour
-calculer  la  longitude réelle,  je  choisis  deux points  écartés  en
-largeur et je  cherche dans Internet la longitude de  ces deux points.
-Par exemple,  pour Britannia, je  choisis le  point le plus  à l'ouest
-pour les  Cornouailles, près de Penzance  et le point le  plus à l'est
-pour le  Kent, près de Margate.  Avec les deux longitudes  et les deux
-coordonnées X, je compose une fonction de conversion.
-
-```
-my $lon-Cor = -5.68;  # Cornwall 5°40' W
-my $x-Cor   = 13;
-my $lon-Ken =  1.41;  # Kent  1°25' E
-my $x-Ken   = 41;
-my $a-lon   = ($lon-Cor - $lon-Ken) / ($x-Cor - $x-Ken);
-my $b-lon   = $lon-Ken - $a-lon × $x-Ken;
-sub conv-lon(Num $x --> Num) { return $a-lon × $x + $b-lon }
-```
-
-Je fais de  même avec les coordonnées  Y et les latitudes.  Je ne suis
-pas  obligé  de  prendre  les  mêmes  points.  En  l'occurrence,  j'ai
-réutilisé la zone `COR` (Cornouailles)  mais j'ai remplacé le Kent par
-la zone `ORK` (Orcades) tout au nord.
-
-Le résultat est très approximatif. Prenons par exemple la carte de
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-J'ai adopté le  Cap Horn et le Cap Nord  pour étalonner les latitudes.
-Malgré cela, les zones du continent antarctique se retrouvent avec une
-latitude entre 53°S  et 62°S. Certes, il y a  déjà une distorsion dans
-le  dessin de  la carte.  Mais si  l'on suppose  que la  carte est  en
-projection de Mercator, l'utilisation d'une fonction telle que  :
-
-```
-sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
-```
-
-ne  respecte  pas  la  distribution des  latitudes  en  projection  de
-Mercator.
 
 Extraction des chemins hamiltoniens
 ===================================

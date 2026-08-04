@@ -36,7 +36,7 @@ region). Lastly,  I concatenate micro-paths while  following a pattern
 given by a macro-path.
 
 I do not study  only the map of France with  the departments from 1965
-and the regions from 2015. As seen in the picture above, I do the same experiment with the
+and the regions from 2015. As seen in the picture above, I run the same experiment with the
 regions from  1970 and the  departments, or  even with the  regions of
 2015 as the big  areas and the regions of 1970 as  the small areas. In
 this case,  there are several big  areas which contain only  one small
@@ -544,6 +544,21 @@ For the games I own, I do not use _The Gimp_, I take a 30-cm ruler and
 I compile  the list of  X-Y coordinates, respective to  the lower-left
 angle of the gameboard. Except for that, the process is similar.
 
+The result can be very approximate. For example, see the map of
+[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
+I used  Cape Horn and North  Cape to generate the  latitude conversion
+function. Despite of this choice, the four Antarctic areas end up with
+latitudes between 53°S  and 61°S. Of course, the  original map already
+has some  distortion. But suppose we  use a perfectly drawn  map using
+the Mercator projection, the use of a function such as:
+
+```
+sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
+```
+
+will not reproduce the variation of latitudes as given by the Mercator
+projection.
+
 The record  in table `Maps` is  created with values hard-coded  in the
 program.
 
@@ -854,7 +869,7 @@ of _Operation Mercury_, for the
 [map of _Raid on St. Nazaire_](https://boardgamegeek.com/geeklist/154538/wargaming-maps-context?itemid=2555472#2555472)
 and for the
 [_Mosby's Raiders_ map](https://boardgamegeek.com/image/8577363/mosbys-raiders-guerilla-warfare-in-the-civil-war),
-the mapedges are not oriented west →  east and north → south as usual.
+the mapedges are not oriented horizontally west → east and vertically north → south as usual.
 For _Raid  on St. Nazaire_, I  keep the map orientation  with south on
 the left  and north  on the  right, so  the map  will be  displayed in
 "landscape" orientation on my  "landscape" computer screen. Longitudes
@@ -883,7 +898,7 @@ are much more cumbersome.
 
 In some cases, the concept of longitude and latitude is irrelevant. In
 these  cases,  field `with_scale`  of  table  `Maps`  is set  to  zero
-(False). This is  the case with the dodecahedron of  the Icosian game,
+(False). This is the case with the abstract graphs such as the dodecahedron of the Icosian game,
 this is the case with some games such as
 [_The Awful Green Things From Outer Space_](https://boardgamegeek.com/image/6788404/awful-green-things-outer-space)
 in which the mapboard represents  a spacecraft roaming the outer space
@@ -1418,9 +1433,30 @@ dot on  black-drwan borders is no  longer useful. Yet, I  have no idea
 how  to draw  this informations  in a  useful and  convenient way  for
 colour-blind people.
 
-### Crossing the International Date Line
+### Using the `lon` and `lat` Columns in the `Borders` Table, First Case
+
+Most of the time,  the longitude and latitude will be  zero and in the
+picture  of the  map, the  edge  will be  shown as  a single  straight
+segment. In some  cases, the picture will be a  bit overcrowed in some
+spots. A way  to unclutter the picture  is to draw a few  edges as two
+straight segments,  bypassing the overcrowed  spot. In this  case, the
+longitude and latitude define where the edge parts will join.
+
+Among  France's  departments,  the  only  problem  is  the  edge  from
+Seine-et-Marne (77) to  Val-d'Oise (95). If drawn as  a straight line,
+this edge may be masked by the Seine-Saint-Denis department (93). So I
+had to add a waypoint a little northward of the direct line.
+
+![Map of Île de France](Ile-de-France.png)
+
+### Using `lon` and `lat`, Second Case: Crossing the International Date Line
 
 #### First Version
+
+This first version  was in effect from 29 February  2024 until 21 June
+2024. If  you want to  know what  the initialisation programs  and the
+drawing programs  looked like, you should  check out a version  of the
+repo between these dates.
 
 Some maps show  the whole Earth and they include  links from a western
 area  to an  eastern area,  across  the International  Date Line.  For
@@ -1566,12 +1602,17 @@ only 187° for the inner part of the map. Therefore, a second version
 
 #### Second Version
 
+This version is illustrated by maps `x-risk` and `x-risk2` and by
+initialisation programs `init-risk-extract.raku` and
+`init-risk-extract2.raku`.
+
 We discard the notion  of "shadow area" and we add  a new use-case for
 the waypoint  in the border record.  If a border crosses  the IDL, the
 initialisation  programme  feeds  the  `long` and  `lat`  fields  when
 storing a  `Borders` record. The  latitude can  be computed, as  it is
 done in the `init-risk-extract.raku` programme, or it can be extracted
-from the init file,  like it is done for other reasons  with the `93 →
+from the init  file, like it is done  in the `init-risk-extract2.raku`
+programme, and like it is done for other reasons with the `93 →
 95` border  in the `fr1970` and  `fr2015` maps, or several  borders in
 the `ratp` map.  The longitude is either 180°E or  180°W, according to
 the border `from_code` area. For example,  in the `ASI → USA` border ,
@@ -1700,8 +1741,7 @@ programme gave:
 ({num => 1, area => IDF, path => 'xxx → yyy', to_code => '77'})
 ```
 
-How can  we avoid  this problem?  By giving an  attribute also  to the
-columns:
+How can we avoid this problem? By giving an alias also to the columns:
 
 ```
 select B.num     as num
@@ -1884,20 +1924,6 @@ routine will deal  with this special case.  "idl" means "International
 Date Line", even if in some cases the map is not cut along this line, like in
 [this example](https://boardgamegeek.com/image/476132/risk).
 
-Most of the time,  the longitude and latitude will be  zero and in the
-picture  of the  map, the  edge  will be  shown as  a single  straight
-segment. In some  cases, the picture will be a  bit overcrowed in some
-spots. A way  to unclutter the picture  is to draw a few  edges as two
-straight segments,  bypassing the overcrowed  spot. In this  case, the
-longitude and latitude define where the edge parts will join.
-
-Among  France's  departments,  the  only  problem  is  the  edge  from
-Seine-et-Marne (77) to  Val-d'Oise (95). If drawn as  a straight line,
-this edge may be masked by the Seine-Saint-Denis department (93). So I
-had to add a waypoint a little northward of the direct line.
-
-![Map of Île de France](Ile-de-France.png)
-
 For a  border between two departments  in the same region,  the border
 will  have the  same color  as the  region. For  a border  between two
 departments belonging to different regions, the color will be `Black`.
@@ -2028,65 +2054,6 @@ these columns refer to generic full paths and generic regional paths.
 
 The use of fields `range1`, `coef1` et `coef2` is explained in
 [fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
-
-Initialisation
-==============
-
-French Maps
------------
-
-For copyright reasons, I do  not provide initialisation programmes for
-the  maps  of   Risk,  War  on  Terror  and  other   games.  The  only
-initialisation  programmes  are  the  programme  dealing  with  French
-regions and departments, the initialisation programme for the RATP map
-(subway lines in Paris) and the initialisation programmes for abstract
-graphs (Platonic solids).
-
-Other Maps
-----------
-
-For the games I own, I take a 30-cm rule and I compile the list of X-Y
-coordinates, respective  to the lower-left  angle. For the games  I do
-not own, but which are described  on Internet, I load a graphical file
-displaying the map,  I open it with  the Gimp, I point  to the various
-areas with my mouse and for each one, I write the pixel coordinates in
-a text file. To compute the real longitude, I choose two points on the
-map, I search  the Internet to find the real  longitudes. For example,
-for the  Britannia maps, I  choose the western-most point  in Cornwall
-(near Penzance)  and the  eastern-most point  in Kent  (near Margate).
-With both longitudes  and both X coordinates and I  write a conversion
-function
-
-```
-my $lon-Cor = -5.68;  # Cornwall 5°40' W
-my $x-Cor   = 13;
-my $lon-Ken =  1.41;  # Kent  1°25' E
-my $x-Ken   = 41;
-my $a-lon   = ($lon-Cor - $lon-Ken) / ($x-Cor - $x-Ken);
-my $b-lon   = $lon-Ken - $a-lon × $x-Ken;
-sub conv-lon(Num $x --> Num) { return $a-lon × $x + $b-lon }
-```
-
-I do the same thing with Y  coordinates and latitudes. I can reuse the
-same points if they have very  different latitudes, or I can use other
-points.  For  example,  with  Britannia, I  reused  Cornwall  for  the
-Southern-most  latitude and  I  chosed Orkneys  for the  Northern-most
-latitude.
-
-The result can be very approximate. For example, see the map of
-[War on Terror](https://boardgamegeek.com/image/134814/war-terror).
-I used  Cape Horn and North  Cape to generate the  latitude conversion
-function. Despite of this choice, the four Antarctic areas end up with
-latitudes between 53°S  and 61°S. Of course, the  original map already
-has some  distortion. But suppose we  use a perfectly drawn  map using
-the Mercator projection, the use of a function such as:
-
-```
-sub conv-lat(Num $y --> Num) { return $a-lat × $y + $b-lat }
-```
-
-will not reproduce the variation of latitudes as given by the Mercator
-projection.
 
 Extracting Hamiltonian Paths
 ============================
