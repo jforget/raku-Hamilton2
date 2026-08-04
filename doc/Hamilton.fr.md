@@ -115,6 +115,14 @@ occasion,  j'ai ajouté  à la  base de  données plusieurs  graphes pour
 lesquels la recherche de chemins hamiltoniens était vouée à l'échec ou
 nécessitait un temps rédhibitoire.
 
+Par exemple, la carte ci-dessous  nous montre qu'il existe 426 chemins
+de longueur 12 entre la Moselle (57) et les Pyrénées Atlantiques (64),
+dont 3  chemins qui passent  par le Loir-et-Cher  (41). Implicitement,
+cette carte montre qu'il n'existe aucun chemin de longueur 11 ou moins
+entre les deux départements.
+
+![Plus courts chemins de la Moselle aux Pyrénées-Atlantiques](shortest-paths-57-to-64.png)
+
 Installation
 ============
 

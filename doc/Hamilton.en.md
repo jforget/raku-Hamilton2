@@ -109,6 +109,13 @@ which, up to now, were useless  because they obviously did not contain
 any Hamiltonian path or because the search for Hamiltonian paths would
 require too much computer time.
 
+The example in the map below  shows that from Moselle (57) to Pyrénées
+Atlantiques (64), there are 426 paths  with length 12. Among these 426
+paths, 3 go through Loir-et-Cher  (41). The drawing implies that there
+are no paths with length 11 or less between these departments.
+
+![Shortest paths from Moselle to Pyrénées-Atlantiques](shortest-paths-57-to-64.png)
+
 Installation
 ============
 
