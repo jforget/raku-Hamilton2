@@ -2,7 +2,7 @@
 
 SHELL = /bin/sh
 
-MD2HTML = /home/jf/.local/bin/grip
+MD2HTML = /usr/bin/grip
 MD2HTMLOPT = --export --no-inline
 
 .SUFFIXES:
