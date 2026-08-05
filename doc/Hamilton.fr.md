@@ -433,7 +433,7 @@ l'inverse  ici, je  m'intéresse aux  chemins hamiltoniens  et j'ignore
 presque totalement les cycles hamiltoniens.
 
 Dette technique
-===============
+---------------
 
 N'ayant pas de contrainte de  compatibilité ascendante, je peux revoir
 de fond en comble le codage, mais j'hésite à le faire sur le schéma de
@@ -1912,11 +1912,13 @@ Les sommets et les arcs sont  exportés avec leur couleur et avec leurs
 longitude et latitude.  L'affichage par Graphviz et  par Tulip devrait
 assez bien ressembler aux dessins générés par `website.raku`.
 
-Base de données
-===============
+Extraction des chemins hamiltoniens
+===================================
 
-Maps
-----
+Base de données
+---------------
+
+### Maps
 
 La  première  table  est  la   table  `Maps`  (Cartes).  La  clé  d'un
 enregistrement est :
@@ -1949,8 +1951,7 @@ Les  champs   `macro_diameter`,  `macro_radius`,   `full_diameter`  et
 [chapitre](#user-content-statistiques-sur-les-chemins-les-plus-courts-dun-point-à-un-autre)
 sur les statistiques associées aux « plus courts chemins ».
 
-Areas
------
+### Areas
 
 La deuxième table, `Areas` (Zones), contient à la fois les régions
 et les départements. La clé d'un enregistrement est :
@@ -2020,8 +2021,7 @@ Les champs  `full_eccentricity`, `region_eccentricity`,  `diameter` et
 [chapitre](#user-content-statistiques-sur-les-chemins-les-plus-courts-dun-point-à-un-autre)
 sur les statistiques associées aux « plus courts chemins ».
 
-Borders
--------
+### Borders
 
 La  table `Borders`  (Frontières) énumère  les paires  de départements
 limitrophes  ou les  paires  de régions  limitrophes.  Pour un  graphe
@@ -2087,8 +2087,7 @@ Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 L'utilité du champ `fruitless` sera expliquée dans la
 [troisième version du logiciel](#user-content-troisième-tentative).
 
-Paths
------
+### Paths
 
 La table  `Paths` (Chemins)  liste tous les  chemins pour  une carte :
 macro-chemins entre régions, micro-chemins (ou chemins régionaux) pour
@@ -2172,8 +2171,7 @@ En revanche, il  n'y a aucune relation entre les  macro-chemins et les
 chemins  régionaux.  D'autre  part,  la  relation  entre  les  chemins
 complets et les chemins régionaux est une relation 0..n ↔ 0..n. D'où :
 
-Path\_Relations
----------------
+### Path\_Relations
 
 Cette table matérialise la relation  entre les chemins complets et les
 chemins régionaux. Elle contient les champs suivants :
@@ -2194,9 +2192,6 @@ chemins complets génériques et à des chemins régionaux génériques
 
 L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
 [quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
-
-Extraction des chemins hamiltoniens
-===================================
 
 Cas général
 -----------
@@ -2274,8 +2269,7 @@ partiel `'50  → 61 → 14  → 27 →  76'` n'est plus un  chemin _partiel_,
 c'est un  chemin régional _entier_. Il  est donc stocké dans  la table
 `Paths` et il n'est pas réinjecté dans la liste des chemins partiels.
 
-Cas particulier des impasses
-----------------------------
+### Cas particulier des impasses
 
 Ainsi  qu'on l'a  vu  ci-dessus, lorsqu'un  département constitue  une
 impasse dans sa région d'appartenance, il est impossible de trouver un
@@ -2317,8 +2311,7 @@ région.
 
 Remarque : le même raisonnement peut se faire au niveau des régions.
 
-Cas des départements isolés
----------------------------
+### Cas des départements isolés
 
 Puisque le programme cherche les  départements avec un seul voisin, il
 fait attention également aux départements avec aucun voisin.
@@ -2358,8 +2351,7 @@ retrouvera  bloqué.  Le  traitement   de  génération  s'arrêtera  donc
 rapidement avec  un constat  d'échec comme  attendu, mais  il tournera
 quand même.
 
-File FIFO ou pile LIFO ?
-------------------------
+### File FIFO ou pile LIFO ?
 
 Comment  choisit-on le  chemin partiel  à  traiter dans  la liste  des
 chemins partiels ? Nous avons plusieurs possibilités :
@@ -2431,8 +2423,7 @@ en-deçà de  la taille 894, qui  est elle-même inférieure au  nombre de
 chemins _S-2_ qui  auraient été stockés dans la  liste fonctionnant en
 FIFO.
 
-Tri final
----------
+### Tri final
 
 Une  fois tous  les chemins  créés pour  une carte  et une  région, le
 programme  relit   les  chemins,  triés  par   département  de  départ
@@ -2444,7 +2435,7 @@ mais c'est  purement temporaire. Une fois  la renumérotation terminée,
 il n'y a plus de doublons ni de trous.
 
 Construction des chemins complets
-=================================
+---------------------------------
 
 Le  principe général  est le  suivant. On  prend un  macro-chemin, par
 exemple `NOR → HDF  → GES → etc` dans la  carte `fr2015`. Le programme
@@ -2504,8 +2495,7 @@ chemins  régionaux  sont présentées  comme  des  processus séparés  et
 successifs. En fait,  avec la jointure SQL qui va  bien, ces processus
 sont rassemblés en un seul.
 
-Optimisation
-------------
+### Optimisation
 
 Parmi les chemins incomplets générés ci-dessus, certains sont de toute
 évidence stériles, les chemins dont le dernier département est `59` ou
@@ -2621,8 +2611,7 @@ régional. La  seule exception est  la recherche des  chemins régionaux
 pour la  dernière étape, car il  ne s'agit plus d'empiler  des chemins
 partiels, mais de stocker en base de données des chemins complets.
 
-Simplification
---------------
+### Simplification
 
 Après avoir dédoublé un ordre SQL pour des besoins de performances, je
 vais rassembler deux ordres SQL pour des besoins de simplification.
@@ -2633,7 +2622,7 @@ une  carte  ne  comportant  qu'une  seule  région  (et  donc  un  seul
 macro-chemin  réduit à  cette région).  Pour traiter  ces deux  cas de
 figure, il faut quatre boucles différentes.
 
-### Étape 1 pour `fr2015`
+#### Étape 1 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 la sortie, mais sans se préoccuper de l'entrée.
@@ -2654,7 +2643,7 @@ on insére  une double flèche entre  le chemin régional de  la première
 région  et le  code de  la deuxième  région, et  on alimente  la liste
 `to-do` avec le résultat.
 
-### Étapes 2 à 11 pour `fr2015`
+#### Étapes 2 à 11 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 la fois à l'entrée et à la sortie.
@@ -2678,7 +2667,7 @@ On  fait  glisser  la  double  flèche après  la  région  en  cours  de
 traitement,  on remplace  cette région  par le  chemin régional  et on
 alimente la liste `to-do`.
 
-### Étape 12 pour `fr2015`
+#### Étape 12 pour `fr2015`
 
 Une boucle sélectionnant les chemins  régionaux en faisant attention à
 l'entrée mais sans se préoccuper de la sortie.
@@ -2697,7 +2686,7 @@ and   A.from_code = ?
 On remplace la  dernière région par son chemin régional,  on enlève la
 double flèche et on écrit le chemin complet dans la table `Paths`
 
-### Étape unique pour la carte à une seule région
+#### Étape unique pour la carte à une seule région
 
 Une boucle sélectionnant  les chemins régionaux sans  se préoccuper de
 l'entrée ni de la sortie.
@@ -2713,7 +2702,7 @@ cas particulier, c'est  une simple recopie des  chemins régionaux vers
 les chemins complets, avec juste quelques changements, comme la valeur
 de `level`.
 
-### Factorisation
+#### Factorisation
 
 L'idée est  d'ajouter une « étape  zéro » avec un  département virtuel
 `*` relié à tous  les départements de la carte et  à traiter le chemin
@@ -2747,18 +2736,14 @@ pas besoin d'aller  d'un département réel vers le  département `*`, il
 n'y a pas besoin de compliquer la vue `Borders_With_Star` pour assurer
 le sens inverse.
 
-Affichage du résultat
-=====================
-
 Première Tentative
-==================
+------------------
 
 Voici les  résultats obtenus,  sachant que  la génération  des chemins
 complets se base sur l'optimisation par  le champ `exterior` de la vue
 `Small_Areas`.
 
-`frreg`, régions de 1970 dans les régions de 2015
--------------------------------------------------
+### `frreg`, régions de 1970 dans les régions de 2015
 
 La première carte générée a été  la plus facile, la carte `frreg` : 12
 grandes régions, pas  plus de 3 petites régions par  grande région. Le
@@ -2770,8 +2755,7 @@ Le second  programme a tourné un  peu plus longtemps, 5  minutes, pour
 trouver  210 chemins  complets  (avec 9606  chemins  partiels, dont  7
 simultanément en mémoire).
 
-`brit0`, Britannia sans les liaisons côtières
----------------------------------------------
+### `brit0`, Britannia sans les liaisons côtières
 
 Pour bien tester un programme, il ne faut pas seulement tester les cas
 qui fonctionnent  bien, mais  aussi les  cas d'erreur.  C'est pourquoi
@@ -2794,8 +2778,7 @@ et 3 minutes pour la renumérotation des chemins.
 Faute d'avoir  des chemins hamiltoniens dans  le Pays de Galles  et en
 Écosse, le second programme de génération s'est arrêté instantanément.
 
-`brit1`, Britannia avec les liaisons côtières
----------------------------------------------
+### `brit1`, Britannia avec les liaisons côtières
 
 Dans la  version avec les  liaisons côtières,  mais sans les  zones de
 mer,  les trois  régions sont  connexes et  la génération  des chemins
@@ -2857,8 +2840,7 @@ and   exists (select 'X'
                 and B.upper_to  = 'SCO')
 ```
 
-`brit2`, Britannia avec les zones maritimes
--------------------------------------------
+### `brit2`, Britannia avec les zones maritimes
 
 Pour le premier programme, l'ajout des zones maritimes ne change rien.
 C'est l'Angleterre qui prend la quasi-totalité du temps.
@@ -2905,8 +2887,7 @@ D'un autre côté, lorsque je  lance cette requête dans `sqlitebrowser`,
 elle met  plusieurs secondes à  s'exécuter. Ce n'est peut-être  pas la
 solution à retenir.
 
-`mah1`, la carte de Maharadjah, sans les pays étrangers ni les mers
--------------------------------------------------------------------
+### `mah1`, la carte de Maharadjah, sans les pays étrangers ni les mers
 
 Dans la  carte de Maharadjah,  il y a quatre  grandes régions. Il  y a
 deux régions très  simples, Ceylan (2 zones et  une frontière interne)
@@ -2940,8 +2921,7 @@ Le second programme a fonctionné pendant 7 minutes pour générer 13 464
 chemins   complets,  en   utilisant  41 642   chemins  partiels   (361
 simultanément dans la liste `to-do`).
 
-`mah2`, la carte de Maharadjah, avec les pays étrangers et les mers
--------------------------------------------------------------------
+### `mah2`, la carte de Maharadjah, avec les pays étrangers et les mers
 
 La  carte `mah2`  ajoute deux  grandes régions :  la région  `ASI` des
 zones  asiatiques (6  zones, 6  frontières intérieures)  et la  région
@@ -3030,8 +3010,7 @@ Et je m'arrête  là pour le décompte, sans chercher  à calculer combien
 de chemins partiels seraient générés pour `HIM → NOR → SUD → CEY → MER
 → ASI` ou pour `ASI → HIM → NOR → SUD → CEY → MER`.
 
-Cartes `fr1970` et `fr2015`
----------------------------
+### Cartes `fr1970` et `fr2015`
 
 Pour ces  deux cartes, le  temps d'exécution du premier  programme est
 très  correct : à  peine 2  minutes pour  `fr2015` et  3 minutes  pour
@@ -3050,8 +3029,7 @@ révéler aussi lourde que pour `mah2` qui ne comporte que 6 régions. Je
 préfère attendre la deuxième tentative, avec l'optimisation plus fine,
 pour générer les chemins hamiltoniens complets.
 
-Cartes abandonnées
-------------------
+### Cartes abandonnées
 
 Il y a un certain nombre de cartes que je n'ai pas essayées, car elles
 ne pourront donner aucun chemin  doublement hamiltonien. Le blocage se
@@ -3108,8 +3086,7 @@ associées, il est possible de trouver un intérêt à inclure _History of
 the World_,  _Twilight Struggle_,  _War on Terror_  et autres  dans la
 base de données.
 
-Conclusion
-----------
+### Conclusion
 
 L'optimisation basée sur l'indicateur `exterior` n'est pas suffisante.
 L'intérêt  de  l'optimisation  `where  exists (select  'x'  ...)`  est
@@ -3122,7 +3099,7 @@ pour augmenter la  durée de chaque itération n'a aucun  intérêt. Il va
 falloir trouver autre chose.
 
 Deuxième tentative
-==================
+------------------
 
 Prenons l'exemple d'un macro-chemin `HDF → GES → ...`. Pour développer
 la région `HDF`, je cherche les  chemins régionaux de cette région qui
@@ -3174,8 +3151,7 @@ distinct`, soit `group by`, pour réunir les deux frontières `(02, 08)`
 et `(02,  51)` en une  seule frontière `(02,  GES)`. Pour en  avoir le
 cœur net, je commence par un programme de _benchmark_.
 
-Programme `benchmark`
----------------------
+### Programme `benchmark`
 
 Le programme `benchmark` reçoit trois paramètres :
 
@@ -3243,8 +3219,7 @@ arbitrairement la vue basée sur un `select distinct`. Et avec la
 du projet,  je reviens sur  ma décision  et j'utilise une  vraie table
 contenant un nouveau champ dont j'ai besoin.
 
-Résultat de la première étape
------------------------------
+### Résultat de la première étape
 
 Le programme `gener1.raku` n'ayant pas changé, on peut s'attendre à un
 résultat identique  à la première  étape de la première  tentative. Le
@@ -3259,8 +3234,7 @@ un ordre  arbitraire, qui peut  changer d'une exécution à  l'autre. De
 même, pour un `set`, les éléments  de l'ensemble sont extraits dans un
 ordre aléatoire.
 
-Résultat de la seconde étape
-----------------------------
+### Résultat de la seconde étape
 
 Pour le programme `gener2.raku`, le  temps entre la première tentative
 et  la deuxième  est divisé  par 3  ou 4.  Pour le  nombre de  chemins
@@ -3330,7 +3304,7 @@ peuvent pas donner lieu à des chemins complets, le temps de traitement
 restera énorme pour `fr2015`.
 
 Troisième tentative
-===================
+-------------------
 
 La  troisième tentative  sert à  diminuer le  nombre de  macro-chemins
 sélectionnés  dans  le  programme  `gener2.raku`.  Cela  traitera  les
@@ -3357,8 +3331,7 @@ Dans la table `Borders` et la vue `Big_Borders`, on ajoute une colonne
 départements héritant du  champ `fruitless` de la  frontière entre les
 régions correspondantes.
 
-Alimentation des nouvelles colonnes
------------------------------------
+### Alimentation des nouvelles colonnes
 
 Par défaut la colonne `fruitless` est initialisée à zéro. Le programme
 effectue une boucle sur chaque  ligne de la vue `Big_Borders` (maximum
@@ -3406,8 +3379,7 @@ de générer ces  divers chemins en plusieurs  étapes, l'alimentation de
 `fruitless` se fera  au début de `gener2.raku`, au moment  où tous les
 chemins nécessaires auront été générés.
 
-Génération des chemins complets
--------------------------------
+### Génération des chemins complets
 
 Lors  de   la  génération  des   chemins  complets,  on   évitera  les
 macro-chemins stériles. On ne gagnera pas grand-chose avec les chemins
@@ -3429,8 +3401,7 @@ compatibles entre elles. L'optimisation  `Exit_Borders` sert à réduire
 le  nombre de  chemins régionaux  traités, l'optimisation  `fruitless`
 sert à réduire le nombre de macro-chemins traités.
 
-Résultat de la troisième tentative
-----------------------------------
+### Résultat de la troisième tentative
 
 Comme  cela a  été vu  pour  la deuxième  tentative, il  y a  quelques
 changements pour la première étape, mais rien de significatif.
@@ -3482,7 +3453,7 @@ heures, alors que lors de la  tentative précédente il avait suffi de 3
 h 22 min pour générer le même nombre de chemins complets.
 
 Quatrième tentative
-===================
+-------------------
 
 Le but de la quatrième tentative est d'éviter l'explosion combinatoire
 qui fait  que pour un  macro-chemin de `fr1970`  ou de `fr2015`,  on a
@@ -3564,8 +3535,7 @@ spécifiques et  les stocke dans  la table `Paths` en  remplacement des
 chemins  complets génériques.  Cette opération  est mémorisée  dans la
 table `Maps` en positionnant le booléen `specific_paths` à 1.
 
-Relations entre les différents chemins
---------------------------------------
+### Relations entre les différents chemins
 
 Ce paragraphe s'applique aux cartes flaguées avec `specific_paths = 0`.
 
@@ -3610,8 +3580,7 @@ la formule correspondante par le chemin spécifique :
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
-Reconstitution d'un chemin complet spécifique
----------------------------------------------
+### Reconstitution d'un chemin complet spécifique
 
 Ce paragraphe  s'applique aux  cartes flaguées avec  `specific_paths =
 0`, pour l'affichage par `website.raku`, mais aussi pour la conversion
@@ -3684,8 +3653,7 @@ des  enregistrements de  la vue  `Generic_Region_Paths`. De  même, les
 valeurs 1, 19, 4, 2 et 5  sont stockées dans le champ `paths_nb` de la
 vue `Generic_Region_Paths`.
 
-Lister les chemins complets spécifiques pour un chemin régional spécifique
---------------------------------------------------------------------------
+### Lister les chemins complets spécifiques pour un chemin régional spécifique
 
 Ce paragraphe s'applique aux cartes flaguées avec `specific_paths = 0`.
 
@@ -3799,7 +3767,7 @@ Les identifiants `num_s2g` des chemins régionaux spécifiques sont :
 
 Comme c'est `CEN` qui nous intéresse, nous conservons « 2 ».
 
-### Premier morceau de la liste
+#### Premier morceau de la liste
 
 Le premier morceau de la liste des chemins complets contient `760 / 4 = 190` chemins
 complets. Comme c'est un peu gros, on construit une liste de décalages :
@@ -3888,7 +3856,7 @@ complets spécifiques.
 185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 1800 + 40 × 18 + 10 × 2 + 5 = 2545
 ```
 
-### Deuxième morceau de la liste
+#### Deuxième morceau de la liste
 
 Le  calcul de  `num_s2g=2` pour  le chemin  régional spécifique  et de
 `num=45` pour  le chemin  complet générique est  identique à  celui du
@@ -3939,8 +3907,7 @@ C'est-à-dire en fait la formule `n = first_num + coef2 × num_s2g`.
 Le résultat  est la  liste des  clés `num`  pour les  chemins complets
 spécifiques.
 
-Conclusions pour la quatrième variante
---------------------------------------
+### Conclusions pour la quatrième variante
 
 Comme précédemment,  le temps de  `gener1.raku` a très peu  changé. Un
 léger ralentissement pour certaines cartes, rien de notable. Examinons
@@ -4003,7 +3970,7 @@ d'enregistrements d'un  facteur 100 (78 400  au lieu de  93 millions),
 mais l'explosion combinatoire est toujours là.
 
 Cinquième version
-=================
+-----------------
 
 La  troisième tentative  avait  pour but  d'éviter  le traitement  des
 macro-chemins stériles.  L'optimisation par les frontières  stériles a
@@ -4059,8 +4026,7 @@ Je  sais  bien que  cette  nouvelle  optimisation  ne réglera  pas  le
 problème de l'explosion combinatoire de `fr2015`, mais je l'implémente
 quand même.
 
-Implémentation
---------------
+### Implémentation
 
 Pour implémenter cette optimisation,  je prends la vue `Exit_Borders`,
 je la  convertis en  table et  je lui ajoute  un nouveau  champ `spoc`
@@ -4112,8 +4078,7 @@ l'affichage  des pages  des  cartes. Les  frontières  stériles et  les
 triplets stériles sont affichés dans un seul sens, c'est-à-dire que si
 l'on affiche `A → B`, on n'affichera pas `B → A`.
 
-Conclusions pour la cinquième variante
---------------------------------------
+### Conclusions pour la cinquième variante
 
 Il y a quelques changements  de durée pour le programme `gener1.raku`,
 certains dans  le sens du ralentissement,  les autres dans le  sens de
@@ -4784,13 +4749,10 @@ isomorphismes dans les graphes élémentaires.  Je ne l'ai pas fait. Pas
 encore. Le plus  gros problème est que la  table s'appelle `isometry`.
 Le début `isom` pourrait coller à « isomorphisme », mais pas la fin.
 
-Statistiques
-============
+Statistiques sur chemins hamiltoniens
+=====================================
 
 Et une nouvelle fonctionnalité, les statistiques !
-
-Statistiques sur chemins hamiltoniens
--------------------------------------
 
 Je décris ci-dessous les statistiques  sur les chemins hamiltoniens régionaux, mais
 les définitions s'étendent aux macro-chemins. En revanche, compte tenu
@@ -5074,6 +5036,9 @@ macro-chemins  qui  ont donné  lieu  à  un  chemin complet.  Ces  deux
 catégories de  statistiques sont stockées dans  des champs différents,
 avec ou sans suffixe `_1` et  elles sont affichées dans deux pages web
 différentes.
+
+Métriques dans un graphe
+========================
 
 Statistiques sur les chemins les plus courts d'un point à un autre
 ------------------------------------------------------------------

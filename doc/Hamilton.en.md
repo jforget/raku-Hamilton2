@@ -402,7 +402,7 @@ the opposite here,  I deal with Hamiltonian paths and  I nearly ignore
 Hamiltonian cycles.
 
 Technical Debt
-==============
+--------------
 
 I have no commitment to ensure compatibility with older versions, so I
 can overhaul my code each time I think it needs an overhaul. Yet, I am
@@ -837,8 +837,8 @@ geographical  positions. Yet,  this map  is declared  as a  scaled map
 To generate a no-overlap picture, you should use the `?w=2000&adj=max`
 display parameter.
 
-Abstract Graphs, `init-ico.raku`, `init-platon.raku` et `init-elem.raku`
-------------------------------------------------------------------------
+Abstract Graphs, `init-ico.raku`, `init-platon.raku` and `init-elem.raku`
+-------------------------------------------------------------------------
 
 Since Édouard Lucas used city names  for the nodes of the dodecahedron
 in the icosian game and since I have used the same idea with the other
@@ -1789,11 +1789,13 @@ Nodes and edges are exported with their colours and their longitudes /
 latitudes,  so   the  rendering  by   Graphviz  or  Tulip   should  be
 approximately the same as the rendering by `website.raku`.
 
-Database
-========
+Extracting Hamiltonian Paths
+============================
 
-Maps
-----
+Database
+--------
+
+### Maps
 
 The first table is the `Maps` table. The record key is:
 
@@ -1825,8 +1827,7 @@ are described in the
 [chapter](#user-content-statistics-on-shortest-paths)
 about "shortest paths statistics".
 
-Areas
------
+### Areas
 
 The second table, `Areas`, contains both the regions and the departments.
 The record key is:
@@ -1895,8 +1896,7 @@ Fields  `full_eccentricity`,   `region_eccentricity`,  `diameter`  and
 [chapter](#user-content-statistics-on-shortest-paths)
 about "shortest paths statistics".
 
-Borders
--------
+### Borders
 
 The `Borders` table  lists the pairs of neighbour  departments and the
 pairs of neighbour regions. For a math graph, the proper word would be
@@ -1957,8 +1957,7 @@ As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 The use and meaning of `fruitless` will be explained in the
 [third version of the software](#user-content-third-attempt).
 
-Paths
------
+### Paths
 
 The `Paths` table  stores all paths for the  various maps: macro-paths
 linking  regions (big  areas), micro-paths  or regional  paths linking
@@ -2040,8 +2039,7 @@ On  the other  hand,  there  is no  relation  between macro-paths  and
 regional paths.  On the  third hand, between  full paths  and regional
 paths, the relation is 0..n ↔ 0..n. Hence:
 
-Path\_Relations
----------------
+### Path\_Relations
 
 This table  implements the  relation between  full paths  and regional
 paths. It contains the following fields:
@@ -2061,9 +2059,6 @@ these columns refer to generic full paths and generic regional paths.
 
 The use of fields `range1`, `coef1` et `coef2` is explained in
 [fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
-
-Extracting Hamiltonian Paths
-============================
 
 General Case
 ------------
@@ -2138,8 +2133,7 @@ that the path `'50 → 61 → 14 →  27 → 76'` is no longer a _partial_ path,
 but a _complete_ regional path. It is stored in the `Paths` table and it
 is not inserted in the list of partial paths.
 
-Special Case: Dead Ends
------------------------
+### Special Case: Dead Ends
 
 As we saw above, when a department is a dead-end within its region, as
 Seine-Maritime (76)  is in Normandy,  you cannot find  any Hamiltonian
@@ -2184,8 +2178,7 @@ in the region being processed.
 Remark: the same thing applies at the upper level, when extracting the
 macro-paths linking all regions.
 
-Special Case: Isolated Departments
-----------------------------------
+### Special Case: Isolated Departments
 
 Since the programme seeks the  departments with a single neighbour, it
 can also take in account the departments with no neighbours.
@@ -2224,8 +2217,7 @@ extend this partial path. The  generation programme will soon end with
 a  "failed" result,  as expected,  but it  will still  have run  for a
 little while.
 
-FIFO or LIFO?
--------------
+### FIFO or LIFO?
 
 Which method do we use to extract from the to-do list the next partial
 path to process? There are several possibilities:
@@ -2295,8 +2287,7 @@ nodes, that means that the theoretical maximum number is 66, way below
 the number  894 which is itself  less than the actual  number of _N-2_
 paths that would be stored in the to-do list if using FIFO.
 
-Final Sort
-----------
+### Final Sort
 
 Once all  paths are created  for a given map  and a given  region, the
 programmes rereads the paths, ordered  by begin area (`from_code`), by
@@ -2307,7 +2298,7 @@ renumbering process ends, there is neither holes nor duplicates in the
 number sequence.
 
 Generating the Full Paths
-=========================
+-------------------------
 
 The general process  is as follows. The programme  takes a macro-path,
 for example `NOR → HDF → GES → etc` in the `fr2015` map. The programme
@@ -2368,8 +2359,7 @@ small areas and  the extraction of regional paths as  two distinct and
 successive  steps. Actually,  with the  proper SQL  join, these  steps
 merge into a single step.
 
-Optimisation
-------------
+### Optimisation
 
 Among  the partial  paths generated  in  the example  above, some  are
 obviously wrong,  the paths  ending in department  `62` or  `59`. Why?
@@ -2478,8 +2468,7 @@ number. The  exception is the  last step, because the  generated paths
 are no  longer partial paths  pushed into  the `to-do` list,  but full
 paths stored into the database.
 
-Simplification
---------------
+### Simplification
 
 After splitting a SQL statement for performance purposes, I will merge
 two SQL statements to simplify the programme.
@@ -2490,7 +2479,7 @@ case with  an unnamed map  containing a  single big area  (which means
 also a single macro-path). To deal with these two cases, the programme
 needs four loops:
 
-### Step 1 for `fr2015`
+#### Step 1 for `fr2015`
 
 A  loop selects  the  regional paths  while taking  care  of exit  and
 disregarding entry:
@@ -2510,7 +2499,7 @@ The first region  is replaced by its regional path,  a double arrow is
 inserted between the first region's  path and the second region's code
 and the result is stored into the `to-do` list.
 
-### Steps 2 to 11 for `fr2015`
+#### Steps 2 to 11 for `fr2015`
 
 The loops selects  regional paths while taking care of  both entry and
 exit.
@@ -2534,7 +2523,7 @@ The  programme slides  the double  arrow past  the current  region and
 replaces this region by its regional  paths. The result is stored into
 the `to-do` list.
 
-### Step 12 for `fr2015`
+#### Step 12 for `fr2015`
 
 The  loop  selects regional  paths  while  taking  care of  entry  and
 disregarding exit.
@@ -2553,7 +2542,7 @@ and   A.from_code = ?
 The last region is replaced by  its regional path, the double arrow is
 removed and the full path is written into the `Paths` table.
 
-### Single Step for a Single-Region Map
+#### Single Step for a Single-Region Map
 
 The loop selects the regional  paths while disregarding both entry and
 exit.
@@ -2569,7 +2558,7 @@ in the  special case of  a single-region  map, the generation  of full
 paths  is just  duplicating regional  paths to  full paths  with minor
 alterations, such as the value of the `level` field.
 
-### Refactoring
+#### Refactoring
 
 The trick consists  in adding a "zero step" involving  a virtual small
 area `*`, which is  linked to all small areas on  the map. And instead
@@ -2598,18 +2587,14 @@ borders, while  all other borders  are two-way borders. The  reason is
 that we do not  need to go back from a real small  area to `*`, we can
 keep the `Borders_With_Star` simple.
 
-Displaying the Results
-======================
-
 First Attempt
-=============
+-------------
 
 Here are  the results  of the  paths generation,  while the  full path
 generation is optimised with the `exterior` field of the `Small_Areas`
 view.
 
-`frreg`, regions from 1970 within regions from 2015
----------------------------------------------------
+### `frreg`, regions from 1970 within regions from 2015
 
 The first  map generated was  the easiest,  `frreg`: 12 big  areas, no
 more than 3  small areas per big area. The  first generation programme
@@ -2620,8 +2605,7 @@ The  second generation  programme  ran  a bit  longer,  5 minutes,  to
 generate 210  full paths (with  9606 partial paths, while  the maximum
 size of the to-do list was 7 partial paths).
 
-`brit0`, Britannia map without the coastal links
-------------------------------------------------
+### `brit0`, Britannia map without the coastal links
 
 To check  a programme, you should  not test only the  sucessful cases,
 but also the error cases. So I  decided to deal with the Britannia map
@@ -2641,8 +2625,7 @@ minutes for the renumbering of the generated paths.
 With no Hamiltonian regional paths  for Scotland and Wales, the second
 generation programme stopped immediately.
 
-`brit1`, Britannia map with the coastal links
----------------------------------------------
+### `brit1`, Britannia map with the coastal links
 
 In the  variant taking in account  the coastal links, but  not the sea
 areas, the three big areas are  connected graphs and the generation of
@@ -2703,8 +2686,7 @@ and   exists (select 'X'
                 and B.upper_to  = 'SCO')
 ```
 
-`brit2`, Britannia map with the sea areas
------------------------------------------
+### `brit2`, Britannia map with the sea areas
 
 For the first programme, adding  sea areas changes nearly nothing. The
 bulk of the time is still spent while processing England.
@@ -2749,8 +2731,7 @@ On  the other  hand, when  I run  this query  in `sqlitebrowser`,  the
 answer  is displayed  after several  seconds.  Maybe this  is not  the
 proper solution.
 
-`mah1`, Maharaja map without the foreign lands and the seas
------------------------------------------------------------
+### `mah1`, Maharaja map without the foreign lands and the seas
 
 In the Maharaja  map, there are four big areas.  Two very simple ones:
 Ceylon (2  small areas and  1 interior  small border) and  Himalaya (4
@@ -2784,8 +2765,7 @@ The second programme ran for 7  minutes or so, to generate 13 464 full
 paths,  while  generating  41 642 partial  paths  (361  simultaneously
 present in the `to-do` list).
 
-`mah2`, Maharaja map with the foreign lands and the seas
---------------------------------------------------------
+### `mah2`, Maharaja map with the foreign lands and the seas
 
 The `mah2` map adds two more big areas: `ASI` for the foreign lands in
 Asia (6  areas, 6 inner  borders) and `MER` for  the seas (3  areas, 2
@@ -2871,8 +2851,7 @@ I will  not discuss further,  similar computations could give  a rough
 value of the number of sterile  partial paths generated for `HIM → NOR
 → SUD → CEY → MER → ASI` or `ASI → HIM → NOR → SUD → CEY → MER`.
 
-Maps `fr1970` and `fr2015`
---------------------------
+### Maps `fr1970` and `fr2015`
 
 For these  maps, the running time  of `gener1.raku` is fine:  nearly 2
 minutes  for  `fr2015` and  3  minutes  for  `fr1970`. The  number  of
@@ -2889,8 +2868,7 @@ so the combinatorial explosion may be  as huge as for `mah2`. I prefer
 waiting  for  the second  optimisation  to  generate full  Hamiltonian
 paths.
 
-Discarded Maps
---------------
+### Discarded Maps
 
 There are  some maps  I have  not tried,  because they  cannot produce
 doubly Hamiltonian paths,  or even regional Hamiltonian  paths. Let us
@@ -2943,8 +2921,7 @@ webpages to display shortest paths and similar notions, there is still
 some interest  including _History of the  World_, _Twilight Struggle_,
 _War on Terror_ and other maps in the database.
 
-Conclusion
-----------
+### Conclusion
 
 The optimisation based  on the `exterior` flag is  not sufficient. The
 good point  of the `where exists  (select 'x' ...)` clause  is that it
@@ -2959,7 +2936,7 @@ Although I am not master of the  world in an
 I am not quite sure what to do next. But I will think of something.
 
 Second Attempt
-==============
+--------------
 
 Let  us use  the example  of  a macro-path  `HDF  → GES  → ...`.  When
 replacing the  `HDF` region with a  regional path, I try  to find only
@@ -3010,8 +2987,7 @@ Then  I found  the solution.  Create  a table  or a  view with  either
 and `(02,  51)` into  a single one  `(02, GES)`. To  be sure,  I first
 write a benchmark.
 
-Benchmark
----------
+### Benchmark
 
 The benchmark receives three parameters:
 
@@ -3077,8 +3053,7 @@ adopt the view defined by `select distinct`. And with the
 I upgrade  this view to a  real table, because  I need to store  a new
 column.
 
-Result for the first programme
-------------------------------
+### Result for the first programme
 
 The `gener1.raku` programme  has not changed. So its  result should be
 the same  as during  the first  attempt. Actually,  there is  a slight
@@ -3093,8 +3068,7 @@ a run  and the next. Also,  the programme uses a  `Set` data structure
 and accessing  the elements of a  `Set` does not specify  the order in
 which the elements are accessed.
 
-Result for the second programme
--------------------------------
+### Result for the second programme
 
 For the `gener2.raku` programme, the running time is divided by 3 to 4
 between  the first  attempt  and the  second one.  For  the number  of
@@ -3154,7 +3128,7 @@ which will  generate no  full paths, as  suggested above,  the running
 time would still be huge.
 
 Third Attempt
-=============
+-------------
 
 The third attempt  aims to reduce the number of  macro-paths that will
 be  processed  in  `gener2.raku`.  This  will  deal  with  "functional
@@ -3179,8 +3153,7 @@ The column  `fruitless` is also added  to the `Borders` table  and the
 since the borders  between small areas inherit  the `fruitless` values
 from the borders between the corresponding big areas.
 
-Feeding the New Columns
------------------------
+### Feeding the New Columns
 
 By default,  column `fruitless` is  initialised with 0.  The programme
 loops  over  the  `Big_Borders`  view  (max  86  iterations,  for  map
@@ -3224,8 +3197,7 @@ the  progressive  generation of  paths,  step  by step,  region  after
 region,  the `fruitless`  column will  be filled  at the  beginning of
 `gener2.raku`, when all necessary paths are generated.
 
-Full Path Generation
---------------------
+### Full Path Generation
 
 When generating  the full paths,  of course all  fruitless macro-paths
 are discarded. We will no gain much by discarding macro-paths starting
@@ -3248,8 +3220,7 @@ with each other. The `Exit_Borders` optimisation reduces the number of
 regional  paths processed,  the `fruitless`  optimisation reduces  the
 number of macro-paths processed.
 
-Result of the third attempt
----------------------------
+### Result of the third attempt
 
 As seen with the second attempt, there  are a few minor changes in the
 first step, nothing of any significance.
@@ -3297,7 +3268,7 @@ the process.  In the previous attempt,  the same number of  full paths
 has been generated in 3 h 22 min only.
 
 Fourth Attempt
-==============
+--------------
 
 The fourth attempt aims at reducing the combinatory explosion, where a
 single macro-path in maps `fr1970` and `fr2015` can generate more than
@@ -3375,8 +3346,7 @@ rebuilds all these  specific paths and stores them  into table `Paths`
 instead  of the  generic paths.  This  operation is  flagged in  table
 `Maps` by updating the boolean field `specific_paths` to 1.
 
-Relations Between The Various Paths
------------------------------------
+### Relations Between The Various Paths
 
 This  paragraph describes  the paths  relations in  maps flagged  with
 `specific_paths = 0`.
@@ -3421,8 +3391,7 @@ replaced by the specific path:
 76 → 27 → (IDF,327,19) → (CEN,7,4)
 ```
 
-Rebuilding a specific full path
--------------------------------
+### Rebuilding a specific full path
 
 This  paragraph describes  the paths  relations in  maps flagged  with
 `specific_paths =  0`, both `website.raku`  which displays a  map with
@@ -3492,8 +3461,7 @@ the  records accessible  from  view `Generic_Region_Paths`.  Likewise,
 values 1, 19,  4, 2 and 5  are stored in field `paths_nb`  of the same
 records.
 
-Listing All Specific Full Paths Linked to a Specific Regional Path
-------------------------------------------------------------------
+### Listing All Specific Full Paths Linked to a Specific Regional Path
 
 This  paragraph   describes  the  processing  of   maps  flagged  with
 `specific_paths = 0`.
@@ -3601,7 +3569,7 @@ The `num_s2g` numbers for the specific regional paths are:
 
 As we are interested in `CEN`, we put aside "`2`".
 
-### First Part of the List
+#### First Part of the List
 
 The first part of the list of specific full paths contains `760 / 4 = 190`
 paths. This is a big list, so we build this list of shifts:
@@ -3690,7 +3658,7 @@ paths. We just have to add `first_num` and the final list contains the
 185 = 10 × 18 + 5 → (18,5) → (18,2,5) → 1800 + 40 × 18 + 10 × 2 + 5 = 2545
 ```
 
-### Second Part of the List
+#### Second Part of the List
 
 Computing `num_s2g=2` for the specific  regional path and `num=45` for
 the generic full path is the same as for the first part.
@@ -3741,8 +3709,7 @@ That is, actually, the formula `n = first_num + coef2 × num_s2g`.
 The result of  the list of keys `num` for  the generated specific full
 paths.
 
-Conclusions for the Fourth Variant
-----------------------------------
+### Conclusions for the Fourth Variant
 
 As before,  the running  time for `gener1.raku`  has not  changed much
 from a variant to the next. A limited slow-down for some maps, nothing
@@ -3799,7 +3766,7 @@ explosion has  divided the number  of database records by  100 (78 400
 instead of 93 millions), but the combinatory explosion is still there.
 
 Fifth Version
-=============
+-------------
 
 The  third  attempt aimed  at  avoiding  the processing  of  fruitless
 macro-paths. The  optimisation with fruitless borders  was successful,
@@ -3851,8 +3818,7 @@ I know  that this new optimisation  will not solve the  problem of the
 combinatory   explosion  of   `fr2015`,  but   I  will   implement  it
 nevertheless.
 
-Implementation
---------------
+### Implementation
 
 To  implement  this  optimisation,  I take  the  `Exit_Borders`  view,
 upgrade it to a real table and  I add a new column `spoc`, for "single
@@ -3900,8 +3866,7 @@ triples are displayed  in one direction only, that is,  if the webpage
 displays the fruitless part `A → B`, it will not display the part `B →
 A`.
 
-Conlusions for the Fifth Variant
---------------------------------
+### Conlusions for the Fifth Variant
 
 For `gener1.raku`,  there are some processing  time changes, sometimes
 accelerating, sometimes slowing, but they are not significant.
@@ -4545,13 +4510,10 @@ elementary graph. I  did not do this. Not yet.  The biggest problem is
 that the table name is `isometry`. The beginning of the name can apply
 to "isomorphism", but not the end.
 
-Statistics
-==========
+Statistics on Hamiltonian Paths
+===============================
 
 A new feature has crept in, statistics!
-
-Statistics on Hamiltonian Paths
--------------------------------
 
 Below, I describe  statistics for regional Hamiltonian paths,  yet the definitions
 can  extend to  macro-paths.  But, with  the way  the  full paths  are
@@ -4829,6 +4791,9 @@ are  stored in  different  database  fields, with  a  `_1` suffix  for
 macro-paths with full paths and  without this suffix when counting all
 macro-paths.  These  two categories  of  statistics  are displayed  in
 different webpages.
+
+Distances Within a Graph
+========================
 
 Statistics on shortest paths
 ----------------------------
