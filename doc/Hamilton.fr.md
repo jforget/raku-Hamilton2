@@ -1965,9 +1965,6 @@ Les autres informations sont :
 * `long` et `lat`, une longitude et une latitude approximatives,
 * `color`, la couleur qui sera utilisée pour l'affichage des cartes,
 * `upper`, pour les départements, le code de la région d'appartenance,
-* `nb_macro_paths`,
-* `nb_macro_paths_1`,
-* `nb_region_paths`,
 * `exterior` montrant si le département est relié à une autre région,
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
@@ -1981,22 +1978,6 @@ seront  visualisés de  telle  façon que  l'on  puisse reconnaître  les
 cartes géographiques. Si `Maps.with_scale` est faux, cela signifie que
 la   latitude  et   la  longitude   sont  seulement   des  coordonnées
 cartésiennes pour dessiner le graphe et rien de plus.
-
-Le champ `nb_region_paths` a  deux significations différentes pour les
-régions et pour  les départements. Pour les  régions, c'est simplement
-le nombre  de chemins  régionaux générés dans  cette région.  Pour les
-départements,  c'est  le nombre  de  chemins  régionaux commençant  ou
-aboutissant à ce département.
-
-Le champ `nb_macro_paths`  a, pour les régions,  la même signification
-que  `nb_region_paths`  pour  les  départements. C'est  le  nombre  de
-macro-chemins commençant ou aboutissant à cette région. Le champ reste
-à zéro pour les départements.
-
-Le  champ   `nb_macro_paths_1`  compte  également   les  macro-chemins
-commençant ou aboutissant à cette  région, mais en comptant uniquement
-les macro-chemins qui ont permis la génération de chemins complets. Le
-champ reste à zéro pour les départements.
 
 Le champ `exterior` n'a de signification que pour les départements. Il
 vaut `1`  si le département a  au moins une frontière  commune avec un
@@ -2027,8 +2008,6 @@ Autres champs :
 * `lat`, une latitude facultative,
 * `color`,
 * `fruitless`,
-* `nb_paths`,
-* `nb_paths_1`
 * `cross_idl`
 
 Dans certains cas, un enregistrement ne représente pas une frontière à
@@ -2055,18 +2034,6 @@ couleur sera forcément le noir.
 
 Pour  une  frontière  donnée,  il  y  aura  deux  enregistrements,  en
 intervertissant `from_code` et `to_code`.
-
-Pour une frontière de niveau 1, le champ `nb_paths` contient le nombre
-de  macro-chemins  qui  utilisent  cette frontière  (ou  la  frontière
-inverse). Pour une  frontière de niveau 2, c'est le  nombre de chemins
-régionaux contenant cette  frontière ou son inverse. Le  champ reste à
-zéro  si  la  frontière  relie   deux  départements  de  deux  régions
-différentes.
-
-Le  champ `nb_paths_1`  compte  également le  nombre de  macro-chemins
-utilisant cette frontière,  mais en se limitant  aux macro-chemins qui
-ont  généré des  chemins  complets. Ce  champ reste  à  zéro pour  les
-frontières de niveau 2.
 
 Comme pour  la table  `Areas`, il  y aura  deux vues  `Big_Borders` et
 `Small_Borders` en fonction du niveau.
@@ -4367,8 +4334,7 @@ C'est zéro  pour `Id`,  c'est la  longueur de la  clé pour  les autres
 isométries.
 
 * `recipr` est  la chaîne  de transformation  pour « défaire »  ce que
-`transform`  a  fait.  Initialement,  c'était la  clé  de  l'isométrie
-réciproque.
+`transform` a fait.
 
 * `involution` indicateur indiquant si l'isométrie est une involution,
 c'est-à-dire si l'isométrie est  égale à l'isométrie réciproque. C'est
@@ -4794,6 +4760,62 @@ du  dodécaèdre du  jeu  icosien  et dans  le  cas  des autres  solides
 platoniciens, tous les sommets sont équivalents entre
 eux  et toutes  les  arêtes  sont équivalentes  entre  elles, donc  la
 statistique est uniforme sur les sommets, ainsi que sur les arêtes.
+
+Base de données
+---------------
+
+Les champs utilisés par les statistiques sont :
+
+### Areas
+
+* `nb_macro_paths`,
+* `nb_macro_paths_1`,
+* `nb_region_paths`,
+
+Le champ `nb_region_paths` a  deux significations différentes pour les
+régions et pour  les départements. Pour les  régions, c'est simplement
+le nombre  de chemins  régionaux générés dans  cette région.  Pour les
+départements,  c'est  le nombre  de  chemins  régionaux commençant  ou
+aboutissant à ce département.
+
+Le champ `nb_macro_paths`  a, pour les régions,  la même signification
+que  `nb_region_paths`  pour  les  départements. C'est  le  nombre  de
+macro-chemins commençant ou aboutissant à cette région. Le champ reste
+à zéro pour les départements.
+
+Le  champ   `nb_macro_paths_1`  compte  également   les  macro-chemins
+commençant ou aboutissant à cette  région, mais en comptant uniquement
+les macro-chemins qui ont permis la génération de chemins complets. Le
+champ reste à zéro pour les départements.
+
+### Borders
+
+* `nb_paths`,
+* `nb_paths_1`.
+
+Pour une frontière de niveau 1, le champ `nb_paths` contient le nombre
+de  macro-chemins  qui  utilisent  cette frontière  (ou  la  frontière
+inverse). Pour une  frontière de niveau 2, c'est le  nombre de chemins
+régionaux contenant cette  frontière ou son inverse. Le  champ reste à
+zéro  si  la  frontière  relie   deux  départements  de  deux  régions
+différentes.
+
+Le  champ `nb_paths_1`  compte  également le  nombre de  macro-chemins
+utilisant cette frontière,  mais en se limitant  aux macro-chemins qui
+ont  généré des  chemins  complets. Ce  champ reste  à  zéro pour  les
+frontières de niveau 2.
+
+Nouvelles pages du site web
+---------------------------
+
+```
+https://localhost:10000/fr/macro-stat/fr2015
+https://localhost:10000/fr/macro-stat1/fr2015
+https://localhost:10000/fr/region-stat/fr2015/IDF
+```
+
+Implémentation
+--------------
 
 Pour calculer le nombre de chemins régionaux commençant ou aboutissant
 en `78`  pour la région `IDF`  de la carte `fr2015`,  la première idée

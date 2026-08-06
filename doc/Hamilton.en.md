@@ -1841,9 +1841,6 @@ Other fields are:
 * `long` and `lat`, approximate longitude and latitude of the area,
 * `color` the color used when drawing the map,
 * `upper` for departments, it is the code of the region it belongs to (for regions this field is unused),
-* `nb_macro_paths`,
-* `nb_macro_paths_1`,
-* `nb_region_paths`,
 * `exterior` showing whether the department is linked with another region,
 
 Two views are defined on this table, `Big_Areas` which filters `level`
@@ -1856,22 +1853,6 @@ with no geometry  involved, the math graphs will be  displayed in such
 fashion that  the geographical  map associated can  be guessed  at and
 recognised. If `Maps.with_scale` is  false, the longitude and latitude
 are nothing more than numeric coordinates to generate the picture.
-
-The  `nb_region_paths`  field  has  two different  meanings,  one  for
-regions and  the other  for departments.  For a  region, it  holds the
-total  number  of Hamiltonian  regional  paths  generated within  this
-region. For a department, it is  the number of regional paths starting
-from or stopping at this department.
-
-For  regions,  the `nb_macro_paths`  field  has  the same  meaning  as
-`nb_region_paths`  for departments,  it is  the number  of Hamiltonian
-macro-paths starting from or stopping at this region. For departments,
-this field is zero.
-
-The `nb_macro_paths_1`  field also counts the  Hamiltonian macro-paths
-starting from or  stopping at this region, but in  this case, only the
-macro-paths which  generated full  Hamiltonian paths are  counted. For
-departments, this field is zero.
 
 The  `exterior`  field  is  significant only  for  departments  (small
 areas). If `1`, that means that  the department shares a border with a
@@ -1897,8 +1878,6 @@ Other fields:
 * `lat`, an optional latitude,
 * `color`,
 * `fruitless`,
-* `nb_paths`,
-* `nb_paths_1`.
 * `cross_idl`
 
 In some cases, a record in this table does not represent a terrestrial
@@ -1920,18 +1899,6 @@ And of course, the borders with `level` 1 will be black.
 
 For a  given edge or border,  there will be two  `Borders` records, by
 switching `from_code` with `to_code`.
-
-For  a level-1  border, the  `nb_paths` field  contains the  number of
-Hamiltonian macro-paths using this border (or the reverse border). For
-a  level-2  border, this  field  contains  the number  of  Hamiltonian
-regional  paths containing  this border  or its  reverse. For  level-2
-borders  between departments  from  different regions,  this field  is
-zero.
-
-The  `nb_paths_1`  field  also  contains  the  number  of  Hamiltonian
-macro-paths  using  this  border,   but  only  the  macro-paths  which
-generated  full paths  are counted.  This  field is  zero for  level-2
-borders.
 
 As  for table  `Areas`, there  will  be two  views, `Big_Borders`  and
 `Small_Borders`.
@@ -4551,6 +4518,62 @@ icosian  game's dodecahedron  and in  the case  of the  other Platonic
 solids, all nodes are equivalent to each other,
 all edges are equivalent to each  other, so the statistics will give a
 constant value for the nodes and another constant value for the edges.
+
+Database
+--------
+
+The fields used by statistics are:
+
+### Areas
+
+* `nb_macro_paths`,
+* `nb_macro_paths_1`,
+* `nb_region_paths`,
+
+The  `nb_region_paths`  field  has  two different  meanings,  one  for
+regions and  the other  for departments.  For a  region, it  holds the
+total  number  of Hamiltonian  regional  paths  generated within  this
+region. For a department, it is  the number of regional paths starting
+from or stopping at this department.
+
+For  regions,  the `nb_macro_paths`  field  has  the same  meaning  as
+`nb_region_paths`  for departments,  it is  the number  of Hamiltonian
+macro-paths starting from or stopping at this region. For departments,
+this field is zero.
+
+The `nb_macro_paths_1`  field also counts the  Hamiltonian macro-paths
+starting from or  stopping at this region, but in  this case, only the
+macro-paths which  generated full  Hamiltonian paths are  counted. For
+departments, this field is zero.
+
+### Borders
+
+* `nb_paths`,
+* `nb_paths_1`.
+
+For  a level-1  border, the  `nb_paths` field  contains the  number of
+Hamiltonian macro-paths using this border (or the reverse border). For
+a  level-2  border, this  field  contains  the number  of  Hamiltonian
+regional  paths containing  this border  or its  reverse. For  level-2
+borders  between departments  from  different regions,  this field  is
+zero.
+
+The  `nb_paths_1`  field  also  contains  the  number  of  Hamiltonian
+macro-paths  using  this  border,   but  only  the  macro-paths  which
+generated  full paths  are counted.  This  field is  zero for  level-2
+borders.
+
+New Website Pages
+-----------------
+
+```
+https://localhost:10000/en/macro-stat/fr2015
+https://localhost:10000/en/macro-stat1/fr2015
+https://localhost:10000/en/region-stat/fr2015/IDF
+```
+
+Implementation
+--------------
 
 Let us take the example of map `fr2015`, big area `IDF` and small area
 `78`. Computing  the number  of regional paths  starting from  `78` or
