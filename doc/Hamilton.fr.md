@@ -541,8 +541,8 @@ Autres champs :
 * `upper_to`  le code du supérieur hiérarchique de `to_code`,
 * `long`, une longitude facultative,
 * `lat`, une latitude facultative,
-* `color`,
-* `cross_idl`
+* `color`, la couleur qui sera utilisée pour l'affichage des cartes,
+* `cross_idl`, un indicateur pour signaler que la frontière se trouve à la ligne de changement de date
 
 ### Messages
 
@@ -1941,15 +1941,6 @@ points situés à la surface de la Terre, auquel cas les dessins devront
 afficher une échelle,
 * `with_isom` indicateur  spécifiant si  l'on a défini  des isométries
 pour ce graphe et si elles ont été calculées,
-* `full_diameter`,
-* `full_radius`,
-* `macro_diameter`,
-* `macro_radius`.
-
-Les  champs   `macro_diameter`,  `macro_radius`,   `full_diameter`  et
-`full_radius` sont décrits dans le
-[chapitre](#user-content-statistiques-sur-les-chemins-les-plus-courts-dun-point-à-un-autre)
-sur les statistiques associées aux « plus courts chemins ».
 
 ### Areas
 
@@ -1978,10 +1969,6 @@ Les autres informations sont :
 * `nb_macro_paths_1`,
 * `nb_region_paths`,
 * `exterior` montrant si le département est relié à une autre région,
-* `diameter`,
-* `radius`,
-* `full_eccentricity`,
-* `region_eccentricity`.
 
 Il  est prévu  deux  vues  sur cette  table,  la  vue `Big_Areas`  qui
 sélectionne  le niveau  1  des  régions et  la  vue `Small_Areas`  qui
@@ -5037,7 +5024,7 @@ catégories de  statistiques sont stockées dans  des champs différents,
 avec ou sans suffixe `_1` et  elles sont affichées dans deux pages web
 différentes.
 
-Métriques dans un graphe
+Distances dans un graphe
 ========================
 
 Statistiques sur les chemins les plus courts d'un point à un autre
@@ -5063,34 +5050,27 @@ dans le  dessin du graphe  et dans un tableau,  comme cela a  été fait
 pour  les  statistiques  sur  les  chemins  hamiltoniens  du  chapitre
 précédent.
 
-Les statistiques  d'une carte complète  sont stockées dans  les champs
-`full_diameter` et `full_radius`  de la table `Maps` et  dans le champ
-`full_eccentricity` de  la table `Areas` (pour  les départements, avec
-`level = 2`).
+Base de données
+---------------
 
-Les  statistiques  d'une macro-carte  sont  stockées  dans les  champs
-`macro_diameter` et `macro_radius` de la table `Maps` et dans le champ
-`full_eccentricity` de la table `Areas` (pour les régions, avec `level
-= 1`).
+Les informations ajoutées dans les cartes `Maps` et `Areas` pour ce sujet sont :
 
-Les statistiques d'une  carte régionale sont stockées  dans les champs
-`diameter` et  `radius` de  la table `Areas`  (pour les  régions, avec
-`level  = 1`)  et  dans  le champ  `region_eccentricity`  de la  table
-`Areas` (pour les départements, avec `level = 2`).
+### Maps
 
-Pour une raison  que je ne comprends pas, le  module `Graph.pm` refuse
-de calculer les valeurs d'excentricité, de diamètre et de rayon sur un
-graphe contenant un seul sommet et aucune arête, alors que ces valeurs
-pourraient   être  alimentées   à  zéro.   D'ailleurs,  le   programme
-`shortest-path-statistics.raku`  prévoit ce  cas particulier  et évite
-d'appeler `Graph.pm`  dans ce cas  particulier. Quand j'ai  migré vers
-`Graph.rakumod`, j'ai  conservé la logique  du programme, je  n'ai pas
-vérifié le comportement du nouveau module.
+* `full_diameter`, diamètre dans le graphe des départements
+* `full_radius`, rayon dans le graphe des départements,
+* `macro_diameter`, diamètre dans la macro-carte des régions
+* `macro_radius`. rayon dans la macro-carte des régions
 
-En revanche, il  est très compréhensible que le  calcul n'aboutira pas
-pour un  graphe qui n'est  pas connexe.  Ce cas particulier  est prévu
-également et le programme `shortest-path-statistics.raku` alimente les
-statistiques à la valeur « impossible » -1.
+### Areas
+
+* `diameter`, diamètre pour une carte régionale (vide pour un département)
+* `radius`, rayon pour une carte régionale (vide pour un département)
+* `full_eccentricity`, excentricité de la région dans la macro-carte ou du département dans la carte complète
+* `region_eccentricity`. excentricité du département dans la carte régionale
+
+Organisation du site web
+------------------------
 
 Ces statistiques sont présentées sous la forme d'une carte coloriée et
 d'un tableau aux adresses :
@@ -5124,6 +5104,23 @@ une carte coloriée et deux tableaux. Les adresses sont :
 * http://localhost:3000/fr/shortest-paths-from-to/macro/fr1970/BOU/BRE
 
 * http://localhost:3000/fr/shortest-paths-from-to/region/fr1970/BOU/21/58
+
+Implémentation
+--------------
+
+Pour une raison  que je ne comprends pas, le  module `Graph.pm` refuse
+de calculer les valeurs d'excentricité, de diamètre et de rayon sur un
+graphe contenant un seul sommet et aucune arête, alors que ces valeurs
+pourraient   être  alimentées   à  zéro.   D'ailleurs,  le   programme
+`shortest-path-statistics.raku`  prévoit ce  cas particulier  et évite
+d'appeler `Graph.pm`  dans ce cas  particulier. Quand j'ai  migré vers
+`Graph.rakumod`, j'ai  conservé la logique  du programme, je  n'ai pas
+vérifié le comportement du nouveau module.
+
+En revanche, il  est très compréhensible que le  calcul n'aboutira pas
+pour un  graphe qui n'est  pas connexe.  Ce cas particulier  est prévu
+également et le programme `shortest-path-statistics.raku` alimente les
+statistiques à la valeur « impossible » -1.
 
 ### Comment compter les chemins les plus courts d'un point A à un point B
 

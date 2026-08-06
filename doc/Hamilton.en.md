@@ -502,8 +502,8 @@ Other fields:
 * `upper_to` similar,
 * `long`, an optional longitude,
 * `lat`, an optional latitude,
-* `color`,
-* `cross_idl`
+* `color`, the colour used when drawing the map,
+* `cross_idl`, to indicate a border crossing the International Date Line
 
 ### Messages
 
@@ -1817,15 +1817,6 @@ pictures,  meaning  that the  graph  nodes  are locations  on  Earth's
 surface,
 * `with_isom` flag showing whether  isometries have been generated for
 the graph,
-* `full_diameter`,
-* `full_radius`,
-* `macro_diameter`,
-* `macro_radius`.
-
-Fields `full_diameter`, `full_radius`, `macro_diameter` and `macro_radius`
-are described in the
-[chapter](#user-content-statistics-on-shortest-paths)
-about "shortest paths statistics".
 
 ### Areas
 
@@ -1854,10 +1845,6 @@ Other fields are:
 * `nb_macro_paths_1`,
 * `nb_region_paths`,
 * `exterior` showing whether the department is linked with another region,
-* `diameter`,
-* `radius`,
-* `full_eccentricity`,
-* `region_eccentricity`.
 
 Two views are defined on this table, `Big_Areas` which filters `level`
 equal  to `1`  for regions  and  `Small_Areas` which  filters `2`  for
@@ -1890,11 +1877,6 @@ The  `exterior`  field  is  significant only  for  departments  (small
 areas). If `1`, that means that  the department shares a border with a
 department  from another  region. If  `0`,  that means  that for  this
 department, all neighbour departments belong to the same region.
-
-Fields  `full_eccentricity`,   `region_eccentricity`,  `diameter`  and
-`radius` are described in the
-[chapter](#user-content-statistics-on-shortest-paths)
-about "shortest paths statistics".
 
 ### Borders
 
@@ -4080,7 +4062,7 @@ I live.
 Some mathematicians  will explain  that the  universe of  the abstract
 mathematical concepts does  not obey the second  law of thermodynamics
 and  that it  does  not  contain the  concept  of  time, that  nothing
-_happens_, eveything _permanently exists_. But for pupils and students
+_happens_, everything _permanently exists_. But for pupils and students
 learning  mathematics, it  is very  useful to  build mental  images of
 these mathematical concepts and  to imagine that these representations
 evolve while the time flows.
@@ -4816,31 +4798,27 @@ another webpage.  The eccentricities are  displayed both in  the graph
 picture (as colours) and in a  table, like it was done for Hamiltonian
 paths statistics (see above).
 
-For a full map, statistics  are stored into fields `full_diameter` and
-`full_radius` of  table `Maps`  and into field  `full_eccentricity` of
-table `Areas` (for departments, with `level = 2`).
+Database
+--------
 
-For a  macro-map, statistics  are stored into  fields `macro_diameter`
-and `macro_radius` of table  `Maps` and into field `full_eccentricity`
-of table `Areas` (for regions, with `level = 1`).
+The columns added to tables `Maps` and `Areas` are
 
-For a regional  map, statistics are stored into  fields `diameter` and
-`radius` of  table `Areas` (for  regions, with  `level = 1`)  and into
-field `region_eccentricity`  of table  `Areas` (for  departments, with
-`level = 2`).
+### Maps
 
-For a reason I do not understand, module `Graph.pm` refuses to compute
-the eccentricity, diameter and radius values for a graph with only one
-node  and zero  edges.  Yet,  these values  could  be  given as  zero.
-Actually, programme `shortest-path-statistics.raku` takes this special
-case in account and stores  zeroes into the statistics without calling
-`Graph.pm`. And  when I migrated  to `Graph.rakumod`, I kept  the same
-program logic, I did not check the behaviour of the new module.
+* `full_diameter`, diameter of the full map (with departments)
+* `full_radius`, radius of the full map (with departments)
+* `macro_diameter`, diameter of the macro-map (with regions)
+* `macro_radius`. radius of the macro-map (with regions)
 
-On  the  other  hand,  with   unconnected  graphs,  I  understand  why
-`Graph.pm` returns `undef` or `Inf`  (infinity) for these graphs. This
-corner case is also dealt with,  by storing out-of-bound value -1 into
-the statistical fields.
+### Areas
+
+* `diameter`, diameter of the regional map of the level-1 area, or zero if the area is level-2
+* `radius`, radius of the regional map of the level-1 area, or zero if the area is level-2
+* `full_eccentricity`, eccentricity of the region or department in the full map
+* `region_eccentricity`. eccentricity of the department in the regional map, or zero is the area is level-1
+
+Website Organisation
+--------------------
 
 These statistics are displayed at the following webpages, depending on
 their scope:
@@ -4872,6 +4850,22 @@ map and with two tables. Addresses are:
 * http://localhost:3000/en/shortest-paths-from-to/macro/fr1970/BOU/BRE
 
 * http://localhost:3000/en/shortest-paths-from-to/region/fr1970/BOU/21/58
+
+Implementation
+--------------
+
+For a reason I do not understand, module `Graph.pm` refuses to compute
+the eccentricity, diameter and radius values for a graph with only one
+node  and zero  edges.  Yet,  these values  could  be  given as  zero.
+Actually, programme `shortest-path-statistics.raku` takes this special
+case in account and stores  zeroes into the statistics without calling
+`Graph.pm`. And  when I migrated  to `Graph.rakumod`, I kept  the same
+program logic, I did not check the behaviour of the new module.
+
+On  the  other  hand,  with   unconnected  graphs,  I  understand  why
+`Graph.pm` returns  `undef` or `Inf` (infinity)  for these properties.
+This corner case is also dealt  with, by storing out-of-bound value -1
+into the statistical fields.
 
 ### Counting the Shortest Paths from an Area to Another Area
 
