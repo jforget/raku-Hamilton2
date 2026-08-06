@@ -3527,7 +3527,7 @@ sample.
 In summary, we want to display
 
 ```
-https://localhost:3000/fr/egion-with-full-path/fr1970/CEN/2345
+https://localhost:10000/en/region-with-full-path/fr1970/CEN/2345
 ```
 
 The generic full path (stored in the database) is `(fr1970,45)`, with:
@@ -4101,6 +4101,91 @@ horizontally drawn chronological  chart is drawn with the  past on the
 left side and with the future on the right side, but this exception is
 justified and it does not void the general principle.
 
+Database
+--------
+
+### Isometries
+
+We  have an  `Isometries` table  with the following key fields.
+
+* `map` is  the first part of  the record key. Values  are `"ico"` for
+the icosian  game, `"PL4"` for  tetrahedron, `"PL6"` for the  cube and
+`"PL8"`  for  the  octahedron.  The  icosahedron  isometries  are  not
+computed, there are too many of them.
+
+* `isometry` is the second part of the record key. It is a string with only chars `λ`,
+`κ`  and `ɩ`,  describing  how  the isometry  derives  from the  basic
+isometries. Of course,  the string is read  left-to-right according to
+the usual  representation of the  flow of  time. One exception  is the
+identity isometry. For the identity, the key is `Id`.
+
+Other fields in the table are:
+
+* `transform`.  This  field  shows  how  the  `B`  to  `Z`  codes  are
+transformed by the isometry. This transformation is computed with:
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  $transform);
+```
+
+For example, with rotation `λ`, the transformation is computed with:
+
+```
+        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
+                    =>  "GBCDFKLMNPQZXWRSTVJH");
+```
+
+* `length` is the number of basic isometries used to build the current
+isometry. This is zero for `Id`,  this is the length of the `isometry`
+field for the other isometries.
+
+* `recipr`  is the  transformation string  to "undo"  what `transform`
+would do.
+
+* `involution` is a boolean showing whether the isometry is involutive or
+not. An involution is a function  equal to its reciprocal. This is the
+case with symmetries. No longer used.
+
+### Isom\_Path
+
+Another new table  is `Isom_Path`, storing the  way dodecahedron paths
+derive from  canonical paths (that  is, paths starting  with `B →  C →
+D`). The table has four fields:
+
+* `map`, first part of the key, as with all other tables,
+
+* `canonical_num`: the key from the canonical Regional Path.
+
+* `num`: the key from the actual Regional Path
+
+* `isometry`:  the `isometry`  field of  the isometry  that turns  the
+canonical path into the actual path.
+
+* `recipr`: the `isometry` field of the isometry that turns the actual
+path  into the  canonical  path. Previously,  it was  the  key of  the
+reciprocal isometry. No longer used.
+
+Note: there is  no need to store  the other key fields  of the `Paths`
+table:  `level`  and  `area`.  Their values  are  hard-coded  `2`  and
+duplication of column `map`.
+
+Webpage for the Isometries
+--------------------------
+
+```
+https://localhost:10000/en/deriv-ico-path/ico/2
+```
+
+The `"ico"`  part of `"deriv-ico-path"`  is a technical debt  from the
+time when I  considered only the icosian game  without considering the
+other Platonic solids. The isolated `"iso"`  string is the name of the
+map. So we could have in the same way:
+
+```
+https://localhost:10000/en/deriv-ico-path/PL6/2
+```
+
 Implementation
 --------------
 
@@ -4127,67 +4212,6 @@ because recent  versions of  Raku use  `U+2192` in  their syntax  as a
 short  version of  `->`. On  the  other hand,  the strings  describing
 Hamiltonian  paths still  use `U+2192  = "→"`,  there is  no confusion
 problem with the Raku syntax.
-
-Yet, I need some additional data  for each isometry. Until this point,
-I have implemented everything as SQL  tables, I will continue with the
-dodecahedron isometries.  So we  have an  `Isometries` table  with the
-following fields.
-
-* `map` is  the first part  of the  record key, because  the programme
-will compute isometries  for the graphs describing  the other Platonic
-solids.
-
-* `isometry` is the second part of the record key. It is a string with only chars `λ`,
-`κ`  and `ɩ`,  describing  how  the isometry  derives  from the  basic
-isometries. Of course,  the string is read  left-to-right according to
-the usual  representation of the  flow of  time. One exception  is the
-identity isometry. For the identity, the key is `Id`.
-
-* `transform`.  This  field  shows  how  the  `B`  to  `Z`  codes  are
-transformed by the isometry. This transformation is computed with:
-
-```
-        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
-                    =>  $transform);
-```
-
-For example, with rotation `λ`, the transformation is computed with:
-
-```
-        $resul .= trans("BCDFGHJKLMNPQRSTVWXZ"
-                    =>  "GBCDFKLMNPQZXWRSTVJH");
-```
-
-* `length` is the number of basic isometries used to build the current
-isometry. This is zero for `Id`,  this is the length of the `isometry`
-field for the other isometries.
-
-* `recipr`  is the  transformation string  to "undo"  what `transform`
-would do. Previously, this was the key of the reciprocal isometry.
-
-* `involution` is a boolean showing whether the isometry is involutive or
-not. An involution is a function  equal to its reciprocal. This is the
-case with symmetries. No longer used.
-
-Another new table  is `Isom_Path`, storing the  way dodecahedron paths
-derive from  canonical paths (that  is, paths starting  with `B →  C →
-D`). The table has four fields:
-
-* `map`, first part of the key, as with all other tables,
-
-* `canonical_num`: the key from the canonical Regional Path.
-
-* `num`: the key from the actual Regional Path
-
-* `isometry`:  the `isometry`  field of  the isometry  that turns  the
-canonical path into the actual path.
-
-* `recipr`: the `isometry` field of the isometry that turns the actual
-path  into the  canonical  path. Previously,  it was  the  key of  the
-reciprocal isometry. No longer used.
-
-Note: there is  no need to store  the other key fields  of the `Paths`
-table: `level` and `area`. Their values are constant: `2` and `"ICO"`.
 
 To feed  the isometry table, for  each isometry, we want  the shortest
 string of  basic isometries.  As is  written in  _Mastering Algorithms
@@ -4305,7 +4329,7 @@ still be used to store the  string used for the reverse transformation
 of strings. So  `recipr` is similar to `transform`, which  is used for
 direct transformation of strings.
 
-### Implementation
+### New Implementation
 
 The  computation of  isometries uses  arrays showing  how the  various
 dodecahedron  nodes  "travel"  when successive  basic  isometries  are
@@ -4820,8 +4844,8 @@ The columns added to tables `Maps` and `Areas` are
 Website Organisation
 --------------------
 
-These statistics are displayed at the following webpages, depending on
-their scope:
+These statistics (diameter, radius, eccentricity) are displayed at the
+following webpages, depending on their scope:
 
 * http://localhost:3000/en/shortest-path/full/fr1970
 

@@ -3729,7 +3729,7 @@ mais en prenant un seul chemin complet spécifique à chaque fois.
 Résumé. On affiche
 
 ```
-https://localhost:3000/fr/egion-with-full-path/fr1970/CEN/2345
+https://localhost:10000/fr/region-with-full-path/fr1970/CEN/2345
 ```
 
 Le chemin complet générique (stocké en table) est `(fr1970,45)`
@@ -4325,52 +4325,27 @@ exception compréhensible au principe que lorsque l'écoulement du temps
 est représenté sur une ligne  horizontale, il est représenté de gauche
 à droite.
 
-Implémentation
---------------
+Base de données
+---------------
 
-J'utilise la notation  orientée objet dans la  documentation, mais pas
-dans les programmes.  Bien que les isométries soient  des fonctions au
-sens mathématique, je  ne les implémenterai pas avec  des fonctions au
-sens programmation.  Une isométrie sera  identifiée par une  chaîne de
-caractères telle  que `"λɩ"`  et nous  disposerons d'une  fonction (au
-sens programmation) infixe nommée `"↣"` et s'utilisant ainsi :
+### Isometries
 
-```
-my Str $resul1 = 'M' ↣ 'λɩ';
-my Str $resul2 = 'M' ↣ 'λ' ↣ 'ɩ';
-if $resul1 eq $resul2 {
-  say "ça marche !";
-}
-else {
-  say "il y a un bug quelque part : $resul1 contre $resul2";
-}
-```
+La clé de la table `Isometries` est constituée des champs suivants.
 
-Remarque. Le caractère utilisé pour cette opération est `U+21A3 = "↣"`
-(rightwards arrow with  tail) au lieu de  `U+2192` (rightwards arrow),
-parce que  les versions  récentes de Raku  utilisent `U+2192`  dans la
-syntaxe en  tant que  raccourci pour `->`.  Les chaînes  de caractères
-décrivant un chemin continuent à utiliser `U+2192 = "→"`, cela ne pose
-pas de problème de confusion avec la syntaxe Raku.
+* `map`, la première partie de la clé de l'enregistrement. Les valeurs
+sont `"ico"`  pour le dodécaèdre,  `"PL4"` pour le  tétraèdre, `"PL6"`
+pour  le cube  et  `"PL8"`  pour l'octaèdre.  Je  ne  calcule pas  les
+isométries de l'icosaèdre, elles sont trop nombreuses.
 
-Néanmoins, j'ai  besoin de quelques informations  supplémentaires pour
-chaque  isométrie,  je  ne  peux  pas me  contenter  d'une  chaîne  de
-caractères. Jusque-là,  j'ai tout implémenté  avec des tables  SQL, je
-vais continuer avec les isométries du dodécaèdre.
-
-Nous avons donc une table `Isometries` avec les champs suivants.
-
-* `map`, la  première partie de  la clé de l'enregistrement.  Ce champ
-est nécessaire,  car à terme  le programme déterminera  les isométries
-pour d'autres graphes, ceux décrivant les autres solides platoniciens.
-
-* `isometry` est la deuxième partie de la clé de l'enregistrement. C'est une chaîne de
+* `isometry` est  la deuxième  partie de  la clé  de l'enregistrement. C'est une  chaîne de
 caractères  constituée  uniquement des  caractères  `λ`,  `κ` et  `ɩ`,
 décrivant  comment   l'isométrie  est  obtenue  à   partir  des  trois
 isométries de  base. Évidemment, la  chaîne des isométries de  base se
 lit   de   gauche   à   droite,  pour   refléter   la   représentation
 conventionnelle  de   l'écoulement  du  temps.  Une   exception,  avec
 l'identité. Pour l'identité, la clé est `Id`.
+
+La table contient également les champs suivants :
 
 * `transform`.  Ce champ  montre  comment  les codes  `B`  à `Z`  sont
 transformés par l'isométrie. La transformation est calculée par :
@@ -4399,6 +4374,8 @@ réciproque.
 c'est-à-dire si l'isométrie est  égale à l'isométrie réciproque. C'est
 le cas pour l'identité et pour les symétries. N'est plus utilisé.
 
+### Isom\_Path
+
 Il y  a une autre nouvelle  table, `Isom_Path`, destinée à  stocker la
 relation entre  les chemins du  dodécaèdre et les  chemins canoniques,
 notamment à savoir  par quelle isométrie un chemin  normal dérive d'un
@@ -4420,8 +4397,53 @@ du  chemin régional  réel  au chemin  régional  canonique. N'est  plus
 utilisé.
 
 Note : il n'y a pas besoin de stocker les autres champs faisant partie
-de la  clé de la table  `Paths`. Les valeurs sont  connues et fixées :
-`level = 2` et `area = "ICO"`.
+de la clé de la table `Paths`.  Les valeurs sont connues : `level = 2`
+« en dur » et duplication `area = map`.
+
+Nouvelle page du site web
+-------------------------
+
+```
+https://localhost:10000/fr/deriv-ico-path/ico/2
+```
+
+La sous-chaîne  `"ico"` de l'échelon `"deriv-ico-path"`  est une dette
+technique de l'époque  où je n'avais pas encore  l'idée d'examiner les
+chemins   hamiltoniens   et   les  isométries   des   autres   solides
+platoniciens. L'échelon isolé  `"ico"` est le nom de la  carte, ce qui
+donne pour un autre solide platonicien :
+
+```
+https://localhost:10000/fr/deriv-ico-path/PL6/2
+```
+
+Implémentation
+--------------
+
+J'utilise la notation  orientée objet dans la  documentation, mais pas
+dans les programmes.  Bien que les isométries soient  des fonctions au
+sens mathématique, je  ne les implémenterai pas avec  des fonctions au
+sens programmation.  Une isométrie sera  identifiée par une  chaîne de
+caractères telle  que `"λɩ"`  et nous  disposerons d'une  fonction (au
+sens programmation) infixe nommée `"↣"` et s'utilisant ainsi :
+
+```
+my Str $resul1 = 'M' ↣ 'λɩ';
+my Str $resul2 = 'M' ↣ 'λ' ↣ 'ɩ';
+if $resul1 eq $resul2 {
+  say "ça marche !";
+}
+else {
+  say "il y a un bug quelque part : $resul1 contre $resul2";
+}
+```
+
+Remarque. Le caractère utilisé pour cette opération est `U+21A3 = "↣"`
+(rightwards arrow with  tail) au lieu de  `U+2192` (rightwards arrow),
+parce que  les versions  récentes de Raku  utilisent `U+2192`  dans la
+syntaxe en  tant que  raccourci pour `->`.  Les chaînes  de caractères
+décrivant un chemin continuent à utiliser `U+2192 = "→"`, cela ne pose
+pas de problème de confusion avec la syntaxe Raku.
 
 Pour  alimenter   la  table   des  isométries,  nous   recherchons  la
 décomposition en isométries  basiques la plus courte.  Ainsi qu'il est
@@ -4543,7 +4565,7 @@ réciproque, ainsi  que l'alimentation du champ  `involution`. Le champ
 transformation  réciproque,   l'équivalent  de  `transform`   pour  la
 transformation directe.
 
-### Implémentation
+### Nouvelle Implémentation
 
 Le calcul  des isométries se  base sur des tableaux  décrivant comment
 « voyagent »  les  différents  sommets  du  dodécaèdre.  Suite  à  une
@@ -5072,8 +5094,8 @@ Les informations ajoutées dans les cartes `Maps` et `Areas` pour ce sujet sont�
 Organisation du site web
 ------------------------
 
-Ces statistiques sont présentées sous la forme d'une carte coloriée et
-d'un tableau aux adresses :
+Ces statistiques (diamètre, rayon,  excentricité) sont présentées sous
+la forme d'une carte coloriée et d'un tableau aux adresses :
 
 * http://localhost:3000/fr/shortest-path/full/fr1970
 
