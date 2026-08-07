@@ -2009,6 +2009,21 @@ these columns refer to generic full paths and generic regional paths.
 The use of fields `range1`, `coef1` et `coef2` is explained in
 [fourth version of the software](#listing-all-specific-full-paths-linked-to-a-specific-regional-path).
 
+Webpages Displaying Hamiltonian Paths
+-------------------------------------
+
+* Displaying a regional path. URL:
+http://localhost:10000/fr/region-path/fr1970/IDF/1
+
+* Displaying a macro-path. URL:
+http://localhost:10000/fr/macro-path/fr1970/1
+
+* Displaying a full path on the whole map. URL:
+http://localhost:10000/fr/full-path/fr1970/1
+
+* Displaying a full path on a map within a single region and the neighbour departments. URL:
+http://localhost:10000/fr/region-with-full-path/fr1970/1
+
 General Case
 ------------
 
@@ -4488,6 +4503,11 @@ Statistics on Hamiltonian Paths
 
 A new feature has crept in, statistics!
 
+Actually, a few basic statistics already exist: counting the number of
+generated macro-paths  for a given  map, the number of  generated full
+paths for a map and the number  of regional paths for a big area. Yet,
+we can extract more elaborate statistics.
+
 Below, I describe  statistics for regional Hamiltonian paths,  yet the definitions
 can  extend to  macro-paths.  But, with  the way  the  full paths  are
 implemented, no statistics will be computed for full paths.
@@ -4566,11 +4586,14 @@ borders.
 New Website Pages
 -----------------
 
-```
-https://localhost:10000/en/macro-stat/fr2015
-https://localhost:10000/en/macro-stat1/fr2015
-https://localhost:10000/en/region-stat/fr2015/IDF
-```
+* Display the statistics on Hamiltonian macro-paths. URL:
+http://localhost:10000/en/macro-stat/fr2015
+
+* Display the statistics on Hamiltonian macro-paths which generated Hamiltonian full paths. URL:
+http://localhost:10000/en/macro-stat1/fr2015
+
+* Display the statistics on Hamiltonian regional paths. URL:
+http://localhost:10000/en/region-stat/fr2015/IDF
 
 Implementation
 --------------

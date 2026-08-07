@@ -2147,6 +2147,22 @@ chemins complets génériques et à des chemins régionaux génériques
 L'utilisation des champs `range1`, `coef1` et `coef2` est expliquée dans la
 [quatrième version du logiciel](#lister-les-chemins-complets-sp%C3%A9cifiques-pour-un-chemin-r%C3%A9gional-sp%C3%A9cifique).
 
+Pages web affichant des chemins hamiltoniens
+--------------------------------------------
+
+* L'affichage d'un chemin régional. URL :
+http://localhost:10000/fr/region-path/fr1970/IDF/1
+
+* L'affichage d'un macro-chemin. URL :
+http://localhost:10000/fr/macro-path/fr1970/1
+
+* L'affichage d'un chemin complet sur la carte entière. URL :
+http://localhost:10000/fr/full-path/fr1970/1
+
+* L'affichage d'un chemin complet sur une carte réduite à une région
+et aux départements limitrophes. URL :
+http://localhost:10000/fr/region-with-full-path/fr1970/1
+
 Cas général
 -----------
 
@@ -4729,6 +4745,11 @@ Statistiques sur chemins hamiltoniens
 
 Et une nouvelle fonctionnalité, les statistiques !
 
+En fait, il  existe déjà des statistiques élémentaires :  le nombre de
+macro-chemins  et de  chemins complets  pour une  carte, le  nombre de
+chemins  régionaux hamiltoniens  pour  une région.  On peut  toutefois
+définir des statistiques plus élaborées.
+
 Je décris ci-dessous les statistiques  sur les chemins hamiltoniens régionaux, mais
 les définitions s'étendent aux macro-chemins. En revanche, compte tenu
 de  la  façon   dont  les  chemins  complets   sont  implémentés,  les
@@ -4808,11 +4829,15 @@ frontières de niveau 2.
 Nouvelles pages du site web
 ---------------------------
 
-```
-https://localhost:10000/fr/macro-stat/fr2015
-https://localhost:10000/fr/macro-stat1/fr2015
-https://localhost:10000/fr/region-stat/fr2015/IDF
-```
+* Afficher les statistiques pour les macro-chemins d'une carte. URL :
+http://localhost:10000/fr/macro-stat/fr2015
+
+* Afficher les statistiques pour les macro-chemins ayant permis de
+générer des chemins complets. URL :
+http://localhost:10000/fr/macro-stat1/fr2015
+
+* Afficher les statistiques pour les chemins régionaux hamiltoniens. URL :
+http://localhost:10000/fr/region-stat/fr2015/IDF
 
 Implémentation
 --------------
